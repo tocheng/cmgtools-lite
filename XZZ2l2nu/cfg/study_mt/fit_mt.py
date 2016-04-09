@@ -104,45 +104,45 @@ for idx,sample in enumerate(sigSamples):
     frame[idx].SetXTitle('M_{T} (GeV)')
     frame[idx].SetYTitle('Events')
 
-    f_name_1 = 'f_doubleCB_'+sample+'_mt'
+    f_name_1 = 'f_gausExp_'+sample+'_mt'
     h_name_1 = 'h_'+sample+'_mt'
-    fitter.doubleCB(name=f_name_1)
+    fitter.gausExp(name=f_name_1)
     fitter.importBinnedData(h1[idx],name=h_name_1)
     fitter.fit(model=f_name_1,data=h_name_1)
     func1.append(fitter.getModel(f_name_1))
     data1.append(fitter.getData(h_name_1))
     data1[idx].plotOn(frame[idx],RooFit.DrawOption('hist'),RooFit.LineColor(2))
-    func1[idx].plotOn(frame[idx],RooFit.DrawOption('hist'),RooFit.LineColor(2))
+    func1[idx].plotOn(frame[idx],RooFit.LineColor(2))
 
-    f_name_2 = 'f_doubleCB_'+sample+'_mta'
+    f_name_2 = 'f_gausExp_'+sample+'_mta'
     h_name_2 = 'h_'+sample+'_mta'
-    fitter.doubleCB(name=f_name_2)
+    fitter.gausExp(name=f_name_2)
     fitter.importBinnedData(h2[idx],name=h_name_2)
     fitter.fit(model=f_name_2,data=h_name_2)
     func2.append(fitter.getModel(f_name_2))
     data2.append(fitter.getData(h_name_2))
     data2[idx].plotOn(frame[idx],RooFit.DrawOption('hist'),RooFit.LineColor(4))
-    func2[idx].plotOn(frame[idx],RooFit.DrawOption('hist'),RooFit.LineColor(4))
+    func2[idx].plotOn(frame[idx],RooFit.LineColor(4))
 
-    f_name_3 = 'f_doubleCB_'+sample+'_mtb'
+    f_name_3 = 'f_gausExp_'+sample+'_mtb'
     h_name_3 = 'h_'+sample+'_mtb'
-    fitter.doubleCB(name=f_name_3)
+    fitter.gausExp(name=f_name_3)
     fitter.importBinnedData(h3[idx],name=h_name_3)
     fitter.fit(model=f_name_3,data=h_name_3)
     func3.append(fitter.getModel(f_name_3))
     data3.append(fitter.getData(h_name_3))
     data3[idx].plotOn(frame[idx],RooFit.DrawOption('hist'),RooFit.LineColor(6))
-    func3[idx].plotOn(frame[idx],RooFit.DrawOption('hist'),RooFit.LineColor(6))
+    func3[idx].plotOn(frame[idx],RooFit.LineColor(6))
 
-    f_name_4 = 'f_doubleCB_'+sample+'_mtc'
+    f_name_4 = 'f_gausExp_'+sample+'_mtc'
     h_name_4 = 'h_'+sample+'_mtc'
-    fitter.doubleCB(name=f_name_4)
+    fitter.gausExp(name=f_name_4)
     fitter.importBinnedData(h4[idx],name=h_name_4)
     fitter.fit(model=f_name_4,data=h_name_4)
     func4.append(fitter.getModel(f_name_4))
     data4.append(fitter.getData(h_name_4))
     data4[idx].plotOn(frame[idx],RooFit.DrawOption('hist'),RooFit.LineColor(8))
-    func4[idx].plotOn(frame[idx],RooFit.DrawOption('hist'),RooFit.LineColor(8))
+    func4[idx].plotOn(frame[idx],RooFit.LineColor(8))
 
 
 
