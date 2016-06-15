@@ -130,7 +130,8 @@ class JetAnalyzer( Analyzer ):
             self.jetReCalibrator = JetReCalibrator(GT, cfg_ana.recalibrationType, doResidual, cfg_ana.jecPath, **kwargs)
 
         self.smearJets = getattr(self.cfg_ana, 'smearJets', False)
-        if self.smearJets:  
+        #if self.smearJets:  
+        if self.cfg_comp.isMC:
             self.jetResolution = JetResolution(GT_jer, cfg_ana.recalibrationType, cfg_ana.jerPath)
         self.doPuId = getattr(self.cfg_ana, 'doPuId', True)
         self.jetLepDR = getattr(self.cfg_ana, 'jetLepDR', 0.4)
@@ -146,7 +147,6 @@ class JetAnalyzer( Analyzer ):
     def declareHandles(self):
         super(JetAnalyzer, self).declareHandles()
         self.handles['jets']   = AutoHandle( self.cfg_ana.jetCol, 'std::vector<pat::Jet>' )
-        #self.handles['jets_raw']   = AutoHandle( self.cfg_ana.jetCol, 'std::vector<pat::Jet>' )
         self.handles['genJet'] = AutoHandle( self.cfg_ana.genJetCol, 'vector<reco::GenJet>' )
         self.shiftJER = self.cfg_ana.shiftJER if hasattr(self.cfg_ana, 'shiftJER') else 0
         self.addJERShifts = self.cfg_ana.addJERShifts if hasattr(self.cfg_ana, 'addJERShifts') else 0
@@ -167,13 +167,17 @@ class JetAnalyzer( Analyzer ):
         self.rho = rho
 
         ## Read jets, if necessary recalibrate and shift MET
-        #self.jets_raw = map(Jet, self.handles['jets_raw'].product())
         if self.cfg_ana.copyJetsByValue: 
           import ROOT
           allJets = map(lambda j:Jet(ROOT.pat.Jet(ROOT.edm.Ptr(ROOT.pat.Jet)(ROOT.edm.ProductID(),j,0))), self.handles['jets'].product()) #copy-by-value is safe if JetAnalyzer is ran more than once
         else: 
           allJets = map(Jet, self.handles['jets'].product()) 
-        self.jets_raw = copy.deepcopy(allJets)
+          
+        self.jets_74x = copy.deepcopy(allJets)
+        for ijet in self.jets_74x:
+            ires = self.jetResolution.getResolution(ijet,rho_jer)
+            setattr(ijet, "res", ires)
+
         #set dummy MC flavour for all jets in case we want to ntuplize discarded jets later
         for jet in allJets:
             jet.mcFlavour = 0
@@ -407,7 +411,7 @@ class JetAnalyzer( Analyzer ):
         setattr(event,"type1METCorrDown"       +self.cfg_ana.collectionPostFix, self.type1METCorrDown       )
         setattr(event,"sumJetsInT1"            +self.cfg_ana.collectionPostFix, self.sumJetsInT1            )
         setattr(event,"allJetsUsedForMET"      +self.cfg_ana.collectionPostFix, self.allJetsUsedForMET      ) 
-        setattr(event,"jets_raw"               +self.cfg_ana.collectionPostFix, self.jets_raw               )
+        setattr(event,"jets_74x"               +self.cfg_ana.collectionPostFix, self.jets_74x               )
         setattr(event,"jets"                   +self.cfg_ana.collectionPostFix, self.jets                   ) 
         setattr(event,"jetsFailId"             +self.cfg_ana.collectionPostFix, self.jetsFailId             ) 
         setattr(event,"jetsAllNoID"            +self.cfg_ana.collectionPostFix, self.jetsAllNoID            ) 

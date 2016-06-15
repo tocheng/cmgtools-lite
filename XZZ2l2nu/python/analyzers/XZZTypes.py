@@ -57,6 +57,7 @@ JetType = NTupleObjectType("xzzJetType", baseObjectTypes=[jetType], variables = 
     NTupleVariable("area",   lambda x : x.jetArea(), help="Catchment area of jet"),
     NTupleVariable("rawFactor",   lambda x : x.rawFactor(), float, help="pt/rawfactor will give you the raw pt"),
     NTupleVariable("corr_jer",  lambda x : getattr(x, 'corrJER', -99), float, mcOnly=True, help="JER corr factor"),
+    NTupleVariable("res",  lambda x : getattr(x, 'res', -99), float, mcOnly=True, help="Jet energy resolution"),
 #    NTupleVariable("btag",   lambda x : x.bTag(), float),
 #    NTupleVariable("nConstituents",   lambda x : len(x.constituents), int),
     # NTupleVariable("looseID",   lambda x : x.looseID, int),
