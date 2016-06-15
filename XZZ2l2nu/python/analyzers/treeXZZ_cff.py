@@ -64,6 +64,7 @@ vvTreeProducer = cfg.Analyzer(
          NTupleVariable("triggersf",  lambda x : getattr(x,'trgsf',1), help="singleelectron/muon trigger sf"),
          NTupleVariable("triggersfUp",  lambda x : getattr(x,'trgsfUp',1), help="singleelectron/muon trigger sf upper"),
          NTupleVariable("triggersfLo",  lambda x : getattr(x,'trgsfLo',1), help="singleelectron/muon trigger sf lower"),
+         NTupleVariable("rho", lambda ev: ev.rho , float),
      ],
 
      globalObjects =  {
@@ -85,7 +86,7 @@ vvTreeProducer = cfg.Analyzer(
          "genXZZ" : NTupleCollection("genX", VVType, 10, mcOnly=True, help="Generated X->ZZ"),
          #"LHE_weights"    : NTupleCollection("LHEweight",  weightsInfoType, 1000, help="LHE weight info"),
          "jets"       : NTupleCollection("jet_corr",jetType,15, help="all jets with new JEC for 76X applied"),
-         #"jets_raw"   : NTupleCollection("jet",JetType,15, help="all jets from miniAOD"),
+         "jets_74x"   : NTupleCollection("jet",JetType,15, help="all jets from miniAOD, corrected by 74x jec"),
      }
 )
 
