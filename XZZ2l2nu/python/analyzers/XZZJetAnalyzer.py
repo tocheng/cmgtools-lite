@@ -130,8 +130,7 @@ class JetAnalyzer( Analyzer ):
             self.jetReCalibrator = JetReCalibrator(GT, cfg_ana.recalibrationType, doResidual, cfg_ana.jecPath, **kwargs)
 
         self.smearJets = getattr(self.cfg_ana, 'smearJets', False)
-        #if self.smearJets:  
-        if self.cfg_comp.isMC:
+        if self.cfg_comp.isMC and self.smearJets:
             self.jetResolution = JetResolution(GT_jer, cfg_ana.recalibrationType, cfg_ana.jerPath)
         self.doPuId = getattr(self.cfg_ana, 'doPuId', True)
         self.jetLepDR = getattr(self.cfg_ana, 'jetLepDR', 0.4)
@@ -174,9 +173,10 @@ class JetAnalyzer( Analyzer ):
           allJets = map(Jet, self.handles['jets'].product()) 
           
         self.jets_74x = copy.deepcopy(allJets)
-        for ijet in self.jets_74x:
-            ires = self.jetResolution.getResolution(ijet,rho_jer)
-            setattr(ijet, "res", ires)
+        if self.cfg_comp.isMC and self.smearJets:
+            for ijet in self.jets_74x:
+                ires = self.jetResolution.getResolution(ijet,rho_jer)
+                setattr(ijet, "res", ires)
 
         #set dummy MC flavour for all jets in case we want to ntuplize discarded jets later
         for jet in allJets:
