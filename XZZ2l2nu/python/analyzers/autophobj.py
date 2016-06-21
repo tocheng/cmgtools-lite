@@ -115,6 +115,8 @@ leptonTypeExtra = NTupleObjectType("leptonExtra", baseObjectTypes = [ leptonType
     NTupleVariable("trigerob_pt", lambda x : x.triggerob.pt if hasattr(x,'triggerob') else -100, help="Electron matched HLT object pt"),
     NTupleVariable("trigerob_eta", lambda x : x.triggerob.eta if hasattr(x,'triggerob') else -100, help="Electron matched HLT object eta"),
     NTupleVariable("trigerob_phi", lambda x : x.triggerob.phi if hasattr(x,'triggerob') else -100, help="Electron matched HLT object phi"),
+    # lepton pt error
+    NTupleVariable("trigerob_phi", lambda x : x.ptErr(), help="Lepton Pt error"),
 ])
  
 
