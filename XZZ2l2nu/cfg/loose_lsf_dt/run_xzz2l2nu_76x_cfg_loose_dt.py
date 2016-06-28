@@ -62,10 +62,10 @@ sequence = cfg.Sequence(coreSequence+[vvSkimmer,vvTreeProducer])
 test = 1
 if test==1:
     # test a single component, using a single thread.
-    selectedComponents = dataSamples
+    #selectedComponents = dataSamples
     #selectedComponents = mcSamples
     #selectedComponents = [SingleElectron_Run2015D_16Dec, SinglePhoton_Run2015D_16Dec]
-    #selectedComponents = [RSGravToZZToZZinv_narrow_800]
+    selectedComponents = [SingleMuon_Run2015C_25ns_16Dec]
     #selectedComponents = [DYJetsToLL_M50]
     #selectedComponents = [BulkGravToZZ_narrow_800]
     #selectedComponents = [BulkGravToZZToZlepZhad_narrow_800]
