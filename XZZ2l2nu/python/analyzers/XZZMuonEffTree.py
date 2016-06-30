@@ -17,6 +17,7 @@ class XZZMuonEffTree( Analyzer ):
         self.checktag=getattr(cfg_ana,'checktag',False)
         self.pfbkg=getattr(cfg_ana,'pfbkg',False)
         self.muHLT=getattr(cfg_ana,'muHLT','')
+        self.rd=ROOT.TRandom3(0)
 
     def declareHandles(self): 
         super(XZZMuonEffTree, self).declareHandles()
@@ -47,21 +48,6 @@ class XZZMuonEffTree( Analyzer ):
     def process(self, event):
         self.readCollections( event.input )
         event.llpair=[]
-        if self.pfbkg:
-            event.selectedMuons=[]
-            for i in self.handles['pfcandidate'].product():
-                if i.pt()>20 and abs(i.pdgId())==211 and abs(i.eta())<2.4:event.selectedMuons.append(i)
-            event.selectedMuons.sort(key = lambda l : l.pt(), reverse = True)
-            if len(event.selectedMuons)>2: event.selectedMuons=event.selectedMuons[:2]
-        else:
-            event.selectedMuons=[i for i in event.selectedMuons if i.track().isNonnull()]
-        if len(event.selectedMuons)<2: return False
-        for l1,l2 in combinations(event.selectedMuons,2):
-            if l1.pdgId() == -l2.pdgId() or self.eithercharge:
-                pair = Pair(l1,l2,23)
-                if abs(l1.dz()-l2.dz())<.4 or self.pfbkg: event.llpair.append(pair)
-        if not event.llpair: return False
-        event.llpair=[min(event.llpair,key = lambda x: abs(x.M()-91.118))]
         if self.checktag:
             names = event.input.object().triggerNames(self.handles['trgresults'].product())
             tobs=[]
@@ -69,9 +55,22 @@ class XZZMuonEffTree( Analyzer ):
                 i.unpackPathNames(names)
                 pNames=list(i.pathNames())
                 if self.muHLT and [pN for pN in pNames if self.muHLT in pN]:tobs.append(i)
-            for i in event.llpair:
-                i.leg1.istag=self.istag(i.leg1,tobs)
-                i.leg2.istag=self.istag(i.leg2,tobs)
+            for i in event.selectedMuons: i.istag=self.istag(i,tobs)
+        if self.pfbkg:
+            event.selectedhadrons=[i for i in self.handles['pfcandidate'].product() if i.pt()>20 and abs(i.pdgId())==211 and abs(i.eta())<2.4]
+            if self.checktag: event.selectedMuons=[i for i in event.selectedMuons if i.istag==1]
+            if event.selectedhadrons and event.selectedMuons:
+                event.zllcandidates=[event.selectedMuons[0],event.selectedhadrons[int(self.rd.Uniform(0,1)**3*len(event.selectedhadrons))]]
+            else: return False
+        else:
+            event.zllcandidates=[i for i in event.selectedMuons if i.track().isNonnull()]
+            if len(event.zllcandidates)<2: return False
+        for l1,l2 in combinations(event.zllcandidates,2):
+            if l1.pdgId() == -l2.pdgId() or self.eithercharge:
+                pair = Pair(l1,l2,23)
+                if abs(l1.dz()-l2.dz())<.4 or self.pfbkg: event.llpair.append(pair)
+        if not event.llpair: return False
+        event.llpair=[min(event.llpair,key = lambda x: abs(x.M()-91.118))]
         if self.genfilter and self.cfg_comp.isMC:
             for i in event.llpair:
                 i.leg1.xdaughter=self.checkgen(i.leg1)

@@ -35,7 +35,7 @@ leptonicVAna.selectElElPair =(lambda x: x.leg1.pt()>50.0 or x.leg2.pt()>50.0 )
 leptonicVAna.selectVBoson = (lambda x: x.mass()>50.0 and x.mass()<180.0)
 multiStateAna.selectPairLLNuNu = (lambda x: x.leg1.mass()>50.0 and x.leg1.mass()<180.0)
 
-jetAna.smearJets=True
+jetAna.smearJets=False
 
 #-------- SEQUENCE
 #sequence = cfg.Sequence(coreSequence+[vvSkimmer,vvTreeProducer])
@@ -72,7 +72,7 @@ test = 1
 if test==1:
     # test a single component, using a single thread.
     #selectedComponents = [SingleMuon_Run2015D_05Oct]
-    selectedComponents = [DYJetsToLL_M50,DYJetsToLL_M50_Ext,ZZTo2L2Nu]
+    selectedComponents = [DYJetsToLL_M50]#,DYJetsToLL_M50_Ext,ZZTo2L2Nu]
     #selectedComponents = [SingleMuon_Run2015D_Promptv4,SingleElectron_Run2015D_Promptv4]
     #[SingleElectron_Run2015D_Promptv4,SingleElectron_Run2015D_05Oct]
     #selectedComponents = [RSGravToZZToZZinv_narrow_800]

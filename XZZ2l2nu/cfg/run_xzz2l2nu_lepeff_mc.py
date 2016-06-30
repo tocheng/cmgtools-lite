@@ -54,7 +54,8 @@ sequence = [
 test = 1
 if test==1:
     # test a single component, using a single thread.
-    selectedComponents = [DYJetsToLL_M50]
+    #selectedComponents = [DYJetsToLL_M50]
+    selectedComponents = backgroundSamples[:1]
     #selectedComponents = mcSamples
     #selectedComponents = [SingleMuon_Run2015D_Promptv4,SingleElectron_Run2015D_Promptv4]
     #[SingleElectron_Run2015D_Promptv4,SingleElectron_Run2015D_05Oct]

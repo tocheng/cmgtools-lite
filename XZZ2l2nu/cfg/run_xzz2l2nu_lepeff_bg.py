@@ -25,6 +25,8 @@ meffAna = cfg.Analyzer(
     name='mEffTree',
     genfilter=False,
     pfbkg=True,
+#    pctpf={3:.05648,4:.02234},
+    pctpf={3:.0,4:.0},
     eithercharge=True,
     checktag=False
     )
@@ -42,7 +44,7 @@ if test==1:
     # test a single component, using a single thread.
     #selectedComponents = [JetHT_Run2015D_16Dec]
     #selectedComponents = [ZeroBias_Run2015D_16Dec]
-    selectedComponents = [JetHT_Run2015C_25ns_16Dec,JetHT_Run2015D_16Dec]
+    selectedComponents = [JetHT_Run2015D_16Dec]#[JetHT_Run2015C_25ns_16Dec,JetHT_Run2015D_16Dec]
     #selectedComponents = mcSamples
     #selectedComponents = [SingleMuon_Run2015D_Promptv4,SingleElectron_Run2015D_Promptv4]
     #[SingleElectron_Run2015D_Promptv4,SingleElectron_Run2015D_05Oct]
@@ -51,8 +53,8 @@ if test==1:
     #selectedComponents = [BulkGravToZZ_narrow_800]
     #selectedComponents = [BulkGravToZZToZlepZhad_narrow_800]
     for c in selectedComponents:
-        #c.files = c.files[:1]
-        c.splitFactor = (len(c.files)/10 if len(c.files)>10 else 1)
+        c.files = c.files[50:100]
+        c.splitFactor = (len(c.files)/5 if len(c.files)>5 else 1)
         #c.splitFactor = 1
         #c.triggers=triggers_1mu_noniso
         #c.triggers=triggers_1e_noniso
