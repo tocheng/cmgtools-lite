@@ -79,7 +79,7 @@ vvTreeProducer = cfg.Analyzer(
      collections = {
          #"LL"  : NTupleCollection("Zll",LLType,5, help="Z to ll"),
          #"ElMu"  : NTupleCollection("elmu",LLType,5, help="electron - muon pair for non-resonant bkg"),
-         #"selectedLeptons" : NTupleCollection("lep",leptonType,10, help="selected leptons"),
+         "selectedLeptons" : NTupleCollection("lep",leptonType,10, help="selected leptons"),
          "genLeptons" : NTupleCollection("genLep", genParticleType, 10, help="Generated leptons (e/mu) from W/Z decays"),
          "genZBosons" : NTupleCollection("genZ", genParticleType, 10, help="Generated V bosons"),
          "LLNuNu"     : NTupleCollection("llnunu",LLNuNuType ,5, help="VV candidate with di-lepton and MET"),
@@ -100,7 +100,7 @@ lepeffTreeProducer = cfg.Analyzer(
         NTupleVariable("nElectron",lambda ev: len(ev.selectedElectrons) if hasattr(ev,"selectedElectrons") else 0, int), 
         ],
      collections = {
-         "llpair"  : NTupleCollection("llpair",llpairType ,5, help="lepton eff study"),
+         "llpair"  : NTupleCollection("llpair",llpairType ,15, help="lepton eff study"),
      }
 )
 

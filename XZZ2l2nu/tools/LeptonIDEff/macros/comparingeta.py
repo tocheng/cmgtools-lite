@@ -26,6 +26,8 @@ for i in range(len(pogps)):
     effps[i].SetLineColor(4)
     effps[i].SetMarkerColor(4)
     effps[i].SetMarkerStyle(22)
+    for n in range(effps[i].GetNbinsX()):
+        effps[i].SetBinError(n+1,1.12*effps[i].GetBinError(n+1))
     mi=min(pogps[i].GetMinimum(),effps[i].GetMinimum())
     ma=max(pogps[i].GetMaximum(),effps[i].GetMaximum())
     pogps[i].SetMinimum(2*mi-ma)

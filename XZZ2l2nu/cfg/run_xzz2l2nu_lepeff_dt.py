@@ -23,7 +23,6 @@ meffAna = cfg.Analyzer(
     name='mEffTree',
     genfilter=False,
     pfbkg=False,
-    eithercharge=False,
     checktag=True,
     muHLT="HLT_IsoMu20_v"
     )
@@ -60,11 +59,11 @@ if test==1:
     #selectedComponents = [BulkGravToZZ_narrow_800]
     #selectedComponents = [BulkGravToZZToZlepZhad_narrow_800]
     for c in selectedComponents:
-        c.files = c.files[:10]
+#        c.files = c.files[:10]
         c.splitFactor = (len(c.files)/5 if len(c.files)>5 else 1)
-        #c.splitFactor = 1
-        #c.triggers=triggers_1mu_noniso
-        #c.triggers=triggers_1e_noniso
+        c.triggers=[]
+        c.vetoTriggers = []
+
 
 ## output histogram
 outputService=[]

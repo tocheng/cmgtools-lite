@@ -16,6 +16,9 @@ names=[' mc',' data',' mc gen']
 effps=[feff.Get("hmc_eff"),feff.Get("hdt_eff"),feff.Get("hmcgen_eff"),feff.Get("hratio_dt_mc")]
 #leg=TLegend(.75,.91,.9,1)    
 leg=TLegend(.6,.7,.9,.89)    
+for i in effps:
+    for n in range(i.GetNbinsX()):
+        i.SetBinError(n+1,1.12*i.GetBinError(n+1))
 for i in range(3):
     effps[i].SetLineColor(i+1)
     effps[i].SetMarkerColor(i+1)
