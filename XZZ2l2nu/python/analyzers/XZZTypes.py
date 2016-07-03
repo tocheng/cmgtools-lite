@@ -3,18 +3,33 @@ import math
 
 
 LLType = NTupleObjectType("LLType", baseObjectTypes=[fourVectorType], variables = [
+    NTupleVariable("TuneP_usage",   lambda x : x.useTuneP, int),               
+    NTupleVariable("TuneP_pt",   lambda x : x.TuneP_pt(), float),               
+    NTupleVariable("TuneP_eta",   lambda x : x.TuneP_eta(), float),               
+    NTupleVariable("TuneP_phi",   lambda x : x.TuneP_phi(), float),               
+    NTupleVariable("TuneP_mass",   lambda x : x.TuneP_m(), float),               
     NTupleVariable("mt",   lambda x : x.mt(), float),       
     NTupleVariable("deltaPhi",   lambda x : x.deltaPhi(), float),       
     NTupleVariable("deltaR",   lambda x : x.deltaR(), float),       
+    NTupleVariable("TuneP_mt",   lambda x : x.TuneP_mt(), float),       
+    NTupleVariable("TuneP_deltaPhi",   lambda x : x.TuneP_deltaPhi(), float),       
+    NTupleVariable("TuneP_deltaR",   lambda x : x.TuneP_deltaR(), float),       
 ])
 
 
 
 VVType = NTupleObjectType("VVType", baseObjectTypes=[], variables = [
   NTupleSubObject("LV",  lambda x : x['pair'],fourVectorType),
+  NTupleVariable("TuneP_LV_pt",   lambda x : x['pair'].TuneP_pt(), float),       
+  NTupleVariable("TuneP_LV_eta",   lambda x : x['pair'].TuneP_eta(), float),       
+  NTupleVariable("TuneP_LV_phi",   lambda x : x['pair'].TuneP_phi(), float),       
+  NTupleVariable("TuneP_LV_mass",   lambda x : x['pair'].TuneP_m(), float),       
   NTupleVariable("deltaPhi",   lambda x : x['pair'].deltaPhi(), float),       
+  NTupleVariable("TuneP_deltaPhi",   lambda x : x['pair'].TuneP_deltaPhi(), float), 
   NTupleVariable("deltaR",   lambda x : x['pair'].deltaR(), float),       
+  NTupleVariable("TuneP_deltaR",   lambda x : x['pair'].TuneP_deltaR(), float),       
   NTupleVariable("mt",   lambda x : x['pair'].mt(), float),       
+  NTupleVariable("TuneP_mt",   lambda x : x['pair'].TuneP_mt(), float),       
   NTupleVariable("mta",   lambda x : x['pair'].mta(), float),       
   NTupleVariable("mtb",   lambda x : x['pair'].mtb(), float),       
   NTupleVariable("mtc",   lambda x : x['pair'].mtc(), float),   
