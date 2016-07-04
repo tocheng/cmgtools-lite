@@ -21,15 +21,15 @@ class Pair(object):
         self.LV = leg1.p4()+leg2.p4()
         self.TuneP_LV = self.l1+self.l2
         et1 = math.sqrt(leg1.mass()*leg1.mass()+leg1.pt()*leg1.pt())
-        et2 = math.sqrt(leg2.mass()*leg2.mass()+leg2.pt()*leg2.pt())
+        et2 = math.sqrt(leg1.mass()*leg1.mass()+leg2.pt()*leg2.pt())
         TuneP_et1 = math.sqrt(leg1.mass()*leg1.mass()+self.l1.Pt()*self.l1.Pt())
-        TuneP_et2 = math.sqrt(leg2.mass()*leg2.mass()+self.l2.Pt()*self.l2.Pt())
+        TuneP_et2 = math.sqrt(leg1.mass()*leg1.mass()+self.l2.Pt()*self.l2.Pt())
 
         self.MT  =math.sqrt(self.leg1.p4().mass()*self.leg1.p4().mass()+\
-            self.leg2.p4().mass()*self.leg2.p4().mass()+2*(et1*et2-self.leg1.p4().px()*self.leg2.p4().px()-self.leg1.p4().py()*self.leg2.p4().py()))
+            self.leg1.p4().mass()*self.leg1.p4().mass()+2*(et1*et2-self.leg1.p4().px()*self.leg2.p4().px()-self.leg1.p4().py()*self.leg2.p4().py()))
         et2a = math.sqrt(91.188**2+leg2.pt()*leg2.pt())  
         self.TuneP_MT  =math.sqrt(self.l1.M()*self.l1.M()+\
-            self.l2.M()*self.l2.M()+2*(TuneP_et1*TuneP_et2-self.l1.Px()*self.l2.Px()-self.l1.Py()*self.l2.Py()))
+            self.l1.M()*self.l1.M()+2*(TuneP_et1*TuneP_et2-self.l1.Px()*self.l2.Px()-self.l1.Py()*self.l2.Py()))
 
         self.MTa = math.sqrt(self.leg1.p4().mass()*self.leg1.p4().mass()+\
             91.188**2+2*(et1*et2a-self.leg1.p4().px()*self.leg2.p4().px()-self.leg1.p4().py()*self.leg2.p4().py()))
