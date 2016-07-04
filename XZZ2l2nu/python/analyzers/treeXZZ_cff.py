@@ -85,8 +85,8 @@ vvTreeProducer = cfg.Analyzer(
          "LLNuNu"     : NTupleCollection("llnunu",LLNuNuType ,5, help="VV candidate with di-lepton and MET"),
          "genXZZ" : NTupleCollection("genX", VVType, 10, mcOnly=True, help="Generated X->ZZ"),
          #"LHE_weights"    : NTupleCollection("LHEweight",  weightsInfoType, 1000, help="LHE weight info"),
-         "jets"       : NTupleCollection("jet_corr",jetType,15, help="all jets with new JEC for 76X applied"),
-         "jets_74x"   : NTupleCollection("jet",JetType,15, help="all jets from miniAOD, corrected by 74x jec"),
+         "jets"       : NTupleCollection("jet",JetType,15, help="all jets with new JEC for 76X applied"),
+         #"jets_74x"   : NTupleCollection("jet",JetType,15, help="all jets from miniAOD, corrected by 74x jec"),
      }
 )
 

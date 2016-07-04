@@ -7,6 +7,7 @@ from CMGTools.XZZ2l2nu.plotting.MergedPlotter import MergedPlotter
 from CMGTools.XZZ2l2nu.plotting.StackPlotter import StackPlotter
 
 tag="newXs_TrueZPt_Recoil_"
+#tag="newXs_TruePhiStar_Recoil_"
 #tag="newXs_"
 #tag="newXs_Recoil_"
 #tag="newXs_ZPt_"
@@ -25,7 +26,7 @@ cutChain='tight'
 #cutChain='zjetscut'
 #cutChain='zjetscutmet50'
 
-channel='both' # can be el or mu or both
+channel='mu' # can be el or mu or both
 
 
 outdir='plots'
@@ -37,13 +38,13 @@ indir='/data/XZZ/76X_Ntuple/76X_20160514_RecoilSkim'
 lumi=2.318278305
 sepSig=True
 LogY=True
-DrawLeptons=False
+DrawLeptons=True
 doRatio=True
 test=False
-Blind=False
+Blind=True
 FakeData=False
 UseMETFilter=True
-SignalAll1pb=False
+SignalAll1pb=True
 puWeight='puWeight'
 k=1 # signal scale
 
@@ -160,6 +161,24 @@ for sample in vvSamples:
 
 VV = MergedPlotter(vvPlotters)
 VV.setFillProperties(1001,ROOT.kMagenta)
+
+ggZZPlotters=[]
+ggZZSamples = ['ggZZTo2e2nu','ggZZTo2mu2nu']
+
+for sample in ggZZSamples:
+    ggZZPlotters.append(TreePlotter(indir+'/'+sample+'.root','tree'))
+    ggZZPlotters[-1].addCorrectionFactor('1./SumWeights','tree')
+    ggZZPlotters[-1].addCorrectionFactor('xsec','tree')
+    ggZZPlotters[-1].addCorrectionFactor('genWeight','genWeight')
+    ggZZPlotters[-1].addCorrectionFactor(puWeight,'tree')
+    ggZZPlotters[-1].addCorrectionFactor('(llnunu_l1_l1_lepsf*llnunu_l1_l2_lepsf)','tree')
+    ggZZPlotters[-1].addCorrectionFactor('triggersf','tree')
+    allPlotters[sample] = ggZZPlotters[-1]
+
+ggZZ = MergedPlotter(ggZZPlotters)
+ggZZ.setFillProperties(1001,ROOT.kRed)
+
+
 
 wjetsPlotters=[]
 wjetsSamples = ['WJetsToLNu']
@@ -323,6 +342,7 @@ Stack.addPlotter(Data, "data_obs", "Data", "data")
 Stack.addPlotter(WW, "VVNonReso","WW, WZ non-reson.", "background")
 Stack.addPlotter(TT, "TT","TT", "background")
 Stack.addPlotter(VV, "VVZReso","ZZ, WZ reson.", "background")
+#Stack.addPlotter(ggZZ, "ggZZ","ggZZ", "background")
 Stack.addPlotter(ZJets, "ZJets","Z+Jets", "background")
 
 
@@ -338,10 +358,10 @@ Stack.doRatio(doRatio)
 
 
 
-Stack.drawStack('llnunu_mta', cuts, str(lumi*1000), 500, 0.0, 5000.0, titlex = "M_{T}", units = "GeV",output=tag+'mt_high5',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+#Stack.drawStack('llnunu_mta', cuts, str(lumi*1000), 500, 0.0, 5000.0, titlex = "M_{T}", units = "GeV",output=tag+'mt_high5',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 Stack.drawStack('llnunu_mta', cuts, str(lumi*1000), 60, 0.0, 1200.0, titlex = "M_{T}", units = "GeV",output=tag+'mt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 Stack.drawStack('llnunu_mta', cuts, str(lumi*1000), 100, 0.0, 300.0, titlex = "M_{T}", units = "GeV",output=tag+'mt_low2',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
-Stack.drawStack('llnunu_mta', cuts, str(lumi*1000), 150, 0.0, 3000.0, titlex = "M_{T}", units = "GeV",output=tag+'mt_high',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+#Stack.drawStack('llnunu_mta', cuts, str(lumi*1000), 150, 0.0, 3000.0, titlex = "M_{T}", units = "GeV",output=tag+'mt_high',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 Stack.drawStack('llnunu_l2_pt', cuts, str(lumi*1000), 100, 0, 1000, titlex = "MET", units = "GeV",output=tag+'met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
 Stack.drawStack('llnunu_l2_pt', cuts, str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output=tag+'met_low',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
 Stack.drawStack('llnunu_l2_pt', cuts, str(lumi*1000), 100, 0, 200, titlex = "MET", units = "GeV",output=tag+'met_low2',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
