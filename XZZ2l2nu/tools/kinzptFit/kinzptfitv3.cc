@@ -26,7 +26,7 @@
 
 bool debug = false;
 bool doZpTCorr = false;
-bool doJetsCorr = true;
+bool doJetsCorr = false;
 bool doMetShift = true;
 bool doMetSigma = true;
 
@@ -679,6 +679,8 @@ int main(int argc, char** argv) {
   hmet_old->Write();
   hmet_new->Write();
   hmta_old->Write();
+  hmta_new->Write();
+  hmtc_old->Write();
   hmtc_new->Write();
   hut_hard_para_old->Write();
   hut_hard_para_new->Write();

@@ -26,7 +26,7 @@ cutChain='tight'
 #cutChain='zjetscut'
 #cutChain='zjetscutmet50'
 
-channel='both' # can be el or mu or both
+channel='mu' # can be el or mu or both
 
 
 outdir='plots'
@@ -38,13 +38,13 @@ indir='/data/XZZ/76X_Ntuple/76X_20160514_RecoilSkim'
 lumi=2.318278305
 sepSig=True
 LogY=True
-DrawLeptons=False
+DrawLeptons=True
 doRatio=True
 test=False
 Blind=True
 FakeData=False
 UseMETFilter=True
-SignalAll1pb=False
+SignalAll1pb=True
 puWeight='puWeight'
 k=1 # signal scale
 
