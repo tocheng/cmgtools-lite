@@ -25,7 +25,6 @@ meffAna = cfg.Analyzer(
     name='mEffTree',
     genfilter=True,
     pfbkg=False,
-    eithercharge=False,
     checktag=True,
     muHLT="HLT_IsoMu20_v"
     )
@@ -54,7 +53,8 @@ sequence = [
 test = 1
 if test==1:
     # test a single component, using a single thread.
-    selectedComponents = [DYJetsToLL_M50]
+    #selectedComponents = [DYJetsToLL_M50]
+    selectedComponents = backgroundSamples[:1]
     #selectedComponents = mcSamples
     #selectedComponents = [SingleMuon_Run2015D_Promptv4,SingleElectron_Run2015D_Promptv4]
     #[SingleElectron_Run2015D_Promptv4,SingleElectron_Run2015D_05Oct]
@@ -65,9 +65,8 @@ if test==1:
     for c in selectedComponents:
         #c.files = c.files[:1]
         c.splitFactor = (len(c.files)/10 if len(c.files)>10 else 1)
-        #c.splitFactor = 1
-        #c.triggers=triggers_1mu_noniso
-        #c.triggers=triggers_1e_noniso
+        c.triggers=[]
+        c.vetoTriggers = []
 
 ## output histogram
 outputService=[]

@@ -8,20 +8,16 @@ from PhysicsTools.HeppyCore.utils.deltar import *
 import PhysicsTools.HeppyCore.framework.config as cfg
 from CMGTools.XZZ2l2nu.tools.Pair import *
 
-class XZZMuonEffTree( Analyzer ):
+class XZZElectronEffTree( Analyzer ):
 
     def __init__(self, cfg_ana, cfg_comp, looperName):
-        super(XZZMuonEffTree,self).__init__(cfg_ana,cfg_comp,looperName)
+        super(XZZElectronEffTree,self).__init__(cfg_ana,cfg_comp,looperName)
         self.genfilter=getattr(self.cfg_ana,"genfilter",False)
         self.checktag=getattr(cfg_ana,'checktag',False)
         self.pfbkg=getattr(cfg_ana,'pfbkg',False)
-        self.muHLT=getattr(cfg_ana,'muHLT','')
 
     def declareHandles(self): 
-        super(XZZMuonEffTree, self).declareHandles()
-        if self.checktag:
-            self.handles['trgresults']=AutoHandle(("TriggerResults","","HLT"),"edm::TriggerResults")
-            self.handles['selectedtrg']=AutoHandle('selectedPatTrigger','std::vector<pat::TriggerObjectStandAlone>')
+        super(XZZElectronEffTree, self).declareHandles()
         if self.pfbkg:
             self.handles['pfcandidate']=AutoHandle("packedPFCandidates","std::vector<pat::PackedCandidate>")
 
@@ -34,33 +30,23 @@ class XZZMuonEffTree( Analyzer ):
         except:
             return False
 
-    def istag(self,mu,tobs):
+    def istag(self,el):
         itg=1
-        if not mu.muonID("POG_ID_Tight"): itg-=1
-#        if (mu.physObj.pfIsolationR04().sumChargedHadronPt + max(0., mu.physObj.pfIsolationR04().sumNeutralHadronEt + mu.physObj.pfIsolationR04().sumPhotonEt - 0.5*mu.physObj.pfIsolationR04().sumPUPt))/mu.pt()>.2: itg-=2
-        if mu.absIsoWithFSR()/mu.pt()>.2: itg-=2
-        if not [i for i in tobs if deltaR(mu.eta(),mu.phi(),i.eta(),i.phi())<.3]: itg-=4
-        if mu.pt()<21: itg-=8
+        if not el.physObj.electronID("cutBasedElectronID-Spring15-25ns-V1-standalone-loose"): itg-=1
         return itg
 
     def process(self, event):
         self.readCollections( event.input )
         event.llpair=[]
         if self.checktag:
-            names = event.input.object().triggerNames(self.handles['trgresults'].product())
-            tobs=[]
-            for i in self.handles['selectedtrg'].product():
-                i.unpackPathNames(names)
-                pNames=list(i.pathNames())
-                if self.muHLT and [pN for pN in pNames if self.muHLT in pN]:tobs.append(i)
-            for i in event.selectedMuons: i.istag=self.istag(i,tobs)
+            for i in event.selectedElectrons: i.istag=self.istag(i)
         if self.pfbkg:
             event.selectedhadrons=[i for i in self.handles['pfcandidate'].product() if i.pt()>20 and abs(i.pdgId())==211 and abs(i.eta())<2.4]
-            if self.checktag: event.selectedMuonstagged=[i for i in event.selectedMuons if i.istag==1]
-            if not (event.selectedMuons and event.selectedhadrons): return False
-            for i in event.selectedMuons:event.llpair.extend([Pair(i,j,23) for j in event.selectedhadrons])
+            if self.checktag: event.selectedElectronstagged=[i for i in event.selectedElectrons if i.istag==1]
+            if not (event.selectedElectrons and event.selectedhadrons): return False
+            for i in event.selectedElectrons:event.llpair.extend([Pair(i,j,23) for j in event.selectedhadrons])
         else:
-            event.zllcandidates=[i for i in event.selectedMuons if i.track().isNonnull()]
+            event.zllcandidates=event.selectedElectrons
             if len(event.zllcandidates)<2: return False
             for l1,l2 in combinations(event.zllcandidates,2):
                 if l1.pdgId() == -l2.pdgId():
