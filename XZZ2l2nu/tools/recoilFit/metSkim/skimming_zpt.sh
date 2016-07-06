@@ -8,7 +8,7 @@ selection="(1)"
 
 
 # compile
-g++ skimming.cc -o skimming.exe `root-config --cflags` `root-config --libs`
+g++ skimming_zpt.cc -o skimming_zpt.exe `root-config --cflags` `root-config --libs`
 
 #inputs
 #inputdir=/data/XZZ/76X_Ntuple/76X_20160514
@@ -24,8 +24,8 @@ mkdir -p ${outputdir}
 njob="0"
 
 #for infile in $inputdir/DYJetsToLL_M50_BIG/vvTreeProducer/tree.root ; 
-#for infile in $inputdir/DYJetsToLL_M50/vvTreeProducer/tree.root ; 
-for infile in $inputdir/*/vvTreeProducer/tree.root ; 
+#for infile in $inputdir/*/vvTreeProducer/tree.root ; 
+for infile in $inputdir/DYJetsToLL_*/vvTreeProducer/tree.root ; 
 do
   echo "+++ skimming $infile +++"
   outfile="${outputdir}/${infile/$inputdir\//}"
@@ -49,9 +49,9 @@ do
   echo -- Output file: $outfile
   echo -- AllEvents: $AllEvents , SumWeights: $SumWeights
   
-  echo -- Command: ./skimming.exe $infile $outfile $AllEvents $SumWeights
+  echo -- Command: ./skimming_zpt.exe $infile $outfile $AllEvents $SumWeights
 
-  ./skimming.exe $infile $outfile $AllEvents $SumWeights &> ${outfile}.log &
+  ./skimming_zpt.exe $infile $outfile $AllEvents $SumWeights &> ${outfile}.log &
 
   njob=$(( njob + 1 ))
   if [ "$njob" -eq "4" ]; then
