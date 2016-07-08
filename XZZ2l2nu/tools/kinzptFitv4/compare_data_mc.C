@@ -7,7 +7,8 @@ void compare_data_mc(){
 
 
 std::string tag = 
-"doJetsCorrUseLepResPtErrSel8JetLepSigProtect"
+"
+//"doJetsCorrUseLepResPtErrSel8JetLepSigProtect"
 //"doJetsCorrUseLepResPtErrSel8JetLepHardOnlyZpT250"
 ;
 

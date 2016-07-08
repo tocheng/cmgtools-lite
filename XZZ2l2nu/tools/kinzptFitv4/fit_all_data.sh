@@ -20,13 +20,13 @@ outtag="V4_doJetsCorrUseLepResPtErrSel8JetLepSigProtectV2MetShift"
 #mkdir -p ${outputdir}
 
 
-
-list="
-SingleElectron_Run2015C_25ns_16Dec.root
-SingleElectron_Run2015D_16Dec.root
-SingleMuon_Run2015C_25ns_16Dec.root
-SingleMuon_Run2015D_16Dec.root
-"
+list="SingleEMU_Run2015_16Dec.root"
+#list="
+#SingleElectron_Run2015C_25ns_16Dec.root
+#SingleElectron_Run2015D_16Dec.root
+#SingleMuon_Run2015C_25ns_16Dec.root
+#SingleMuon_Run2015D_16Dec.root
+#"
 
 
 njob="0"

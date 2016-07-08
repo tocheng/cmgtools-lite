@@ -32,7 +32,7 @@
 
 
 bool do2016 = false;
-bool doData = false;
+bool doData = true;
 bool doZpTCorr = false;
 bool doJetsCorr = true;
 bool doJetsCorrUseLepRes=true;
@@ -43,6 +43,8 @@ bool doMetShiftAfter = true;
 bool doMetSigma = false;
 bool doPfLepCorr = false;
 bool doPfLepCorrUseTruth=false;
+bool doDyJetsSigma = true;
+
 
 int n_start = 0; //808575;//612088;//599938;//95849;//62859;
 int n_interval = 1000;
@@ -366,8 +368,30 @@ int main(int argc, char** argv) {
   TH1D* h_pt_err_el = (TH1D*)file_pterr->Get("h_dpt_el");
   TH1D* h_pt_err_mu = (TH1D*)file_pterr->Get("h_dpt_mu");
 
+  // doDyJetsSigma, correct dyjets mc to match data
+  TFile* file_dt_sigma;
+  TFile* file_mc_sigma;
+  TH1D* h_dt_met_para_sigma;
+  TH1D* h_dt_met_perp_sigma;
+  TH1D* h_mc_met_para_sigma;
+  TH1D* h_mc_met_perp_sigma;
+  TH1D* h_ratio_met_para_sigma_dtmc;
+  TH1D* h_ratio_met_perp_sigma_dtmc;
 
+  if (doDyJetsSigma) {
+    file_dt_sigma = new TFile("SingleEMU_Run2015_16Dec_V4_doJetsCorrUseLepResPtErrSel8JetLepSigProtectV2MetShift_met_para_study.root");
+    file_mc_sigma = new TFile("DYJetsToLL_M50_BIG_ZPt_V4_doJetsCorrUseLepResPtErrSel8JetLepSigProtectV2MetShift_met_para_study.root");
+    h_dt_met_para_sigma = (TH1D*)file_dt_sigma->Get("h_met_para_vs_zpt_new_sigma");
+    h_dt_met_perp_sigma = (TH1D*)file_dt_sigma->Get("h_met_perp_vs_zpt_new_sigma");
+    h_mc_met_para_sigma = (TH1D*)file_mc_sigma->Get("h_met_para_vs_zpt_new_sigma");
+    h_mc_met_perp_sigma = (TH1D*)file_mc_sigma->Get("h_met_perp_vs_zpt_new_sigma");
 
+    h_ratio_met_para_sigma_dtmc = (TH1D*)h_dt_met_para_sigma->Clone("h_ratio_met_para_sigma_dtmc");
+    h_ratio_met_perp_sigma_dtmc = (TH1D*)h_dt_met_perp_sigma->Clone("h_ratio_met_perp_sigma_dtmc");
+    h_ratio_met_para_sigma_dtmc->Divide(h_mc_met_para_sigma);
+    h_ratio_met_perp_sigma_dtmc->Divide(h_mc_met_perp_sigma);
+
+  }
   // JER
   JME::JetResolution JERReso("Summer15_25nsV6_MC_PtResolution_AK4PFchs.txt");
   JME::JetResolution JERResoData("Summer15_25nsV6_DATA_PtResolution_AK4PFchs.txt");
@@ -1223,6 +1247,12 @@ int main(int argc, char** argv) {
     if (doMetShift&&doMetShiftAfter) {
       if (isData)  met_para -= h_metshifts_data->GetBinContent(h_metshifts_data->FindBin(llnunu_l1_pt));
       else met_para -= h_metshifts->GetBinContent(h_metshifts->FindBin(llnunu_l1_pt));
+    }
+
+    // correct dyjets mc to match data
+    if (doDyJetsSigma) {
+      met_para *= h_ratio_met_para_sigma_dtmc->GetBinContent(h_ratio_met_para_sigma_dtmc->FindBin(llnunu_l1_pt));
+      met_perp *= h_ratio_met_perp_sigma_dtmc->GetBinContent(h_ratio_met_perp_sigma_dtmc->FindBin(llnunu_l1_pt));
     }
 
     //
