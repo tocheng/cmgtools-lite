@@ -1,15 +1,19 @@
 #!/bin/sh
 
 #file=DYJetsToLL_M50_ZPt
-#file=DYJetsToLL_M50
-file=SingleEMU_Run2015_16Dec
+file=DYJetsToLL_M50
+#file=SingleEMU_Run2015_16Dec
 #file=BulkGravToZZToZlepZinv_narrow_1000
 #file=SingleElectron_Run2015D_16Dec
 #file=SingleMuon_Run2015D_16Dec
 # compile
-g++  -c JetResolutionObject.cc -o JetResolutionObject.o `root-config --cflags` -I.
-g++  -c JetResolution.cc -o JetResolution.o `root-config --cflags` -I.
-g++  -c KalmanMuonCalibrator.cc -o KalmanMuonCalibrator.o `root-config --cflags` -I.
+#g++ -c JetCorrectorParameters.cc -o JetCorrectorParameters.o `root-config --cflags` -I.
+#g++ -c SimpleJetCorrector.cc -o SimpleJetCorrector.o `root-config --cflags` -I.
+#g++ -c FactorizedJetCorrectorCalculator.cc -o FactorizedJetCorrectorCalculator.o `root-config --cflags` -I.
+#g++ -c FactorizedJetCorrector.cc -o FactorizedJetCorrector.o `root-config --cflags` -I.
+g++ -c JetResolutionObject.cc -o JetResolutionObject.o `root-config --cflags` -I.
+g++ -c JetResolution.cc -o JetResolution.o `root-config --cflags` -I.
+g++ -c KalmanMuonCalibrator.cc -o KalmanMuonCalibrator.o `root-config --cflags` -I.
  
 g++ -c kinzptfitv4.cc -o kinzptfitv4.o `root-config --cflags` -I. 
 g++ kinzptfitv4.o JetResolutionObject.o JetResolution.o KalmanMuonCalibrator.o -o kinzptfitv4.exe `root-config --cflags` `root-config --libs` -lMinuit2 -I. -L. 
