@@ -11,7 +11,7 @@
 #include <map>
 #include <time.h>
 
-bool debug=false;
+bool debug=true;
 
 // 
 class MetChi2Fcn : public ROOT::Minuit2::FCNBase {

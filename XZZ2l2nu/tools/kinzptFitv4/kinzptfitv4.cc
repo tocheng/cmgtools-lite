@@ -22,6 +22,8 @@
 #include <vector>
 #include "kinzptfitv4.h"
 #include "JetResolution.h"
+#include "FactorizedJetCorrector.h"
+#include "JetCorrectorParameters.h"
 #include "Minuit2/MnMigrad.h"
 #include "Minuit2/FunctionMinimum.h"
 #include "Minuit2/MnPrint.h"
@@ -32,28 +34,29 @@
 
 
 bool do2016 = false;
-bool doData = true;
+bool doData = false;
+bool doJEC = true;
 bool doZpTCorr = false;
 bool doJetsCorr = true;
 bool doJetsCorrUseLepRes=true;
 bool doJetsCorrUseLepResPtErr=true;
 bool doJetsCorrUseLepResPtErrJetLep=true;
-bool doMetShift = true;
+bool doMetShift = false;
 bool doMetShiftAfter = true;
 bool doMetSigma = false;
 bool doPfLepCorr = false;
 bool doPfLepCorrUseTruth=false;
-bool doDyJetsSigma = true;
+bool doDyJetsSigma = false;
+bool doHardOnly = true;
+bool doSignalProtection = false;
+bool useRaw = false;
 
 
 int n_start = 0; //808575;//612088;//599938;//95849;//62859;
 int n_interval = 1000;
 int n_test = 10;
-Float_t _zpt_cut_min = -1;
+Float_t _zpt_cut_min = 250;
 Float_t _zpt_cut_max = 1000000;
-bool doHardOnly = false;
-bool doSignalProtection = true;
-bool useRaw = false;
 
 std::string fitOption = 
 //"useMetShift";
@@ -152,7 +155,7 @@ int main(int argc, char** argv) {
   Float_t llnunu_deltaPhi, llnunu_CosdphiZMet, llnunu_dPTPara, llnunu_dPTParaRel, llnunu_dPTPerp, llnunu_dPTPerpRel;
   Float_t llnunu_l1_deltaPhi;
   Int_t njet, jet_id[1000];
-  Float_t jet_pt[1000], jet_phi[1000], jet_eta[1000], jet_rawPt[1000];
+  Float_t jet_pt[1000], jet_phi[1000], jet_eta[1000], jet_rawPt[1000], jet_area[1000];
   Float_t jet_chargedHadronEnergyFraction[1000], jet_neutralHadronEnergyFraction[1000], jet_neutralEmEnergyFraction[1000];
   Float_t jet_muonEnergyFraction[1000], jet_chargedEmEnergyFraction[1000], jet_chargedHadronMultiplicity[1000];
   Float_t jet_chargedMultiplicity[1000], jet_neutralMultiplicity[1000];
@@ -192,6 +195,7 @@ int main(int argc, char** argv) {
   tree->SetBranchAddress("jet_pt", jet_pt);
   tree->SetBranchAddress("jet_phi", jet_phi);
   tree->SetBranchAddress("jet_eta", jet_eta);
+  tree->SetBranchAddress("jet_area", jet_area);
   tree->SetBranchAddress("jet_rawPt", jet_rawPt);
   tree->SetBranchAddress("jet_id", jet_id);
   tree->SetBranchAddress("jet_chargedHadronEnergyFraction", jet_chargedHadronEnergyFraction);
@@ -392,6 +396,44 @@ int main(int argc, char** argv) {
     h_ratio_met_perp_sigma_dtmc->Divide(h_mc_met_perp_sigma);
 
   }
+
+  // JEC
+  // Create the JetCorrectorParameter objects, the order does not matter.
+  // YYYY is the first part of the txt files: usually the global tag from which they are retrieved
+  JetCorrectorParameters *ResJetPar;
+  JetCorrectorParameters *L3JetPar;
+  JetCorrectorParameters *L2JetPar;
+  JetCorrectorParameters *L1JetPar;
+
+  if (doJEC&&!do2016&&doData) {
+    ResJetPar = new JetCorrectorParameters("Fall15_25nsV2_DATA_L2L3Residual_AK4PFchs.txt");
+    L3JetPar  = new JetCorrectorParameters("Fall15_25nsV2_DATA_L3Absolute_AK4PFchs.txt");
+    L2JetPar  = new JetCorrectorParameters("Fall15_25nsV2_DATA_L2Relative_AK4PFchs.txt");
+    L1JetPar  = new JetCorrectorParameters("Fall15_25nsV2_DATA_L1FastJet_AK4PFchs.txt");
+  } 
+  else if (doJEC&&!do2016) {
+    ResJetPar = new JetCorrectorParameters("Fall15_25nsV2_MC_L2L3Residual_AK4PFchs.txt");
+    L3JetPar  = new JetCorrectorParameters("Fall15_25nsV2_MC_L3Absolute_AK4PFchs.txt");
+    L2JetPar  = new JetCorrectorParameters("Fall15_25nsV2_MC_L2Relative_AK4PFchs.txt");
+    L1JetPar  = new JetCorrectorParameters("Fall15_25nsV2_MC_L1FastJet_AK4PFchs.txt");
+  }
+  //  Load the JetCorrectorParameter objects into a vector, IMPORTANT: THE ORDER MATTERS HERE !!!! 
+  std::vector<JetCorrectorParameters> vPar;
+  if (doJEC){
+    vPar.push_back(*L1JetPar);
+    vPar.push_back(*L2JetPar);
+    vPar.push_back(*L3JetPar);
+    vPar.push_back(*ResJetPar);
+  }
+
+  // Step3 (Construct a FactorizedJetCorrector object) 
+  FactorizedJetCorrector *JetCorrector;
+  if (doJEC) {
+    JetCorrector = new FactorizedJetCorrector(vPar);
+  }
+
+
+
   // JER
   JME::JetResolution JERReso("Summer15_25nsV6_MC_PtResolution_AK4PFchs.txt");
   JME::JetResolution JERResoData("Summer15_25nsV6_DATA_PtResolution_AK4PFchs.txt");
@@ -470,13 +512,53 @@ int main(int argc, char** argv) {
 
     // lepton info
     if (debug) {
-      std::cout << " met: para = " << met_para     << ", perp = " << met_perp << ", phi = " << met_phi << std::endl; 
+      std::cout << " ### Starting point ### " << std::endl;
+      std::cout << " met: para = " << met_para     << ", perp = " << met_perp << ", pt = " << met_pt << ", phi = " << met_phi << std::endl; 
       std::cout << " Z  : pt   = " << llnunu_l1_pt << ", eta = " << llnunu_l1_eta << ", phi = " << llnunu_l1_phi << std::endl; 
       std::cout << " l1 : para = " << llnunu_l1_l1_pt*cos(llnunu_l1_l1_phi-llnunu_l1_phi) << ",  perp = " << llnunu_l1_l1_pt*sin(llnunu_l1_l1_phi-llnunu_l1_phi) << std::endl;
       std::cout << " l2 : para = " << llnunu_l1_l2_pt*cos(llnunu_l1_l2_phi-llnunu_l1_phi) << ",  perp = " << llnunu_l1_l2_pt*sin(llnunu_l1_l2_phi-llnunu_l1_phi) << std::endl;
       std::cout << " l1 : pt = " << llnunu_l1_l1_pt << ", eta = " << llnunu_l1_l1_eta << ", phi = " << llnunu_l1_l1_phi << ", ptErr/pt = " << llnunu_l1_l1_ptErr/llnunu_l1_l1_pt << std::endl; 
       std::cout << " l2 : pt = " << llnunu_l1_l2_pt << ", eta = " << llnunu_l1_l2_eta << ", phi = " << llnunu_l1_l2_phi << ", ptErr/pt = " << llnunu_l1_l2_ptErr/llnunu_l1_l2_pt << std::endl; 
     }
+
+    // doJEC correction in advance, also change jet collection
+    if (doJEC){
+      if (debug){
+        std::cout << " ### Apply JEC ### " << std::endl;
+      }
+      double sum_jdpx(0), sum_jdpy(0);
+      double correction(1);
+      double new_jpt(0);
+      for (int j=0; j<njet; j++){
+        JetCorrector->setJetEta(jet_eta[j]);
+        JetCorrector->setJetPt(jet_rawPt[j]);
+        JetCorrector->setJetA(jet_area[j]);
+        JetCorrector->setRho(rho);
+        correction = JetCorrector->getCorrection();
+        new_jpt = correction*jet_rawPt[j];
+
+        if (debug) {
+          std::cout << " jet " << j << ": raw pt = " << jet_rawPt[j] << ", old pt = " << jet_pt[j] << ", new pt = " << new_jpt << ", phi = " << jet_phi[j] << ", jes = " << correction << std::endl;
+        }
+
+        sum_jdpx += (new_jpt-jet_pt[j])*cos(jet_phi[j]);
+        sum_jdpy += (new_jpt-jet_pt[j])*sin(jet_phi[j]);
+        jet_pt[j] = (float)new_jpt;
+      }
+      double new_met_x = met_pt*cos(met_phi) - sum_jdpx;
+      double new_met_y = met_pt*sin(met_phi) - sum_jdpy;
+      vec_met.Set(new_met_x, new_met_y);
+      met_pt = vec_met.Mod();
+      met_phi = TVector2::Phi_mpi_pi(vec_met.Phi());
+      met_para = met_pt*cos(met_phi-llnunu_l1_phi);
+      met_perp = met_pt*sin(met_phi-llnunu_l1_phi);
+      if (debug){
+        std::cout << " ### After JEC ### " << std::endl;
+        std::cout << " met: para = " << met_para     << ", perp = " << met_perp << ", pt = " << met_pt << ", phi = " << met_phi << std::endl;  
+        std::cout << " ######" << std::endl;
+      }
+    }
+
 
     if (doZpTCorr && ngenZ>0) {
       //met_para -= pr_zptcorr->GetBinContent(pr_zptcorr->FindBin(z_pt));
