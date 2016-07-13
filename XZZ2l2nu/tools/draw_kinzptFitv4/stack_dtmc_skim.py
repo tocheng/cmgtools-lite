@@ -6,9 +6,13 @@ from CMGTools.XZZ2l2nu.plotting.TreePlotter import TreePlotter
 from CMGTools.XZZ2l2nu.plotting.MergedPlotter import MergedPlotter
 from CMGTools.XZZ2l2nu.plotting.StackPlotter import StackPlotter
 
-tag="METFit_ZJetsReso_AllSF_"
+
+#tag="METFit_ZJetsReso_AllSF_"
+#tag="METFit_ZJetsReso_IsoSF_"
 #tag="METFit_ZJetsReso_TrgSF_"
 #tag="METFit_ZJetsReso_IdSF_"
+#tag="METFit_ZJetsReso_NoSF_"
+tag="test_"
 #tag=""
 #cutChain='loosecut'
 cutChain='tight'
@@ -31,7 +35,7 @@ indir='/data2/XZZ/76X_20160705_metSkim_LepSF_LinksForPlotting'
 #indir='/data2/XZZ/76X_20160705_metSkim_LinksForPlotting'
 lumi=2.318278305
 sepSig=True
-LogY=False
+LogY=True
 DrawLeptons=True
 doRatio=True
 test=False
@@ -125,7 +129,7 @@ wwPlotters=[]
 wwSamples = ['WWTo2L2Nu','WWToLNuQQ','WZTo1L1Nu2Q','WJetsToLNu']
 
 for sample in wwSamples:
-    wwPlotters.append(TreePlotter(indir+'/'+sample+'.root','tree'))
+    wwPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
     wwPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
     wwPlotters[-1].addCorrectionFactor('xsec','xsec')
     wwPlotters[-1].addCorrectionFactor('genWeight','genWeight')
@@ -143,7 +147,7 @@ vvSamples = ['WZTo2L2Q','WZTo3LNu',
 'ZZTo2L2Q','ZZTo4L']
 
 for sample in vvSamples:
-    vvPlotters.append(TreePlotter(indir+'/'+sample+'.root','tree'))
+    vvPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
     vvPlotters[-1].addCorrectionFactor('1/SumWeights','norm')
     vvPlotters[-1].addCorrectionFactor('xsec','xsec')
     vvPlotters[-1].addCorrectionFactor('genWeight','genWeight')
@@ -176,7 +180,7 @@ wjetsPlotters=[]
 wjetsSamples = ['WJetsToLNu']
 
 for sample in wjetsSamples:
-    wjetsPlotters.append(TreePlotter(indir+'/'+sample+'.root','tree'))
+    wjetsPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
     wjetsPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
     wjetsPlotters[-1].addCorrectionFactor('xsec','xsec')
     wjetsPlotters[-1].addCorrectionFactor('genWeight','genWeight')
@@ -194,7 +198,7 @@ zjetsSamples = ['DYJetsToLL_M50_BIG_ZPt']
 
 
 for sample in zjetsSamples:
-    zjetsPlotters.append(TreePlotter(indir+'/'+sample+'.root','tree'))
+    zjetsPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
     zjetsPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
     zjetsPlotters[-1].addCorrectionFactor('ZPtWeight','ZPtWeight')
     #zjetsPlotters[-1].addCorrectionFactor('PhiStarWeight','PhiStarWeight')
@@ -213,7 +217,7 @@ ttPlotters=[]
 ttSamples = ['TTTo2L2Nu','TTZToLLNuNu','TTWJetsToLNu']
 
 for sample in ttSamples:
-    ttPlotters.append(TreePlotter(indir+'/'+sample+'.root','tree'))
+    ttPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
     ttPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
     ttPlotters[-1].addCorrectionFactor('xsec','xsec')
     ttPlotters[-1].addCorrectionFactor('genWeight','genWeight')
@@ -296,7 +300,7 @@ if SignalAll1pb:
         sigSampleNames[sig] = string.replace(sigSampleNames[sig], str(k)+' x', '1 pb')
 
 for sample in sigSamples:
-    sigPlotters.append(TreePlotter(indir+'/'+sample+'.root','tree'))
+    sigPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
     sigPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
     sigPlotters[-1].addCorrectionFactor(str(sigXsec[sample]),'xsec')
     sigPlotters[-1].addCorrectionFactor('genWeight','genWeight')
@@ -311,7 +315,7 @@ dataSamples = ['SingleElectron_Run2015C_25ns_16Dec',
 'SingleMuon_Run2015C_25ns_16Dec',
 'SingleMuon_Run2015D_16Dec']
 for sample in dataSamples:
-    dataPlotters.append(TreePlotter(indir+'/'+sample+'.root','tree'))
+    dataPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
 
 Data = MergedPlotter(dataPlotters)
 
@@ -338,6 +342,7 @@ Stack.doRatio(doRatio)
 
 
 
+tag+='_'
 
 Stack.drawStack('llnunu_mt', cuts, str(lumi*1000), 300, 0.0, 3000.0, titlex = "M_{T}", units = "GeV",output=tag+'mt_high3',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 Stack.drawStack('llnunu_mt', cuts, str(lumi*1000), 240, 0.0, 1200.0, titlex = "M_{T}", units = "GeV",output=tag+'mt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
@@ -410,9 +415,8 @@ if DrawLeptons:
     Stack.drawStack('llnunu_l1_l2_eta', cuts+"&&(abs(llnunu_l1_l2_pdgId)==11)", str(lumi*1000), 30, -3.0, 3.0, titlex = "#eta(e_{2})", units = "",output=tag+'etalep2_el',outDir=outdir,separateSignal=sepSig)
     Stack.drawStack('llnunu_l1_l2_phi', cuts+"&&(abs(llnunu_l1_l2_pdgId)==11)", str(lumi*1000), 32, -3.2, 3.2, titlex = "#phi(e_{2})", units = "",output=tag+'philep2_el',outDir=outdir,separateSignal=sepSig)
     Stack.drawStack('llnunu_l1_l2_electronrelIsoea03', cuts+"&&(abs(llnunu_l1_l2_pdgId)==11)", str(lumi*1000), 100, 0.0, 0.2, titlex = "looseISO_{rel}(e_{2})", units = "",output=tag+'ISOlep2_el',outDir=outdir,separateSignal=sepSig)
-'''
 
+'''
 Stack.closePSFile()
-os.system('ps2pdf '+outdir+'/'+tag+'.ps '+outdir+'/'+tag+'.pdf')
 
 

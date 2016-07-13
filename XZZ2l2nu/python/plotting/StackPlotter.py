@@ -153,10 +153,13 @@ class StackPlotter(object):
         self.fout = ROOT.TFile(self.outFileName+'.root', 'recreate')
         c1 = ROOT.TCanvas(self.outTag, self.outTag, 700, 910);
         c1.Print(self.outFileName+'.ps[')
+        c1.Print(self.outFileName+'.pdf[')
 
     def closePSFile(self):
         c1 = ROOT.TCanvas(self.outTag, self.outTag);
         c1.Print(self.outFileName+'.ps]')
+        c1.Print(self.outFileName+'.pdf]')
+        #ROOT.gROOT.ProcessLine('.! ps2pdf '+self.outFileName+'.ps '+self.outFileName+'.pdf')
         
     def setLog(self,doLog):
         self.log=doLog
@@ -242,12 +245,12 @@ class StackPlotter(object):
             if typeP =="data":
                 hist = plotter.drawTH1(output+'_'+typeP,var,cutL,"1",bins,mini,maxi,titlex,units)
                 #hist.SetName(output+'_'+typeP)
-                hists.append(hist)
                 hist.SetMarkerStyle(20)
                 hist.SetLineWidth(1)
                 hist.SetMarkerSize(1.)
                 hist.SetMarkerColor(ROOT.kBlack)
                 hist.SetBinErrorOption(1)
+                hists.append(hist)
                 dataH=hist
                 dataG=convertToPoisson(hist,blinding,blindingCut)
                 dataG.SetName(output+'_'+'dataG')
@@ -361,7 +364,7 @@ class StackPlotter(object):
 	#text = pt.AddText(0.15,0.3,"CMS Preliminary")
 	text = pt.AddText(0.15,0.3,"CMS Work in progress")
 #	text = pt.AddText(0.25,0.3,"#sqrt{s} = 7 TeV, L = 5.1 fb^{-1}  #sqrt{s} = 8 TeV, L = 19.7 fb^{-1}")
-	text = pt.AddText(0.55,0.3,"#sqrt{s} = 13 TeV, L = "+"{:.3}".format(float(lumi)/1000)+" fb^{-1}")
+	text = pt.AddText(0.55,0.3,"#sqrt{s} = 13 TeV 2015 L = "+"{:.3}".format(float(lumi)/1000)+" fb^{-1}")
 	pt.Draw()   
         
 
@@ -425,11 +428,12 @@ class StackPlotter(object):
         #c1.Print(outDir+'/'+self.outputTag+'_'+output+'.eps')
         #os.system('epstopdf '+outDir+'/'+output+'.eps')
         c1.Print(self.outFileName+'.ps')
+        c1.Print(self.outFileName+'.pdf')
 
         self.fout.cd()
         c1.Write() 
         stack.Write()
-        if dataH: dataH.Write()
+        #if dataH: dataH.Write()
         if dataG: dataG.Write()
         pt.Write()
         legend.Write()
@@ -439,6 +443,10 @@ class StackPlotter(object):
         frame.Write()
         for hist in hists: hist.Write()  
         #fout.Close()
+
+        c1.Delete()
+        p1.Delete()
+        p2.Delete()
 
         return plot
 
@@ -512,6 +520,7 @@ class StackPlotter(object):
         #canvas.Print(output)
         #os.system('epstopdf '+output)
         canvas.Print(self.outFileName+'.ps')
+        canvas.Print(self.outFileName+'.pdf')
         return canvas
 
         
@@ -708,6 +717,7 @@ class StackPlotter(object):
         #c1.Print(outDir+'/'+output+'.eps')
         #os.system('epstopdf '+outDir+'/'+output+'.eps')
         c1.Print(self.outFileName+'.ps')
+        c1.Print(self.outFileName+'.pdf')
        
         self.fout.cd()
         c1.Write()
@@ -886,6 +896,7 @@ class StackPlotter(object):
         #c1.Print(outDir+'/'+output+'.eps')
         #os.system('epstopdf '+outDir+'/'+output+'.eps')
         c1.Print(self.outFileName+'.ps')
+        c1.Print(self.outFileName+'.pdf')
        
         self.fout.cd()
         c1.Write()
@@ -1048,6 +1059,7 @@ class StackPlotter(object):
         #c1.Print(outDir+'/'+output+'.eps')
         #os.system('epstopdf '+outDir+'/'+output+'.eps')
         c1.Print(self.outFileName+'.ps')
+        c1.Print(self.outFileName+'.pdf')
        
         self.fout.cd()
         c1.Write()
