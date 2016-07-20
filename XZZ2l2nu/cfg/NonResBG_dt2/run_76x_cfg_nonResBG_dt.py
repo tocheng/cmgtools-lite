@@ -34,10 +34,10 @@ from CMGTools.XZZ2l2nu.analyzers.treeXZZ_cff import *
 #leptonicVAna.selectVBoson = (lambda x: x.pt()>100.0 and x.mass()>30.0 and x.mass()<150.0 and x.leg2.pt()>50.0)
 #multiStateAna.selectPairLLNuNu = (lambda x: x.leg1.pt()>100.0 and x.leg1.mass()>30.0 and x.leg1.mass()<150.0 and x.leg2.pt()>50.0)
 
-leptonicVAna.selectVBoson = (lambda x: x.mass()>30.0 and x.mass()<180.0)
-leptonicVAna.selectFakeBoson = (lambda x: x.mass()>30.0 and x.mass()<180.0)
-multiStateAna.selectPairLLNuNu = (lambda x: x.leg1.mass()>30.0 and x.leg1.mass()<180.0)
-multiStateAna.selectPairElMuNuNu = (lambda x: x.leg1.mass()>30.0 and x.leg1.mass()<180.0)
+leptonicVAna.selectVBoson = (lambda x: x.mass()>30.0)
+leptonicVAna.selectFakeBoson = (lambda x: x.mass()>30.0)
+multiStateAna.selectPairLLNuNu = (lambda x: x.leg1.mass()>30.0)
+multiStateAna.selectPairElMuNuNu = (lambda x: x.leg1.mass()>30.0)
 
 #-------- SEQUENCE
 #sequence = cfg.Sequence(coreSequence+[vvSkimmer,vvTreeProducer])

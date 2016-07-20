@@ -31,10 +31,10 @@ triggerFlagsAna.triggerBits ={
 from CMGTools.XZZ2l2nu.analyzers.treeXZZ_cff import *
 
 # make VV selection loosened as ElMu selection
-leptonicVAna.selectVBoson = (lambda x: x.mass()>30.0 and x.mass()<180.0)
-leptonicVAna.selectFakeBoson = (lambda x: x.mass()>30.0 and x.mass()<180.0)
-multiStateAna.selectPairLLNuNu = (lambda x: x.leg1.mass()>30.0 and x.leg1.mass()<180.0)
-multiStateAna.selectPairElMuNuNu = (lambda x: x.leg1.mass()>30.0 and x.leg1.mass()<180.0)
+leptonicVAna.selectVBoson = (lambda x: x.mass()>30.0)
+leptonicVAna.selectFakeBoson = (lambda x: x.mass()>30.0)
+multiStateAna.selectPairLLNuNu = (lambda x: x.leg1.mass()>30.0)
+multiStateAna.selectPairElMuNuNu = (lambda x: x.leg1.mass()>30.0)
 
 vvSkimmer.required = ['LLNuNu', 'ElMuNuNu']
 leptonicVAna.doElMu = True
@@ -83,7 +83,7 @@ if test==1:
     # test a single component, using a single thread.
     selectedComponents = MuEG
     #selectedComponents = dataSamples
-    #selectedComponents = [SingleMuon_Run2015D_Promptv4,SingleElectron_Run2015D_Promptv4]
+    #selectedComponents = [MuonEG_Run2015C_25ns_16Dec]
     #selectedComponents = [SingleMuon_Run2015C_25ns_16Dec] 
     for c in selectedComponents:
         #c.files = c.files[0]
