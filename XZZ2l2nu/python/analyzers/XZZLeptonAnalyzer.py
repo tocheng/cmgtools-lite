@@ -30,7 +30,7 @@ class XZZLeptonAnalyzer( Analyzer ):
         #rho for muons
         self.handles['rhoMu'] = AutoHandle( self.cfg_ana.rhoMuon, 'double')
         #rho for electrons
-        self.handles['rhoEleMiniIso'] = AutoHandle( self.cfg_ana.rhoElectronMiniIso, 'double')
+#        self.handles['rhoEleMiniIso'] = AutoHandle( self.cfg_ana.rhoElectronMiniIso, 'double')
         #rho for electron pfIso
         self.handles['rhoElePfIso'] = AutoHandle( self.cfg_ana.rhoElectronPfIso, 'double')
 
@@ -50,11 +50,11 @@ class XZZLeptonAnalyzer( Analyzer ):
         self.ele_effectiveAreas = getattr(self.cfg_ana, 'ele_effectiveAreas', "Spring15_25ns_v1")
         self.mu_effectiveAreas  = getattr(self.cfg_ana, 'mu_effectiveAreas',  "Spring15_25ns_v1")
 
-        self.miniIsolationPUCorr = self.cfg_ana.miniIsolationPUCorr
-        if self.miniIsolationPUCorr == "weights":
-            self.IsolationComputer = heppy.IsolationComputer(0.4)
-        else:
-            self.IsolationComputer = heppy.IsolationComputer()
+#        self.miniIsolationPUCorr = self.cfg_ana.miniIsolationPUCorr
+#        if self.miniIsolationPUCorr == "weights":
+#            self.IsolationComputer = heppy.IsolationComputer(0.4)
+#        else:
+#            self.IsolationComputer = heppy.IsolationComputer()
         if self.cfg_comp.isMC:
             self.esfinput=ROOT.TFile(self.cfg_comp.eSFinput)
             self.esfh2=self.esfinput.Get("EGamma_SF2D")
@@ -91,14 +91,14 @@ class XZZLeptonAnalyzer( Analyzer ):
         event.selectedMuons = []
         event.selectedElectrons = []
         event.otherLeptons = []
-        
+      
 
-        self.IsolationComputer.setPackedCandidates(self.handles['packedCandidates'].product())
+        #self.IsolationComputer.setPackedCandidates(self.handles['packedCandidates'].product())
         #for lep in self.handles['muons'].product():
         #    self.IsolationComputer.addVetos(lep)
         #for lep in self.handles['electrons'].product():
         #    self.IsolationComputer.addVetos(lep)
-
+        
         #muons
         allmuons = self.makeAllMuons(event)
 
@@ -150,6 +150,7 @@ class XZZLeptonAnalyzer( Analyzer ):
 
         # pre-selection with kinematic cut
         allmuons = [mu for mu in allmuons if mu.pt()>20.0 and abs(mu.eta())<2.4]
+
        
         # Attach EAs for isolation:
         for mu in allmuons:
@@ -165,14 +166,15 @@ class XZZLeptonAnalyzer( Analyzer ):
           else: 
               raise RuntimeError,  "Unsupported value for mu_effectiveAreas, can use Spring15_25ns_v1"
  
-        # calculate miniIso
-        for mu in allmuons:
-            self.attachMiniIsolation(mu)
-            mu.trackerIso=mu.physObj.isolationR03().sumPt
-            
         # Attach the vertex to them, for dxy/dz calculation
         for mu in allmuons:
             mu.associatedVertex = event.goodVertices[0] if hasattr(event,"goodVertices") and len(event.goodVertices)>0 else event.vertices[0]
+
+        # calculate miniIso
+        for mu in allmuons:
+#            self.attachMiniIsolation(mu)
+            mu.trackerIso=mu.physObj.isolationR03().sumPt
+            
 
         # define muon id
         for mu in allmuons:
@@ -200,6 +202,7 @@ class XZZLeptonAnalyzer( Analyzer ):
         # pre-selection with kinematic cut
         allelectrons = [el for el in allelectrons if el.pt()>35.0 and abs(el.eta())<2.5]
 
+
         # fill EA for rho-corrected isolation
         for ele in allelectrons:
           if self.ele_effectiveAreas == "Spring15_25ns_v1":
@@ -216,20 +219,20 @@ class XZZLeptonAnalyzer( Analyzer ):
           else: 
               raise RuntimeError,  "Unsupported value for ele_effectiveAreas: can only use Data2012 (rho: ?), Phys14_v1 and Spring15_v1 (rho: fixedGridRhoFastjetAll)"
 
+        # Attach the vertex
+        for ele in allelectrons:
+            ele.associatedVertex = event.goodVertices[0] if hasattr(event,"goodVertices") and len(event.goodVertices)>0 else event.vertices[0]
+
         # calculate miniIso and pfIso
         for ele in allelectrons:
-            ele.rho = float(self.handles['rhoEleMiniIso'].product()[0])
-            self.attachMiniIsolation(ele)
+#            ele.rho = float(self.handles['rhoEleMiniIso'].product()[0])
+#            self.attachMiniIsolation(ele)
             ele.rho = float(self.handles['rhoElePfIso'].product()[0])
             ele.relIsoea03=ele.absIsoWithFSR(0.3)/ele.pt()
             if abs(ele.physObj.superCluster().eta())<1.479:
                 ele.looseiso=True if ele.relIsoea03<0.0893 else False
             else:
                 ele.looseiso=True if ele.relIsoea03<0.121 else False
-
-        # Attach the vertex
-        for ele in allelectrons:
-            ele.associatedVertex = event.goodVertices[0] if hasattr(event,"goodVertices") and len(event.goodVertices)>0 else event.vertices[0]
 
         # define electron ID
         for ele in allelectrons:
@@ -265,41 +268,41 @@ class XZZLeptonAnalyzer( Analyzer ):
         return allelectrons 
 
 
-    def attachMiniIsolation(self, lep):
-        lep.miniIsoR = 10.0/min(max(lep.pt(), 50.0),200.0)
-        what = "mu" if (abs(lep.pdgId()) == 13) else ("eleB" if lep.isEB() else "eleE")
+#    def attachMiniIsolation(self, lep):
+#        lep.miniIsoR = 10.0/min(max(lep.pt(), 50.0),200.0)
+#        what = "mu" if (abs(lep.pdgId()) == 13) else ("eleB" if lep.isEB() else "eleE")
 
-        if what=="mu":
-            lep.miniAbsIsoChargedHad = self.IsolationComputer.chargedHadAbsIso(lep.physObj, lep.miniIsoR, 0.0001, 0.0, self.IsolationComputer.selfVetoNone);
-        else:
-            lep.miniAbsIsoChargedHad = self.IsolationComputer.chargedHadAbsIso(lep.physObj, lep.miniIsoR, {"mu":0.0001,"eleB":0,"eleE":0.015}[what], 0.0, self.IsolationComputer.selfVetoNone);
+#        if what=="mu":
+#            lep.miniAbsIsoChargedHad = self.IsolationComputer.chargedHadAbsIso(lep.physObj, lep.miniIsoR, 0.0001, 0.0, self.IsolationComputer.selfVetoNone);
+#        else:
+#            lep.miniAbsIsoChargedHad = self.IsolationComputer.chargedHadAbsIso(lep.physObj, lep.miniIsoR, {"mu":0.0001,"eleB":0,"eleE":0.015}[what], 0.0, self.IsolationComputer.selfVetoNone);
 
-        if self.miniIsolationPUCorr == None: puCorr = self.cfg_ana.mu_isoCorr if what=="mu" else self.cfg_ana.ele_isoCorr
-        else: puCorr = self.miniIsolationPUCorr
-
-        if puCorr == "weights":
-            if what == "mu":
-                lep.miniAbsIsoNeutral = self.IsolationComputer.neutralAbsIsoWeighted(lep.physObj, lep.miniIsoR, 0.01, 0.5,self.IsolationComputer.selfVetoNone);
-            else:
-                lep.miniAbsIsoNeutral = ( self.IsolationComputer.photonAbsIsoWeighted(lep.physObj, lep.miniIsoR, 0.08 if what=="eleE" else 0.0, 0.0, self.IsolationComputer.selfVetoNone) + self.IsolationComputer.neutralHadAbsIsoWeighted(lep.physObj, lep.miniIsoR, 0.0, 0.0, self.IsolationComputer.selfVetoNone) )
-        else:
-            if what == "mu":
-                #lep.miniAbsIsoNeutral = self.IsolationComputer.neutralAbsIsoRaw(lep.physObj, lep.miniIsoR, 0.01, 0.5);
-                lep.miniAbsIsoPho  = self.IsolationComputer.photonAbsIsoRaw(lep.physObj, lep.miniIsoR, 0.01, 0.5,self.IsolationComputer.selfVetoNone)
-                lep.miniAbsIsoNeutralHad = self.IsolationComputer.neutralHadAbsIsoRaw(lep.physObj, lep.miniIsoR, 0.01, 0.5,self.IsolationComputer.selfVetoNone)
-            else:
-                lep.miniAbsIsoPho  = self.IsolationComputer.photonAbsIsoRaw(lep.physObj, lep.miniIsoR, 0.08 if what == "eleE" else 0.0, 0.0, self.IsolationComputer.selfVetoNone)
-                lep.miniAbsIsoNeutralHad = self.IsolationComputer.neutralHadAbsIsoRaw(lep.physObj, lep.miniIsoR, 0.0, 0.0, self.IsolationComputer.selfVetoNone)
-            # only calculate rhoArea
-            lep.miniAbsIsoNeutral = lep.miniAbsIsoPho + lep.miniAbsIsoNeutralHad
-            lep.miniAbsIsoNeutral = max(0.0, lep.miniAbsIsoNeutral - lep.rho * lep.EffectiveArea03 * (lep.miniIsoR/0.3)**2)
-
-        if lep.pt()<5.0:
-            lep.miniAbsIso = 9999.0
-            lep.miniRelIso = 9999.0
-        else:
-            lep.miniAbsIso = lep.miniAbsIsoChargedHad + lep.miniAbsIsoNeutral
-            lep.miniRelIso = lep.miniAbsIso/lep.pt()
+#        if self.miniIsolationPUCorr == None: puCorr = self.cfg_ana.mu_isoCorr if what=="mu" else self.cfg_ana.ele_isoCorr
+#        else: puCorr = self.miniIsolationPUCorr
+#
+#        if puCorr == "weights":
+#            if what == "mu":
+#                lep.miniAbsIsoNeutral = self.IsolationComputer.neutralAbsIsoWeighted(lep.physObj, lep.miniIsoR, 0.01, 0.5,self.IsolationComputer.selfVetoNone);
+#            else:
+#                lep.miniAbsIsoNeutral = ( self.IsolationComputer.photonAbsIsoWeighted(lep.physObj, lep.miniIsoR, 0.08 if what=="eleE" else 0.0, 0.0, self.IsolationComputer.selfVetoNone) + self.IsolationComputer.neutralHadAbsIsoWeighted(lep.physObj, lep.miniIsoR, 0.0, 0.0, self.IsolationComputer.selfVetoNone) )
+#        else:
+#            if what == "mu":
+#                #lep.miniAbsIsoNeutral = self.IsolationComputer.neutralAbsIsoRaw(lep.physObj, lep.miniIsoR, 0.01, 0.5);
+#                lep.miniAbsIsoPho  = self.IsolationComputer.photonAbsIsoRaw(lep.physObj, lep.miniIsoR, 0.01, 0.5,self.IsolationComputer.selfVetoNone)
+#                lep.miniAbsIsoNeutralHad = self.IsolationComputer.neutralHadAbsIsoRaw(lep.physObj, lep.miniIsoR, 0.01, 0.5,self.IsolationComputer.selfVetoNone)
+#            else:
+#                lep.miniAbsIsoPho  = self.IsolationComputer.photonAbsIsoRaw(lep.physObj, lep.miniIsoR, 0.08 if what == "eleE" else 0.0, 0.0, self.IsolationComputer.selfVetoNone)
+#                lep.miniAbsIsoNeutralHad = self.IsolationComputer.neutralHadAbsIsoRaw(lep.physObj, lep.miniIsoR, 0.0, 0.0, self.IsolationComputer.selfVetoNone)
+#            # only calculate rhoArea
+#            lep.miniAbsIsoNeutral = lep.miniAbsIsoPho + lep.miniAbsIsoNeutralHad
+#            lep.miniAbsIsoNeutral = max(0.0, lep.miniAbsIsoNeutral - lep.rho * lep.EffectiveArea03 * (lep.miniIsoR/0.3)**2)
+#
+#        if lep.pt()<5.0:
+#            lep.miniAbsIso = 9999.0
+#            lep.miniRelIso = 9999.0
+#        else:
+#            lep.miniAbsIso = lep.miniAbsIsoChargedHad + lep.miniAbsIsoNeutral
+#            lep.miniRelIso = lep.miniAbsIso/lep.pt()
 
     def process(self, event):
         self.readCollections( event.input )
@@ -312,6 +315,7 @@ class XZZLeptonAnalyzer( Analyzer ):
         self.n_mu_passId=0
         self.n_el_passIso=0
         self.n_mu_passIso=0
+
 
         #call the leptons functions
         self.makeLeptons(event)
@@ -376,7 +380,7 @@ setattr(XZZLeptonAnalyzer,"defaultConfig",cfg.Analyzer(
     electrons='slimmedElectrons',
     packedCandidates = 'packedPFCandidates',
     rhoMuon= 'fixedGridRhoFastjetCentralNeutral',
-    rhoElectronMiniIso = 'fixedGridRhoFastjetCentralNeutral',
+#    rhoElectronMiniIso = 'fixedGridRhoFastjetCentralNeutral',
     rhoElectronPfIso = 'fixedGridRhoFastjetAll',
     electronIDVersion = 'looseID', # can bee looseID or HEEPv6
     applyID = True,
@@ -386,7 +390,7 @@ setattr(XZZLeptonAnalyzer,"defaultConfig",cfg.Analyzer(
     ele_isoCorr = "rhoArea" ,
     mu_effectiveAreas = "Spring15_25ns_v1", 
     ele_effectiveAreas = "Spring15_25ns_v1",
-    miniIsolationPUCorr = None, # Allowed options: 'rhoArea' (EAs for 03 cone scaled by R^2), 'deltaBeta', 
+#    miniIsolationPUCorr = None, # Allowed options: 'rhoArea' (EAs for 03 cone scaled by R^2), 'deltaBeta', 
                                      # 'raw' (uncorrected), 'weights' (delta beta weights; not validated)
                                      # Choose None to just use the individual object's PU correction
     do_filter=True,

@@ -95,6 +95,7 @@ class JetAnalyzer( Analyzer ):
     def __init__(self, cfg_ana, cfg_comp, looperName):
         self.debug = getattr(cfg_ana, 'debug', False)
 
+
         super(JetAnalyzer,self).__init__(cfg_ana, cfg_comp, looperName)
         mcGT   = cfg_ana.mcGT   if hasattr(cfg_ana,'mcGT')   else "PHYS14_25_V2"
         dataGT = cfg_ana.dataGT if hasattr(cfg_ana,'dataGT') else "GR_70_V2_AN1"

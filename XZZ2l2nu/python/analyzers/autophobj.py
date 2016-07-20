@@ -51,6 +51,12 @@ weightsInfoType = NTupleObjectType("WeightsInfo", mcOnly=True, variables = [
 leptonType = NTupleObjectType("lepton", baseObjectTypes = [ particleType ], variables = [
     NTupleVariable("charge",   lambda x : x.charge(), int),
     NTupleVariable("hasgen",  lambda x : getattr(x,"hasgen",-1), help="has gen particle"),
+    NTupleVariable("ptErr",  lambda x : x.ptErr(), help="pt Error"),
+    NTupleVariable("TuneP_pt",  lambda x : x.physObj.tunePMuonBestTrack().pt() if abs(x.pdgId())==13 else -999, help="TuneP Pt for muon"),
+    NTupleVariable("TuneP_ptErr",  lambda x : x.physObj.tunePMuonBestTrack().ptError() if abs(x.pdgId())==13 else -999, help="TuneP Pt error for muon"),
+    NTupleVariable("TuneP_eta",  lambda x : x.physObj.tunePMuonBestTrack().eta() if abs(x.pdgId())==13 else -999, help="TuneP Pt for muon"),
+    NTupleVariable("TuneP_phi",  lambda x : x.physObj.tunePMuonBestTrack().phi() if abs(x.pdgId())==13 else -999, help="TuneP Pt for muon"),
+    NTupleVariable("TuneP_type",  lambda x : x.physObj.tunePMuonBestTrackType() if abs(x.pdgId())==13 else -999, help="TuneP type for muon, https://cmssdt.cern.ch/SDT/doxygen/CMSSW_7_6_3_patch2/doc/html/df/de3/classreco_1_1Muon.html#afceb985a23ee1d456e4dc91391f2e7fe"),
     # Impact parameter
     NTupleVariable("dxy",   lambda x : x.dxy(), help="d_{xy} with respect to PV, in cm (with sign)"),
     NTupleVariable("dz",    lambda x : x.dz() , help="d_{z} with respect to PV, in cm (with sign)"),
@@ -58,7 +64,7 @@ leptonType = NTupleObjectType("lepton", baseObjectTypes = [ particleType ], vari
     NTupleVariable("edz",   lambda x : x.edz() if hasattr(x,'edz') else -999, help="#sigma(d_{z}) with respect to PV, in cm"),
     NTupleVariable("ip3d",  lambda x : x.ip3D() if hasattr(x,'ip3D') else -999, help="d_{3d} with respect to PV, in cm (absolute value)"),
     # Conversion rejection
-    NTupleVariable("miniRelIso",  lambda x : x.miniRelIso if hasattr(x,'miniRelIso') else  -999, help="PF Rel miniRel, pile-up corrected"),
+#    NTupleVariable("miniRelIso",  lambda x : x.miniRelIso if hasattr(x,'miniRelIso') else  -999, help="PF Rel miniRel, pile-up corrected"),
     NTupleVariable("muonincore03",  lambda x : getattr(x,"nminc",-999), help="number of other muons in core0.3 "),
     NTupleVariable("trackerIso",  lambda x : getattr(x,"trackerIso",-999), help="muon tracker isolation"),
     # id and iso

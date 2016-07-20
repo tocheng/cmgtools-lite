@@ -138,15 +138,26 @@ def GetRatioHist(h1, hstack,blinding=False,blindingCut=100):
     return hratio
 
 class StackPlotter(object):
-    def __init__(self,defaultCut="1"):
+    def __init__(self,defaultCut="1",outDir='.', outTag="stack_plotter"):
         self.plotters = []
         self.types    = []
         self.labels   = []
         self.names    = []
         self.log=False
         self.defaultCut=defaultCut
+        self.outTag=outTag
+        self.outDir=outDir
+        self.outFileName=outDir+'/'+outTag
         self.doRatioPlot=False
 
+        self.fout = ROOT.TFile(self.outFileName+'.root', 'recreate')
+        c1 = ROOT.TCanvas(self.outTag, self.outTag, 700, 910);
+        c1.Print(self.outFileName+'.ps[')
+
+    def closePSFile(self):
+        c1 = ROOT.TCanvas(self.outTag, self.outTag);
+        c1.Print(self.outFileName+'.ps]')
+        
     def setLog(self,doLog):
         self.log=doLog
     def addPlotter(self,plotter,name="",label = "label",typeP = "background"):
@@ -166,10 +177,12 @@ class StackPlotter(object):
 
     def drawStack(self,var,cut,lumi,bins,mini,maxi,titlex = "", units = "", output = 'out', outDir='.', separateSignal=False, blinding=False, blindingCut=100.0, fakeData=False):
 
-        fout = ROOT.TFile(outDir+'/'+output+'.root', 'recreate')
+        #fout = ROOT.TFile(outDir+'/'+outputTag+'_'+output+'.root', 'recreate')
 
-        c1 = ROOT.TCanvas(output+'_'+"c1", "c1", 600, 750); c1.Draw()
-        c1.SetWindowSize(600 + (600 - c1.GetWw()), (750 + (750 - c1.GetWh())))
+        self.fout.cd()
+
+        c1 = ROOT.TCanvas(output+'_'+"c1", "c1", 700, 910); c1.Draw()
+        #c1.SetWindowSize(700 + (700 - c1.GetWw()), (910 + (910 - c1.GetWh())))
         p1 = ROOT.TPad(output+'_'+"pad1","pad1",0,0.25,1,0.99)
         p1.SetBottomMargin(0.15)
         p1.SetLeftMargin(0.15)
@@ -409,10 +422,11 @@ class StackPlotter(object):
         p1.Update()
         c1.Update()
 
-        c1.Print(outDir+'/'+output+'.eps')
-        os.system('epstopdf '+outDir+'/'+output+'.eps')
-       
-        fout.cd()
+        #c1.Print(outDir+'/'+self.outputTag+'_'+output+'.eps')
+        #os.system('epstopdf '+outDir+'/'+output+'.eps')
+        c1.Print(self.outFileName+'.ps')
+
+        self.fout.cd()
         c1.Write() 
         stack.Write()
         if dataH: dataH.Write()
@@ -424,7 +438,7 @@ class StackPlotter(object):
         if self.doRatioPlot:   hratio.Write()
         frame.Write()
         for hist in hists: hist.Write()  
-        fout.Close()
+        #fout.Close()
 
         return plot
 
@@ -495,15 +509,17 @@ class StackPlotter(object):
 
         canvas.Update()
 
-        canvas.Print(output)
-        os.system('epstopdf '+output)
+        #canvas.Print(output)
+        #os.system('epstopdf '+output)
+        canvas.Print(self.outFileName+'.ps')
         return canvas
 
         
         
     def drawCutEff(self,var,cut,lumi,bins,mini,maxi,titlex = "", units = "", output = 'out', outDir='.'):
 
-        fout = ROOT.TFile(outDir+'/'+output+'.root', 'recreate')
+        #fout = ROOT.TFile(outDir+'/'+output+'.root', 'recreate')
+        self.fout.cd()
 
         c1 = ROOT.TCanvas(output+'_'+"c1", "c1", 600, 600); c1.Draw()
         c1.SetWindowSize(600 + (600 - c1.GetWw()), (600 + (600 - c1.GetWh())))
@@ -689,10 +705,11 @@ class StackPlotter(object):
         plot={'canvas':c1,'SigEffHists':SigEffHists,'BkgEffHists':BkgEffHists,'DataEffHist':DataEffHist,'legend':legend,'data':dataH, 'latex1':pt}
 
         c1.Update()
-        c1.Print(outDir+'/'+output+'.eps')
-        os.system('epstopdf '+outDir+'/'+output+'.eps')
+        #c1.Print(outDir+'/'+output+'.eps')
+        #os.system('epstopdf '+outDir+'/'+output+'.eps')
+        c1.Print(self.outFileName+'.ps')
        
-        fout.cd()
+        self.fout.cd()
         c1.Write()
         pt.Write()
         legend.Write()
@@ -701,14 +718,15 @@ class StackPlotter(object):
         for hist in SigEffHists: hist.Write() 
         for hist in BkgEffHists: hist.Write() 
         DataEffHist.Write()
-        fout.Close()
+        #fout.Close()
 
         return plot
 
 
     def drawCutSignif(self,var,cut,lumi,bins,mini,maxi,titlex = "", units = "", output = 'out', outDir='.'):
 
-        fout = ROOT.TFile(outDir+'/'+output+'.root', 'recreate')
+        #fout = ROOT.TFile(outDir+'/'+output+'.root', 'recreate')
+        self.fout.cd()
 
         c1 = ROOT.TCanvas(output+'_'+"c1", "c1", 600, 600); c1.Draw()
         c1.SetWindowSize(600 + (600 - c1.GetWw()), (600 + (600 - c1.GetWh())))
@@ -865,10 +883,11 @@ class StackPlotter(object):
         plot={'canvas':c1,'SigEffHists':SigEffHists,'BkgEffHistAll':BkgEffHistAll,'SigSignifHists':SigSignifHists,'legend':legend,'data':dataH, 'latex1':pt}
 
         c1.Update()
-        c1.Print(outDir+'/'+output+'.eps')
-        os.system('epstopdf '+outDir+'/'+output+'.eps')
+        #c1.Print(outDir+'/'+output+'.eps')
+        #os.system('epstopdf '+outDir+'/'+output+'.eps')
+        c1.Print(self.outFileName+'.ps')
        
-        fout.cd()
+        self.fout.cd()
         c1.Write()
         pt.Write()
         legend.Write()
@@ -876,13 +895,14 @@ class StackPlotter(object):
         for hist in hists: hist.Write() 
         for hist in SigEffHists: hist.Write() 
         for hist in SigSignifHists: hist.Write() 
-        fout.Close()
+        #fout.Close()
 
         return plot
 
     def drawCutROC(self,var,cut,lumi,bins,mini,maxi, titlex="", units="", output = 'out', outDir='.'):
 
-        fout = ROOT.TFile(outDir+'/'+output+'.root', 'recreate')
+        #fout = ROOT.TFile(outDir+'/'+output+'.root', 'recreate')
+        self.fout.cd()
 
         c1 = ROOT.TCanvas(output+'_'+"c1", "c1", 600, 600); c1.Draw()
         c1.SetWindowSize(600 + (600 - c1.GetWw()), (600 + (600 - c1.GetWh())))
@@ -1025,10 +1045,11 @@ class StackPlotter(object):
         plot={'canvas':c1,'SigEffHists':SigEffHists,'BkgEffHistAll':BkgEffHistAll,'ROCGraphs':ROCGraphs,'legend':legend,'data':dataH, 'latex1':pt}
 
         c1.Update()
-        c1.Print(outDir+'/'+output+'.eps')
-        os.system('epstopdf '+outDir+'/'+output+'.eps')
+        #c1.Print(outDir+'/'+output+'.eps')
+        #os.system('epstopdf '+outDir+'/'+output+'.eps')
+        c1.Print(self.outFileName+'.ps')
        
-        fout.cd()
+        self.fout.cd()
         c1.Write()
         pt.Write()
         legend.Write()
@@ -1036,6 +1057,6 @@ class StackPlotter(object):
         for hist in hists: hist.Write() 
         for hist in SigEffHists: hist.Write() 
         for roc in ROCGraphs: roc.Write() 
-        fout.Close()
+        #fout.Close()
 
         return plot

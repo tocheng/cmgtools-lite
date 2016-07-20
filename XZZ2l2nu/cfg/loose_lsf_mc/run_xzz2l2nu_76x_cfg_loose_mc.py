@@ -80,7 +80,7 @@ if test==1:
     #selectedComponents = [BulkGravToZZToZlepZhad_narrow_3500]
     for c in selectedComponents:
         #c.files = c.files[0]
-        c.splitFactor = (len(c.files)/20 if len(c.files)>20 else 1)
+        c.splitFactor = (len(c.files)/10 if len(c.files)>10 else 1)
         #c.splitFactor = 1
         #c.triggers=triggers_1mu_noniso
         #c.triggers=triggers_1e_noniso

@@ -64,7 +64,7 @@ vertexAna = cfg.Analyzer(
     allVertices = "offlineSlimmedPrimaryVertices",
     vertexWeight = None,
     fixedWeight = 1,
-    verbose = False
+    verbose = False,
     )
 
 lepAna = cfg.Analyzer(
@@ -73,7 +73,7 @@ lepAna = cfg.Analyzer(
     electrons='slimmedElectrons',
     packedCandidates = 'packedPFCandidates',
     rhoMuon= 'fixedGridRhoFastjetCentralNeutral',
-    rhoElectronMiniIso = 'fixedGridRhoFastjetCentralNeutral',
+#    rhoElectronMiniIso = 'fixedGridRhoFastjetCentralNeutral',
     rhoElectronPfIso = 'fixedGridRhoFastjetAll',
     applyIso = True,
     applyID = True,
@@ -84,7 +84,7 @@ lepAna = cfg.Analyzer(
     ele_isoCorr = "rhoArea" ,
     mu_effectiveAreas = "Spring15_25ns_v1",
     ele_effectiveAreas = "Spring15_25ns_v1",
-    miniIsolationPUCorr = None, # Allowed options: 'rhoArea' (EAs for 03 cone scaled by R^2), 'deltaBeta', 
+#    miniIsolationPUCorr = None, # Allowed options: 'rhoArea' (EAs for 03 cone scaled by R^2), 'deltaBeta', 
                                      # 'raw' (uncorrected), 'weights' (delta beta weights; not validated)
                                      # Choose None to just use the individual object's PU correction
     )

@@ -161,7 +161,7 @@ int main(int argc, char** argv) {
 
   // Draw hists
   for (int i=0; i<Nhists; i++){
-    char draw[1000], sele[2000];
+    char draw[1000], sele[2000], seletemp[2000];
     
     // print draw string
     if (DepVarDimension==1) {
@@ -183,7 +183,8 @@ int main(int argc, char** argv) {
 
     // if use weight, times it.
     if (UseWeight) {
-      sprintf(sele, "(%s)*%s" , sele, WeightVarName.c_str());
+      sprintf(seletemp, "(%s)*%s" , sele, WeightVarName.c_str());
+      sprintf(sele, "%s" , seletemp);
     }
 
     std::cout << " -- draw = "  << draw << std::endl;
@@ -220,7 +221,8 @@ int main(int argc, char** argv) {
 
       // if use weight, times it.
       if (UseWeight) {
-        sprintf(sele, "(%s)*%s" , sele, WeightVarName.c_str());
+        sprintf(seletemp, "(%s)*%s" , sele, WeightVarName.c_str());
+	sprintf(sele, "%s" , seletemp);
       }
 
       std::cout << " -- draw = "  << draw << std::endl;

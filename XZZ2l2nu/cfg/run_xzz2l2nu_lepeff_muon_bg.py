@@ -18,19 +18,34 @@ from CMGTools.XZZ2l2nu.samples.loadSamples76x import *
 #-------- Analyzer
 from CMGTools.XZZ2l2nu.analyzers.treeXZZ_cff import *
 
-#-------- SEQUENCE
-#sequence = cfg.Sequence(coreSequence+[vvSkimmer,vvTreeProducer])
 meffAna = cfg.Analyzer(
     XZZMuonEffTree,
     name='mEffTree',
     genfilter=False,
     pfbkg=True,
-    eithercharge=True,
-    checktag=False
+    checktag=True,
+    muHLT="HLT_IsoMu20_v"
     )
 
+lepeffTreeProducer.globalVariables.extend(
+[NTupleVariable("nHadron",lambda ev: len(ev.selectedhadrons) if hasattr(ev,"selectedhadrons") else 0, int),
+NTupleVariable("nMuontagged",lambda ev: len(ev.selectedMuonstagged) if hasattr(ev,"selectedMuonstagged") else 0, int),]
+)
+
+lepAna.applyIso=False
+lepAna.applyID=False
+vertexAna.keepFailingEvents=True
+leptonType.variables.extend([
+    # Extra muon ID working points                                                      
+    NTupleVariable("softMuonId", lambda x : x.muonID("POG_ID_Soft") if abs(x.pdgId())==13 else -100, int, help="Muon POG Soft id"),
+    NTupleVariable("pfMuonId",   lambda x : x.muonID("POG_ID_Loose") if abs(x.pdgId())==13 else -100, int, help="Muon POG Loose id"),
+    NTupleVariable("tightMuonId",   lambda x : x.muonID("POG_ID_Tight") if abs(x.pdgId())==13 else -100, int, help="Muon POG Tight id"),
+    NTupleVariable("isTag",   lambda x : x.istag if abs(x.pdgId())==13 else -100, int, help="Muon POG Tight id"),
+])
 sequence = [
     jsonAna,
+    vertexAna,  
+    lepAna,
     meffAna,
     lepeffTreeProducer
 ]
@@ -42,20 +57,19 @@ if test==1:
     # test a single component, using a single thread.
     #selectedComponents = [JetHT_Run2015D_16Dec]
     #selectedComponents = [ZeroBias_Run2015D_16Dec]
-    selectedComponents = [JetHT_Run2015C_25ns_16Dec,JetHT_Run2015D_16Dec]
+    #selectedComponents = SingleMuon
     #selectedComponents = mcSamples
     #selectedComponents = [SingleMuon_Run2015D_Promptv4,SingleElectron_Run2015D_Promptv4]
     #[SingleElectron_Run2015D_Promptv4,SingleElectron_Run2015D_05Oct]
     #selectedComponents = [RSGravToZZToZZinv_narrow_800]
-    #selectedComponents = [DYJetsToLL_M50]
+    selectedComponents = [DYJetsToLL_M50_Ext]
     #selectedComponents = [BulkGravToZZ_narrow_800]
     #selectedComponents = [BulkGravToZZToZlepZhad_narrow_800]
     for c in selectedComponents:
-        #c.files = c.files[:1]
-        c.splitFactor = (len(c.files)/10 if len(c.files)>10 else 1)
-        #c.splitFactor = 1
-        #c.triggers=triggers_1mu_noniso
-        #c.triggers=triggers_1e_noniso
+#        c.files = c.files[:5]
+        c.splitFactor = (len(c.files)/5 if len(c.files)>5 else 1)
+        c.triggers=[]
+        c.vetoTriggers = []
 
 ## output histogram
 outputService=[]
