@@ -19,11 +19,11 @@ leptonSkimmer = cfg.Analyzer(
 fullTreeProducer = cfg.Analyzer(
      AutoFillTreeProducer, name='fullTreeProducer',
      vectorTree = True,
-     saveTLorentzVectors = True,  # can set to True to get also the TLorentzVectors, but trees will be bigger
+     saveTLorentzVectors = False,  # can set to True to get also the TLorentzVectors, but trees will be bigger
      defaultFloatType = 'F', # use Float_t for floating point
      globalVariables = [
          NTupleVariable("nLL",lambda ev: len(ev.LL) , int),      
-         NTupleVariable("nElMu",lambda ev: len(ev.ElMu) , int),       
+         #NTupleVariable("nElMu",lambda ev: len(ev.ElMu) , int),       
          NTupleVariable("nLLNuNu",lambda ev: len(ev.LLNuNu) , int),       
          NTupleVariable("nVert",  lambda ev: len(ev.goodVertices), int, help="Number of good vertices"), 
          NTupleVariable("triggersf",  lambda x : getattr(x,'trgsf',1), help="singleelectron/muon trigger sf"),
@@ -31,16 +31,16 @@ fullTreeProducer = cfg.Analyzer(
      globalObjects =  {
          "met" : NTupleObject("met", metType, help="PF E_{T}^{miss}, with 76X type 1 corrections"),
          "met_miniAod" : NTupleObject("met_74x", metType, help="PF E_{T}^{miss}, with 74X type 1 corrections stored in miniAOD"),
-         "metNoJet" : NTupleObject("metNoJet", fourVectorType, help="PF E_{T}^{miss}, with out jet"),
+         #"metNoJet" : NTupleObject("metNoJet", fourVectorType, help="PF E_{T}^{miss}, with out jet"),
          #"met_JEC" : NTupleObject("met_JEC", metType, help="PF E_{T}^{miss}, after type 1 corrections with new 76X JEC added"),
          #"met_JECUp" : NTupleObject("met_JECUp", metType, help="PF E_{T}^{miss}, after type 1 corrections with new 76X JEC up"),
          #"met_JECDown" : NTupleObject("met_JECDown", metType, help="PF E_{T}^{miss}, after type 1 corrections with new 76X JEC down"),
          #"met_JECJER" : NTupleObject("met_JECJER", metType, mcOnly=True, help="PF E_{T}^{miss}, after type 1 corrections with JEC+JER jets"),
-         "sumJetsInT1": NTupleObject("sumJetsInT1", jet4metType, help="sum of Delta(px, py, et) of jets used for type1METCorr"),
+         #"sumJetsInT1": NTupleObject("sumJetsInT1", jet4metType, help="sum of Delta(px, py, et) of jets used for type1METCorr"),
      },
      collections = {
          #"LL"  : NTupleCollection("Zll",LLType,5, help="Z to ll"),
-         "ElMu" : NTupleCollection("elmu",LLType,5, help="electron - muon pair for non-resonant bkg"),
+         #"ElMu" : NTupleCollection("elmu",LLType,5, help="electron - muon pair for non-resonant bkg"),
          "selectedLeptons" : NTupleCollection("lep",leptonType,10, help="selected leptons"),
          "genLeptons" : NTupleCollection("genLep", genParticleType, 10, help="Generated leptons (e/mu) from W/Z decays"),
          "LLNuNu"     : NTupleCollection("llnunu",LLNuNuType ,5, help="VV candidate with di-lepton and MET"),
