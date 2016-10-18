@@ -1,6 +1,6 @@
 #!/bin/sh
 
-dir="dt7"
+dir="dt9"
 queue="2nd"
 
 # need to check your jobs with the expected n root files and n pck files
@@ -28,7 +28,7 @@ do
       echo " submit $dd";
       cd $dd ;
       echo "  bsub -q $queue -J $dd  < batchScript.sh" ;
-      bsub -q $queue -J $dd  < batchScript.sh ;
+#      bsub -q $queue -J $dd  < batchScript.sh ;
       cd ../ ;
     fi;
   fi;

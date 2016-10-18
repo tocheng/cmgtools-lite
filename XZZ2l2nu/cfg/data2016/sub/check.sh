@@ -9,16 +9,16 @@
 # privide chunks running directory, 
 # and directory to copy jobs out
 
-dir=dt8
-out=/data2/XZZ2/80X_20161006_Chunks
+dir=dt9
+out=/data2/XZZ2/80X_20161018_Chunks
 
 mkdir -p $out
 
 # need to check your jobs with the expected n root files and n pck files
 # to verify if the job is finished sucessfully.
 n_root_files="3"
-#n_pck_files="14"
-n_pck_files="13"
+n_pck_files="14"
+#n_pck_files="13"
 
 
 if [ ! -e "$out" ]; then

@@ -110,6 +110,8 @@ SingleMuon=[SingleMuon_Run2016B_PromptReco,
             SingleMuon_Run2016E_PromptReco_v2,
             SingleMuon_Run2016F_PromptReco_v1,
             SingleMuon_Run2016G_PromptReco_v1,
+            SingleMuon_Run2016H_PromptReco_v1,
+            SingleMuon_Run2016H_PromptReco_v2,
             ]
 SingleElectron=[SingleElectron_Run2016B_PromptReco,
                 SingleElectron_Run2016B_PromptReco_v2,
@@ -118,6 +120,8 @@ SingleElectron=[SingleElectron_Run2016B_PromptReco,
                 SingleElectron_Run2016E_PromptReco_v2,
                 SingleElectron_Run2016F_PromptReco_v1,
                 SingleElectron_Run2016G_PromptReco_v1,
+                SingleElectron_Run2016H_PromptReco_v1,
+                SingleElectron_Run2016H_PromptReco_v2,
                ]
 SinglePhoton=[SinglePhoton_Run2016B_PromptReco,
               SinglePhoton_Run2016B_PromptReco_v2,
@@ -126,6 +130,8 @@ SinglePhoton=[SinglePhoton_Run2016B_PromptReco,
               SinglePhoton_Run2016E_PromptReco_v2,
               SinglePhoton_Run2016F_PromptReco_v1,
               SinglePhoton_Run2016G_PromptReco_v1,
+              SinglePhoton_Run2016H_PromptReco_v1,
+              SinglePhoton_Run2016H_PromptReco_v2,
              ]
 MuonEG=[MuonEG_Run2016B_PromptReco,
       MuonEG_Run2016B_PromptReco_v2,
@@ -133,7 +139,9 @@ MuonEG=[MuonEG_Run2016B_PromptReco,
       MuonEG_Run2016D_PromptReco_v2,
       MuonEG_Run2016E_PromptReco_v2,
       MuonEG_Run2016F_PromptReco_v1,
-      MuonEG_Run2016G_PromptReco_v1
+      MuonEG_Run2016G_PromptReco_v1,
+      MuonEG_Run2016H_PromptReco_v1,
+      MuonEG_Run2016H_PromptReco_v2,
       ]
 
 MET= [MET_Run2016B_PromptReco,
@@ -142,7 +150,9 @@ MET= [MET_Run2016B_PromptReco,
       MET_Run2016D_PromptReco_v2,
       MET_Run2016E_PromptReco_v2,
       MET_Run2016F_PromptReco_v1,
-      MET_Run2016G_PromptReco_v1
+      MET_Run2016G_PromptReco_v1,
+      MET_Run2016H_PromptReco_v1,
+      MET_Run2016H_PromptReco_v2,
       ]
 
 for s in SingleMuon:
