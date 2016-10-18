@@ -31,10 +31,10 @@ triggerFlagsAna.triggerBits ={
 from CMGTools.XZZ2l2nu.analyzers.treeXZZ_cff import *
 
 # make VV selection loosened as ElMu selection
-leptonicVAna.selectVBoson = (lambda x: x.mass()>30.0 and x.mass()<180.0)
-leptonicVAna.selectFakeBoson = (lambda x: x.mass()>30.0 and x.mass()<180.0)
-multiStateAna.selectPairLLNuNu = (lambda x: x.leg1.mass()>30.0 and x.leg1.mass()<180.0)
-multiStateAna.selectPairElMuNuNu = (lambda x: x.leg1.mass()>30.0 and x.leg1.mass()<180.0)
+leptonicVAna.selectVBoson = (lambda x: x.mass()>30.0)
+leptonicVAna.selectFakeBoson = (lambda x: x.mass()>30.0)
+multiStateAna.selectPairLLNuNu = (lambda x: x.leg1.mass()>30.0)
+multiStateAna.selectPairElMuNuNu = (lambda x: x.leg1.mass()>30.0)
 
 vvSkimmer.required = ['LLNuNu', 'ElMuNuNu']
 leptonicVAna.doElMu = True
@@ -90,7 +90,7 @@ if test==1:
     #selectedComponents = [SingleMuon_Run2015D_Promptv4,SingleElectron_Run2015D_Promptv4]
     #selectedComponents = [SingleElectron_Run2015D_Promptv4,SingleElectron_Run2015D_05Oct]
     #selectedComponents = [RSGravToZZToZZinv_narrow_800]
-    #selectedComponents = [WWTo2L2Nu] #DYJetsToLL_M50
+    #selectedComponents = [TTZToLLNuNu, ZZTo4L] #WWTo2L2Nu, DYJetsToLL_M50
     selectedComponents = backgroundSamples # signalSamples
     #selectedComponents = [BulkGravToZZToZlepZinv_narrow_1400, BulkGravToZZToZlepZinv_narrow_1600]
     #selectedComponents = [BulkGravToZZToZlepZinv_narrow_800]

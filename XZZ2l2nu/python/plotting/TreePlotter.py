@@ -24,6 +24,8 @@ class TreePlotter(PlotterBase):
         weightinv = float(data['Sum Weights'][1])
         self.addCorrectionFactor(1./weightinv,'flat')
 
+    def setAlias(self, alias, definition):
+        self.tree.SetAlias(alias, definition)
             
     def applySmoothing(self):
         self.smooth=True

@@ -102,21 +102,51 @@ triggers_dijet55met110 = [ "HLT_dijet55met110" ]
 triggers_photon75ps = ["HLT_Photon75_v*"]
 triggers_photon90ps = ["HLT_Photon90_v*"]
 triggers_photon120ps = ["HLT_Photon120_v*"]
-triggers_photon30 = ["HLT_Photon30_R9Id90_HE10_IsoM_v*"]
-triggers_photon50 = ["HLT_Photon50_R9Id90_HE10_IsoM_v*"]
-triggers_photon75 = ["HLT_Photon75_R9Id90_HE10_IsoM_v*"]
-triggers_photon90 = ["HLT_Photon90_R9Id90_HE10_IsoM_v*"]
-triggers_photon120 = ["HLT_Photon120_R9Id90_HE10_IsoM_v*"]
 triggers_photon155 = ["HLT_Photon155_v*"]
 triggers_photon175 = ["HLT_Photon175_v*"]
 triggers_photon165_HE10 = ["HLT_Photon165_HE10_v*"]
+triggers_photon22_idiso = ["HLT_Photon22_R9Id90_HE10_IsoM_v*"]
+triggers_photon30_idiso = ["HLT_Photon30_R9Id90_HE10_IsoM_v*"]
+triggers_photon36_idiso = ["HLT_Photon36_R9Id90_HE10_IsoM_v*"]
+triggers_photon50_idiso = ["HLT_Photon50_R9Id90_HE10_IsoM_v*"]
+triggers_photon75_idiso = ["HLT_Photon75_R9Id90_HE10_IsoM_v*"]
+triggers_photon90_idiso = ["HLT_Photon90_R9Id90_HE10_IsoM_v*"]
+triggers_photon120_idiso = ["HLT_Photon120_R9Id90_HE10_IsoM_v*"]
+triggers_photon165_idiso = ["HLT_Photon165_R9Id90_HE10_IsoM_v*"]
 
-# Added by Mengqing:
-triggers_photon_unbias = [ "HLT_Photon%d_R9Id90_HE10_IsoM_v*" % pt for pt in (22,30,36,50,75,90,120) ] # unbiased, prescaled
+triggers_photon22_idisometeb = ["HLT_Photon22_R9Id90_HE10_Iso40_EBOnly_PFMET40_v*"]
+triggers_photon30_idisometeb = ["HLT_Photon30_R9Id90_HE10_Iso40_EBOnly_PFMET40_v*"]
+triggers_photon36_idisometeb = ["HLT_Photon36_R9Id90_HE10_Iso40_EBOnly_PFMET40_v*"]
+triggers_photon50_idisometeb = ["HLT_Photon50_R9Id90_HE10_Iso40_EBOnly_PFMET40_v*"]
+triggers_photon75_idisometeb = ["HLT_Photon75_R9Id90_HE10_Iso40_EBOnly_PFMET40_v*"]
+triggers_photon90_idisometeb = ["HLT_Photon90_R9Id90_HE10_Iso40_EBOnly_PFMET40_v*"]
+triggers_photon120_idisometeb = ["HLT_Photon120_R9Id90_HE10_Iso40_EBOnly_PFMET40_v*"]
+
+triggers_photon22_idisovbfeb = ["HLT_Photon22_R9Id90_HE10_Iso40_EBOnly_VBF_v*"]
+triggers_photon30_idisovbfeb = ["HLT_Photon30_R9Id90_HE10_Iso40_EBOnly_VBF_v*"]
+triggers_photon36_idisovbfeb = ["HLT_Photon36_R9Id90_HE10_Iso40_EBOnly_VBF_v*"]
+triggers_photon50_idisovbfeb = ["HLT_Photon50_R9Id90_HE10_Iso40_EBOnly_VBF_v*"]
+triggers_photon75_idisovbfeb = ["HLT_Photon75_R9Id90_HE10_Iso40_EBOnly_VBF_v*"]
+triggers_photon90_idisovbfeb = ["HLT_Photon90_R9Id90_HE10_Iso40_EBOnly_VBF_v*"]
+triggers_photon120_idisovbfeb = ["HLT_Photon120_R9Id90_HE10_Iso40_EBOnly_VBF_v*"]
+
+
+# photon triggers
 
 # all photon
 triggers_all_photons = ["HLT_Photon*"]
 
+# id+isoM
+triggers_photon_idiso = ["HLT_Photon%d_R9Id90_HE10_IsoM_v*" % pt for pt in (22,30,36,50,75,90,120,165) ]
+
+# id+iso+pfmet, ebonly
+triggers_photon_idisometeb = ["HLT_Photon%d_R9Id90_HE10_Iso40_EBOnly_PFMET40_v*" % pt for pt in (22,30,36,50,75,90,120)]
+
+# id+iso+
+triggers_photon_idisovbfeb = ["HLT_Photon%d_R9Id90_HE10_Iso40_EBOnly_VBF_v*" % pt for pt in (22,30,36,50,75,90,120) ]
+
+# beam halo clean
+triggers_halo_clean = ["HLT_PFMET170_HBHECleaned_v*", "HLT_PFMET170_BeamHaloCleaned_v*", "HLT_PFMET170_HBHE_BeamHaloCleaned_v*", "HLT_PFMETTypeOne190_HBHE_BeamHaloCleaned_v*"]
 
 # monojets triggers
 #MC is NoiseCleaned but data will be JetIdCleaned

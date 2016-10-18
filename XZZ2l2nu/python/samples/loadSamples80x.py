@@ -23,6 +23,7 @@ jercRefdt=[JERCRef_data]
 # backgrounds
 backgroundSamples = [
 DYJetsToLL_M50,
+DYJetsToLL_M50_reHLT,
 #DYJetsToLL_M50_Ext,
 #DYJetsToLL_M50_PtZ100,
 #DYJetsToLL_M50_MGMLM_PtZ150,
@@ -105,19 +106,44 @@ mcSamples = signalSamples + backgroundSamples + jercRefMC + extraBackgroundMC
 SingleMuon=[SingleMuon_Run2016B_PromptReco,
             SingleMuon_Run2016B_PromptReco_v2,
             SingleMuon_Run2016C_PromptReco_v2,
-            SingleMuon_Run2016D_PromptReco_v2]
+            SingleMuon_Run2016D_PromptReco_v2,
+            SingleMuon_Run2016E_PromptReco_v2,
+            SingleMuon_Run2016F_PromptReco_v1,
+            SingleMuon_Run2016G_PromptReco_v1,
+            ]
 SingleElectron=[SingleElectron_Run2016B_PromptReco,
                 SingleElectron_Run2016B_PromptReco_v2,
                 SingleElectron_Run2016C_PromptReco_v2,
-                SingleElectron_Run2016D_PromptReco_v2]
+                SingleElectron_Run2016D_PromptReco_v2,
+                SingleElectron_Run2016E_PromptReco_v2,
+                SingleElectron_Run2016F_PromptReco_v1,
+                SingleElectron_Run2016G_PromptReco_v1,
+               ]
 SinglePhoton=[SinglePhoton_Run2016B_PromptReco,
               SinglePhoton_Run2016B_PromptReco_v2,
               SinglePhoton_Run2016C_PromptReco_v2,
-              SinglePhoton_Run2016D_PromptReco_v2]
-#MuonEG=[MuonEG_Run2016B_PromptReco,
-#      MuonEG_Run2016B_PromptReco_v2,
-#      MuonEG_Run2016C_PromptReco_v2,
-#      MuonEG_Run2016D_PromptReco_v2]
+              SinglePhoton_Run2016D_PromptReco_v2,
+              SinglePhoton_Run2016E_PromptReco_v2,
+              SinglePhoton_Run2016F_PromptReco_v1,
+              SinglePhoton_Run2016G_PromptReco_v1,
+             ]
+MuonEG=[MuonEG_Run2016B_PromptReco,
+      MuonEG_Run2016B_PromptReco_v2,
+      MuonEG_Run2016C_PromptReco_v2,
+      MuonEG_Run2016D_PromptReco_v2,
+      MuonEG_Run2016E_PromptReco_v2,
+      MuonEG_Run2016F_PromptReco_v1,
+      MuonEG_Run2016G_PromptReco_v1
+      ]
+
+MET= [MET_Run2016B_PromptReco,
+      MET_Run2016B_PromptReco_v2,
+      MET_Run2016C_PromptReco_v2,
+      MET_Run2016D_PromptReco_v2,
+      MET_Run2016E_PromptReco_v2,
+      MET_Run2016F_PromptReco_v1,
+      MET_Run2016G_PromptReco_v1
+      ]
 
 for s in SingleMuon:
     #s.triggers = triggers_1mu_noniso
@@ -133,11 +159,19 @@ for s in SinglePhoton:
     s.trigers = []
     s.vetoTriggers = []
 
-#for s in MuonEG:
-#    s.trigers = []
-#    s.vetoTriggers = []
+for s in MuonEG:
+    s.trigers = []
+    s.vetoTriggers = []
+
+for s in MET:
+    s.trigers = []
+    s.vetoTriggers = []
 
 dataSamples=SingleMuon+SingleElectron #+jercRefdt
+
+otherDataSamples=MuonEG+MET 
+
+allDataSamples=dataSamples+otherDataSamples
 
 # JSON
 silverJson = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Reprocessing/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_Silver.txt'
@@ -147,8 +181,12 @@ silverJson = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/1
 #goldenJson = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-275783_13TeV_PromptReco_Collisions16_JSON.txt'
 #goldenJson = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-276097_13TeV_PromptReco_Collisions16_JSON_NoL1T_v2.txt'
 #goldenJson = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-276384_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt'
-goldenJson = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt'
-run_range = (271036,276811)
+#goldenJson = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt'
+#goldenJson = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-279588_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt'
+#goldenJson = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-279931_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt'
+#goldenJson = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-280385_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt'
+goldenJson = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-280385_13TeV_PromptReco_Collisions16_JSON_NoL1T_v2.txt'
+run_range = (271036,280385)
 
 jsonFile = goldenJson
 
@@ -168,7 +206,7 @@ for comp in mcSamples+otherMcSamples:
     comp.triggers= []
     comp.globalTag = "Summer15_25nsV6_MC"
 
-for comp in dataSamples:
+for comp in allDataSamples:
     comp.splitFactor = 250
     comp.isMC = False
     comp.isData = True

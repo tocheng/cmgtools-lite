@@ -32,8 +32,33 @@ triggerFlagsAna.triggerBits ={
     "JJ":triggers_dijet_fat,
     "MET90":triggers_met90_mht90+triggers_metNoMu90_mhtNoMu90,
     "MET120":triggers_metNoMu120_mhtNoMu120,
-    "PHOTONHZZ": triggers_photon_unbias,
-    "ALLPHOTON": triggers_all_photons
+    "ALLPHOTON": triggers_all_photons,
+    "PHOTONIDISO": triggers_photon_idiso,
+    "PHOTONIDISOMETEB": triggers_photon_idisometeb,
+    "PHOTONIDISOVBFEB": triggers_photon_idisovbfeb,
+    "HALOCLEAN": triggers_halo_clean,
+#    "PHOTONIDISO22": triggers_photon22_idiso,
+#    "PHOTONIDISO30": triggers_photon30_idiso,
+#    "PHOTONIDISO36": triggers_photon36_idiso,
+#    "PHOTONIDISO50": triggers_photon50_idiso,
+#    "PHOTONIDISO75": triggers_photon75_idiso,
+#    "PHOTONIDISO90": triggers_photon90_idiso,
+#    "PHOTONIDISO120": triggers_photon120_idiso,
+#    "PHOTONIDISO165": triggers_photon165_idiso,
+#    "PHOTONIDISOMETEB22": triggers_photon22_idisometeb,
+#    "PHOTONIDISOMETEB30": triggers_photon30_idisometeb,
+#    "PHOTONIDISOMETEB36": triggers_photon36_idisometeb,
+#    "PHOTONIDISOMETEB50": triggers_photon50_idisometeb,
+#    "PHOTONIDISOMETEB75": triggers_photon75_idisometeb,
+#    "PHOTONIDISOMETEB90": triggers_photon90_idisometeb,
+#    "PHOTONIDISOMETEB120": triggers_photon120_idisometeb,
+#    "PHOTONIDISOVBFEB22": triggers_photon22_idisovbfeb,
+#    "PHOTONIDISOVBFEB30": triggers_photon30_idisovbfeb,
+#    "PHOTONIDISOVBFEB36": triggers_photon36_idisovbfeb,
+#    "PHOTONIDISOVBFEB50": triggers_photon50_idisovbfeb,
+#    "PHOTONIDISOVBFEB75": triggers_photon75_idisovbfeb,
+#    "PHOTONIDISOVBFEB90": triggers_photon90_idisovbfeb,
+#    "PHOTONIDISOVBFEB120": triggers_photon120_idisovbfeb,
 }
 
 #-------- Analyzer
@@ -46,13 +71,14 @@ vvSkimmer.required = ['PhotonJets']
 vvTreeProducer.globalVariables = [
          NTupleVariable("nVert",  lambda ev: len(ev.goodVertices), int, help="Number of good vertices"), 
          NTupleVariable("nVertAll",  lambda ev: len(ev.vertices), int, help="Number of good vertices"), 
+         NTupleVariable("vtx_z",  lambda ev: ev.goodVertices[0].z(), float, help="primary vertex z"),
          NTupleVariable("rho", lambda ev: ev.rho , float),
      ]
 vvTreeProducer.globalObjects =  {  }
 
 vvTreeProducer.collections = {
 	 "jets"       : NTupleCollection("jet",JetType,100, help="all jets in miniaod"),
-         "selectedPhotons"       : NTupleCollection("photon",photonType,100, help="selected photons in miniaod"),
+#         "selectedPhotons"       : NTupleCollection("photon",photonType,100, help="selected photons in miniaod"),
          "PhotonJets"     : NTupleCollection("gjet",PhotonJetType ,100, help="photon and MET"),
      }
 
@@ -88,8 +114,10 @@ if test==1:
     # test a single component, using a single thread.
     #selectedComponents = dataSamples
     #selectedComponents = mcSamples
-    selectedComponents = SinglePhoton
+    #selectedComponents = SinglePhoton
     #selectedComponents = [SinglePhoton_Run2016D_PromptReco_v2]
+    selectedComponents = [SinglePhoton_Run2016G_PromptReco_v1]
+    #selectedComponents = [SinglePhoton_Run2016F_PromptReco_v1]
     #selectedComponents = [GJet_Pt_20toInf_DoubleEMEnriched]
     #selectedComponents = [GJet_Pt_20to40_DoubleEMEnriched, GJet_Pt_40toInf_DoubleEMEnriched]
     #selectedComponents = [SingleMuon_Run2015D_Promptv4,SingleElectron_Run2015D_Promptv4]
@@ -110,7 +138,7 @@ if test==1:
     for c in selectedComponents:
         #c.files = c.files[3:10]
         c.splitFactor = (len(c.files)/5 if len(c.files)>5 else 1)
-        #c.splitFactor = 7
+        #c.splitFactor = 1
         #c.triggers=triggers_1mu_noniso
         #c.triggers=triggers_1e_noniso
 

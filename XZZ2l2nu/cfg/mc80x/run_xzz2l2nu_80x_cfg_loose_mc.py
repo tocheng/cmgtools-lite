@@ -79,7 +79,10 @@ if test==1:
     #selectedComponents = [SingleMuon_Run2016B_PromptReco_v2,SingleElectron_Run2016B_PromptReco_v2] 
     #selectedComponents = [MuonEG_Run2015D_16Dec] #MuEG
     #selectedComponents = [RSGravToZZToZZinv_narrow_800]
-    selectedComponents = [DYJetsToLL_M50]
+    #selectedComponents = [WJetsToLNu]
+    selectedComponents = [ZZTo2L2Nu]
+    #selectedComponents = [DYJetsToLL_M50_reHLT]
+    #selectedComponents = [DYJetsToLL_M50]
     #selectedComponents = [DYJetsToLL_M50_MGMLM_Ext1]
     #selectedComponents = [DY1JetsToLL_M50_MGMLM]
     #selectedComponents = [DY1JetsToLL_M50_MGMLM, DY2JetsToLL_M50_MGMLM, DY3JetsToLL_M50_MGMLM, DY4JetsToLL_M50_MGMLM, DYBJetsToLL_M50_MGMLM]

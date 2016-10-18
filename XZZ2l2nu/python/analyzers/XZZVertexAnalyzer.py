@@ -135,6 +135,8 @@ class XZZVertexAnalyzer( Analyzer ):
         else:
             event.passedVertexAnalyzer=True
 
+
+
         if self.doHists:
             self.pileup.hist.Fill( len(event.goodVertices) )
 #A.R. mindist is one of the slowest functions, default commented

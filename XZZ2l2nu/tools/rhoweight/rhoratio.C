@@ -1,11 +1,15 @@
 {
 
 
+  //TFile* fin = new TFile("DataB2G_ICHEPcfg_tight_puWeight68075_metfilter_all_1pb.root");
+  //TFile* fout = new TFile("rhoratio_b2g.root", "recreate");
   TFile* fin = new TFile("CC80X_L12p9_HLTv2_ichepPU_ZPTwt_allSF_CT_tight_puWeight68075_metfilter_all_1pb.root");
   TFile* fout = new TFile("rhoratio.root", "recreate");
 
   gROOT->ProcessLine(".x tdrstyle.h");
 
+  //TH1D* hdt = (TH1D*)fin->Get("DataB2G_ICHEPcfg_tight_puWeight68075_metfilter_all_1pb_rho_data_SingleEMU_Run2016B2G_PromptReco");
+  //TH1D* hmc = (TH1D*)((THStack*)fin->Get("DataB2G_ICHEPcfg_tight_puWeight68075_metfilter_all_1pb_rho_stack"))->GetHistogram();
   TH1D* hdt = (TH1D*)fin->Get("CC80X_L12p9_HLTv2_ichepPU_ZPTwt_allSF_CT_tight_puWeight68075_metfilter_all_1pb_rho_data_SingleEMU_Run2016BCD_PromptReco_killdup");
   TH1D* hmc = (TH1D*)((THStack*)fin->Get("CC80X_L12p9_HLTv2_ichepPU_ZPTwt_allSF_CT_tight_puWeight68075_metfilter_all_1pb_rho_stack"))->GetHistogram();
   
@@ -19,6 +23,7 @@
   hratio_dt_mc->Divide(hmc_norm);
 
   hratio_dt_mc->SetTitle("Rho reweighting: Normalized data/MC, 2016 data 12.9 fb^{-1}.");
+  //hratio_dt_mc->SetTitle("Rho reweighting: Normalized data/MC, 2016 data 27.22 fb^{-1}.");
   hratio_dt_mc->GetYaxis()->SetTitle("Data/MC");
 
   char name[10000];

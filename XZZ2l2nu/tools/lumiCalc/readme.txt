@@ -1,6 +1,15 @@
 #!/bin/sh
 
 #####
+2016-10-07
+
+Cert_271036-280385_13TeV_PromptReco_Collisions16_JSON_NoL1T_v2.txt
+
+ brilcalc lumi -b "STABLE BEAMS" --normtag /afs/cern.ch/user/l/lumipro/public/normtag_file/normtag_DATACERT.json -i /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-280385_13TeV_PromptReco_Collisions16_JSON_NoL1T_v2.txt
+
+
+
+#####
 2016-07-14
 
 Cert_271036-276097_13TeV_PromptReco_Collisions16_JSON_NoL1T_v2.txt

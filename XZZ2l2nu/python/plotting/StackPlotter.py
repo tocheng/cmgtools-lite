@@ -158,12 +158,20 @@ class StackPlotter(object):
     def setPaveText(self, paveText):
         self.paveText = paveText
 
+    def setAlias(self, alias, definition):
+        for plotter in self.plotters:
+            plotter.setAlias(alias, definition)
+
     def closePSFile(self):
         c1 = ROOT.TCanvas(self.outTag, self.outTag);
         c1.Print(self.outFileName+'.ps]')
         c1.Print(self.outFileName+'.pdf]')
         #ROOT.gROOT.ProcessLine('.! ps2pdf '+self.outFileName+'.ps '+self.outFileName+'.pdf')
-        
+       
+    def closeROOTFile(self):
+        self.fout.Close()
+
+ 
     def setLog(self,doLog):
         self.log=doLog
     def addPlotter(self,plotter,name="",label = "label",typeP = "background"):

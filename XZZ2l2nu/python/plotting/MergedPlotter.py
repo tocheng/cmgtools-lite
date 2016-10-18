@@ -14,6 +14,10 @@ class MergedPlotter(PlotterBase):
         for plotter in self.plotters:
             plotter.applySmoothing()
 
+    def setAlias(self, alias, definition):
+        for plotter in self.plotters:
+            plotter.setAlias(alias, definition)
+
 
     def drawTH1(self,name,var,cuts,lumi,bins,min,max,titlex = "",units = "",drawStyle = "HIST"):
         h=None

@@ -56,6 +56,8 @@ class XZZGenAnalyzer( Analyzer ):
         event.genNeutrinos = []
         event.genJets = []
         event.genXZZ = []
+        event.genIncomingQuarks = []
+
 
         #event.genZBosons = [ p for p in pruned if (abs(p.pdgId()) == bosonID) and p.numberOfDaughters() > 0 ]
         
@@ -75,6 +77,15 @@ class XZZGenAnalyzer( Analyzer ):
         #        elif abs(dauid) in range(7):
         #            event.genJets.append(dau)
 
+        event.genIncomingQuarks = [ p for p in pruned if abs(p.pdgId())>=1 and abs(p.pdgId())<=5 and p.status()==21 ]
+
+        print "###### print genincomingQuarks #####" 
+        for idx,p in enumerate(event.genIncomingQuarks):
+            print "- [",idx,"], pdgId, pT, Eta, Phi: ",p.pdgId(),p.p4().Pt(),p.p4().Eta(),p.p4().Phi()
+
+
+
+
         event.genMuons = [ p for p in pruned if abs(p.pdgId())==13 and  p.status()==1 and p.isPromptFinalState() and p.fromHardProcessFinalState() ]
         event.genElectrons = [ p for p in pruned if abs(p.pdgId())==11 and  p.status()==1 and p.isPromptFinalState() and p.fromHardProcessFinalState() ]
         #event.genTaus = [ p for p in pruned if abs(p.pdgId())==15 and p.status()==2  and p.isPromptDecayed() ]
@@ -83,6 +94,8 @@ class XZZGenAnalyzer( Analyzer ):
         event.genMuonsFsr = [ p for p in pruned if abs(p.pdgId())==13 and  p.status()==1 and p.isPromptFinalState() and not p.fromHardProcessFinalState() ]
         event.genElectronsFsr = [ p for p in pruned if abs(p.pdgId())==11 and  p.status()==1 and p.isPromptFinalState() and not p.fromHardProcessFinalState() ]
         event.genTausFsr = [ p for p in pruned if abs(p.pdgId())==15 and p.status()==2  and p.isPromptDecayed() and not p.fromHardProcessDecayed() ]
+
+   
 
         event.genLeptons = event.genMuons + event.genElectrons + event.genTaus
         #event.genLeptonsFsr = event.genMuonsFsr + event.genElectronsFsr

@@ -3,6 +3,7 @@ import itertools
 import copy
 import types
 import re
+import ROOT
 
 from ROOT import TLorentzVector
 from ROOT import heppy 
@@ -49,6 +50,9 @@ class XZZPhotonAnalyzer( Analyzer ):
     #----------------------------------------     
 
         self.handles['photons'] = AutoHandle( self.cfg_ana.photons,'std::vector<pat::Photon>')
+        self.handles['ebhits'] = AutoHandle( self.cfg_ana.ebhits,'edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> >')
+        self.handles['eehits'] = AutoHandle( self.cfg_ana.eehits,'edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> >')
+        self.handles['eshits'] = AutoHandle( self.cfg_ana.eshits,'edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> >')
         self.mchandles['packedGen'] = AutoHandle( 'packedGenParticles', 'std::vector<pat::PackedGenParticle>' )
         self.mchandles['prunedGen'] = AutoHandle( 'prunedGenParticles', 'std::vector<reco::GenParticle>' )
 
@@ -119,6 +123,21 @@ class XZZPhotonAnalyzer( Analyzer ):
 
 
             keepThisPhoton = True
+
+            # swiss cross
+            gamma.SwissCross = 1.0 - (gamma.eTop()+gamma.eBottom()+gamma.eLeft()+gamma.eRight())/gamma.eMax()
+     
+            # time
+            gamma.seedId = gamma.seed().seed()
+            gamma.seedhit = ROOT.EcalRecHit()
+            for did in self.handles['ebhits'].product():
+                if did.id()==gamma.seedId: gamma.seedhit = did
+            for did in self.handles['eehits'].product():
+                if did.id()==gamma.seedId: gamma.seedhit = did
+            for did in self.handles['eshits'].product():
+                if did.id()==gamma.seedId: gamma.seedhit = did
+
+            gamma.time = gamma.seedhit.time()
 
             if self.cfg_ana.gammaID=="PhotonCutBasedIDLoose_CSA14" or self.cfg_ana.gammaID=="PhotonCutBasedIDLoose_PHYS14" :
                 gamma.idCutBased = gamma.photonIDCSA14(self.cfg_ana.gammaID) 
@@ -350,6 +369,9 @@ class XZZPhotonAnalyzer( Analyzer ):
 setattr(XZZPhotonAnalyzer,"defaultConfig",cfg.Analyzer(
     class_object=XZZPhotonAnalyzer,
     photons='slimmedPhotons',
+    ebhits=("reducedEgamma","reducedEBRecHits","RECO"),
+    eehits=("reducedEgamma","reducedEERecHits","RECO"),
+    eshits=("reducedEgamma","reducedESRecHits","RECO"),
     ptMin = 20,
     etaMax = 2.5,
     # energy scale corrections (off by default)

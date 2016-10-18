@@ -16,7 +16,7 @@
 #include <set>
 #include <utility>
 
-// Hengne.Li@cern.ch
+// Hengne Li @ CERN, 2016
  
 int main(int argc, char** argv) {
 
@@ -63,7 +63,7 @@ int main(int argc, char** argv) {
   for (int i=0; i<(int)tree->GetEntries(); i++) {  
     tree->GetEntry(i);
 
-    if ( i%5000 == 0 ) {
+    if ( i%50000 == 0 ) {
       std::cout << "Event " << i << "   " << std::endl;
     }
 

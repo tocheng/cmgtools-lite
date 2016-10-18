@@ -6,6 +6,7 @@ SRC_DIR = src
 OBJ_DIR = obj
 BIN_DIR = bin
 
+MKDIR = mkdir -p
 BIN = $(BIN_DIR)/metcorr.exe 
 
 SRC = $(wildcard $(SRC_DIR)/*.cc)
@@ -19,9 +20,17 @@ LDFLAGS += -Llib
 LDLIBS += `root-config --libs` -lMinuit2 
 DEP += $(wildcard $(INC_DIR)/*.h)
 
-.PHONY: all clean
+.PHONY: all clean directories
 
-all:  $(BIN)
+all:  directories $(BIN)
+
+directories: $(OBJ_DIR) $(BIN_DIR)
+
+$(OBJ_DIR):
+	$(MKDIR) $(OBJ_DIR)
+
+$(BIN_DIR):
+	$(MKDIR) $(BIN_DIR)
 
 $(BIN): $(OBJ) 
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
@@ -33,4 +42,4 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cc $(DEP)
 
 
 clean:
-	$(RM) $(OBJ)
+	$(RM) $(OBJ) ${BIN}

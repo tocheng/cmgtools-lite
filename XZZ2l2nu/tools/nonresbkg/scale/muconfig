@@ -1,0 +1,4 @@
+infile='/afs/cern.ch/work/y/yanchu/graviton/CMSSW_8_0_10/src/CMGTools/XZZ2l2nu/tools/nonresbkg/scale/plots/test_RhoWt_puWeight68075_metfilter_mu_.root'
+datahist='test_RhoWt_puWeight68075_metfilter_mu___data_SingleEMU_Run2016BCD_PromptReco'
+mchist=['test_RhoWt_puWeight68075_metfilter_mu___VVZReso_WZTo2L2Q','test_RhoWt_puWeight68075_metfilter_mu___ZJets_DYJetsToLL_M50_RecoilSmooth']
+nonreshist='test_RhoWt_puWeight68075_metfilter_mu___NONReso_muonegtrgsf'
