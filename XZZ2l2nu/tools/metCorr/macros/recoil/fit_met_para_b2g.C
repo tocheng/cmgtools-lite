@@ -61,7 +61,6 @@ std::vector< std::string > gjfiles = {
 
 char name[1000];
 TCanvas* plots;
-//std::string tag0 = "_DtB2H29fbinv";
 //std::string tag0 = "_NoRhoWt";
 std::string tag0 = "";
 //std::string tag0 = "_newfilterlepveto";
@@ -189,8 +188,7 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   std::string weight_selec = std::string("*(genWeight*ZPtWeight*puWeight68075/SumWeights*1921.8*3*12900.0)");
   // rho weight
   //std::string rhoweight_selec = std::string("*(0.602*exp(-0.5*pow((rho-8.890)/6.187,2))+0.829*exp(-0.5*pow((rho-21.404)/10.866,2)))");
-  //std::string rhoweight_selec = std::string("*(0.232+0.064*rho)");
-  std::string rhoweight_selec = std::string("*(0.038+0.118*rho-4.329e-03*rho*rho+1.011e-04*rho*rho*rho)");
+  std::string rhoweight_selec = std::string("*(0.232+0.064*rho)");
   // scale factors
   std::string effsf_selec = std::string("*(isosf*idsf*trksf)");
 
@@ -276,8 +274,7 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
 
 
   // other control plots
-  Double_t ZPtBins[] = {0,2,4,6,8,10,12,14,16,18,20,22,24,26,28, 30, 35, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 220, 240, 260, 300, 500, 5000 };
-  //Double_t ZPtBins[] = {0,2,4,6,8,10,12,14,16,18,20,22,24,26,28, 30, 35, 40, 50, 60, 80, 100, 150, 250, 5000 };
+  Double_t ZPtBins[] = {0,2,4,6,8,10,12,14,16,18,20,22,24,26,28, 30, 35, 40, 50, 60, 80, 100, 150, 250, 5000 };
   //Double_t ZPtBins[] = {0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,35,36,36.5,37,37.5,38,38.5,39,39.5,40,41,42,43,44,45,46,47,48,49,50,55,60,65,70,75,80,85,90,95,100,105, 110,120,125, 130,140,150,160,180,200,300,5000 };
   Int_t NZPtBins = sizeof(ZPtBins)/sizeof(ZPtBins[0]) - 1;
   const Int_t NMetParaBins=400;

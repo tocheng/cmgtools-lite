@@ -1,9 +1,11 @@
 #!/bin/sh
 
 #inputs
-inputdir=/home/heli/XZZ/80X_20161006_light
+inputdir=/home/heli/XZZ/80X_20161018_light
+outputdir=/home/heli/XZZ/80X_20161018_light_Skim
+#inputdir=/home/heli/XZZ/80X_20161006_light
 #inputdir=/home/heli/XZZ/80X_20160825_light
-outputdir=/home/heli/XZZ/80X_20161006_light_Skim
+#outputdir=/home/heli/XZZ/80X_20161006_light_Skim
 #outputdir=/home/heli/XZZ/80X_20160825_light_Skim
 config=config/parameters_light
 
@@ -25,6 +27,7 @@ njob="0"
 #for infile in $inputdir/SingleEMU_*/vvTreeProducer/tree.root ; 
 #for infile in $inputdir/DYJetsToLL*/vvTreeProducer/tree.root ; 
 #for infile in $inputdir/SingleEMU_Run2016B2G_*/vvTreeProducer/tree.root ; 
+#for infile in $inputdir/SingleEMU_Run2016B2H29fbinv_*/vvTreeProducer/tree.root ; 
 for infile in $inputdir/DYJetsToLL_M50_BIG/vvTreeProducer/tree.root ; 
 do
   echo "+++ skimming $infile +++"
@@ -32,7 +35,8 @@ do
 
   # options for outputs
   #outfile="${outfile/\/vvTreeProducer\/tree/_NoRecoil}"
-  outfile="${outfile/\/vvTreeProducer\/tree/_RcDataB2G}"
+  outfile="${outfile/\/vvTreeProducer\/tree/_RcDataB2H29fbinv}"
+  #outfile="${outfile/\/vvTreeProducer\/tree/_RcDataB2G}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_RcDataB2GNoRhoWt}"
   #outfile="${outfile/\/vvTreeProducer\/tree/}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_test}"

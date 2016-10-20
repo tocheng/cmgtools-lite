@@ -1,19 +1,21 @@
 #!/bin/sh
 
-dir=dt11
+dir=dt12_v2
 #dir=dt3_truncated
 #dir=dt3
 
-tag="Single"
+#tag="Single"
 #tag="SingleElectron_"
 #tag="SingleMuon_"
-#tag="MET_"
+tag="MET_"
 #from="eoscms.cern.ch\/\/eos\/cms"
 #to="cms-xrd-global.cern.ch\/"
-from="cms-xrd-global.cern.ch"
+#from="cms-xrd-global.cern.ch"
+#to="cmsxrootd.fnal.gov"
 #to="xrootd-cms.infn.it"
 #from="xrootd-cms.infn.it"
-to="cmsxrootd.fnal.gov"
+from="cmsxrootd.fnal.gov"
+to="cms-xrd-global.cern.ch"
 
 cd $dir
 

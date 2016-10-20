@@ -1,7 +1,7 @@
-void rho_rewegiht_b2g()
+void rho_rewegiht_b2g29fbinv()
 {
 //=========Macro generated from canvas: plots/plots
-//=========  (Thu Oct 20 04:02:10 2016) by ROOT version6.06/01
+//=========  (Thu Oct 20 04:06:50 2016) by ROOT version6.06/01
    TCanvas *plots = new TCanvas("plots", "plots",0,22,550,550);
    gStyle->SetOptStat(0);
    plots->Range(-12.5,-1.25,56.94444,5.694444);
@@ -122,13 +122,13 @@ void rho_rewegiht_b2g()
    h_rho_ratio_dt_mc__1->SetMaximum(5);
    h_rho_ratio_dt_mc__1->SetEntries(1.439503);
    
-   TF1 *f_rho_ratio_dt_mc1 = new TF1("f_rho_ratio_dt_mc","[0]+[1]*x+[2]*x*x",0,50);
+   TF1 *f_rho_ratio_dt_mc1 = new TF1("f_rho_ratio_dt_mc","[0]+[1]*x+[2]*x*x+[3]*x*x*x",0,50);
    f_rho_ratio_dt_mc1->SetFillColor(19);
    f_rho_ratio_dt_mc1->SetFillStyle(0);
    f_rho_ratio_dt_mc1->SetLineColor(2);
    f_rho_ratio_dt_mc1->SetLineWidth(1);
-   f_rho_ratio_dt_mc1->SetChisquare(1115.945);
-   f_rho_ratio_dt_mc1->SetNDF(46);
+   f_rho_ratio_dt_mc1->SetChisquare(274.9378);
+   f_rho_ratio_dt_mc1->SetNDF(45);
    f_rho_ratio_dt_mc1->GetXaxis()->SetLabelFont(42);
    f_rho_ratio_dt_mc1->GetXaxis()->SetLabelOffset(0.007);
    f_rho_ratio_dt_mc1->GetXaxis()->SetLabelSize(0.05);
@@ -140,15 +140,18 @@ void rho_rewegiht_b2g()
    f_rho_ratio_dt_mc1->GetYaxis()->SetTitleSize(0.06);
    f_rho_ratio_dt_mc1->GetYaxis()->SetTitleOffset(1.2);
    f_rho_ratio_dt_mc1->GetYaxis()->SetTitleFont(42);
-   f_rho_ratio_dt_mc1->SetParameter(0,0.1461776);
-   f_rho_ratio_dt_mc1->SetParError(0,0.003160027);
+   f_rho_ratio_dt_mc1->SetParameter(0,0.03815148);
+   f_rho_ratio_dt_mc1->SetParError(0,0.004884843);
    f_rho_ratio_dt_mc1->SetParLimits(0,0,0);
-   f_rho_ratio_dt_mc1->SetParameter(1,0.07890628);
-   f_rho_ratio_dt_mc1->SetParError(1,0.0006196251);
+   f_rho_ratio_dt_mc1->SetParameter(1,0.1179085);
+   f_rho_ratio_dt_mc1->SetParError(1,0.001480777);
    f_rho_ratio_dt_mc1->SetParLimits(1,0,0);
-   f_rho_ratio_dt_mc1->SetParameter(2,-0.000589917);
-   f_rho_ratio_dt_mc1->SetParError(2,2.73414e-05);
+   f_rho_ratio_dt_mc1->SetParameter(2,-0.004328611);
+   f_rho_ratio_dt_mc1->SetParError(2,0.0001317878);
    f_rho_ratio_dt_mc1->SetParLimits(2,0,0);
+   f_rho_ratio_dt_mc1->SetParameter(3,0.0001010965);
+   f_rho_ratio_dt_mc1->SetParError(3,3.486082e-06);
+   f_rho_ratio_dt_mc1->SetParLimits(3,0,0);
    h_rho_ratio_dt_mc__1->GetListOfFunctions()->Add(f_rho_ratio_dt_mc1);
 
    Int_t ci;      // for color index setting
@@ -182,7 +185,7 @@ void rho_rewegiht_b2g()
    pt->SetTextAlign(12);
    pt->SetTextFont(42);
    pt->SetTextSize(0.035);
-   TText *AText = pt->AddText(0,0.6,"f(#rho) = 0.15 + 0.08 #upoint #rho ");
+   TText *AText = pt->AddText(0,0.6,"f(#rho) = 0.04 + 0.1179 #rho + -0.0043 #rho^{2} + + 0.00010 #rho^{3}");
    pt->Draw();
    
    pt = new TPaveText(0.01,0.9240076,0.71,0.995,"blNDC");
