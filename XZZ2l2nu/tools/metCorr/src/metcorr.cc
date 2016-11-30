@@ -28,7 +28,6 @@ int main(int argc, char** argv) {
   // sum weights
   _SumWeights = atof(argv[5]);
 
-
   // input file
   _file_in = TFile::Open(_file_in_name.c_str());
 
@@ -45,13 +44,10 @@ int main(int argc, char** argv) {
   _isDyJets = (_file_out_name.find("DYJets")!=std::string::npos);
   _isDyJetsLO = (_file_out_name.find("DYJets")!=std::string::npos && _file_out_name.find("MGMLM")!=std::string::npos);
  
-
   // check if it is sm ZZ sample, based on file names
   _isZZ = (_file_out_name.find("ZZTo2L2Nu")!=std::string::npos);
-
  
   if (_debug) std::cout << "DEBUG: isDyJets = " << _isDyJets << ", isDyJetsLO = " << _isDyJetsLO << std::endl;
-
 
   // read config file
   readConfigFile();
@@ -138,6 +134,8 @@ int main(int argc, char** argv) {
     // add eff scale factors
     if (_addEffScale && (!_isData || _addEffScaleOnData) && !_doGJetsSkim ) addEffScale();
 
+    // add alternative MT due to MET unc
+    if (_doMTUnc) doMTUnc();
 
     // fill output tree
     _tree_out->Fill(); 
@@ -445,6 +443,39 @@ bool  prepareTrees()
       _tree_in->SetBranchAddress("genNeu_eta", _genNeu_eta);
       _tree_in->SetBranchAddress("genNeu_phi", _genNeu_phi);
     }
+  }
+
+  if(_doMTUnc){
+
+      _tree_in->SetBranchAddress("llnunu_l2_t1Pt_JetEnUp", _llnunu_l2_t1Pt_JetEnUp);
+      _tree_in->SetBranchAddress("llnunu_l2_t1Pt_JetEnDn", _llnunu_l2_t1Pt_JetEnDn);
+      _tree_in->SetBranchAddress("llnunu_l2_t1Phi_JetEnUp", _llnunu_l2_t1Phi_JetEnUp);
+      _tree_in->SetBranchAddress("llnunu_l2_t1Phi_JetEnDn", _llnunu_l2_t1Phi_JetEnDn);
+      /////
+      _tree_in->SetBranchAddress("llnunu_l2_t1Pt_JetJESUp", _llnunu_l2_t1Pt_JetJESUp);
+      _tree_in->SetBranchAddress("llnunu_l2_t1Pt_JetJESDn", _llnunu_l2_t1Pt_JetJESDn);
+      _tree_in->SetBranchAddress("llnunu_l2_t1Phi_JetJESUp", _llnunu_l2_t1Phi_JetJESUp);
+      _tree_in->SetBranchAddress("llnunu_l2_t1Phi_JetJESDn", _llnunu_l2_t1Phi_JetJESDn);
+      /////
+      _tree_in->SetBranchAddress("llnunu_l2_t1Pt_MuonEnUp", _llnunu_l2_t1Pt_MuonEnUp);
+      _tree_in->SetBranchAddress("llnunu_l2_t1Pt_MuonEnDn", _llnunu_l2_t1Pt_MuonEnDn);
+      _tree_in->SetBranchAddress("llnunu_l2_t1Phi_MuonEnUp", _llnunu_l2_t1Phi_MuonEnUp);
+      _tree_in->SetBranchAddress("llnunu_l2_t1Phi_MuonEnDn", _llnunu_l2_t1Phi_MuonEnDn);
+      /////
+      _tree_in->SetBranchAddress("llnunu_l2_t1Pt_TauEnUp", _llnunu_l2_t1Pt_TauEnUp);
+      _tree_in->SetBranchAddress("llnunu_l2_t1Pt_TauEnDn", _llnunu_l2_t1Pt_TauEnDn);
+      _tree_in->SetBranchAddress("llnunu_l2_t1Phi_TauEnUp", _llnunu_l2_t1Phi_TauEnUp);
+      _tree_in->SetBranchAddress("llnunu_l2_t1Phi_TauEnDn", _llnunu_l2_t1Phi_TauEnDn);
+      ///// ????
+      _tree_in->SetBranchAddress("llnunu_l2_t1SmearPt_JERUp", _llnunu_l2_t1Pt_JERUp);
+      _tree_in->SetBranchAddress("llnunu_l2_t1SmearPt_JERDn", _llnunu_l2_t1Pt_JERDn);
+      _tree_in->SetBranchAddress("llnunu_l2_t1SmearPhi_JERUp", _llnunu_l2_t1Phi_JERUp);
+      _tree_in->SetBranchAddress("llnunu_l2_t1SmearPhi_JERDn", _llnunu_l2_t1Phi_JERDn);
+      /////
+      _tree_in->SetBranchAddress("llnunu_l2_t1Pt_UnclusterUp", _llnunu_l2_t1Pt_UnclusterUp);
+      _tree_in->SetBranchAddress("llnunu_l2_t1Pt_UnclusterDn", _llnunu_l2_t1Pt_UnclusterDn);
+      _tree_in->SetBranchAddress("llnunu_l2_t1Phi_UnclusterUp", _llnunu_l2_t1Phi_UnclusterUp);
+      _tree_in->SetBranchAddress("llnunu_l2_t1Phi_UnclusterDn", _llnunu_l2_t1Phi_UnclusterDn);
   }
 
 
