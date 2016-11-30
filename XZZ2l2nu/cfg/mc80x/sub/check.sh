@@ -9,7 +9,8 @@
 # privide chunks running directory, 
 # and directory to copy jobs out
 
-dir=dyjets
+dir=gjetsmc10
+#dir=dyjets
 #dir=dyjets1
 #dir=othermc1
 #dir=othermc2

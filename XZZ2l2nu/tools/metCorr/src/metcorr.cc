@@ -198,6 +198,8 @@ void readConfigFile()
   //=========================
   _useLightTree = parm.GetBool("useLightTree", kTRUE);
   _storeErr = parm.GetBool("storeErr", kTRUE);
+  _removeHLTFlag = parm.GetBool("removeHLTFlag", kFALSE);
+  _removeMETFlag = parm.GetBool("removeMETFlag", kFALSE);
 
   //=========================
   // add PU weights
@@ -364,6 +366,10 @@ bool  prepareTrees()
     _tree_in->SetBranchAddress("gjet_l1_rapidity", &_gjet_l1_rapidity);
     _tree_in->SetBranchAddress("gjet_l1_phi", &_gjet_l1_phi);
     _tree_in->SetBranchAddress("gjet_l1_idCutBased", &_gjet_l1_idCutBased);
+    _tree_in->SetBranchAddress("gjet_l1_trigerob_HLTbit", &_gjet_l1_trigerob_HLTbit);
+    _tree_in->SetBranchAddress("gjet_l1_trigerob_pt", &_gjet_l1_trigerob_pt);
+    _tree_in->SetBranchAddress("gjet_l1_trigerob_eta", &_gjet_l1_trigerob_eta);
+    _tree_in->SetBranchAddress("gjet_l1_trigerob_phi", &_gjet_l1_trigerob_phi);
     _tree_in->SetBranchAddress("gjet_l2_pt", &_gjet_l2_pt);
     _tree_in->SetBranchAddress("gjet_l2_phi", &_gjet_l2_phi);
     _tree_in->SetBranchAddress("gjet_l2_sumEt", &_gjet_l2_sumEt);
@@ -373,6 +379,16 @@ bool  prepareTrees()
     if (!_isData) {
       _tree_in->SetBranchAddress("gjet_l2_genPhi", &_gjet_l2_genPhi);
       _tree_in->SetBranchAddress("gjet_l2_genEta", &_gjet_l2_genEta);
+    }
+    if (_isData){
+      _tree_in->SetBranchAddress("PreScale22", &_PreScale22);
+      _tree_in->SetBranchAddress("PreScale30", &_PreScale30);
+      _tree_in->SetBranchAddress("PreScale36", &_PreScale36);
+      _tree_in->SetBranchAddress("PreScale50", &_PreScale50);
+      _tree_in->SetBranchAddress("PreScale75", &_PreScale75);
+      _tree_in->SetBranchAddress("PreScale90", &_PreScale90);
+      _tree_in->SetBranchAddress("PreScale120", &_PreScale120);
+      _tree_in->SetBranchAddress("PreScale165", &_PreScale165);
     }
   } 
   else {
@@ -520,7 +536,6 @@ bool  prepareTrees()
 
   // GJets Skim
   if (_doGJetsSkim){
-    _tree_out->Branch("GJetsPhiWeight", &_GJetsPhiWeight, "GJetsPhiWeight/F");
     _tree_out->Branch("GJetsRhoWeight", &_GJetsRhoWeight, "GJetsRhoWeight/F");
     _tree_out->Branch("GJetsWeight", &_GJetsWeight, "GJetsWeight/F");
     _tree_out->Branch("GJetsWeightEl", &_GJetsWeightEl, "GJetsWeightEl/F");
@@ -546,6 +561,10 @@ bool  prepareTrees()
     _tree_out->Branch("llnunu_l1_phi", &_llnunu_l1_phi, "llnunu_l1_phi/F");
     _tree_out->Branch("llnunu_l1_eta", &_llnunu_l1_eta, "llnunu_l1_eta/F");
     _tree_out->Branch("llnunu_l1_rapidity", &_llnunu_l1_rapidity, "llnunu_l1_rapidity/F");
+    _tree_out->Branch("llnunu_l1_trigerob_HLTbit", &_llnunu_l1_trigerob_HLTbit, "llnunu_l1_trigerob_HLTbit/I");
+    _tree_out->Branch("llnunu_l1_trigerob_pt", &_llnunu_l1_trigerob_pt, "llnunu_l1_trigerob_pt/F");
+    _tree_out->Branch("llnunu_l1_trigerob_eta", &_llnunu_l1_trigerob_eta, "llnunu_l1_trigerob_eta/F");
+    _tree_out->Branch("llnunu_l1_trigerob_phi", &_llnunu_l1_trigerob_phi, "llnunu_l1_trigerob_phi/F");
     _tree_out->Branch("llnunu_l2_pt", &_llnunu_l2_pt, "llnunu_l2_pt/F");
     _tree_out->Branch("llnunu_l2_phi", &_llnunu_l2_phi, "llnunu_l2_phi/F");
     _tree_out->Branch("llnunu_l2_sumEt", &_llnunu_l2_sumEt, "llnunu_l2_sumEt/F");
@@ -572,12 +591,19 @@ bool  prepareTrees()
       _tree_out->Branch("llnunu_l2_genPhi", &_llnunu_l2_genPhi, "llnunu_l2_genPhi/F");
       _tree_out->Branch("llnunu_l2_genEta", &_llnunu_l2_genEta, "llnunu_l2_genEta/F");
     }
+    if (_isData){
+      _tree_out->Branch("GJetsPreScaleWeight", &_GJetsPreScaleWeight, "GJetsPreScaleWeight/F");
+    }
+    if (_doGJetsSkimAddPhiWeight) {
+      _tree_out->Branch("GJetsPhiWeight", &_GJetsPhiWeight, "GJetsPhiWeight/F");
+    }
     if (!_storeOldBranches) {
       _tree_out->SetBranchStatus("gjet_*", 0);
-      _tree_out->SetBranchStatus("gjet_l1_idCutBased", 1);
-      _tree_out->SetBranchStatus("gjet_l1_hOverE", 1);
-      _tree_out->SetBranchStatus("gjet_l1_r9", 1);
-      _tree_out->SetBranchStatus("gjet_l1_sigmaIetaIeta", 1);
+      //_tree_out->SetBranchStatus("gjet_l1_idCutBased", 1);
+      //_tree_out->SetBranchStatus("gjet_l1_hOverE", 1);
+      //_tree_out->SetBranchStatus("gjet_l1_r9", 1);
+      //_tree_out->SetBranchStatus("gjet_l1_sigmaIetaIeta", 1);
+      _tree_out->SetBranchStatus("PreScale*", 0);
     }
   }
 
@@ -590,6 +616,15 @@ bool  prepareTrees()
     _tree_out->SetBranchStatus("*_dn", 0);
 
   }
+  // store HLT flags, only if not data
+  if (_removeHLTFlag && !_isData ){
+    _tree_out->SetBranchStatus("HLT_*", 0);
+  }
+  // store MET flags
+  if (_removeMETFlag){
+    _tree_out->SetBranchStatus("Flag_*", 0);
+  }
+ 
 
   return true;
 
@@ -1463,19 +1498,28 @@ void addEffScale()
 void prepareGJetsSkim() 
 {
   if (_doGJetsSkim) {
+    
+    // input file
     _gjets_input_file = TFile::Open(_GJetsSkimInputFileName.c_str());
+
+    // for mass generation
     _gjets_h_zmass_zpt_zrap = (TH3D*)_gjets_input_file->Get("h_zmass_zpt_zrap_lowlpt");
     _gjets_h_zmass_zpt_zrap_el = (TH3D*)_gjets_input_file->Get("h_zmass_zpt_zrap_lowlpt_el");
     _gjets_h_zmass_zpt_zrap_mu = (TH3D*)_gjets_input_file->Get("h_zmass_zpt_zrap_lowlpt_mu");
     _gjets_h_zmass_zpt = (TH2D*)_gjets_input_file->Get("h_zmass_zpt_lowlpt");
     _gjets_h_zmass_zpt_el = (TH2D*)_gjets_input_file->Get("h_zmass_zpt_lowlpt_el");
     _gjets_h_zmass_zpt_mu = (TH2D*)_gjets_input_file->Get("h_zmass_zpt_lowlpt_mu");
+
+    // for zpt reweighting
+    // zpt 1d
     _gjets_h_zpt_ratio = (TH1D*)_gjets_input_file->Get("h_zpt_ratio");
     _gjets_h_zpt_ratio_el = (TH1D*)_gjets_input_file->Get("h_zpt_ratio_el");
     _gjets_h_zpt_ratio_mu = (TH1D*)_gjets_input_file->Get("h_zpt_ratio_mu");
     _gjets_h_zpt_lowlpt_ratio = (TH1D*)_gjets_input_file->Get("h_zpt_lowlpt_ratio");
     _gjets_h_zpt_lowlpt_ratio_el = (TH1D*)_gjets_input_file->Get("h_zpt_lowlpt_ratio_el");
     _gjets_h_zpt_lowlpt_ratio_mu = (TH1D*)_gjets_input_file->Get("h_zpt_lowlpt_ratio_mu");
+
+    // zpt zrap 2d
     _gjets_h_zpt_zrap_ratio = (TH2D*)_gjets_input_file->Get("h_zpt_zrap_ratio");
     _gjets_h_zpt_zrap_ratio_el = (TH2D*)_gjets_input_file->Get("h_zpt_zrap_ratio_el");
     _gjets_h_zpt_zrap_ratio_mu = (TH2D*)_gjets_input_file->Get("h_zpt_zrap_ratio_mu");
@@ -1489,7 +1533,16 @@ void prepareGJetsSkim()
     _gjets_h_zpt_zrap_lowlpt_ratio_el = (TH2D*)_gjets_input_file->Get("h_zpt_zrap_lowlpt_ratio_el");
     _gjets_h_zpt_zrap_lowlpt_ratio_mu = (TH2D*)_gjets_input_file->Get("h_zpt_zrap_lowlpt_ratio_mu");
 
-//new TGraphErrors
+
+    // change to tgraph for smoothing
+    _gjets_gr_zpt_ratio = new TGraphErrors(_gjets_h_zpt_ratio);
+    _gjets_gr_zpt_ratio_el = new TGraphErrors(_gjets_h_zpt_ratio_el);
+    _gjets_gr_zpt_ratio_mu = new TGraphErrors(_gjets_h_zpt_ratio_mu);
+    _gjets_gr_zpt_lowlpt_ratio = new TGraphErrors(_gjets_h_zpt_lowlpt_ratio);
+    _gjets_gr_zpt_lowlpt_ratio_el = new TGraphErrors(_gjets_h_zpt_lowlpt_ratio_el);
+    _gjets_gr_zpt_lowlpt_ratio_mu = new TGraphErrors(_gjets_h_zpt_lowlpt_ratio_mu);
+
+    //new TGraphErrors
 
     for (int ix=0; ix<(int)_gjets_h_zmass_zpt->GetNbinsX(); ix++) {
       for (int iy=0; iy<(int)_gjets_h_zmass_zpt->GetNbinsY(); iy++) {
@@ -1619,6 +1672,10 @@ void doGJetsSkim()
   _llnunu_l1_eta = _gjet_l1_eta;
   _llnunu_l1_rapidity = _gjet_l1_rapidity;
   _llnunu_l1_phi = _gjet_l1_phi;
+  _llnunu_l1_trigerob_HLTbit = _gjet_l1_trigerob_HLTbit;
+  _llnunu_l1_trigerob_pt = _gjet_l1_trigerob_pt;
+  _llnunu_l1_trigerob_eta = _gjet_l1_trigerob_eta;
+  _llnunu_l1_trigerob_phi = _gjet_l1_trigerob_phi;
   _llnunu_l2_pt = _gjet_l2_pt;
   _llnunu_l2_phi = _gjet_l2_phi;
   _llnunu_l2_sumEt = _gjet_l2_sumEt;
@@ -1642,6 +1699,45 @@ void doGJetsSkim()
   if (!_isData){
     _llnunu_l2_genPhi = _gjet_l2_genPhi;
     _llnunu_l2_genEta = _gjet_l2_genEta;  
+  }
+
+
+  // get prescale/ only for data
+  if (_isData){
+    if (_llnunu_l1_trigerob_HLTbit>>0&1&&_llnunu_l1_trigerob_pt<30) {
+      _GJetsPreScaleWeight = _PreScale22*1000;
+    }
+    else 
+    if (_llnunu_l1_trigerob_HLTbit>>1&1&&_llnunu_l1_trigerob_pt<36) {
+      _GJetsPreScaleWeight = (float)_PreScale30*140;
+    }
+    else 
+    if (_llnunu_l1_trigerob_HLTbit>>2&1&&_llnunu_l1_trigerob_pt<50) {
+      _GJetsPreScaleWeight = (float)_PreScale36*140;
+    }
+    else 
+    if (_llnunu_l1_trigerob_HLTbit>>3&1&&_llnunu_l1_trigerob_pt<75) {
+      _GJetsPreScaleWeight = (float)_PreScale50;
+    }
+    else 
+    if (_llnunu_l1_trigerob_HLTbit>>4&1&&_llnunu_l1_trigerob_pt<90) {
+      _GJetsPreScaleWeight = (float)_PreScale75;
+    }
+    else 
+    if (_llnunu_l1_trigerob_HLTbit>>5&1&&_llnunu_l1_trigerob_pt<120) {
+      _GJetsPreScaleWeight = (float)_PreScale90;
+    }
+    else 
+    if (_llnunu_l1_trigerob_HLTbit>>6&1&&_llnunu_l1_trigerob_pt<165) {
+      _GJetsPreScaleWeight = (float)_PreScale120;
+    }
+    else 
+    if (_llnunu_l1_trigerob_HLTbit>>7&1) {
+      _GJetsPreScaleWeight = (float)_PreScale165;
+    }
+    else {
+      _GJetsPreScaleWeight = 1.0;
+    }
   }
 
   // generate z mass
@@ -1717,13 +1813,49 @@ void doGJetsSkim()
   _GJetsWeightLowLPt = _gjets_h_zpt_zrap_lowlpt_ratio->GetBinContent(ipt, irap);
   _GJetsWeightLowLPtEl = _gjets_h_zpt_zrap_lowlpt_ratio_el->GetBinContent(ipt, irap);
   _GJetsWeightLowLPtMu = _gjets_h_zpt_zrap_lowlpt_ratio_mu->GetBinContent(ipt, irap);
-  _GJetsZPtWeight = _gjets_h_zpt_ratio->GetBinContent(ipt);
-  _GJetsZPtWeightEl = _gjets_h_zpt_ratio_el->GetBinContent(ipt);
-  _GJetsZPtWeightMu = _gjets_h_zpt_ratio_mu->GetBinContent(ipt);
-  _GJetsZPtWeightLowLPt = _gjets_h_zpt_lowlpt_ratio->GetBinContent(ipt);
-  _GJetsZPtWeightLowLPtEl = _gjets_h_zpt_lowlpt_ratio_el->GetBinContent(ipt);
-  _GJetsZPtWeightLowLPtMu = _gjets_h_zpt_lowlpt_ratio_mu->GetBinContent(ipt);
+  //_GJetsZPtWeight = _gjets_h_zpt_ratio->GetBinContent(ipt);
+  //_GJetsZPtWeightEl = _gjets_h_zpt_ratio_el->GetBinContent(ipt);
+  //_GJetsZPtWeightMu = _gjets_h_zpt_ratio_mu->GetBinContent(ipt);
+  //_GJetsZPtWeightLowLPt = _gjets_h_zpt_lowlpt_ratio->GetBinContent(ipt);
+  //_GJetsZPtWeightLowLPtEl = _gjets_h_zpt_lowlpt_ratio_el->GetBinContent(ipt);
+  //_GJetsZPtWeightLowLPtMu = _gjets_h_zpt_lowlpt_ratio_mu->GetBinContent(ipt);
 
+  _GJetsZPtWeight = _gjets_gr_zpt_ratio->Eval(_llnunu_l1_pt);
+  _GJetsZPtWeightEl = _gjets_gr_zpt_ratio_el->Eval(_llnunu_l1_pt);
+  _GJetsZPtWeightMu = _gjets_gr_zpt_ratio_mu->Eval(_llnunu_l1_pt);
+  _GJetsZPtWeightLowLPt = _gjets_gr_zpt_lowlpt_ratio->Eval(_llnunu_l1_pt);
+  _GJetsZPtWeightLowLPtEl = _gjets_gr_zpt_lowlpt_ratio_el->Eval(_llnunu_l1_pt);
+  _GJetsZPtWeightLowLPtMu = _gjets_gr_zpt_lowlpt_ratio_mu->Eval(_llnunu_l1_pt);
+/*
+  // hardcoded smooth function
+  double x = _llnunu_l1_pt;
+
+  _GJetsZPtWeight = 2.860e-08*TMath::Erf((x-4.163e+01)/4.805e+02)-1.481e-10*TMath::Gaus(x,3.921e+02,1.015e+02)+1.172e-10*TMath::Gaus(x,-2.871e+01,2.896e+01);
+  //6.197e-09+1.003e-08*TMath::Erf((x-1.340e+02)/1.922e+02)+7.038e-10*TMath::Erf((x-1.620e+02)/2.234e+01);
+  //4.169e-09+9.151e-09*TMath::Erf((x+6.676e+01)/2.174e+03)+9.630e-09*TMath::Erf((x-1.523e+02)/1.574e+02)-2.574e-09*TMath::Erf((x-3.996e+03)/3.097e+03);
+
+  _GJetsZPtWeightEl = 8.219e-07*TMath::Erf((x-1.193e+02)/2.803e+02)+1.189e-08*TMath::Gaus(x,-5.333e+03,-2.269e+02)+2.112e-08*TMath::Gaus(x,-4.615e+02,2.444e+01);
+  //1.732e-07-3.984e-08*TMath::Erf((x+1.303e+03)/-2.108e+02)+2.732e-07*TMath::Erf((x-1.786e+02)/6.399e+01);
+  //2.062e-07-1.926e-07*TMath::Erf((x-1.941e+05)/6.398e+04)+2.534e-07*TMath::Erf((x-1.735e+02)/5.519e+01)-1.959e-07*TMath::Erf((x-4.013e+02)/-1.428e+02); 
+
+  _GJetsZPtWeightMu = 1.631e-08*TMath::Erf((x-2.758e+01)/4.880e+02)+1.535e-09*TMath::Gaus(x,1.823e+02,6.470e+01)-2.828e+03*TMath::Gaus(x,9.481e+07,3.145e+01);
+  //2.459e-09+6.836e-09*TMath::Erf((x-6.382e+01)/4.196e+02)+2.091e-09*TMath::Erf((x-8.794e+01)/5.871e+01);
+  //8.653e-10+7.772e-09*TMath::Erf((x-2.365e+01)/4.542e+02)+2.041e-09*TMath::Erf((x-8.832e+01)/5.818e+01)+-8.186e-10*TMath::Erf((x-3.483e+04)/3.615e+03);
+  // 2.374e-09-7.616e-09*TMath::Erf((x-1.812e+02)/-9.621e+02)+3.327e-09*TMath::Erf((x-8.868e+01)/7.767e+01)+1.381e-09*TMath::Erf((x-3.305e+01)/3.072e-09);
+
+  if (_GJetsZPtWeight<0) _GJetsZPtWeight=0;
+  if (_GJetsZPtWeightEl<0) _GJetsZPtWeightEl=0;
+  if (_GJetsZPtWeightMu<0) _GJetsZPtWeightMu=0;
+
+
+  _GJetsZPtWeightLowLPt = 1.150e-09+2.162e-09*TMath::Erf((x-1.230e+02)/3.755e+02)+6.335e-10*TMath::Erf((x-9.568e+01)/7.078e+01); 
+  _GJetsZPtWeightLowLPtEl = 2.391e-09+8.068e-10*TMath::Erf((x-9.947e+01)/5.074e+01)+1.662e-09*TMath::Erf((x-2.209e+02)/1.382e+02);
+  _GJetsZPtWeightLowLPtMu = 5.637e-10+1.950e-09*TMath::Erf((x-5.773e+01)/7.771e+02)+1.120e-09*TMath::Erf((x-7.005e+01)/1.083e+02);
+
+  if (_GJetsZPtWeightLowLPt<0) _GJetsZPtWeightLowLPt=0;
+  if (_GJetsZPtWeightLowLPtEl<0) _GJetsZPtWeightLowLPtEl=0;
+  if (_GJetsZPtWeightLowLPtMu<0) _GJetsZPtWeightLowLPtMu=0;
+*/
   // get photon phi weight
   if (_doGJetsSkimAddPhiWeight) {
     _GJetsPhiWeight = _gjets_h_photon_phi_weight->GetBinContent(_gjets_h_photon_phi_weight->FindBin(_llnunu_l1_phi));

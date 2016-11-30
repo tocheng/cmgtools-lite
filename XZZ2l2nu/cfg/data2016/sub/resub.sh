@@ -1,6 +1,6 @@
 #!/bin/sh
 
-dir="gjetsdt_h_v2v3"
+dir="gjets_left"
 queue="1nd"
 
 # need to check your jobs with the expected n root files and n pck files

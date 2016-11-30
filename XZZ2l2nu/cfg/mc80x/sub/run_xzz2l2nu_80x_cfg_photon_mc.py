@@ -116,15 +116,23 @@ if test==1:
     #selectedComponents = dataSamples
     #selectedComponents = mcSamples
     #selectedComponents = SinglePhoton
+    #selectedComponents = MajorGJetsMC
+    #selectedComponents = OtherGJetsMC
+    #selectedComponents = backgroundSamples 
     #selectedComponents = [SinglePhoton_Run2016D_PromptReco_v2]
     #selectedComponents = [SinglePhoton_Run2016G_PromptReco_v1]
     #selectedComponents = [SinglePhoton_Run2016F_PromptReco_v1]
     #selectedComponents = [GJet_Pt_20toInf_DoubleEMEnriched]
-    selectedComponents = [GJet_Pt_20to40_DoubleEMEnriched, GJet_Pt_40toInf_DoubleEMEnriched]
+    #selectedComponents = [GJet_Pt_40toInf_DoubleEMEnriched]
+    #selectedComponents = [GJet_Pt_20to40_DoubleEMEnriched, GJet_Pt_40toInf_DoubleEMEnriched]
     #selectedComponents = [GJet_Pt_20toInf_DoubleEMEnriched, GJet_Pt_20to40_DoubleEMEnriched, GJet_Pt_40toInf_DoubleEMEnriched]
     #selectedComponents = [SingleMuon_Run2015D_Promptv4,SingleElectron_Run2015D_Promptv4]
     #selectedComponents = [SingleMuon_Run2015C_25ns_16Dec]
     #selectedComponents = [SingleMuon_Run2016B_PromptReco_v2] 
+    #selectedComponents = [GJets_HT40to100,GJets_HT100to200,GJets_HT200to400,GJets_HT400to600,GJets_HT600toInf,]
+    #selectedComponents = [GJets_HT40to100]
+    #selectedComponents = [QCD_HT100to200]
+    selectedComponents = [QCD_HT200to300]
     #selectedComponents = SingleMuon+SingleElectron
     #selectedComponents = [SingleMuon_Run2016B_PromptReco_v2,SingleElectron_Run2016B_PromptReco_v2] 
     #selectedComponents = [SingleMuon_Run2016D_PromptReco_v2,SingleElectron_Run2016D_PromptReco_v2] 
@@ -141,8 +149,9 @@ if test==1:
     #selectedComponents = [BulkGravToZZToZlepZhad_narrow_800]
     for c in selectedComponents:
         #c.files = c.files[3:10]
-        c.splitFactor = (len(c.files)/5 if len(c.files)>5 else 1)
+        #c.splitFactor = (len(c.files)/5 if len(c.files)>5 else 1)
         #c.splitFactor = 1
+        c.splitFactor = len(c.files)
         #c.triggers=triggers_1mu_noniso
         #c.triggers=triggers_1e_noniso
 
@@ -158,16 +167,24 @@ output_service = cfg.Service(
     )
 outputService.append(output_service)
 
+
+from PhysicsTools.Heppy.utils.cmsswPreprocessor import CmsswPreprocessor
+preprocessor = CmsswPreprocessor("pogRecipes.py")
+
 from PhysicsTools.HeppyCore.framework.eventsfwlite import Events
-from CMGTools.TTHAnalysis.tools.EOSEventsWithDownload import EOSEventsWithDownload
-event_class = EOSEventsWithDownload
 event_class = Events
-if getHeppyOption("nofetch"):
-    event_class = Events
 config = cfg.Config( components = selectedComponents,
                      sequence = sequence,
                      services = [],
+                     preprocessor=preprocessor, #this would run cmsRun before running Heppy
                      events_class = event_class)
+
+# and the following runs the process directly if running as with python filename.py  
+if __name__ == '__main__':
+    from PhysicsTools.HeppyCore.framework.looper import Looper
+    looper = Looper( 'Loop', config, nPrint = 5,nEvents=300)
+    looper.loop()
+    looper.write()
 
 
 

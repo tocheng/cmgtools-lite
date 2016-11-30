@@ -277,7 +277,7 @@ class XZZLeptonAnalyzer( Analyzer ):
         allelectrons = map( Electron, self.handles['electrons'].product() )
 
         # pre-selection with kinematic cut
-        allelectrons = [el for el in allelectrons if el.pt()>35.0 and abs(el.eta())<2.5]
+        allelectrons = [el for el in allelectrons if el.pt()>20.0 and abs(el.eta())<2.5]
 
         # fill EA for rho-corrected isolation
         for ele in allelectrons:

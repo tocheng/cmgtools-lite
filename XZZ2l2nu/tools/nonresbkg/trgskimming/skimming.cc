@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
   // out_tree
   TTree* tree_out = tree->CloneTree(0);
 
-  TFile* ftrg = TFile::Open("trigereff12p9.root");
+  TFile* ftrg = TFile::Open("trigeff_el.root");
   TH2D* mul1pteta=(TH2D*)ftrg->Get("mul1pteta");
   TH2D* mul2pteta=(TH2D*)ftrg->Get("mul2pteta");
   TH2D* ell1pteta=(TH2D*)ftrg->Get("ell1pteta");

@@ -14,7 +14,7 @@
 #include <string>
 #include <vector>
 #include <ctime>
-
+#include "TROOT.h"
 
 int main(int argc, char** argv) {
 
@@ -130,6 +130,19 @@ int main(int argc, char** argv) {
   //tree->SetBranchStatus("llnunu_l2_*smear*", 0);
   //tree->SetBranchStatus("llnunu_l2_*JER*",0);
   //tree->SetBranchStatus("llnunu_l2_*Smear*",0); 
+
+  tree->SetBranchStatus("llnunu_l2_t1*",0); 
+  if (!isData){
+    tree->SetBranchStatus("llnunu_l2_t1XYPt", 1); 
+    tree->SetBranchStatus("llnunu_l2_t1XYPhi", 1); 
+    tree->SetBranchStatus("llnunu_l2_t1XYSumEt", 1); 
+    tree->SetBranchStatus("llnunu_l2_t1SmearPt", 1); 
+    tree->SetBranchStatus("llnunu_l2_t1SmearPhi", 1); 
+    tree->SetBranchStatus("llnunu_l2_t1SmearSumEt", 1); 
+    tree->SetBranchStatus("llnunu_l2_t1Pt_*", 1); 
+    tree->SetBranchStatus("llnunu_l2_t1Phi_*", 1); 
+  }
+
   if (!isData) {
     //tree->SetBranchStatus("HLT_*",0); 
     tree->SetBranchStatus("genX_*",0); 
@@ -166,7 +179,17 @@ int main(int argc, char** argv) {
     tree->SetBranchStatus("genNeu*",1);
   }
 
-
+  // remove other HLT only keep useful ones
+  tree->SetBranchStatus("HLT_*", 0);
+  // if MC remove all HLT
+  if (isData){
+    tree->SetBranchStatus("HLT_MU", 1);
+    tree->SetBranchStatus("HLT_MU50", 1);
+    tree->SetBranchStatus("HLT_MUv2", 1);
+    tree->SetBranchStatus("HLT_ELE", 1);
+    tree->SetBranchStatus("HLT_ELE115", 1);
+    tree->SetBranchStatus("HLT_ELEv2", 1);
+  }
   // alias
   tree->SetAlias("muselec", "(abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13&&abs(llnunu_l1_l1_eta)<2.4&&abs(llnunu_l1_l2_eta)<2.4&&llnunu_l1_l1_pt>20&&llnunu_l1_l2_pt>20&&(llnunu_l1_l1_highPtID>0.99||llnunu_l1_l2_highPtID>0.99))");
   tree->SetAlias("elselec", "(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11&&abs(llnunu_l1_l1_eta)<2.5&&abs(llnunu_l1_l2_eta)<2.5&&llnunu_l1_l1_pt>20&&llnunu_l1_l2_pt>20)");
@@ -179,14 +202,38 @@ int main(int argc, char** argv) {
   //tree->SetAlias("selecv0", "(hlt&&metfilter&&(muselec||elselec))");
   tree->SetAlias("selecv0", "(metfilter&&(muselec||elselec))");
 
-  //TTree* tree_out = tree->CloneTree(-1);
-  TTree* tree_out = tree->CopyTree("selecv0");
+  char ftmp1_name[1000];
+  sprintf(ftmp1_name, "%s_tmp1.root", outputfile.c_str() );
+  TFile* ftmp1 = TFile::Open(ftmp1_name, "recreate");
+  TTree* tree_tmp1 = tree->CopyTree("selecv0");
+
+  // remove further useless branches
+  tree_tmp1->SetBranchStatus("Flag_*", 0);
+
+  if (isData) {
+    tree_tmp1->SetBranchStatus("llnunu_l1_l1_hasgen", 0);
+    tree_tmp1->SetBranchStatus("llnunu_l1_l1_isfromX", 0);
+    tree_tmp1->SetBranchStatus("llnunu_l1_l2_hasgen", 0);
+    tree_tmp1->SetBranchStatus("llnunu_l1_l2_isfromX", 0);
+    tree_tmp1->SetBranchStatus("ngenjet", 0);
+    tree_tmp1->SetBranchStatus("ngenZ", 0);
+    tree_tmp1->SetBranchStatus("ngenX", 0);
+
+  }
+
+
+  foutput->cd();
+  TTree* tree_out = tree_tmp1->CloneTree(-1);
 
 
   foutput->cd();
   tree_out->Write();
   foutput->Close();
   finput->Close();
+
+  char line[1000];
+  sprintf(line, ".! rm %s", ftmp1_name);
+  gROOT->ProcessLine(line);
 
 
   now = time(0);

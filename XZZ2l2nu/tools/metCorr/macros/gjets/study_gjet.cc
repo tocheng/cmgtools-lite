@@ -26,10 +26,11 @@
 int main(int argc, char** argv) {
 
 
-  TFile* file1 = TFile::Open("/home/heli/XZZ/80X_20161029_light_Skim/DYJetsToLL_M50_BIG_NoRecoil.root");
-  TFile* file2 = TFile::Open("/home/heli/XZZ/80X_20161029_GJets_light_Skim/SinglePhoton_Run2016B2H_ReReco_33fbinv_NoRecoil.root");
+  //TFile* file1 = TFile::Open("/home/heli/XZZ/80X_20161029_light_Skim/DYJetsToLL_M50_BIG_NoRecoil.root");
+  TFile* file1 = TFile::Open("/home/heli/XZZ/80X_20161029_light_Skim/DYJetsToLL_M50_BIG_ResBos_NoRecoil.root");
+  TFile* file2 = TFile::Open("/home/heli/XZZ/80X_20161029_GJets_light_Skim/SinglePhoton_Run2016B2H_ReReco_36p22fbinv_NoRecoil.root");
 
-  std::string outtag="study_gjets_data_b2h33fbinv";
+  std::string outtag="study_gjets_data_b2h36p22fbinv_v4resbos";
 
   // yields:
 
@@ -92,8 +93,11 @@ int main(int argc, char** argv) {
   std::string cuts_lepaccept_lowlpt="((abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13&&llnunu_l1_l1_pt>20&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID==1||llnunu_l1_l2_highPtID==1))";
   cuts_lepaccept_lowlpt+="||(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11&&llnunu_l1_l1_pt>20&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.5))";
   std::string cuts_zmass="(llnunu_l1_mass>70&&llnunu_l1_mass<110)";
-  std::string cuts_loose_z="("+metfilter+"&&"+cuts_lepaccept+"&&"+cuts_zmass+")";
-  std::string cuts_loose_z_lowlpt="("+metfilter+"&&"+cuts_lepaccept_lowlpt+"&&"+cuts_zmass+")";
+  // metfilter applied in preskim already
+  //std::string cuts_loose_z="("+metfilter+"&&"+cuts_lepaccept+"&&"+cuts_zmass+")";
+  //std::string cuts_loose_z_lowlpt="("+metfilter+"&&"+cuts_lepaccept_lowlpt+"&&"+cuts_zmass+")";
+  std::string cuts_loose_z="("+cuts_lepaccept+"&&"+cuts_zmass+")";
+  std::string cuts_loose_z_lowlpt="("+cuts_lepaccept_lowlpt+"&&"+cuts_zmass+")";
 
 
   std::string base_selec =  cuts_loose_z;
@@ -105,18 +109,22 @@ int main(int argc, char** argv) {
   std::string base_selec_lowlpt_mu = "(" + cuts_loose_z_lowlpt + "&&(abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13))";
 
   // add weight
-  std::string weight_selec = std::string("*(genWeight/SumWeights*ZPtWeight*puWeight68075*1921.8*3)");
-  std::string weight_selec_up = std::string("*(genWeight/SumWeights*ZPtWeight_up*puWeight68075*1921.8*3)");
-  std::string weight_selec_dn = std::string("*(genWeight/SumWeights*ZPtWeight_dn*puWeight68075*1921.8*3)");
+  std::string weight_selec = std::string("*(genWeight/SumWeights*ZPtWeight*puWeightmoriondMC*1921.8*3)");
+  std::string weight_selec_up = std::string("*(genWeight/SumWeights*ZPtWeight_up*puWeightmoriondMC*1921.8*3)");
+  std::string weight_selec_dn = std::string("*(genWeight/SumWeights*ZPtWeight_dn*puWeightmoriondMC*1921.8*3)");
   // rho weight
   //std::string rhoweight_selec = std::string("*(0.602*exp(-0.5*pow((rho-8.890)/6.187,2))+0.829*exp(-0.5*pow((rho-21.404)/10.866,2)))");
   //std::string rhoweight_selec = "*(0.232+0.064*rho)";  // for b-g 27.22fb-l
   //std::string rhoweight_selec = "*(0.038+0.118*rho-4.329e-03*rho*rho+1.011e-04*rho*rho*rho)"; // for b-h 29.53 fb-1
-  std::string rhoweight_selec = "*(0.019+0.114*rho+-4.705e-03*rho*rho+1.491e-04*rho*rho*rho)"; // for b-h 33.59 fb-1
+  //std::string rhoweight_selec = "*(0.019+0.114*rho+-4.705e-03*rho*rho+1.491e-04*rho*rho*rho)"; // for b-h 33.59 fb-1
+  std::string rhoweight_selec = "*(0.32+0.42*TMath::Erf((rho-4.16)/4.58)+0.31*TMath::Erf((rho+115.00)/29.58))"; // for b-h 36.22 fb-1
   //std::string rhoweight_selec = "*(1)";
   // scale factors
-  std::string effsf_selec = std::string("*(trgsf*isosf*idsf*trksf)");
-  std::string effsf_selec_lowlpt = std::string("*(isosf*idsf*trksf)");
+  // temporary remove tracking eff scale factors
+  //std::string effsf_selec = std::string("*(trgsf*isosf*idsf*trksf)");
+  //std::string effsf_selec_lowlpt = std::string("*(isosf*idsf*trksf)");
+  std::string effsf_selec = std::string("*(trgsf*isosf*idsf)");
+  std::string effsf_selec_lowlpt = std::string("*(isosf*idsf)");
 
   // selec, cuts + weights
   std::string zjet_selec = base_selec + weight_selec + rhoweight_selec + effsf_selec;
@@ -153,10 +161,12 @@ int main(int argc, char** argv) {
   //std::string gjet_selec = "("+metfilter+"&&HLT_PHOTONIDISO&&flag2)";
   //std::string gjet_selec = "(phi>-1&&phi<2&&fabs(eta)<1.0)"; // input ntuple preselected. 
   //std::string gjet_selec = "(1)"; // input ntuple preselected. 
-  std::string gjet_selec = "(1)*(GJetsRhoWeight)"; // input ntuple preselected. 
+  std::string gjet_selec = "(1)*(GJetsRhoWeight*GJetsPreScaleWeight)"; // input ntuple preselected. 
 
   //Double_t ZPtBins[] = {0,1.25,2.5,3.75,5,6.25,7.5,8.75,10,11.25,12.5,15,17.5,20,25,30,35,40,45,50,60,70,80,90,100,110,130,150,170,190,220,250,400,1000};
-  Double_t ZPtBins[] = {20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,65,70,75,80,85,90,95,100,105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200,215,220,225,230,235,240,245,250,255,260,265,270,275,280,285,290,295,300,350,400,500,700,3000};
+  //Double_t ZPtBins[] = {0,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,65,70,75,80,85,90,95,100,105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200,215,220,225,230,235,240,245,250,255,260,265,270,275,280,285,290,295,300,350,400,500,700,3000};
+  //Double_t ZPtBins[] = {0,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,65,70,75,80,85,90,95,100,110,120,130,140,150,160,170,180,190,200,220,240,245,260,280,300,350,500,1000,3000};
+  Double_t ZPtBins[] = {0,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,65,70,75,80,85,90,95,100,110,120,130,140,160,180,200,240,280,320,400,600,1000};
   Int_t NZPtBins = sizeof(ZPtBins)/sizeof(ZPtBins[0]) - 1;
   Double_t ZMassBins[] = {50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180};
   Int_t NZMassBins = sizeof(ZMassBins)/sizeof(ZMassBins[0]) - 1;

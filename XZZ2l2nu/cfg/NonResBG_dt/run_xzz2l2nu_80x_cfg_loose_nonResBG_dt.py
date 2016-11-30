@@ -80,6 +80,7 @@ if test==1:
     #selectedComponents = SingleMuon[:4]
     #selectedComponents = MuonEG[4:]
     selectedComponents = MuonEG23Sep2016
+    #selectedComponents = [MuonEG_Run2016H_PromptReco_v1,MuonEG_Run2016H_PromptReco_v2,MuonEG_Run2016H_PromptReco_v3]
     #selectedComponents = [SingleMuon_Run2016D_PromptReco_v2,SingleElectron_Run2016D_PromptReco_v2] 
     #selectedComponents = [MuonEG_Run2015D_16Dec] #MuEG
     #selectedComponents = [RSGravToZZToZZinv_narrow_800]
@@ -91,7 +92,7 @@ if test==1:
     #selectedComponents = [BulkGravToZZ_narrow_800]
     #selectedComponents = [BulkGravToZZToZlepZhad_narrow_800]
     for c in selectedComponents:
-        #c.files = c.files[:3]
+        #c.files = c.files[3:6]
         #c.splitFactor = (len(c.files)/5 if len(c.files)>5 else 1)
         c.splitFactor = len(c.files)
         #c.splitFactor = 1

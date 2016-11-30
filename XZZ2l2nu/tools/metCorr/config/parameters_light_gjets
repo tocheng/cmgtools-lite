@@ -37,8 +37,11 @@ n_test: -1
 # n entries interval between which print once entry number
 n_interval: 1000000
 
-# use slimmed tree or not
+# tree branch config
 useLightTree: true
+storeErr: false
+removeHLTFlag: true
+removeMETFlag: true
 
 # tree selection string
 selection: (1)
@@ -54,16 +57,16 @@ storeOldBranches: false
 #  ╠═╝║ ║  ║║║║╣ ║║ ╦╠═╣ ║ ╚═╗
 #  ╩  ╚═╝  ╚╩╝╚═╝╩╚═╝╩ ╩ ╩ ╚═╝
 #====================================================================
-addPUWeights: false
+addPUWeights: true
 
 # PU input files directory
 PUInputDir: data/pileup
 
 # PU input tags, "puWeight<tag>" branches will be added
-PUTags: 67921, 68075, 69200 
+PUTags: 67921, 68075, 69200, moriondMC 
 
 # PU input root files, one-to-one correspnding to the tags above
-PUInputFileNames: pileup_MC_80x_271036-276811_67921.root, pileup_MC_80x_271036-276811_68075.root, pileup_MC_80x_271036-276811_69200.root
+PUInputFileNames: pileup_MC_80x_271036-276811_67921.root, pileup_MC_80x_271036-276811_68075.root, pileup_MC_80x_271036-276811_69200.root, mcpileupmoriond.root
 
 # PU weight hist name
 PUWeightHistName: puweight_dtmc
@@ -76,10 +79,11 @@ PUWeightHistName: puweight_dtmc
 #====================================================================
 doGJetsSkim: true
 doGJetsSkimAddPhiWeight: false
-GJetsSkimInputFileName: data/gjets/study_gjets_data_b2h29fbinv_newFilterLepVeto.root
+#GJetsSkimInputFileName: data/gjets/study_gjets_data_b2h36p22fbinv.root
+GJetsSkimInputFileName: data/gjets/study_gjets_data_b2h36p22fbinv_v4resbos.root
 
 GJetsSkimPhiWeightInputFileName: data/gjets/gjet_photon_phi_weight.root
-GJetsSkimRhoWeightInputFileName: data/gjets/get_rho_weight_33fbinv.root
+GJetsSkimRhoWeightInputFileName: data/gjets/get_rho_weight_36p22_psWt.root
 
 
 
@@ -108,6 +112,22 @@ ZZCorrectionQcdInputFileName: data/zzcorr/zzqcd.root
 #====================================================================
 doJEC: false
 doJER: false
+
+JECParTxt_DATA_L2L3Residual: data/jec2016/Spring16_25nsV6_DATA_L2L3Residual_AK4PFchs.txt
+JECParTxt_DATA_L3Absolute:   data/jec2016/Spring16_25nsV6_DATA_L3Absolute_AK4PFchs.txt
+JECParTxt_DATA_L2Relative:   data/jec2016/Spring16_25nsV6_DATA_L2Relative_AK4PFchs.txt
+JECParTxt_DATA_L1FastJet:    data/jec2016/Spring16_25nsV6_DATA_L1FastJet_AK4PFchs.txt
+JECParTxt_DATA_Uncertainty:  data/jec2016/Spring16_25nsV6_DATA_Uncertainty_AK4PFchs.txt
+
+JECParTxt_MC_L2L3Residual: data/jec2016/Spring16_25nsV6_MC_L2L3Residual_AK4PFchs.txt
+JECParTxt_MC_L3Absolute:   data/jec2016/Spring16_25nsV6_MC_L3Absolute_AK4PFchs.txt
+JECParTxt_MC_L2Relative:   data/jec2016/Spring16_25nsV6_MC_L2Relative_AK4PFchs.txt
+JECParTxt_MC_L1FastJet:    data/jec2016/Spring16_25nsV6_MC_L1FastJet_AK4PFchs.txt
+JECParTxt_MC_Uncertainty:  data/jec2016/Spring16_25nsV6_MC_Uncertainty_AK4PFchs.txt
+
+JERParTxt_Reso_DATA: data/jer2016/Spring16_25nsV6_DATA_PtResolution_AK4PFchs.txt
+JERParTxt_Reso_MC:   data/jer2016/Spring16_25nsV6_MC_PtResolution_AK4PFchs.txt
+JERParTxt_SF_MC:     data/jer2016/Spring16_25nsV6_MC_SF_AK4PFchs.txt
 
 #====================================================================
 #  ╦═╗╔═╗╦ ╦╔═╗╦╔═╗╦ ╦╔╦╗  ╔╦╗╦ ╦╦╔═╗╔╦╗╔═╗
@@ -159,13 +179,17 @@ doRecoilUseSmooth: true
 doRecoilUseSmoothGraph: true
 
 # Input files
-RecoilInputFileNameData_all: data/recoil/SingleEMU_Run2016B2H29fbinv_PromptReco_met_para_study_ZSelecLowLPt.root
-RecoilInputFileNameData_mu: data/recoil/SingleEMU_Run2016B2H29fbinv_PromptReco_met_para_study_ZSelecLowLPt_mu.root
-RecoilInputFileNameData_el: data/recoil/SingleEMU_Run2016B2H29fbinv_PromptReco_met_para_study_ZSelecLowLPt_el.root
+RecoilInputFileNameData_all: data/recoil/SingleEMU_Run2016B2H_ReReco_36p1fbinv_met_para_study_ZSelecLowLPt.root
+RecoilInputFileNameData_mu: data/recoil/SingleEMU_Run2016B2H_ReReco_36p1fbinv_met_para_study_ZSelecLowLPt_mu.root
+RecoilInputFileNameData_el: data/recoil/SingleEMU_Run2016B2H_ReReco_36p1fbinv_met_para_study_ZSelecLowLPt_el.root
 
-RecoilInputFileNameMC_all: data/recoil/DYJetsToLL_M50_BIG_NoRecoil_DtB2H29fbinv_met_para_study_ZSelecLowLPt.root
-RecoilInputFileNameMC_mu:  data/recoil/DYJetsToLL_M50_BIG_NoRecoil_DtB2H29fbinv_met_para_study_ZSelecLowLPt_mu.root
-RecoilInputFileNameMC_el:  data/recoil/DYJetsToLL_M50_BIG_NoRecoil_DtB2H29fbinv_met_para_study_ZSelecLowLPt_el.root
+RecoilInputFileNameMC_all: data/recoil/DYJetsToLL_M50_BIG_NoRecoil_RhoWt_met_para_study_ZSelecLowLPt.root
+RecoilInputFileNameMC_mu:  data/recoil/DYJetsToLL_M50_BIG_NoRecoil_RhoWt_met_para_study_ZSelecLowLPt_mu.root
+RecoilInputFileNameMC_el:  data/recoil/DYJetsToLL_M50_BIG_NoRecoil_RhoWt_met_para_study_ZSelecLowLPt_el.root
+#RecoilInputFileNameMC_all: data/recoil/DYJetsToLL_M50_BIG_NoRecoil_met_para_study_ZSelecLowLPt.root
+#RecoilInputFileNameMC_mu:  data/recoil/DYJetsToLL_M50_BIG_NoRecoil_met_para_study_ZSelecLowLPt_mu.root
+#RecoilInputFileNameMC_el:  data/recoil/DYJetsToLL_M50_BIG_NoRecoil_met_para_study_ZSelecLowLPt_el.root
+
 
 RecoilInputFileNameMCLO_all: data/recoil/DYJetsToLL_M50_MGMLM_Ext1_NoRecoil_NoRhoWt_met_para_study_ZSelecLowLPt.root
 RecoilInputFileNameMCLO_mu: data/recoil/DYJetsToLL_M50_MGMLM_Ext1_NoRecoil_NoRhoWt_met_para_study_ZSelecLowLPt_mu.root

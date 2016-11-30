@@ -109,6 +109,12 @@ bool _useLightTree = true;
 // store errs
 bool _storeErr = true;
 
+// store HLT flags
+bool _removeHLTFlag = false;
+
+// store MET flags
+bool _removeMETFlag = false;
+
 // tree selection string
 std::string _selection = "(1)";
 
@@ -440,6 +446,12 @@ TH1D* _gjets_h_zpt_ratio_mu;
 TH1D* _gjets_h_zpt_lowlpt_ratio;
 TH1D* _gjets_h_zpt_lowlpt_ratio_el;
 TH1D* _gjets_h_zpt_lowlpt_ratio_mu;
+TGraphErrors* _gjets_gr_zpt_ratio;
+TGraphErrors* _gjets_gr_zpt_ratio_el;
+TGraphErrors* _gjets_gr_zpt_ratio_mu;
+TGraphErrors* _gjets_gr_zpt_lowlpt_ratio;
+TGraphErrors* _gjets_gr_zpt_lowlpt_ratio_el;
+TGraphErrors* _gjets_gr_zpt_lowlpt_ratio_mu;
 std::vector< std::vector< TH1D* > > _gjets_h_zmass_zpt_zrap_1d_vec;
 std::vector< std::vector< TH1D* > > _gjets_h_zmass_zpt_zrap_el_1d_vec;
 std::vector< std::vector< TH1D* > > _gjets_h_zmass_zpt_zrap_mu_1d_vec;
@@ -545,8 +557,14 @@ Float_t _GJetsWeight_dn, _GJetsWeightEl_dn, _GJetsWeightMu_dn;
 Float_t _GJetsWeightLowLPt, _GJetsWeightLowLPtEl, _GJetsWeightLowLPtMu;
 Float_t _GJetsZPtWeight, _GJetsZPtWeightEl, _GJetsZPtWeightMu;
 Float_t _GJetsZPtWeightLowLPt, _GJetsZPtWeightLowLPtEl, _GJetsZPtWeightLowLPtMu;
+Int_t   _PreScale22, _PreScale30, _PreScale36, _PreScale50, _PreScale75, _PreScale90, _PreScale120, _PreScale165;
+Float_t _GJetsPreScaleWeight;
 Float_t _gjet_mt, _gjet_l1_pt, _gjet_l1_eta, _gjet_l1_rapidity, _gjet_l1_phi;
-Int_t _gjet_l1_idCutBased;
+Int_t   _gjet_l1_idCutBased;
+Int_t   _gjet_l1_trigerob_HLTbit;
+Float_t _gjet_l1_trigerob_pt, _gjet_l1_trigerob_eta, _gjet_l1_trigerob_phi;
+Int_t   _llnunu_l1_trigerob_HLTbit;
+Float_t _llnunu_l1_trigerob_pt, _llnunu_l1_trigerob_eta, _llnunu_l1_trigerob_phi;
 Float_t _gjet_l2_pt, _gjet_l2_phi, _gjet_l2_sumEt, _gjet_l2_rawPt, _gjet_l2_rawPhi, _gjet_l2_rawSumEt;
 Float_t _gjet_l2_genPhi, _gjet_l2_genEta;
 Float_t _llnunu_mt_el, _llnunu_l1_mass_el;

@@ -14,16 +14,17 @@ outdir=/home/heli/XZZ/80X_20161029_light
 #samples="ggZZ*"
 #samples="ZZ*"
 #samples="WW*"
-samples="WZ*"
+#samples="WZ*"
 #samples="ZZTo2L2Nu"
 #samples="TT*"
 #samples="WJets*"
 #samples="Bulk*"
-#samples="DYJetsToLL_M50_BIG"
+samples="DYJetsToLL_M50_BIG"
 #samples="DYJetsToLL_M50_BIG_JEC"
 #samples="WWToLNuQQ_BIG"
 #samples="SingleEMU_Run2016B2H_ReReco_33fbinv"
 #samples="SingleEMU_Run2016B2H_ReReco_36p1fbinv"
+#samples="SingleEMU_Run2016H_PromptReco_new"
 #indir=/data2/XZZ2/80X_20161018
 #outdir=/home/heli/XZZ/80X_20161018_light
 #samples="SingleEMU_Run2016B2H29fbinv_PromptReco"
@@ -71,9 +72,11 @@ do
   do
     if [[ ${dd2} != *"vvTree"* ]]; then
       #echo $dd2;
-      ddo2="${dd2/$indir/$outdir} "
-      echo "cp -rp $dd2 $ddo2 " 
-      cp -rp $dd2 $ddo2
+      #ddo2="${dd2/$indir/$outdir} "
+      #echo "cp -rp $dd2 $ddo2 " 
+      #cp -rp $dd2 $ddo2
+      echo "cp -rp $dd2 $ddo/ " 
+      cp -rp $dd2 $ddo/
     fi
   done;
 
@@ -82,6 +85,7 @@ do
 #  echo "cp -rp $ttin $ddo/"
 #  cp -rp $ttin $ddo/
   mkdir -p $ddo/vvTreeProducer
+  rm -f $ddo/vvTreeProducer/tree.root
   echo "mv $ddo/vvTreeProducer/tree_light.root $ddo/vvTreeProducer/tree.root"
   mv $ddo/vvTreeProducer/tree_light.root $ddo/vvTreeProducer/tree.root
 done
