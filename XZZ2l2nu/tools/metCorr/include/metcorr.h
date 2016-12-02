@@ -465,7 +465,8 @@ TH1D* _gjets_h_photon_phi_weight;
 TFile* _gjet_rho_weight_input_file;
 TH2D* _gjet_h_rho_weight;
 
-
+/// MT Unc from MET Unc
+bool _doMTUnc;
 
 //======================================================
 // ╔╦╗╦═╗╔═╗╔═╗  ╦  ╦╔═╗╦═╗╦╔═╗╔╗ ╦  ╔═╗╔═╗
@@ -489,10 +490,35 @@ Float_t _rho;
 
 // leptons, Z, MET
 Float_t _llnunu_mt;
+// alternative mts
+Float_t _llnunu_mt_JetEnUp,_llnunu_mt_JetEnDn, _llnunu_mt_JetResUp,_llnunu_mt_JetResDn;
+Float_t _llnunu_mt_MuonEnUp,_llnunu_mt_MuonEnDn; 
+Float_t _llnunu_mt_ElectronEnUp,_llnunu_mt_ElectronEnDn;
+Float_t _llnunu_mt_PhotonEnUp,_llnunu_mt_PhotonEnDn;
+Float_t _llnunu_mt_TauEnUp,_llnunu_mt_TauEnDn;
+Float_t _llnunu_mt_UnclusterUp,_llnunu_mt_UnclusterDn;
+//////////////////// 
 Float_t _llnunu_l1_mass, _llnunu_l1_mt;
 Float_t _llnunu_l1_pt, _llnunu_l1_phi, _llnunu_l1_eta;
 Float_t _llnunu_l1_deltaPhi, _llnunu_l1_deltaR, _llnunu_l1_rapidity;
 Float_t _llnunu_l2_pt, _llnunu_l2_phi;
+// alternative METs
+// _llnunu_l2_t1Phi_JetEnDn
+Float_t _llnunu_l2_pt_JetEnUp, _llnunu_l2_phi_JetEnUp;
+Float_t _llnunu_l2_pt_JetEnDn, _llnunu_l2_phi_JetEnDn;
+Float_t _llnunu_l2_pt_JetResUp, _llnunu_l2_phi_JetResUp;
+Float_t _llnunu_l2_pt_JetResDn, _llnunu_l2_phi_JetResDn;
+Float_t _llnunu_l2_pt_MuonEnUp, _llnunu_l2_phi_MuonEnUp;
+Float_t _llnunu_l2_pt_MuonEnDn, _llnunu_l2_phi_MuonEnDn;
+Float_t _llnunu_l2_pt_ElectronEnUp, _llnunu_l2_phi_ElectronEnUp;
+Float_t _llnunu_l2_pt_ElectronEnDn, _llnunu_l2_phi_ElectronEnDn;
+Float_t _llnunu_l2_pt_PhotonEnUp, _llnunu_l2_phi_PhotonEnUp;
+Float_t _llnunu_l2_pt_PhotonEnDn, _llnunu_l2_phi_PhotonEnDn;
+Float_t _llnunu_l2_pt_TauEnUp, _llnunu_l2_phi_TauEnUp;
+Float_t _llnunu_l2_pt_TauEnDn, _llnunu_l2_phi_TauEnDn;
+Float_t _llnunu_l2_pt_UnclusterUp, _llnunu_l2_phi_UnclusterUp;
+Float_t _llnunu_l2_pt_UnclusterDn, _llnunu_l2_phi_UnclusterDn;
+///////////////////
 Float_t _llnunu_l2_sumEt, _llnunu_l2_rawPt, _llnunu_l2_rawPhi, _llnunu_l2_rawSumEt;
 Float_t _llnunu_l2_genPhi, _llnunu_l2_genEta;
 Float_t _llnunu_l1_l1_pt, _llnunu_l1_l1_eta, _llnunu_l1_l1_phi;
@@ -636,6 +662,11 @@ void prepareGJetsSkim();
 
 // do gjets skim
 void doGJetsSkim();
+
+// do MT alternatives
+float MTCalc(float pt, float phi);
+
+void doMTUnc();
 
 // 
 
