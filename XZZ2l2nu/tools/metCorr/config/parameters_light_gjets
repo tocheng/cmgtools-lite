@@ -100,6 +100,11 @@ doMuonPtRecalib: false
 MuonPtRecalibInputForData: data/kalman/DATA_80X_13TeV.root
 MuonPtRecalibInputForMC: data/kalman/MC_80X_13TeV.root
 
+doElecPtRecalibSimpleData: false
+ElecPtRecalibSimpleDataScale: 1.00971
+
+doMuonPtRecalibSimpleData: false
+MuonPtRecalibSimpleDataScale: 0.999744
 
 #====================================================================
 #  ╔═╗╔╦╗  ╔═╗╔═╗  ╔═╗╔═╗╦═╗╦═╗╔═╗╔═╗╔╦╗╦╔═╗╔╗╔
@@ -183,9 +188,12 @@ doRecoilUseSmooth: true
 doRecoilUseSmoothGraph: true
 
 # Input files
-RecoilInputFileNameData_all: data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_dtHLT.root
-RecoilInputFileNameData_mu:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_dtHLT_mu.root
-RecoilInputFileNameData_el:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_dtHLT_el.root
+RecoilInputFileNameData_all: data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib_met_para_study_dtHLT.root
+RecoilInputFileNameData_mu:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib_met_para_study_dtHLT_mu.root
+RecoilInputFileNameData_el:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib_met_para_study_dtHLT_el.root
+#RecoilInputFileNameData_all: data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_dtHLT.root
+#RecoilInputFileNameData_mu:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_dtHLT_mu.root
+#RecoilInputFileNameData_el:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_dtHLT_el.root
 #RecoilInputFileNameData_all: data/recoil/SingleEMU_Run2016B2H_ReReco_36p22fbinv_met_para_study_ZSelecLowLPt.root
 #RecoilInputFileNameData_mu:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p22fbinv_met_para_study_ZSelecLowLPt_mu.root
 #RecoilInputFileNameData_el:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p22fbinv_met_para_study_ZSelecLowLPt_el.root

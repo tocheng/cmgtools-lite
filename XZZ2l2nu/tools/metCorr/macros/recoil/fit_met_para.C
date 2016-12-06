@@ -3,7 +3,7 @@
 std::string channel = "all";
 bool doMC = false;
 bool doGJets = true;
-bool useZSelecLowLPt = false;
+bool useZSelecLowLPt = true;
 bool useNPUCut = false; // true for MC 80x old mc, not for data, not for GJets
 bool useEffSf = false;
 bool mcTrgSf = false;
@@ -26,7 +26,8 @@ std::vector< std::string > mcfiles = {
  };
 
 std::vector< std::string > dtfiles = {
-    "SingleEMU_Run2016B2H_ReReco_36p46"
+    "SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib"
+//    "SingleEMU_Run2016B2H_ReReco_36p46"
  };
 
 std::vector< std::string > gjfiles = {

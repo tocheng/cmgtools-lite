@@ -123,6 +123,12 @@ int main(int argc, char** argv) {
     // do muon re-calib
     if (_doMuonPtRecalib && !_doGJetsSkim) doMuonPtRecalib(); 
 
+    // do elec re-calib simple
+    if (_doElecPtRecalibSimpleData && _isData && !_doGJetsSkim) doElecPtRecalibSimpleData(); 
+
+    // do muon re-calib simple
+    if (_doMuonPtRecalibSimpleData && _isData && !_doGJetsSkim) doMuonPtRecalibSimpleData(); 
+
     //  addDyZPtWeight
     if (_addDyZPtWeight && !_isData && _isDyJets && !_doGJetsSkim) addDyZPtWeight();
 
@@ -225,6 +231,12 @@ void readConfigFile()
     _MuonPtRecalibInputForData = parm.GetString("MuonPtRecalibInputForData", "data/kalman/DATA_80X_13TeV.root");
     _MuonPtRecalibInputForMC = parm.GetString("MuonPtRecalibInputForMC", "data/kalman/MC_80X_13TeV.root");
   }
+
+  _doElecPtRecalibSimpleData = parm.GetBool("doElecPtRecalibSimpleData", kFALSE);
+  _ElecPtRecalibSimpleDataScale = parm.GetDouble("ElecPtRecalibSimpleDataScale", 1.0);
+  _doMuonPtRecalibSimpleData = parm.GetBool("doMuonPtRecalibSimpleData", kFALSE);
+  _MuonPtRecalibSimpleDataScale = parm.GetDouble("MuonPtRecalibSimpleDataScale", 1.0);
+
 
   //========================
   // Add DYJet gen reweight 
@@ -700,6 +712,75 @@ void doMuonPtRecalib()
                -_llnunu_l1_pt*cos(_llnunu_l1_phi)*_llnunu_l2_pt*cos(_llnunu_l2_phi)
                -_llnunu_l1_pt*sin(_llnunu_l1_phi)*_llnunu_l2_pt*sin(_llnunu_l2_phi)));
   }
+}
+
+
+// do elec pt recalib simple
+void doElecPtRecalibSimpleData()
+{
+  if (abs(_llnunu_l1_l1_pdgId)==11&&abs(_llnunu_l1_l2_pdgId)==11 && _isData ) {
+    _llnunu_l1_l1_pt = Float_t(_llnunu_l1_l1_pt*_ElecPtRecalibSimpleDataScale);
+    _llnunu_l1_l2_pt = Float_t(_llnunu_l1_l2_pt*_ElecPtRecalibSimpleDataScale);
+
+    TLorentzVector l1v, l2v;
+    l1v.SetPtEtaPhiM(_llnunu_l1_l1_pt, _llnunu_l1_l1_eta, _llnunu_l1_l1_phi, _llnunu_l1_l1_mass);
+    l2v.SetPtEtaPhiM(_llnunu_l1_l2_pt, _llnunu_l1_l2_eta, _llnunu_l1_l2_phi, _llnunu_l1_l2_mass);
+    TLorentzVector zv = l1v+l2v;
+    _llnunu_l1_l1_rapidity = (Float_t)l1v.Rapidity();
+    _llnunu_l1_l2_rapidity = (Float_t)l2v.Rapidity();
+    _llnunu_l1_pt = (Float_t)zv.Pt();
+    _llnunu_l1_eta = (Float_t)zv.Eta();
+    _llnunu_l1_phi = (Float_t)zv.Phi();
+    _llnunu_l1_rapidity = (Float_t)zv.Rapidity();
+    _llnunu_l1_deltaPhi = (Float_t)l1v.DeltaPhi(l2v);
+    _llnunu_l1_deltaR = (Float_t)l1v.DeltaR(l2v);
+    _llnunu_l1_mt = (Float_t)zv.Mt();
+    _llnunu_l1_mass = (Float_t)zv.M();
+
+    TVector2 vec_met(_llnunu_l2_pt*cos(_llnunu_l2_phi), _llnunu_l2_pt*sin(_llnunu_l2_phi));
+
+    Float_t et1 = TMath::Sqrt(_llnunu_l1_mass*_llnunu_l1_mass + _llnunu_l1_pt*_llnunu_l1_pt);
+    Float_t et2 = TMath::Sqrt(_llnunu_l1_mass*_llnunu_l1_mass + _llnunu_l2_pt*_llnunu_l2_pt);
+    _llnunu_mt = TMath::Sqrt(2.0*_llnunu_l1_mass*_llnunu_l1_mass+2.0*(et1*et2
+               -_llnunu_l1_pt*cos(_llnunu_l1_phi)*_llnunu_l2_pt*cos(_llnunu_l2_phi)
+               -_llnunu_l1_pt*sin(_llnunu_l1_phi)*_llnunu_l2_pt*sin(_llnunu_l2_phi)));
+  } 
+  
+
+}
+
+// do muon pt recalib simple
+void doMuonPtRecalibSimpleData()
+{
+  if (abs(_llnunu_l1_l1_pdgId)==13&&abs(_llnunu_l1_l2_pdgId)==13 && _isData ) {
+    _llnunu_l1_l1_pt = Float_t(_llnunu_l1_l1_pt*_MuonPtRecalibSimpleDataScale);
+    _llnunu_l1_l2_pt = Float_t(_llnunu_l1_l2_pt*_MuonPtRecalibSimpleDataScale);
+
+    TLorentzVector l1v, l2v;
+    l1v.SetPtEtaPhiM(_llnunu_l1_l1_pt, _llnunu_l1_l1_eta, _llnunu_l1_l1_phi, _llnunu_l1_l1_mass);
+    l2v.SetPtEtaPhiM(_llnunu_l1_l2_pt, _llnunu_l1_l2_eta, _llnunu_l1_l2_phi, _llnunu_l1_l2_mass);
+    TLorentzVector zv = l1v+l2v;
+    _llnunu_l1_l1_rapidity = (Float_t)l1v.Rapidity();
+    _llnunu_l1_l2_rapidity = (Float_t)l2v.Rapidity();
+    _llnunu_l1_pt = (Float_t)zv.Pt();
+    _llnunu_l1_eta = (Float_t)zv.Eta();
+    _llnunu_l1_phi = (Float_t)zv.Phi();
+    _llnunu_l1_rapidity = (Float_t)zv.Rapidity();
+    _llnunu_l1_deltaPhi = (Float_t)l1v.DeltaPhi(l2v);
+    _llnunu_l1_deltaR = (Float_t)l1v.DeltaR(l2v);
+    _llnunu_l1_mt = (Float_t)zv.Mt();
+    _llnunu_l1_mass = (Float_t)zv.M();
+
+    TVector2 vec_met(_llnunu_l2_pt*cos(_llnunu_l2_phi), _llnunu_l2_pt*sin(_llnunu_l2_phi));
+
+    Float_t et1 = TMath::Sqrt(_llnunu_l1_mass*_llnunu_l1_mass + _llnunu_l1_pt*_llnunu_l1_pt);
+    Float_t et2 = TMath::Sqrt(_llnunu_l1_mass*_llnunu_l1_mass + _llnunu_l2_pt*_llnunu_l2_pt);
+    _llnunu_mt = TMath::Sqrt(2.0*_llnunu_l1_mass*_llnunu_l1_mass+2.0*(et1*et2
+               -_llnunu_l1_pt*cos(_llnunu_l1_phi)*_llnunu_l2_pt*cos(_llnunu_l2_phi)
+               -_llnunu_l1_pt*sin(_llnunu_l1_phi)*_llnunu_l2_pt*sin(_llnunu_l2_phi)));
+  }
+
+
 }
 
 

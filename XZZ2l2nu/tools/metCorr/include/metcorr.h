@@ -153,6 +153,15 @@ std::string _MuonPtRecalibInputForData, _MuonPtRecalibInputForMC;
 // not from config file:
 KalmanMuonCalibrator* _muCalib;
 
+// electron simple recalib
+bool _doElecPtRecalibSimpleData = false;
+// elec escale
+double _ElecPtRecalibSimpleDataScale = 1.0;
+
+// muon simple recalib
+bool _doMuonPtRecalibSimpleData = false;
+// muon escale
+double _MuonPtRecalibSimpleDataScale = 1.0;
 
 //========================
 // Add DYJet gen reweight 
@@ -601,6 +610,13 @@ void prepareMuonPtRecalib();
 
 // do muon re-calib
 void doMuonPtRecalib();
+
+// do elec re-calib, simple version
+void doElecPtRecalibSimpleData();
+
+// do muon re-calib, simple version
+void doMuonPtRecalibSimpleData();
+
 
 // prepare inputs for addDyZPtWeight
 void prepareDyZPtWeight();
