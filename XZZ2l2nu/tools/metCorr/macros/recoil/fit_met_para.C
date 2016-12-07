@@ -2,13 +2,13 @@
 
 std::string channel = "all";
 bool doMC = false;
-bool doGJets = true;
-bool useZSelecLowLPt = true;
+bool doGJets = false;
+bool useZSelecLowLPt = false;
 bool useNPUCut = false; // true for MC 80x old mc, not for data, not for GJets
 bool useEffSf = false;
 bool mcTrgSf = false;
 bool dtTrgSf = false;
-bool dtHLT = false;
+bool dtHLT = true;
 
 // recipe:
 // 1.) useZSelecLowLPt can well reproduce the results with full cuts (useZSelec) + HLT (dtHLT or dtTrgSf or mcTrgSf) 
@@ -26,8 +26,8 @@ std::vector< std::string > mcfiles = {
  };
 
 std::vector< std::string > dtfiles = {
-    "SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib"
-//    "SingleEMU_Run2016B2H_ReReco_36p46"
+//    "SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib"
+    "SingleEMU_Run2016B2H_ReReco_36p46"
  };
 
 std::vector< std::string > gjfiles = {
@@ -257,7 +257,8 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
 
 
   // other control plots
-  Double_t ZPtBins[] = {0,2,4,6,8,10,12,14,16,18,20,22,24,26,28, 30, 35, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 220, 240, 260, 300,  5000 };
+  Double_t ZPtBins[] = {0,2,4,6,8,10,12,14,16,18,20,22,24,26,28, 30, 35, 40, 50, 60, 70, 80, 90, 100, 120, 140, 160, 180, 220, 260, 300, 500, 5000 };
+  //Double_t ZPtBins[] = {0,2,4,6,8,10,12,14,16,18,20,22,24,26,28, 30, 35, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 220, 240, 260, 300,  5000 };
   //Double_t ZPtBins[] = {0,2,4,6,8,10,12,14,16,18,20,22,24,26,28, 30, 35, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 220, 240, 260, 300, 500, 5000 };
   //Double_t ZPtBins[] = {0,2,4,6,8,10,12,14,16,18,20,22,24,26,28, 30, 35, 40, 50, 60, 80, 100, 150, 250, 5000 };
   //Double_t ZPtBins[] = {0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,35,36,36.5,37,37.5,38,38.5,39,39.5,40,41,42,43,44,45,46,47,48,49,50,55,60,65,70,75,80,85,90,95,100,105, 110,120,125, 130,140,150,160,180,200,300,5000 };

@@ -41,9 +41,9 @@ do
   outfile="${outputdir}/${infile/$inputdir\//}"
 
   # options for outputs
-  outfile="${outfile/\/vvTreeProducer\/tree/_ResBos_Rc36p46ReCalibwHLT}"
+  #outfile="${outfile/\/vvTreeProducer\/tree/_ResBos_Rc36p46ReCalibwHLT}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_ResBos_Rc36p46wHLT}"
-  #outfile="${outfile/\/vvTreeProducer\/tree/_ResBos_Rc36p46}"
+  outfile="${outfile/\/vvTreeProducer\/tree/_ResBos_Rc36p46ReCalib}"
   #outfile="${outfile/\/vvTreeProducer\/tree/}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_ResBos_NoRecoil}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_test}"

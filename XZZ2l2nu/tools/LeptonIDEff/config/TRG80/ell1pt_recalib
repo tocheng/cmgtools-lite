@@ -3,9 +3,11 @@
 //string InRootFile /home/heli/XZZ/80X_20160825_light_Skim/SingleEMU_Run2016BCD_PromptReco.root
 //string InRootFile /home/heli/XZZ/80X_20161029_light_Skim/SingleEMU_Run2016B2H_ReReco_33fbinv.root
 string InRootFile /home/heli/XZZ/80X_20161029_light_Skim/SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib.root
-string OutRootFile ell1pteta_36p46recalib.root
+string OutRootFile ell1pt_36p46recalib.root
+//string InRootFile /home/heli/XZZ/80X_20161029_light_Skim/SingleEMU_Run2016B2H_ReReco_36p46.root
+//string OutRootFile ell1pt_36p46.root
 
-int DepVarDimension 2
+int DepVarDimension 1
 
 // based on electron or event?
 bool ElectronBasis false
@@ -21,10 +23,9 @@ string WeightVarName (genWeight*puWeight)
 string TreeName tree
 
 string_array DepVarNames llnunu_l1_l1_pt llnunu_l1_l1_pt
-//double_array DepVarBins 35 55 75 90 95 100 101 102 103 104 105 107.5 110 112.5 115 117.5 120 200 3000
 double_array DepVarBins 35 55 75 90 95 100 101 102 103 104 105 107.5 110 112.5 115 117.5 120 125  130  150  200 250 300 400 600 3000
-string_array DepVarNames2 abs(llnunu_l1_l1_eta) abs(llnunu_l1_l1_eta)
-double_array DepVarBins2 0 .5 0.9 1.2 2.1 2.5
+//string_array DepVarNames2 abs(llnunu_l1_l1_eta) abs(llnunu_l1_l1_eta)
+//double_array DepVarBins2 0 .5 0.9 1.2 2.1 2.5
 
 string_array HistNames hnp hnm
 
