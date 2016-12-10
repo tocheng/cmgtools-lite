@@ -134,8 +134,8 @@ int main(int argc, char** argv) {
     // add eff scale factors
     if (_addEffScale && (!_isData || _addEffScaleOnData) && !_doGJetsSkim ) addEffScale();
 
-    // add alternative MT due to MET unc
-    if (_doMTUnc) doMTUnc();
+    // add alternative MT due to MET unc NOT for data
+    if (_doMTUnc && !_isData) doMTUnc();
 
     // fill output tree
     _tree_out->Fill(); 
@@ -323,6 +323,8 @@ void readConfigFile()
     _GJetsSkimRhoWeightInputFileName = parm.GetString("GJetsSkimRhoWeightInputFileName", "data/gjets/get_rho_weight.root");
   }
 
+  _doMTUnc = parm.GetBool("doMTUnc", kTRUE);
+
 }
 
 
@@ -461,7 +463,7 @@ bool  prepareTrees()
     }
   }
 
-  if(_doMTUnc && !_doGJetsSkim && !_isData){
+  if(_doMTUnc && !_doGJetsSkim && !_isData && !_isDyJets && !_isDyJetsLO && !_doGJetsSkim){
 
       _tree_in->SetBranchAddress("llnunu_l2_t1Pt_JetEnUp", &_llnunu_l2_pt_JetEnUp);
       _tree_in->SetBranchAddress("llnunu_l2_t1Pt_JetEnDn", &_llnunu_l2_pt_JetEnDn);
@@ -595,24 +597,6 @@ bool  prepareTrees()
     if (!_isData) {
       _tree_out->Branch("llnunu_l2_genPhi", &_llnunu_l2_genPhi, "llnunu_l2_genPhi/F");
       _tree_out->Branch("llnunu_l2_genEta", &_llnunu_l2_genEta, "llnunu_l2_genEta/F");
-
-      _tree_out->Branch("llnunu_mt_JetEnUp", &_llnunu_mt_JetEnUp, "llnunu_mt_JetEnUp/F");      
-      _tree_out->Branch("llnunu_mt_JetEnDn", &_llnunu_mt_JetEnDn, "llnunu_mt_JetEnDn/F");
-      _tree_out->Branch("llnunu_mt_JetResUp", &_llnunu_mt_JetResUp, "llnunu_mt_JetResUp/F");
-      _tree_out->Branch("llnunu_mt_JetResDn", &_llnunu_mt_JetResDn, "llnunu_mt_JetResDn/F");
-      _tree_out->Branch("llnunu_mt_MuonEnUp", &_llnunu_mt_MuonEnUp, "llnunu_mt_MuonEnUp/F");
-      _tree_out->Branch("llnunu_mt_MuonEnDn", &_llnunu_mt_MuonEnDn, "llnunu_mt_MuonEnDn/F");
-      _tree_out->Branch("llnunu_mt_ElectronEnUp", &_llnunu_mt_ElectronEnUp, "llnunu_mt_ElectronEnUp/F");
-      _tree_out->Branch("llnunu_mt_ElectronEnDn", &_llnunu_mt_ElectronEnDn, "llnunu_mt_ElectronEnDn/F");
-      _tree_out->Branch("llnunu_mt_TauEnUp", &_llnunu_mt_TauEnUp, "llnunu_mt_TauEnUp/F");
-      _tree_out->Branch("llnunu_mt_TauEnDn", &_llnunu_mt_TauEnDn, "llnunu_mt_TauEnDn/F");
-      _tree_out->Branch("llnunu_mt_PhotonEnUp", &_llnunu_mt_PhotonEnUp, "llnunu_mt_PhotonEnUp/F");
-      _tree_out->Branch("llnunu_mt_PhotonEnDn", &_llnunu_mt_PhotonEnDn, "llnunu_mt_PhotonEnDn/F");
-      _tree_out->Branch("llnunu_mt_TauEnUp", &_llnunu_mt_TauEnUp, "llnunu_mt_TauEnUp/F");
-      _tree_out->Branch("llnunu_mt_TauEnDn", &_llnunu_mt_TauEnDn, "llnunu_mt_TauEnDn/F");
-      _tree_out->Branch("llnunu_mt_UnclusterUp", &_llnunu_mt_UnclusterUp, "llnunu_mt_UnclusterUp/F");
-      _tree_out->Branch("llnunu_mt_UnclusterDn", &_llnunu_mt_UnclusterDn, "llnunu_mt_UnclusterDn/F");
-
     }
     if (_isData){
       _tree_out->Branch("GJetsPreScaleWeight", &_GJetsPreScaleWeight, "GJetsPreScaleWeight/F");
@@ -631,14 +615,14 @@ bool  prepareTrees()
   }
 
   // store alternative MT
-  if(_doMTUnc && !_isData){
+  if(_doMTUnc && !_isData ){
 
     _tree_out->Branch("llnunu_mt_JetEnUp", &_llnunu_mt_JetEnUp, "llnunu_mt_JetEnUp/F");
     _tree_out->Branch("llnunu_mt_JetEnDn", &_llnunu_mt_JetEnDn, "llnunu_mt_JetEnDn/F");
     _tree_out->Branch("llnunu_mt_JetResUp", &_llnunu_mt_JetResUp, "llnunu_mt_JetResUp/F");
     _tree_out->Branch("llnunu_mt_JetResDn", &_llnunu_mt_JetResDn, "llnunu_mt_JetResDn/F");
     _tree_out->Branch("llnunu_mt_MuonEnUp", &_llnunu_mt_MuonEnUp, "llnunu_mt_MuonEnUp/F");
-    _tree_out->Branch("llnunu_mt_MuonEnDn", &_llnunu_mt, "llnunu_mt/F");
+    _tree_out->Branch("llnunu_mt_MuonEnDn", &_llnunu_mt_MuonEnDn, "llnunu_mt_MuonEnDn/F");
     _tree_out->Branch("llnunu_mt_ElectronEnUp", &_llnunu_mt_ElectronEnUp, "llnunu_mt_ElectronEnUp/F");
     _tree_out->Branch("llnunu_mt_ElectronEnDn", &_llnunu_mt_ElectronEnDn, "llnunu_mt_ElectronEnDn/F");
     _tree_out->Branch("llnunu_mt_TauEnUp", &_llnunu_mt_TauEnUp, "llnunu_mt_TauEnUp/F");
@@ -651,6 +635,7 @@ bool  prepareTrees()
   }
 
   // _storeErr 
+  /*
   if (!_storeErr) {
     _tree_out->SetBranchStatus("llnunu_l2_t1*_*", 0);
     _tree_out->SetBranchStatus("*_err", 0);
@@ -658,6 +643,7 @@ bool  prepareTrees()
     _tree_out->SetBranchStatus("*_dn", 0);
 
   }
+  */
   // store HLT flags, only if not data
   if (_removeHLTFlag && !_isData ){
     _tree_out->SetBranchStatus("HLT_*", 0);
@@ -769,7 +755,9 @@ void doMuonPtRecalib()
 
 void doMTUnc(){
 
-    if(_doGJetsSkim){
+    if(!_doGJetsSkim && !_isDyJets && !_isDyJetsLO){
+
+        _llnunu_mt = MTCalc(_llnunu_l2_pt,_llnunu_l2_phi);
 
       	_llnunu_mt_JetEnUp = MTCalc(_llnunu_l2_pt_JetEnUp,_llnunu_l2_phi_JetEnUp);
       	_llnunu_mt_JetEnDn = MTCalc(_llnunu_l2_pt_JetEnDn,_llnunu_l2_phi_JetEnDn);
@@ -782,6 +770,9 @@ void doMTUnc(){
 
     	_llnunu_mt_ElectronEnUp = MTCalc(_llnunu_l2_pt_ElectronEnUp,_llnunu_l2_phi_ElectronEnUp);    
     	_llnunu_mt_ElectronEnDn = MTCalc(_llnunu_l2_pt_ElectronEnDn,_llnunu_l2_phi_ElectronEnDn);
+
+        _llnunu_mt_PhotonEnUp = MTCalc(_llnunu_l2_pt_PhotonEnUp,_llnunu_l2_phi_PhotonEnUp);
+        _llnunu_mt_PhotonEnDn = MTCalc(_llnunu_l2_pt_PhotonEnDn,_llnunu_l2_phi_PhotonEnDn);
 
     	_llnunu_mt_TauEnUp = MTCalc(_llnunu_l2_pt_TauEnUp,_llnunu_l2_phi_TauEnUp);    
     	_llnunu_mt_TauEnDn = MTCalc(_llnunu_l2_pt_TauEnDn,_llnunu_l2_phi_TauEnDn);
@@ -798,6 +789,8 @@ void doMTUnc(){
         _llnunu_mt_MuonEnDn = _llnunu_mt;
         _llnunu_mt_ElectronEnUp = _llnunu_mt;
         _llnunu_mt_ElectronEnDn = _llnunu_mt;
+        _llnunu_mt_PhotonEnUp = _llnunu_mt;
+        _llnunu_mt_PhotonEnDn = _llnunu_mt;
         _llnunu_mt_TauEnUp = _llnunu_mt;
         _llnunu_mt_TauEnDn = _llnunu_mt;
         _llnunu_mt_UnclusterUp = _llnunu_mt;

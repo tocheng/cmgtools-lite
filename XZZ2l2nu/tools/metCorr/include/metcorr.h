@@ -59,7 +59,6 @@ std::string _file_config_name;
 TFile* _file_in;
 TFile* _file_out;
 
-
 // input output root trees
 TTree* _tree_in;
 TTree* _tree_out;
