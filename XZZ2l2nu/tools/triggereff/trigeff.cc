@@ -27,7 +27,8 @@ int main(){
   //TFile* fin= new TFile("/home/heli/XZZ/80X_20161018_light/SingleEMU_Run2016B2H29fbinv_PromptReco/vvTreeProducer/tree.root");
   //TFile* fin= new TFile("/home/heli/XZZ/80X_20161029_light/SingleEMU_Run2016B2H_ReReco_33fbinv/vvTreeProducer/tree.root");
   //TFile* fin= new TFile("/home/heli/XZZ/80X_20161029_light/SingleEMU_Run2016B2H_ReReco_36p46/vvTreeProducer/tree.root");
-  TFile* fin= new TFile("/home/heli/XZZ/80X_20161029_light_Skim/SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib.root");
+  //TFile* fin= new TFile("/home/heli/XZZ/80X_20161029_light_Skim/SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib.root");
+  TFile* fin= new TFile("/home/heli/XZZ/80X_20161029_light_Skim/SingleEMU_Run2016B2H_ReReco_36p46.root");
 
   //TFile* fout = new TFile("trigeff_mu_datab2g.root", "recreate");
   //char outputplot[] = "trigeff_mu_datab2g.pdf";
@@ -37,8 +38,10 @@ int main(){
   //char outputplot[] = "trigeff_mu_datab2h29fbinv.pdf";
   //TFile* fout = new TFile("trigeff_mu_datab2h33fbinv.root", "recreate");
   //char outputplot[] = "trigeff_mu_datab2h33fbinv.pdf";
-  TFile* fout = new TFile("trigeff_mu_36p46recalib.root", "recreate");
-  char outputplot[] = "trigeff_mu_36p46recalib.pdf";
+  //TFile* fout = new TFile("trigeff_mu_36p46recalib.root", "recreate");
+  //char outputplot[] = "trigeff_mu_36p46recalib.pdf";
+  TFile* fout = new TFile("trigeff_mu_36p46.root", "recreate");
+  char outputplot[] = "trigeff_mu_36p46.pdf";
   TCanvas* plots = new TCanvas("plots", "plots");
   char name[10000];
   sprintf(name, "%s[", outputplot);

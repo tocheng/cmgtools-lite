@@ -179,6 +179,9 @@ bool _addDyZPtWeightUseFunction = true;
 // for NLO MC use function from resbos nnlo gluon resummation
 bool _addDyZPtWeightUseResummationFunction = true;
 
+// for NLO MC use function from resbos nnlo gluon resummation but refitted to data
+bool _addDyZPtWeightUseResummationRefitFunction = true;
+
 // for LO MC to NLO, also use function  
 bool _addDyZPtWeightLOUseFunction = true;
 
@@ -196,6 +199,7 @@ TFile* _fdyzpt;
 TH1D*  _hdyzpt_dtmc_ratio;
 TF1*   _fcdyzpt_dtmc_ratio;
 TF1*   _fcdyzpt_dtmc_ratio_resbos;
+TF1*   _fcdyzpt_dtmc_ratio_resbos_refit;
 TH1D*  _hdyzpt_mc_nlo_lo_ratio;
 TF1*   _fcdyzpt_mc_nlo_lo_ratio;
 
@@ -437,36 +441,30 @@ TFile* _gjets_input_file;
 TH2D* _gjets_h_zmass_zpt;
 TH2D* _gjets_h_zmass_zpt_el;
 TH2D* _gjets_h_zmass_zpt_mu;
-TH3D* _gjets_h_zmass_zpt_zrap;
-TH3D* _gjets_h_zmass_zpt_zrap_el;
-TH3D* _gjets_h_zmass_zpt_zrap_mu;
-TH2D* _gjets_h_zpt_zrap_ratio;
-TH2D* _gjets_h_zpt_zrap_ratio_el;
-TH2D* _gjets_h_zpt_zrap_ratio_mu;
-TH2D* _gjets_h_zpt_zrap_ratio_up;
-TH2D* _gjets_h_zpt_zrap_ratio_el_up;
-TH2D* _gjets_h_zpt_zrap_ratio_mu_up;
-TH2D* _gjets_h_zpt_zrap_ratio_dn;
-TH2D* _gjets_h_zpt_zrap_ratio_el_dn;
-TH2D* _gjets_h_zpt_zrap_ratio_mu_dn;
-TH2D* _gjets_h_zpt_zrap_lowlpt_ratio;
-TH2D* _gjets_h_zpt_zrap_lowlpt_ratio_el;
-TH2D* _gjets_h_zpt_zrap_lowlpt_ratio_mu;
 TH1D* _gjets_h_zpt_ratio;
 TH1D* _gjets_h_zpt_ratio_el;
 TH1D* _gjets_h_zpt_ratio_mu;
 TH1D* _gjets_h_zpt_lowlpt_ratio;
 TH1D* _gjets_h_zpt_lowlpt_ratio_el;
 TH1D* _gjets_h_zpt_lowlpt_ratio_mu;
+TH1D* _gjets_h_zpt_ratio_up;
+TH1D* _gjets_h_zpt_ratio_dn;
+TH1D* _gjets_h_zpt_ratio_el_up;
+TH1D* _gjets_h_zpt_ratio_el_dn;
+TH1D* _gjets_h_zpt_ratio_mu_up;
+TH1D* _gjets_h_zpt_ratio_mu_dn;
 TGraphErrors* _gjets_gr_zpt_ratio;
 TGraphErrors* _gjets_gr_zpt_ratio_el;
 TGraphErrors* _gjets_gr_zpt_ratio_mu;
 TGraphErrors* _gjets_gr_zpt_lowlpt_ratio;
 TGraphErrors* _gjets_gr_zpt_lowlpt_ratio_el;
 TGraphErrors* _gjets_gr_zpt_lowlpt_ratio_mu;
-std::vector< std::vector< TH1D* > > _gjets_h_zmass_zpt_zrap_1d_vec;
-std::vector< std::vector< TH1D* > > _gjets_h_zmass_zpt_zrap_el_1d_vec;
-std::vector< std::vector< TH1D* > > _gjets_h_zmass_zpt_zrap_mu_1d_vec;
+TGraphErrors* _gjets_gr_zpt_ratio_up;
+TGraphErrors* _gjets_gr_zpt_ratio_dn;
+TGraphErrors* _gjets_gr_zpt_ratio_el_up;
+TGraphErrors* _gjets_gr_zpt_ratio_el_dn;
+TGraphErrors* _gjets_gr_zpt_ratio_mu_up;
+TGraphErrors* _gjets_gr_zpt_ratio_mu_dn;
 std::vector< TH1D* > _gjets_h_zmass_zpt_1d_vec;
 std::vector< TH1D* > _gjets_h_zmass_zpt_el_1d_vec;
 std::vector< TH1D* > _gjets_h_zmass_zpt_mu_1d_vec;
@@ -563,12 +561,10 @@ Float_t _trgsf_up, _trgsf_dn, _idisotrksf_up, _idisotrksf_dn,_etrgsf_up, _etrgsf
 // for GJets samples
 Float_t _GJetsPhiWeight;
 Float_t _GJetsRhoWeight;
-Float_t _GJetsWeight, _GJetsWeightEl, _GJetsWeightMu;
-Float_t _GJetsWeight_up, _GJetsWeightEl_up, _GJetsWeightMu_up;
-Float_t _GJetsWeight_dn, _GJetsWeightEl_dn, _GJetsWeightMu_dn;
-Float_t _GJetsWeightLowLPt, _GJetsWeightLowLPtEl, _GJetsWeightLowLPtMu;
 Float_t _GJetsZPtWeight, _GJetsZPtWeightEl, _GJetsZPtWeightMu;
 Float_t _GJetsZPtWeightLowLPt, _GJetsZPtWeightLowLPtEl, _GJetsZPtWeightLowLPtMu;
+Float_t _GJetsZPtWeight_up, _GJetsZPtWeightEl_up, _GJetsZPtWeightMu_up;
+Float_t _GJetsZPtWeight_dn, _GJetsZPtWeightEl_dn, _GJetsZPtWeightMu_dn;
 Int_t   _PreScale22, _PreScale30, _PreScale36, _PreScale50, _PreScale75, _PreScale90, _PreScale120, _PreScale165;
 Float_t _GJetsPreScaleWeight;
 Float_t _gjet_mt, _gjet_l1_pt, _gjet_l1_eta, _gjet_l1_rapidity, _gjet_l1_phi;

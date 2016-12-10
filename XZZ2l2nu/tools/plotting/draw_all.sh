@@ -1,7 +1,8 @@
 #!/bin/sh
 
 
-tag="Test_36p46_DYRes_Rc36p46wHLT_DtReCalib_"
+tag="Test_36p46_DYResRefit_Rc36p46_DtReCalib_"
+#tag="Test_36p46_DYRes_Rc36p46_DtReCalib_"
 #ag="Test_36p46_DYRes_Rc36p46wHLT_"
 #channels="mu"
 channels="mu el"

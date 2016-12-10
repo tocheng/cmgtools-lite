@@ -1,7 +1,9 @@
 #!/bin/sh
 
 
-tag="Test1_GJets_ResBos_BkgSub_Rc36p46ReCalib_DtReCalib_"
+tag="Test1_GJets_ResBosRefit_BkgSubNoZWt_Rc36p46ReCalib_DtReCalib_"
+#tag="Test1_GJets_ResBosRefit_NoBkgSub_Rc36p46ReCalib_DtReCalib_"
+#tag="Test1_GJets_ResBosRefit_BkgSub_Rc36p46ReCalib_DtReCalib_"
 #tag="Test1_GJets_ResBos_BkgSub_Rc36p46wHLT_"
 #tag="Test1_GJets_ResBos_NoBkgSub_Rc36p46wHLT_"
 

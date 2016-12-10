@@ -103,7 +103,7 @@ MuonPtRecalibInputForMC: data/kalman/MC_80X_13TeV.root
 doElecPtRecalibSimpleData: true
 ElecPtRecalibSimpleDataScale: 1.00971
 
-doMuonPtRecalibSimpleData: true
+doMuonPtRecalibSimpleData: false
 MuonPtRecalibSimpleDataScale: 0.999744
 
 #====================================================================
@@ -154,7 +154,10 @@ addDyZPtWeight: true
 addDyZPtWeightUseFunction: true
 
 # for NLO MC use Resummation function from Resbos instead of from data.
-addDyZPtWeightUseResummationFunction: false
+addDyZPtWeightUseResummationFunction: true
+
+# for NLO MC use Resummation function from Resbos BUT refitted to data.
+addDyZPtWeightUseResummationRefitFunction: true
 
 # for LO MC to NLO, also use function  
 addDyZPtWeightLOUseFunction: true
@@ -165,7 +168,7 @@ addDyNewGenWeight: true
 
 # input root file
 #DyZPtWeightInputFileName: data/zptweight/dyjets_zpt_weight_lo_nlo_sel.root
-DyZPtWeightInputFileName: data/zptweight/dyjets_zpt_weight_lo_nlo_genAcc.root
+DyZPtWeightInputFileName: data/zptweight/dyjets_zpt_weight_lo_nlo_genAccV2.root
 
 
 
@@ -179,7 +182,7 @@ DyZPtWeightInputFileName: data/zptweight/dyjets_zpt_weight_lo_nlo_genAcc.root
 #====================================================================
 
 # default use histogram
-doRecoil: false
+doRecoil: true
 
 # use smoothed hist
 doRecoilUseSmooth: true
@@ -248,7 +251,8 @@ EffScaleInputFileName_Trk_Mu: data/eff/muontrackingsf.root
 #EffScaleInputFileName_Trg_El: data/eff/trigereff_el_b2h33fbinv.root
 EffScaleInputFileName_Trg_El: data/eff/eff_out_ell1pteta_36p46recalib.root
 #EffScaleInputFileName_Trg_Mu: data/eff/trigeff_mu_datab2h33fbinv.root
-EffScaleInputFileName_Trg_Mu: data/eff/trigeff_mu_36p46recalib.root
+#EffScaleInputFileName_Trg_Mu: data/eff/trigeff_mu_36p46recalib.root
+EffScaleInputFileName_Trg_Mu: data/eff/trigeff_mu_36p46.root
 
 
 

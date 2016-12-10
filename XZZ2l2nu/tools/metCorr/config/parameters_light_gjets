@@ -84,7 +84,9 @@ doGJetsSkim: true
 doGJetsSkimAddPhiWeight: false
 #GJetsSkimInputFileName: data/gjets/study_gjets_data_b2h36p22fbinv.root
 #GJetsSkimInputFileName: data/gjets/study_gjets_data_b2h36p22fbinv_v5resbos_norm.root
-GJetsSkimInputFileName: data/gjets/study_gjets_data_b2h36p22fbinv_v5resbos_norm_modify.root
+#GJetsSkimInputFileName: data/gjets/study_gjets_data_b2h36p22fbinv_v5resbos_norm_modify.root
+#GJetsSkimInputFileName: data/gjets/study_gjets_data_36p46_resbos_norm_npucut.root
+GJetsSkimInputFileName: data/gjets/study_gjets_data_36p46_resbosrefit_norm_npucut.root
 
 GJetsSkimPhiWeightInputFileName: data/gjets/gjet_photon_phi_weight.root
 GJetsSkimRhoWeightInputFileName: data/gjets/get_rho_weight_36p22_psWt.root

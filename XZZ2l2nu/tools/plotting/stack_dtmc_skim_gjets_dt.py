@@ -216,20 +216,18 @@ WJets.setFillProperties(1001,ROOT.kBlue-6)
 
 # parameters for GJets
 gdataLumi=36.46*1000
-gdataYield=3447971384.222
+gdataYield=3451449849.011390686 
 gdataFidXsec=gdataYield/gdataLumi
 
-zjetsFidXsecAll=158.50536907646062446
-zjetsFidXsecEl =2.0703970677230105757
-zjetsFidXsecMu =156.43497200873761699
-
-zjetsFidXsecAll_up=159.3345561421179184
-zjetsFidXsecEl_up =2.1132602740550670006
-zjetsFidXsecMu_up =157.22129586806292423
-zjetsFidXsecAll_dn=157.67618228330914576
-zjetsFidXsecEl_dn =2.0275338821661335054
-zjetsFidXsecMu_dn =155.64864840114299227
-
+zjetsFidXsecAll = 151.05786960709534128
+zjetsFidXsecEl =  1.8943343589531727034
+zjetsFidXsecMu =  149.16353524814221032
+zjetsFidXsecAll_up = 151.85434375709266419
+zjetsFidXsecAll_dn = 150.26139540596781785
+zjetsFidXsecEl_up = 1.9354105753681851709
+zjetsFidXsecEl_dn = 1.853258142538151132
+zjetsFidXsecMu_up = 149.91893318172452609
+zjetsFidXsecMu_dn = 148.40813726342966561
 
 
 # for GJets photon bkg subtraction
@@ -292,7 +290,8 @@ for sample in phymetSamples:
 ### the GJets data
 gdataPlotters=[]
 gdataSamples = [
-'SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_Rc36p46ReCalib',
+#'SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_Rc36p46ReCalib',
+'SinglePhoton_Run2016B2H_ReReco_36p46_ResBosRefit_Rc36p46ReCalib',
 ]
 
 
@@ -328,7 +327,8 @@ GJets.setFillProperties(1001,ROOT.kGreen+2)
 mczjetsPlotters=[]
 mczjetsSamples = [
 #'DYJetsToLL_M50_BIG_ResBos_NoRecoil',
-'DYJetsToLL_M50_BIG_ResBos_Rc36p22HLTPUcutEffSf',
+#'DYJetsToLL_M50_BIG_ResBos_Rc36p46',
+'DYJetsToLL_M50_BIG_ResBosRefit_Rc36p46',
 ]
 
 
