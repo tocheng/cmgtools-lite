@@ -132,7 +132,11 @@ if test==1:
     #selectedComponents = [GJets_HT40to100,GJets_HT100to200,GJets_HT200to400,GJets_HT400to600,GJets_HT600toInf,]
     #selectedComponents = [GJets_HT40to100]
     #selectedComponents = [QCD_HT100to200]
-    selectedComponents = [QCD_HT200to300]
+    #selectedComponents = [QCD_HT200to300]
+    #selectedComponents = [WJetsToLNu_HT100to200]
+    #selectedComponents = [WJetsToLNu_HT400to600]
+    #selectedComponents = WJetsToLNuHT
+    selectedComponents = [ZNuNuGJetsGt130,ZNuNuGJetsGt40Lt130,GJets_HT40to100]
     #selectedComponents = SingleMuon+SingleElectron
     #selectedComponents = [SingleMuon_Run2016B_PromptReco_v2,SingleElectron_Run2016B_PromptReco_v2] 
     #selectedComponents = [SingleMuon_Run2016D_PromptReco_v2,SingleElectron_Run2016D_PromptReco_v2] 
@@ -148,10 +152,10 @@ if test==1:
     #selectedComponents = [BulkGravToZZ_narrow_800]
     #selectedComponents = [BulkGravToZZToZlepZhad_narrow_800]
     for c in selectedComponents:
-        #c.files = c.files[3:10]
-        #c.splitFactor = (len(c.files)/5 if len(c.files)>5 else 1)
+        #c.files = c.files[:1]
         #c.splitFactor = 1
         c.splitFactor = len(c.files)
+        #c.splitFactor = (len(c.files)/5 if len(c.files)>5 else 1)
         #c.triggers=triggers_1mu_noniso
         #c.triggers=triggers_1e_noniso
 

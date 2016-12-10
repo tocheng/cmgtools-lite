@@ -390,8 +390,8 @@ Stack.doRatio(doRatio)
 tag+='_'
 
 if test: 
-    Stack.drawStack('nVert', cuts, str(lumi*1000), 70, 0.0, 70.0, titlex = "N vertices", units = "",output=tag+'nVert',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('rho', cuts, str(lumi*1000), 70, 0.0, 70.0, titlex = "#rho", units = "",output=tag+'rho',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('nVert', cuts, str(lumi*1000), 100, 0.0, 100.0, titlex = "N vertices", units = "",output=tag+'nVert',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('rho', cuts, str(lumi*1000), 55, 0.0, 55.0, titlex = "#rho", units = "",output=tag+'rho',outDir=outdir,separateSignal=sepSig)
     Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 75, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt',outDir=outdir,separateSignal=sepSig)
     Stack.drawStack('llnunu_l1_mass', cuts, str(lumi*1000), 50, 50, 150, titlex = "M(Z)", units = "GeV",output=tag+'zmass',outDir=outdir,separateSignal=sepSig)
     Stack.drawStack('llnunu_mt', cuts, str(lumi*1000), 55, 100.0, 1200.0, titlex = "M_{T}", units = "GeV",output=tag+'mt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
@@ -432,8 +432,8 @@ elif doSys:
     Stack.drawStack('llnunu_mt', cuts, str(lumi*1000), 300, 0.0, 3000.0, titlex = "M_{T}", units = "GeV",output=tag+'mt_zptdn',outDir=outdir,separateSignal=sepSig)
 
 else:
-    Stack.drawStack('nVert', cuts, str(lumi*1000), 70, 0.0, 70.0, titlex = "N vertices", units = "",output=tag+'nVert',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('rho', cuts, str(lumi*1000), 70, 0.0, 70.0, titlex = "#rho", units = "",output=tag+'rho',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('nVert', cuts, str(lumi*1000), 100, 0.0, 100.0, titlex = "N vertices", units = "",output=tag+'nVert',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('rho', cuts, str(lumi*1000), 55, 0.0, 55.0, titlex = "#rho", units = "",output=tag+'rho',outDir=outdir,separateSignal=sepSig)
     Stack.drawStack('llnunu_mt', cuts, str(lumi*1000), 100, 0.0, 3000.0, titlex = "M_{T}", units = "GeV",output=tag+'mt_high3',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
     Stack.drawStack('llnunu_mt', cuts, str(lumi*1000), 55, 100.0, 1200.0, titlex = "M_{T}", units = "GeV",output=tag+'mt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
     Stack.drawStack('llnunu_mt', cuts, str(lumi*1000), 50, 100.0, 600.0, titlex = "M_{T}", units = "GeV",output=tag+'mt_low',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)

@@ -65,80 +65,6 @@ DYJetsToLL_M50_Ext,
 ]
 
 
-GJetsMC=[
-GJets_HT40to100,
-GJets_HT100to200,
-GJets_HT200to400,
-GJets_HT400to600,
-GJets_HT600toInf,
-GJet_Pt_20toInf_DoubleEMEnriched,
-GJet_Pt_40toInf_DoubleEMEnriched,
-GJet_Pt_20to40_DoubleEMEnriched,
-TTGJets,
-ZNuNuGJetsGt130,
-ZNuNuGJetsGt40Lt130,
-WGToLNuG,
-QCD_HT100to200,
-QCD_HT200to300,
-QCD_HT200to300_ext,
-QCD_HT300to500,
-QCD_HT300to500_ext,
-QCD_HT500to700,
-QCD_HT500to700_ext,
-QCD_HT700to1000,
-QCD_HT700to1000_ext,
-QCD_HT1000to1500,
-QCD_HT1000to1500_ext,
-QCD_HT1500to2000,
-QCD_HT1500to2000_ext,
-QCD_HT2000toInf,
-QCD_HT2000toInf_ext,
-#QCD_Pt15to20_EMEnriched,
-QCD_Pt20to30_EMEnriched,
-QCD_Pt30to50_EMEnriched,
-QCD_Pt50to80_EMEnriched,
-QCD_Pt80to120_EMEnriched,
-QCD_Pt120to170_EMEnriched,
-QCD_Pt170to300_EMEnriched,
-QCD_Pt300toInf_EMEnriched,
-TToLeptons_tch_powheg,
-TBarToLeptons_tch_powheg,
-TBar_tWch,
-T_tWch,
-TGJets,
-TGJets_ext,
-#QCD_Pt10to15,
-QCD_Pt15to30,
-#QCD_Pt30to50,
-QCD_Pt50to80,
-QCD_Pt80to120,
-QCD_Pt120to170,
-QCD_Pt170to300,
-QCD_Pt300to470,
-QCD_Pt470to600,
-QCD_Pt600to800,
-QCD_Pt800to1000,
-QCD_Pt1000to1400,
-QCD_Pt1400to1800,
-QCD_Pt1800to2400,
-QCD_Pt2400to3200,
-#QCD_Pt3200toInf,
-ZJetsToNuNu_HT100to200,
-ZJetsToNuNu_HT100to200_ext,
-ZJetsToNuNu_HT200to400,
-ZJetsToNuNu_HT200to400_ext,
-ZJetsToNuNu_HT400to600,
-#ZJetsToNuNu_HT400to600_ext,
-#ZJetsToNuNu_HT600toInf,
-ZJetsToNuNu_HT600to800,
-#ZJetsToNuNu_HT600to800_ext,
-ZJetsToNuNu_HT800to1200,
-#ZJetsToNuNu_HT800to1200ext,
-ZJetsToNuNu_HT1200to2500,
-ZJetsToNuNu_HT1200to2500_ext,
-ZJetsToNuNu_HT2500toInf,
-#ZJetsToNuNu_HT2500toInf_ext,
-]
 
 MajorGJetsMC=[
 WJetsToLNu,
@@ -196,6 +122,21 @@ ZJetsToNuNu_HT1200to2500,
 ZJetsToNuNu_HT1200to2500_ext,
 ZJetsToNuNu_HT2500toInf,
 #ZJetsToNuNu_HT2500toInf_ext,
+WJetsToLNu_HT100to200,
+WJetsToLNu_HT100to200_ext,
+WJetsToLNu_HT200to400,
+WJetsToLNu_HT200to400_ext,
+WJetsToLNu_HT400to600,
+WJetsToLNu_HT400to600_ext,
+WJetsToLNu_HT600to800,
+WJetsToLNu_HT600to800_ext,
+WJetsToLNu_HT800to1200,
+WJetsToLNu_HT800to1200_ext,
+WJetsToLNu_HT1200to2500,
+WJetsToLNu_HT1200to2500_ext,
+WJetsToLNu_HT2500toInf,
+WJetsToLNu_HT2500toInf_ext,
+
 ]
 OtherGJetsMC=[
 QCD_Pt50to80,
@@ -211,6 +152,9 @@ QCD_Pt1400to1800,
 QCD_Pt1800to2400,
 QCD_Pt2400to3200,
 ]
+
+
+GJetsMC=MajorGJetsMC+OtherGJetsMC
 
 # signals
 signalSamples = [
@@ -406,7 +350,8 @@ silverJson = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/1
 #goldenJson = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-280385_13TeV_PromptReco_Collisions16_JSON_NoL1T_v2.txt'
 #goldenJson = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-282037_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt'
 #goldenJson = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-283685_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt'
-goldenJson = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt'
+#goldenJson = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt'
+goldenJson = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt'
 run_range = (271036,284044)
 
 jsonFile = goldenJson

@@ -1,10 +1,10 @@
 
 
 std::string channel = "all";
-bool doMC = true;
-bool doGJets = false;
-bool useZSelecLowLPt = true;
-bool useRhoCut = false;
+bool doMC = false;
+bool doGJets = true;
+bool useZSelecLowLPt = false;
+bool useNPUCut = false; // true for MC 80x old mc, not for data, not for GJets
 bool useEffSf = false;
 bool mcTrgSf = false;
 bool dtTrgSf = false;
@@ -17,66 +17,26 @@ bool dtHLT = false;
 // 4.) for GJets: doGJets=true, doMC=false, useZSelecLowLPt=true, useEffSf=false
 
 std::string inputdir = "/home/heli/XZZ/80X_20161029_light_Skim";
-//std::string inputdir = "/data2/XZZ2/80X_20161018_light_Skim";
-//std::string inputdir = "/home/heli/XZZ/80X_20161006_light_Skim";
-//std::string inputdir = "/home/heli/XZZ/80X_20160810_light_Skim";
-//std::string inputdir = "/home/heli/XZZ/80X_20160825_light_Skim";
-//std::string inputdir = "/home/heli/XZZ/80X_20160927_light_Skim";
 std::string filename;
 
-std::string outputdir = "./recoil_out6";
+std::string outputdir = "./recoil_out7";
 std::vector< std::string > channels = {"all", "mu", "el"};
 std::vector< std::string > mcfiles = {
     "DYJetsToLL_M50_BIG_ResBos_NoRecoil", 
  };
 
 std::vector< std::string > dtfiles = {
-    "SingleEMU_Run2016B2H_ReReco_36p22fbinv"
+    "SingleEMU_Run2016B2H_ReReco_36p46"
  };
 
 std::vector< std::string > gjfiles = {
-    "SinglePhoton_Run2016B2H29fbinv_PromptReco_newFilterLepVetoNoRecoil"
-    //"SinglePhoton_Run2016B2G_PromptReco_newFilterLepVetoNoRecoil"
-    //"SinglePhoton_Run2016B2G_PromptReco_RcDataB2GNewFilterLepVetol"
-    //"SinglePhoton_Run2016B2G_PromptReco_newFilterLepVetoNoRecoil"
-    //"SinglePhoton_Run2016BCD_PromptReco_newFilterLepVetoNoRecoil"
-    //"SinglePhoton_Run2016BCD_PromptReco_newFilterEtaPhiCutNoRecoil"
-    //"SinglePhoton_Run2016BCD_PromptReco_newFilterNoRecoil"
-    //"SinglePhoton_Run2016BCD_PromptReco_HLTFlag3F2SiEtaNoRecoil"
-    //"SinglePhoton_Run2016BCD_PromptReco_HLT_DtScale_Flag2"
-    //"SinglePhoton_Run2016BCD_PromptReco_HLTNoRecoil"
-    //"SinglePhoton_Run2016BCD_PromptReco_HLT_DtScale_RcSmBin"
-    //"SinglePhoton_Run2016BCD_PromptReco_HLT_DtScale"
-    //"SinglePhoton_Run2016BCD_PromptReco_HLTNo90NoRecoil"
-    //"SinglePhoton_Run2016BCD_PromptReco_HLTNo90_DtScale"
-    //"SinglePhoton_Run2016BCD_PromptReco_NoRecoil"
-    //"SinglePhoton_Run2016BCD_PromptReco_RcSmBin"
+    "SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil"
  };
 
 
 char name[1000];
 TCanvas* plots;
-//std::string tag0 = "_36p22";
-//std::string tag0 = "_RhoWt";
-//std::string tag0 = "_VtxWt";
 std::string tag0 = "";
-//std::string tag0 = "_newfilterlepveto";
-//std::string tag0 = "_newfilteretaphicut";
-//std::string tag0 = "_newfilter";
-//std::string tag0 = "_smbin";
-//std::string tag0 = "_smbin_id3";
-//std::string tag0 = "_smbin_id2";
-//std::string tag0 = "_hlt";
-//std::string tag0 = "_hltno75";
-//std::string tag0 = "_hlt_phvto";
-//std::string tag0 = "_hlt_flag2";
-//std::string tag0 = "_hlt_flag2_smbin";
-//std::string tag0 = "_hlt_flag3_f2_sIetaCut";
-//std::string tag0 = "_smbin_hlt_phvto_id3";
-//std::string tag0 = "_hltno90";
-//std::string tag0 = "_hlt_id2";
-//std::string tag0 = "_hlt_id3";
-//std::string tag0 = "_smbin_hlt";
 std::string base_selec;
 std::string lumiTag;
 
@@ -150,7 +110,7 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   // tags
   std::string tag = tag0+"_met_para_study";
   if (useZSelecLowLPt) tag += "_ZSelecLowLPt";
-  if (useRhoCut) tag += "_RhoCut";
+  if (useNPUCut) tag += "_NPUCut";
   if (doMC && useEffSf) tag += "_effSf";
   if ( (doMC && mcTrgSf) || (!doMC && dtTrgSf))  tag += "_trgSf";
   if (!doMC && dtHLT) tag += "_dtHLT";
@@ -172,12 +132,12 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   std::string cuts_loose_z_lowlpt="("+cuts_lepaccept_lowlpt+"&&"+cuts_zmass+")";
 
 
-  std::string cuts_rho="(rho<22)";
+  std::string cuts_npu="(nTrueInt<35)";
 
   base_selec =  cuts_loose_z;
   if (useZSelecLowLPt) base_selec =  cuts_loose_z_lowlpt;
 
-  if (useRhoCut) base_selec = base_selec+"&&"+cuts_rho;
+  if (useNPUCut) base_selec = base_selec+"&&"+cuts_npu;
 
   if (channel=="el") base_selec = base_selec+"&&(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11)";
   else if (channel=="mu") base_selec = base_selec+"&&(abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13)";
@@ -189,7 +149,7 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
 
   // add weight
   //std::string weight_selec = std::string("*(genWeight*ZPtWeight*puWeight68075/SumWeights*1921.8*3*12900.0)");
-  std::string weight_selec = std::string("*(genWeight*ZPtWeight*puWeightmoriondMC/SumWeights*1921.8*3*12900.0)");
+  std::string weight_selec = std::string("*(genWeight*ZPtWeight*puWeightmoriondMC/SumWeights*1921.8*3*36460.0)");
   // rho weight
   //std::string rhoweight_selec = std::string("*(0.602*exp(-0.5*pow((rho-8.890)/6.187,2))+0.829*exp(-0.5*pow((rho-21.404)/10.866,2)))");
   //std::string rhoweight_selec = std::string("*(0.232+0.064*rho)");
@@ -227,14 +187,21 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
     //base_selec = "("+metfilter+"&&HLT_PHOTONIDISO&&flag2)";
     //base_selec = "(phi>-1&&phi<2&&fabs(eta)<1.0)";
     base_selec = "(1)";
-    //if (channel=="el")  selec = base_selec+"*(GJetsZPtWeightLowLPtEl)";
-    //else if (channel=="mu") selec = base_selec+"*(GJetsZPtWeightLowLPtMu)";
-    //else  selec = base_selec+"*(GJetsZPtWeightLowLPt)";
-    if (channel=="el")  selec = base_selec+"*(GJetsWeightLowLPtEl)";
-    else if (channel=="mu") selec = base_selec+"*(GJetsWeightLowLPtMu)";
-    else  selec = base_selec+"*(GJetsWeightLowLPt)";
+    if (useZSelecLowLPt) {
+      if (channel=="el")  selec = base_selec+"*(GJetsZPtWeightLowLPtEl)";
+      else if (channel=="mu") selec = base_selec+"*(GJetsZPtWeightLowLPtMu)";
+      else  selec = base_selec+"*(GJetsZPtWeightLowLPt)";
+    }
+    else {
+      if (channel=="el")  selec = base_selec+"*(GJetsZPtWeightEl)";
+      else if (channel=="mu") selec = base_selec+"*(GJetsZPtWeightMu)";
+      else  selec = base_selec+"*(GJetsZPtWeight)";
+    }
+    //if (channel=="el")  selec = base_selec+"*(GJetsWeightLowLPtEl)";
+    //else if (channel=="mu") selec = base_selec+"*(GJetsWeightLowLPtMu)";
+    //else  selec = base_selec+"*(GJetsWeightLowLPt)";
 
-    selec = selec + "*(GJetsRhoWeight)";
+    selec = selec + "*(GJetsRhoWeight*GJetsPreScaleWeight)";
   }
   // style
   gROOT->ProcessLine(".x tdrstyle.C");
@@ -244,7 +211,7 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   gROOT->ProcessLine(name);
 
   // lumiTag for plotting
-  lumiTag = "CMS 13 TeV 2016 L=36.1 fb^{-1}";
+  lumiTag = "CMS 13 TeV 2016 L=36.46 fb^{-1}";
   //lumiTag = "CMS 13 TeV 2016 L=33.59 fb^{-1}";
   //lumiTag = "CMS 13 TeV 2016 L=29.53 fb^{-1}";
   //lumiTag = "CMS 13 TeV 2016 L=27.22 fb^{-1}";
@@ -311,9 +278,11 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   tree->Draw("llnunu_l2_pt*sin(llnunu_l2_phi-llnunu_l1_phi):llnunu_l1_pt>>h_met_perp_vs_zpt", selec.c_str(), "colz");
   
   h2d1->GetXaxis()->SetTitle("P_{T}(Z) (GeV)");
+  if (doGJets) h2d1->GetXaxis()->SetTitle("P_{T}(#gamma) (GeV)");
   h2d1->GetYaxis()->SetTitle("MET para (GeV)");
   h2d2->GetXaxis()->SetTitle("P_{T}(Z) (GeV)");
-  h2d2->GetYaxis()->SetTitle("MET para (GeV)");
+  if (doGJets) h2d2->GetXaxis()->SetTitle("P_{T}(#gamma) (GeV)");
+  h2d2->GetYaxis()->SetTitle("MET perp (GeV)");
 
   Nbins = NZPtBins;
   for (int ii=0; ii<Nbins; ii++) fit_rebin.push_back(2);
@@ -351,7 +320,8 @@ int fit_slice_gaus(TH2D* h2d, TH1D** h1d, std::string& plotfile){
   sprintf(name, "%s_mean", hname.c_str());
   TH1D* h_mean = new TH1D(name, name, Nbins, xbins);
   h_mean->Sumw2();
-  h_mean->GetXaxis()->SetTitle("P_{T}(Z) (GeV)");
+  if (doGJets) h_mean->GetXaxis()->SetTitle("P_{T}(#gamma) (GeV)");
+  else h_mean->GetXaxis()->SetTitle("P_{T}(Z) (GeV)");
   h_mean->GetYaxis()->SetTitle("mean (GeV)");
   h_mean->SetLineColor(2);
   h_mean->SetMarkerColor(2);
@@ -359,7 +329,8 @@ int fit_slice_gaus(TH2D* h2d, TH1D** h1d, std::string& plotfile){
   sprintf(name, "%s_sigma", hname.c_str());
   TH1D* h_sigma = new TH1D(name, name, Nbins, xbins);
   h_sigma->Sumw2();
-  h_sigma->GetXaxis()->SetTitle("P_{T}(Z) (GeV)");
+  if (doGJets) h_sigma->GetXaxis()->SetTitle("P_{T}(#gamma) (GeV)");
+  else h_sigma->GetXaxis()->SetTitle("P_{T}(Z) (GeV)");
   h_sigma->GetYaxis()->SetTitle("sigma (GeV)");
   h_sigma->SetLineColor(4);
   h_sigma->SetMarkerColor(4);
@@ -395,7 +366,8 @@ int fit_slice_gaus(TH2D* h2d, TH1D** h1d, std::string& plotfile){
     ahist->Draw();
     lumipt->Draw();
     pvtxt->Clear();
-    sprintf(name, "%.2f < P_{T}(Z) < %.2f", xbins[i], xbins[i+1]);
+    sprintf(name, "%.2f < P_{T}(Z) < %.2f GeV", xbins[i], xbins[i+1]);
+    if (doGJets) sprintf(name, "%.2f < P_{T}(#gamma) < %.2f GeV", xbins[i], xbins[i+1]);
     pvtxt->AddText(0.15,0.6, name);
     sprintf(name, "#mu = %.2f #pm %.2f", afunc->GetParameter(1), afunc->GetParError(1));
     pvtxt->AddText(0.15,0.3, name);
@@ -410,6 +382,10 @@ int fit_slice_gaus(TH2D* h2d, TH1D** h1d, std::string& plotfile){
     afunc->Write();
   }
 
+  h_mean->GetXaxis()->SetRangeUser(2,5000);
+  h_mean->GetYaxis()->SetRangeUser(-6,15);
+  h_sigma->GetXaxis()->SetRangeUser(2,5000);
+  h_sigma->GetYaxis()->SetRangeUser(15,40);
 
   plots->cd();
   plots->Clear();

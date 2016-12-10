@@ -9,7 +9,7 @@
 # privide chunks running directory, 
 # and directory to copy jobs out
 
-dir=gjetsmc10
+dir=gjetsmc11
 #dir=dyjets
 #dir=dyjets1
 #dir=othermc1
@@ -43,6 +43,8 @@ cd $dir
 
 list=`ls -1`
 
+njob="0"
+
 for job in $list;
 do
   echo "## check $job "
@@ -53,12 +55,18 @@ do
   then
     echo "- job is done correctly with ${n1} root files and ${n2} pck files."
     echo "  - copy out and delete .. "
-    echo " > rsync -var $job $out/$dir/"
-    rsync -var $job $out/$dir/
-    echo " > rm -rf $job"
-    rm -rf $job
+    echo " > rsync -var $job $out/$dir/  && rm -rf $job"
+    rsync -var $job $out/$dir/ && rm -rf $job &
+    #rsync -var $job $out/$dir/ & 
+    #rm -rf $job
   else
     echo "- job is not finished or has problem to be resubmitted .. with ${n1} root files and ${n2} pck files "
+  fi
+
+  njob=$(( njob + 1 ))
+  if [ "$njob" -eq "10" ]; then
+    wait
+    njob="0"
   fi
 
 done

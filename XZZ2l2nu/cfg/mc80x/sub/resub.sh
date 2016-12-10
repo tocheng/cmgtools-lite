@@ -1,10 +1,8 @@
 #!/bin/sh
 
+dir="gjetsmc11"
 #dir="dyjets"
-dir="dyjets1"
 #dir="othermc1"
-#dir="othermc2"
-#dir="othermc3"
 queue="1nd"
 
 # need to check your jobs with the expected n root files and n pck files

@@ -9,7 +9,9 @@
 # privide chunks running directory, 
 # and directory to copy jobs out
 
-dir=dtnew
+#dir=dt_emu_rereco_resub
+dir=gjetsdt_resub
+#dir=dtnew
 out=/data2/XZZ2/80X_20161029_Chunks
 
 mkdir -p $out

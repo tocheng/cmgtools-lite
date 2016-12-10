@@ -18,6 +18,7 @@ parser.add_option("--cutChain",dest="cutChain",default='tight',help="")
 parser.add_option("--LogY",action="store_true", dest="LogY", default=False, help="")
 parser.add_option("--Blind",action="store_true", dest="Blind", default=False,help="")
 parser.add_option("--test",action="store_true", dest="test", default=False,help="")
+parser.add_option("--dyGJets",action="store_true", dest="dyGJets", default=False,help="")
 parser.add_option("-l",action="callback",callback=callback_rootargs)
 parser.add_option("-q",action="callback",callback=callback_rootargs)
 parser.add_option("-b",action="callback",callback=callback_rootargs)
@@ -37,8 +38,8 @@ LogY=options.LogY
 test=options.test
 DrawLeptons=False
 doRhoScale=True
-
-dyGJets=True
+doGMCEtaScale=True
+dyGJets=options.dyGJets
 
 if test: DrawLeptons = False
 
@@ -49,23 +50,25 @@ if test: DrawLeptons = False
 #lepsf="isosf*idsf"
 lepsf="trgsf*isosf*idsf"
 #lepsf="trgsf*isosf*idsf*trksf"
-#lepsf="(trgsf*isosf*idsf*((1.03128*(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11))+(0.908956*(abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13))))"
-#lepsf="(trgsf*((isosf*idsf)*(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11)+(highpt_dt_eff_m1/highpt_mc_eff_m1*highpt_dt_eff_m2/highpt_mc_eff_m2)*(abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13)))"
-#lepsf="(trgsf*trksf*((isosf*idsf)*(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11)+(tkhighpt_dt_eff_m1/tkhighpt_mc_eff_m1*tkhighpt_dt_eff_m2/tkhighpt_mc_eff_m2)*(abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13)))"
 
 
-if doRhoScale: 
+g_scale='(1)'
+
+if doRhoScale:
     tag+="RhoWt_"
-    lepsf=lepsf+"*(0.32+0.42*TMath::Erf((rho-4.16)/4.58)+0.31*TMath::Erf((rho+115.00)/29.58))" # b2h rereco 36.1 fb-1
-    #lepsf=lepsf+"*(0.038+0.118*rho-4.329e-03*rho*rho+1.011e-04*rho*rho*rho)"
-    #lepsf=lepsf+"*(0.232+0.064*rho)"
-    #lepsf=lepsf+"*(0.602*exp(-0.5*pow((rho-8.890)/6.187,2))+0.829*exp(-0.5*pow((rho-21.404)/10.866,2)))"
-    #lepsf=lepsf+"*(0.122360+0.180976*rho+-0.010879*pow(rho,2)+0.000226*pow(rho,3)-0.000002*pow(rho,4))"
+    rho_scale = "*(0.32+0.42*TMath::Erf((rho-4.16)/4.58)+0.31*TMath::Erf((rho+115.00)/29.58))" # b2h rereco 36.1 fb-1
+    lepsf += rho_scale
+    g_scale += rho_scale
 
-outdir='plots_gjets_36p22'
+if doGMCEtaScale:
+    tag+="GMCEtaWt_"
+    g_scale=g_scale+"*(0.87*TMath::Gaus(llnunu_l1_eta,0.65,0.56)+0.87*TMath::Gaus(llnunu_l1_eta,-0.65,0.56)+0.65*TMath::Gaus(llnunu_l1_eta,1.90,0.25)+0.65*TMath::Gaus(llnunu_l1_eta,-1.90,0.25))"
+
+
+outdir='plots_gjets_36p46'
 
 indir='/home/heli/XZZ/80X_20161029_light_Skim'
-lumi=36.22
+lumi=36.4592
 sepSig=True
 doRatio=True
 Blind=options.Blind
@@ -74,9 +77,11 @@ UseMETFilter=True
 SignalAll1pb=True
 #puWeight='puWeight68075'
 puWeight='puWeightmoriondMC'
-ZJetsZPtWeight=True
 DataHLT=True
 k=1 # signal scale
+ZPtWeight="ZPtWeight"
+#ZPtWeight="ZPtWeight_up"
+#ZPtWeight="ZPtWeight_dn"
 
 elChannel='((abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11)||(llnunu_l1_l1_pdgId==19801117))'
 muChannel='((abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13)||(llnunu_l1_l1_pdgId==19801117))'
@@ -150,9 +155,10 @@ cuts = '('+cuts+')'
 
 ROOT.gROOT.ProcessLine('.x tdrstyle.C') 
 
-allPlotters = {}
 
 
+
+#################
 wwPlotters=[]
 wwSamples = ['WWTo2L2Nu','WWToLNuQQ_BIG','WZTo1L1Nu2Q']
 
@@ -163,7 +169,6 @@ for sample in wwSamples:
     wwPlotters[-1].addCorrectionFactor('genWeight','genWeight')
     wwPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
     wwPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
-    allPlotters[sample] = wwPlotters[-1]
 
 WW = MergedPlotter(wwPlotters)
 WW.setFillProperties(1001,ROOT.kOrange)
@@ -184,7 +189,6 @@ for sample in vvSamples:
     if sample == 'ZZTo2L2Nu' : vvPlotters[-1].addCorrectionFactor("(ZZEwkCorrWeight*ZZQcdCorrWeight)", 'nnlo')
     if 'ggZZTo2' in sample: vvPlotters[-1].addCorrectionFactor('0.01898','xsec')
     else: vvPlotters[-1].addCorrectionFactor('xsec','xsec')
-    allPlotters[sample] = vvPlotters[-1]
 
 VV = MergedPlotter(vvPlotters)
 VV.setFillProperties(1001,ROOT.kMagenta)
@@ -205,42 +209,168 @@ WJets = MergedPlotter(wjetsPlotters)
 WJets.setFillProperties(1001,ROOT.kBlue-6)
 
 
-zjetsPlotters=[]
-zjetsSamples = [
-#'SinglePhoton_Run2016B2H_ReReco_36p22fbinv_NoRecoil',
-'SinglePhoton_Run2016B2H_ReReco_36p22fbinv_ResBos_NoRecoil',
+
+################################
+# ZJets
+
+
+# parameters for GJets
+gdataLumi=36.46*1000
+gdataYield=3447971384.222
+gdataFidXsec=gdataYield/gdataLumi
+
+zjetsFidXsecAll=158.50536907646062446
+zjetsFidXsecEl =2.0703970677230105757
+zjetsFidXsecMu =156.43497200873761699
+
+zjetsFidXsecAll_up=159.3345561421179184
+zjetsFidXsecEl_up =2.1132602740550670006
+zjetsFidXsecMu_up =157.22129586806292423
+zjetsFidXsecAll_dn=157.67618228330914576
+zjetsFidXsecEl_dn =2.0275338821661335054
+zjetsFidXsecMu_dn =155.64864840114299227
+
+
+
+# for GJets photon bkg subtraction
+
+phymetPlotters=[]
+phymetSamples = [
+'G_DYJetsToLL_M50_reHLT',
+'G_ZJetsToNuNu_HT100to200_BIG',
+'G_ZJetsToNuNu_HT200to400_BIG',
+'G_ZJetsToNuNu_HT400to600_BIG',
+'G_ZJetsToNuNu_HT600to800_BIG',
+'G_ZJetsToNuNu_HT800t1200_BIG',
+'G_ZJetsToNuNu_HT1200to2500_BIG',
+'G_ZJetsToNuNu_HT2500toInf_BIG',
+'G_ZNuNuGJetsGt40Lt130',
+'G_ZNuNuGJetsGt130',
+'G_WGToLNuG',
+'G_WJetsToLNu_HT100to200_BIG',
+'G_WJetsToLNu_HT1200to2500_BIG',
+'G_WJetsToLNu_HT200to400_BIG',
+'G_WJetsToLNu_HT2500toInf_BIG',
+'G_WJetsToLNu_HT400to600_BIG',
+'G_WJetsToLNu_HT600to800_BIG',
+'G_WJetsToLNu_HT800to1200_BIG',
+'G_TToLeptons_tch_powheg',
+'G_TBarToLeptons_tch_powheg',
+'G_T_tWch',
+'G_TBar_tWch',
+'G_TGJets_BIG',
+'G_TTGJets',
+]
+
+# all the factors below together normalized each process to the fraction of the process in the gjets data
+#   fidxsec_i / fidxsec_total
+# together with the gdata, we have:
+#  [ fidxsec_total-Sum(fidxsec_i) ]/fidxsec_total * fidxsec_zjets * lumi = zjets_yields
+# an additional scale factor GJetsNorm to absorbe the small difference.
+
+for sample in phymetSamples:
+    phymetPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
+    phymetPlotters[-1].addCorrectionFactor('-1/SumWeights','norm') # negative weight for subtraction
+    phymetPlotters[-1].addCorrectionFactor('xsec','xsec')
+    phymetPlotters[-1].addCorrectionFactor('genWeight','genWeight')
+    phymetPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
+    phymetPlotters[-1].addCorrectionFactor(g_scale,'scale')
+    phymetPlotters[-1].addCorrectionFactor(str(1/gdataFidXsec),'frac') # divided by g data fid-xsec
+    if channel=='el' :
+        phymetPlotters[-1].addCorrectionFactor('GJetsZPtWeightEl','GJetsZPtWeight')
+        phymetPlotters[-1].addCorrectionFactor(str(zjetsFidXsecEl),'zjetsFidXsecEl')
+#        phymetPlotters[-1].addCorrectionFactor('(0.999)','GJetsNorm')
+    elif channel=='mu' :
+        phymetPlotters[-1].addCorrectionFactor('GJetsZPtWeightMu','GJetsZPtWeight')
+        phymetPlotters[-1].addCorrectionFactor(str(zjetsFidXsecMu),'zjetsFidXsecMu')
+#        phymetPlotters[-1].addCorrectionFactor('(1.12206)','GJetsNorm')
+    else :
+        phymetPlotters[-1].addCorrectionFactor('GJetsZPtWeight','GJetsZPtWeight')
+        phymetPlotters[-1].addCorrectionFactor(str(zjetsFidXsecAll),'zjetsFidXsecAll')
+#        phymetPlotters[-1].addCorrectionFactor('(1.10104)','GJetsNorm')
+
+### the GJets data
+gdataPlotters=[]
+gdataSamples = [
+'SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_Rc36p46wHLT',
 ]
 
 
-for sample in zjetsSamples:
-    zjetsPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
-    if dyGJets: 
-        zjetsPlotters[-1].addCorrectionFactor('GJetsRhoWeight','RhoWeight')
-        zjetsPlotters[-1].addCorrectionFactor('GJetsPreScaleWeight','PreScaleWeight')
-        if channel=='el' : 
-            zjetsPlotters[-1].addCorrectionFactor('GJetsZPtWeightEl','genWeight')
-            zjetsPlotters[-1].addCorrectionFactor('(2.08026)','norm') #el ResBos
-            #zjetsPlotters[-1].addCorrectionFactor('(2.03831)','norm') #el
-        elif channel=='mu' : 
-            zjetsPlotters[-1].addCorrectionFactor('GJetsZPtWeightMu','genWeight')
-            zjetsPlotters[-1].addCorrectionFactor('(172.883)','norm') #mu ResBos
-            #zjetsPlotters[-1].addCorrectionFactor('(173.157)','norm') #mu
-        else : 
-            zjetsPlotters[-1].addCorrectionFactor('GJetsZPtWeight','genWeight')
-            zjetsPlotters[-1].addCorrectionFactor('(174.521)','norm') #all ResBos
-            #zjetsPlotters[-1].addCorrectionFactor('(174.999)','norm') #all
-    else:
-        zjetsPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
-        if ZJetsZPtWeight: zjetsPlotters[-1].addCorrectionFactor('ZPtWeight','ZPtWeight')
-        zjetsPlotters[-1].addCorrectionFactor('(1921.8*3)','xsec') # FEWZ NNLO.results_z_m50_nnlo_inclusive_NNPDF30_nlo_as_0118
-        zjetsPlotters[-1].addCorrectionFactor('genWeight','genWeight')
-        zjetsPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
-        zjetsPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
 
-    allPlotters[sample] = zjetsPlotters[-1]
+for sample in gdataSamples:
+    gdataPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
+    gdataPlotters[-1].addCorrectionFactor('GJetsPreScaleWeight','GJetsPreScaleWeight')
+    gdataPlotters[-1].addCorrectionFactor('GJetsRhoWeight','GJetsRhoWeight')
+    gdataPlotters[-1].addCorrectionFactor(str(1/gdataYield),'GJetsNorm0')
+    if channel=='el' :
+        gdataPlotters[-1].addCorrectionFactor('GJetsZPtWeightEl','GJetsZPtWeight')
+        gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecEl),'zjetsFidXsecEl')
+        gdataPlotters[-1].addCorrectionFactor('(0.999)','GJetsNorm')
+    elif channel=='mu' :
+        gdataPlotters[-1].addCorrectionFactor('GJetsZPtWeightMu','GJetsZPtWeight')
+        gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecMu),'zjetsFidXsecMu')
+        gdataPlotters[-1].addCorrectionFactor('(1.12206)','GJetsNorm')
+    else :
+        gdataPlotters[-1].addCorrectionFactor('GJetsZPtWeight','GJetsZPtWeight')
+        gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecAll),'zjetsFidXsecAll')
+        gdataPlotters[-1].addCorrectionFactor('(1.10104)','GJetsNorm')
 
-ZJets = MergedPlotter(zjetsPlotters)
-ZJets.setFillProperties(1001,ROOT.kGreen+2)
+# the GJets plotter
+#gjetsPlotters = gdataPlotters
+gjetsPlotters = gdataPlotters+phymetPlotters
+
+
+GJets = MergedPlotter(gjetsPlotters)
+GJets.setFillProperties(1001,ROOT.kGreen+2)
+
+
+### MC ZJets
+mczjetsPlotters=[]
+mczjetsSamples = [
+#'DYJetsToLL_M50_BIG_ResBos_NoRecoil',
+'DYJetsToLL_M50_BIG_ResBos_Rc36p22HLTPUcutEffSf',
+]
+
+
+
+for sample in mczjetsSamples:
+    mczjetsPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
+    mczjetsPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
+    #mczjetsPlotters[-1].addCorrectionFactor('(1)','norm')
+    mczjetsPlotters[-1].addCorrectionFactor(ZPtWeight,'ZPtWeight')
+    #mczjetsPlotters[-1].addCorrectionFactor('xsec','xsec')
+    mczjetsPlotters[-1].addCorrectionFactor('(1921.8*3)','xsec') # FEWZ NNLO.results_z_m50_nnlo_inclusive_NNPDF30_nlo_as_0118
+    #mczjetsPlotters[-1].addCorrectionFactor('(1907.0*3)','xsec') # FEWZ NNLO.results_z_m50_nnlo_fsrOn_lowstat_inclusive_NNPDF30_nlo_as_0118
+    mczjetsPlotters[-1].addCorrectionFactor('genWeight','genWeight')
+    #mczjetsPlotters[-1].addCorrectionFactor("ZJetsGenWeight",'genWeight')
+    mczjetsPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
+    mczjetsPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
+    if channel=='el' :
+        mczjetsPlotters[-1].addCorrectionFactor('(0.985054)','scale') #el ResBos
+        #mczjetsPlotters[-1].addCorrectionFactor('(1.06937)','scale') #el
+        #mczjetsPlotters[-1].addCorrectionFactor('(1)','scale') #el
+    elif channel=='mu' :
+        mczjetsPlotters[-1].addCorrectionFactor('(1.11546)','scale') #mu ResBos
+        #mczjetsPlotters[-1].addCorrectionFactor('(1.12403)','scale') #mu
+        #mczjetsPlotters[-1].addCorrectionFactor('(1)','scale') #mu
+    else :
+        mczjetsPlotters[-1].addCorrectionFactor('(1.11376)','scale') #all ResBos
+        #mczjetsPlotters[-1].addCorrectionFactor('(1.12337)','scale') #all
+        #mczjetsPlotters[-1].addCorrectionFactor('(1)','scale') #all
+
+
+MCZJets = MergedPlotter(mczjetsPlotters)
+MCZJets.setFillProperties(1001,ROOT.kGreen+2)
+
+
+##
+# choose GJets or ZJets MC
+if dyGJets:
+  ZJets = GJets
+else: 
+  ZJets = MCZJets
+
+####
 
 ttPlotters=[]
 ttSamples = ['TTTo2L2Nu','TTZToLLNuNu','TTWJetsToLNu']
@@ -252,7 +382,6 @@ for sample in ttSamples:
     ttPlotters[-1].addCorrectionFactor('genWeight','genWeight')
     ttPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
     ttPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
-    allPlotters[sample] = ttPlotters[-1]
 
 TT = MergedPlotter(ttPlotters)
 TT.setFillProperties(1001,ROOT.kAzure-9)
@@ -341,14 +470,13 @@ for sample in sigSamples:
     sigPlotters[-1].setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
     sigPlotters[-1].setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
     sigPlotters[-1].setAlias('llnunu_mt_to_plot', 'llnunu_mt')
-    allPlotters[sample] = sigPlotters[-1]
 
 
 
 
 dataPlotters=[]
 dataSamples = [
-'SingleEMU_Run2016B2H_ReReco_36p22fbinv',
+'SingleEMU_Run2016B2H_ReReco_36p46',
 ]
 for sample in dataSamples:
     dataPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
@@ -402,12 +530,11 @@ else:
 Stack = StackPlotter(outTag=tag, outDir=outdir)
 Stack.setPaveText(paveText)
 Stack.addPlotter(Data, "data_obs", "Data", "data")
-#Stack.addPlotter(WJets, "WJets","W+Jets", "background")
 Stack.addPlotter(WW, "NonReso","WW/WZ/WJets non-reson.", "background")
 Stack.addPlotter(TT, "TT","TT", "background")
 Stack.addPlotter(VV, "VVZReso","ZZ WZ reson.", "background")
-Stack.addPlotter(ZJets, "ZJets","ZJets(#gamma+Jets)", "background")
-
+if dyGJets: Stack.addPlotter(ZJets, "ZJets","ZJets(#gamma+Jets)", "background")
+else: Stack.addPlotter(ZJets, "ZJets","ZJets(MC)", "background")
 
 for i in range(len(sigSamples)):
   sigPlotters[i].setLineProperties(2,ROOT.kRed+i,2)
@@ -423,19 +550,23 @@ tag+='_'
 
 
 if test: 
-#    Stack.drawStack('nVert', cuts, str(lumi*1000), 70, 0.0, 70.0, titlex = "N vertices", units = "",output=tag+'nVert',outDir=outdir,separateSignal=sepSig)
-#    Stack.drawStack('rho', cuts, str(lumi*1000), 70, 0.0, 70.0, titlex = "#rho", units = "",output=tag+'rho',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('nVert', cuts, str(lumi*1000), 100, 0.0, 100.0, titlex = "N vertices", units = "",output=tag+'nVert',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('rho', cuts, str(lumi*1000), 55, 0.0, 55.0, titlex = "#rho", units = "",output=tag+'rho',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 50, 0.0, 500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt_low',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 75, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 75, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 500, 50, 150, titlex = "M(Z)", units = "GeV",output=tag+'zmass_smbin',outDir=outdir,separateSignal=sepSig)
+    #Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 50, 50, 150, titlex = "M(Z)", units = "GeV",output=tag+'zmass',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 50, 100.0, 600.0, titlex = "M_{T}", units = "GeV",output=tag+'mt_low',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
 #    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output=tag+'met_low',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
 #    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 50, 0, 1000, titlex = "MET", units = "GeV",output=tag+'met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
-#    Stack.drawStack('fabs(llnunu_l1_pt+llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi))', cuts, str(lumi*1000), 100, 0, 1000, titlex = "#Delta P_{T}^{#parallel}(Z,MET)", units = "GeV",output=tag+'dPTPara',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 100, -200, 200.0, titlex = "MET_{#parallel}", units = "GeV",output=tag+'met_para',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_l2_pt_to_plot*sin(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 100, -200, 200.0, titlex = "MET_{#perp}", units = "GeV",output=tag+'met_perp',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))', cuts, str(lumi*1000), 50, 0, 5, titlex = "#Delta#phi(Z,MET)", units = "",output=tag+'dphiZMet',outDir=outdir,separateSignal=sepSig)
 
 else: 
-    Stack.drawStack('nVert', cuts, str(lumi*1000), 70, 0.0, 70.0, titlex = "N vertices", units = "",output=tag+'nVert',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('rho', cuts, str(lumi*1000), 70, 0.0, 70.0, titlex = "#rho", units = "",output=tag+'rho',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('nVert', cuts, str(lumi*1000), 100, 0.0, 100.0, titlex = "N vertices", units = "",output=tag+'nVert',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('rho', cuts, str(lumi*1000), 55, 0.0, 55.0, titlex = "#rho", units = "",output=tag+'rho',outDir=outdir,separateSignal=sepSig)
     Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 100, 0.0, 3000.0, titlex = "M_{T}", units = "GeV",output=tag+'mt_high3',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
     Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 55, 100.0, 1200.0, titlex = "M_{T}", units = "GeV",output=tag+'mt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
     Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 50, 100.0, 600.0, titlex = "M_{T}", units = "GeV",output=tag+'mt_low',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)

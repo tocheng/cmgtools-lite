@@ -1,8 +1,6 @@
 #!/bin/sh
 
-outdir=gjetsmc10
-#outdir=gjetsmc2
-#outdir=gjetsmc3
+outdir=gjetsmc12
 config=run_xzz2l2nu_80x_cfg_photon_mc.py
 #config=run_xzz2l2nu_80x_cfg_loose_mc.py
 otherfiles=pogRecipes.py
