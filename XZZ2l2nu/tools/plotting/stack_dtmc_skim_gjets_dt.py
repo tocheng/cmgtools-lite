@@ -19,6 +19,7 @@ parser.add_option("--LogY",action="store_true", dest="LogY", default=False, help
 parser.add_option("--Blind",action="store_true", dest="Blind", default=False,help="")
 parser.add_option("--test",action="store_true", dest="test", default=False,help="")
 parser.add_option("--dyGJets",action="store_true", dest="dyGJets", default=False,help="")
+parser.add_option("--muoneg",action="store_true", dest="muoneg", default=False,help="")
 parser.add_option("-l",action="callback",callback=callback_rootargs)
 parser.add_option("-q",action="callback",callback=callback_rootargs)
 parser.add_option("-b",action="callback",callback=callback_rootargs)
@@ -40,7 +41,7 @@ DrawLeptons=False
 doRhoScale=True
 doGMCEtaScale=True
 dyGJets=options.dyGJets
-
+muoneg=options.muoneg
 if test: DrawLeptons = False
 
 #lepsf="(1)"
@@ -67,7 +68,8 @@ if doGMCEtaScale:
 
 outdir='plots_gjets_36p46'
 
-indir='/home/heli/XZZ/80X_20161029_light_Skim'
+#indir='/home/heli/XZZ/80X_20161029_light_Skim'
+indir='/datac/heli/XZZ2/80X_20161029_light_Skim/'
 lumi=36.4592
 sepSig=True
 doRatio=True
@@ -83,8 +85,8 @@ ZPtWeight="ZPtWeight"
 #ZPtWeight="ZPtWeight_up"
 #ZPtWeight="ZPtWeight_dn"
 
-elChannel='((abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11)||(llnunu_l1_l1_pdgId==19801117))'
-muChannel='((abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13)||(llnunu_l1_l1_pdgId==19801117))'
+elChannel='((abs(llnunu_l1_l1_pdgId)==11||abs(llnunu_l1_l2_pdgId)==11)||(llnunu_l1_l1_pdgId==19801117))'
+muChannel='((abs(llnunu_l1_l1_pdgId)==13||abs(llnunu_l1_l2_pdgId)==13)||(llnunu_l1_l1_pdgId==19801117))'
 
 if not os.path.exists(outdir): os.system('mkdir -p '+outdir)
 
@@ -111,8 +113,8 @@ paveText="#sqrt{s} = 13 TeV 2016 L = "+"{:.4}".format(float(lumi))+" fb^{-1}"
 metfilter='(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter)'
 
 cuts_loose='(nllnunu)'
-cuts_lepaccept="((abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13&&llnunu_l1_l1_pt>50&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID>0.99||llnunu_l1_l2_highPtID>0.99))"
-cuts_lepaccept+="||(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11&&llnunu_l1_l1_pt>115&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5)"
+cuts_lepaccept="((abs(llnunu_l1_l1_pdgId)==13||abs(llnunu_l1_l2_pdgId)==13&&llnunu_l1_l1_pt>50&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID>0.99||llnunu_l1_l2_highPtID>0.99))"
+cuts_lepaccept+="||(abs(llnunu_l1_l1_pdgId)==11||abs(llnunu_l1_l2_pdgId)==11&&llnunu_l1_l1_pt>115&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5)"
 cuts_lepaccept+="||(llnunu_l1_l1_pdgId==19801117))"
 cuts_zmass="(llnunu_l1_mass_to_plot>70&&llnunu_l1_mass_to_plot<110)"
 cuts_zpt100="(llnunu_l1_pt>100)"
@@ -159,6 +161,23 @@ ROOT.gROOT.ProcessLine('.x tdrstyle.C')
 
 
 #################
+nonresPlotters=[]
+nonresSamples = ['muonegtrgsf']
+for sample in nonresSamples:
+    nonresPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
+    if channel=='el' :
+        nonresPlotters[-1].addCorrectionFactor('etrgsf', 'etrgsf')
+        nonresPlotters[-1].addCorrectionFactor('0.377075586068', 'norm')
+    elif channel=='mu' :
+        nonresPlotters[-1].addCorrectionFactor('mtrgsf', 'mtrgsf')
+        nonresPlotters[-1].addCorrectionFactor('0.602260745361', 'norm')
+    else:
+        nonresPlotters[-1].addCorrectionFactor('(etrgsf*0.377075586068+mtrgsf*0.602260745361)','norm')
+    nonresPlotters[-1].addCorrectionFactor('1./({0}*1000)'.format(lumi), 'lumi')
+
+NONRES = MergedPlotter(nonresPlotters)
+NONRES.setFillProperties(1001,ROOT.kOrange)
+
 wwPlotters=[]
 wwSamples = ['WWTo2L2Nu','WWToLNuQQ_BIG','WZTo1L1Nu2Q']
 
@@ -509,6 +528,11 @@ VV.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
 VV.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
 VV.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
 
+NONRES.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
+NONRES.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
+NONRES.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
+NONRES.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
+
 if dyGJets and channel=='el':
     ZJets.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass_el')
     ZJets.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt_el')
@@ -530,8 +554,11 @@ else:
 Stack = StackPlotter(outTag=tag, outDir=outdir)
 Stack.setPaveText(paveText)
 Stack.addPlotter(Data, "data_obs", "Data", "data")
-Stack.addPlotter(WW, "NonReso","WW/WZ/WJets non-reson.", "background")
-Stack.addPlotter(TT, "TT","TT", "background")
+if muoneg: 
+    Stack.addPlotter(NONRES, "NONReso","non reson.", "background")
+else:
+    Stack.addPlotter(WW, "NonReso","WW/WZ/WJets non-reson.", "background")
+    Stack.addPlotter(TT, "TT","TT", "background")
 Stack.addPlotter(VV, "VVZReso","ZZ WZ reson.", "background")
 if dyGJets: Stack.addPlotter(ZJets, "ZJets","ZJets(#gamma+Jets)", "background")
 else: Stack.addPlotter(ZJets, "ZJets","ZJets(MC)", "background")
