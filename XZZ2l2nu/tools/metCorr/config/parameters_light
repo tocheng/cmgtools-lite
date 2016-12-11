@@ -154,10 +154,10 @@ addDyZPtWeight: true
 addDyZPtWeightUseFunction: true
 
 # for NLO MC use Resummation function from Resbos instead of from data.
-addDyZPtWeightUseResummationFunction: true
+addDyZPtWeightUseResummationFunction: false
 
 # for NLO MC use Resummation function from Resbos BUT refitted to data.
-addDyZPtWeightUseResummationRefitFunction: true
+addDyZPtWeightUseResummationRefitFunction: false
 
 # for LO MC to NLO, also use function  
 addDyZPtWeightLOUseFunction: true

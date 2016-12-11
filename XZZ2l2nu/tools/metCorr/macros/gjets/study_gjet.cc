@@ -29,8 +29,10 @@ int main(int argc, char** argv) {
 
   //TFile* file1 = TFile::Open("/home/heli/XZZ/80X_20161029_light_Skim/DYJetsToLL_M50_BIG_NoRecoil.root");
   //TFile* file1 = TFile::Open("/home/heli/XZZ/80X_20161029_light_Skim/DYJetsToLL_M50_BIG_ResBos_NoRecoil.root");
-  TFile* file1 = TFile::Open("/home/heli/XZZ/80X_20161029_light_Skim/DYJetsToLL_M50_BIG_ResBosRefit_NoRecoil.root");
-  TFile* file2 = TFile::Open("/home/heli/XZZ/80X_20161029_GJets_light_Skim/SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil.root");
+  //TFile* file1 = TFile::Open("/home/heli/XZZ/80X_20161029_light_Skim/DYJetsToLL_M50_BIG_ResBosRefit_NoRecoil.root");
+  //TFile* file2 = TFile::Open("/home/heli/XZZ/80X_20161029_GJets_light_Skim/SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil.root");
+  TFile* file1 = TFile::Open("/home/heli/XZZ/80X_20161029_light_Skim/DYJetsToLL_M50_BIG_ResBosRefit_Rc36p46.root");
+  TFile* file2 = TFile::Open("/home/heli/XZZ/80X_20161029_GJets_light_Skim/SinglePhoton_Run2016B2H_ReReco_36p46_ResBosRefit_Rc36p46ReCalib.root");
 
   //std::string outtag="study_gjets_data_36p46_resbos_norm_npucut";
   std::string outtag="study_gjets_data_36p46_resbosrefit_norm_npucut";
@@ -244,7 +246,7 @@ int main(int argc, char** argv) {
   // el
   // profile
   TProfile* pr_zpt_1_el = new TProfile("pr_zpt_1_el", "pr_zpt_1_el", NZPtBins, ZPtBins);
-  tree1->Draw("llnunu_l1_pt:llnunu_l1_pt>>pr_zpt_1_el",zjet_selec.c_str());
+  tree1->Draw("llnunu_l1_pt:llnunu_l1_pt>>pr_zpt_1_el",zjet_selec_el.c_str());
 
   TH1D* hzptbb1_el = new TH1D("hzptbb1_el", "hzptbb1_el", NZPtBins, ZPtBins);
   hzptbb1_el->Sumw2();
@@ -284,7 +286,7 @@ int main(int argc, char** argv) {
   // mu
   // profile
   TProfile* pr_zpt_1_mu = new TProfile("pr_zpt_1_mu", "pr_zpt_1_mu", NZPtBins, ZPtBins);
-  tree1->Draw("llnunu_l1_pt:llnunu_l1_pt>>pr_zpt_1_mu",zjet_selec.c_str());
+  tree1->Draw("llnunu_l1_pt:llnunu_l1_pt>>pr_zpt_1_mu",zjet_selec_mu.c_str());
 
   TH1D* hzptbb1_mu = new TH1D("hzptbb1_mu", "hzptbb1_mu", NZPtBins, ZPtBins);
   hzptbb1_mu->Sumw2();
@@ -353,7 +355,7 @@ int main(int argc, char** argv) {
   // el up
   // profile
   TProfile* pr_zpt_1_el_up = new TProfile("pr_zpt_1_el_up", "pr_zpt_1_el_up", NZPtBins, ZPtBins);
-  tree1->Draw("llnunu_l1_pt:llnunu_l1_pt>>pr_zpt_1_el_up",zjet_selec_up.c_str());
+  tree1->Draw("llnunu_l1_pt:llnunu_l1_pt>>pr_zpt_1_el_up",zjet_selec_el_up.c_str());
   TH1D* hzptbb1_el_up = new TH1D("hzptbb1_el_up", "hzptbb1_el_up", NZPtBins, ZPtBins);
   hzptbb1_el_up->Sumw2();
   tree1->Draw("llnunu_l1_pt>>hzptbb1_el_up", zjet_selec_el_up.c_str());
@@ -367,7 +369,7 @@ int main(int argc, char** argv) {
   // el dn
   // profile
   TProfile* pr_zpt_1_el_dn = new TProfile("pr_zpt_1_el_dn", "pr_zpt_1_el_dn", NZPtBins, ZPtBins);
-  tree1->Draw("llnunu_l1_pt:llnunu_l1_pt>>pr_zpt_1_el_dn",zjet_selec_dn.c_str());
+  tree1->Draw("llnunu_l1_pt:llnunu_l1_pt>>pr_zpt_1_el_dn",zjet_selec_el_dn.c_str());
   TH1D* hzptbb1_el_dn = new TH1D("hzptbb1_el_dn", "hzptbb1_el_dn", NZPtBins, ZPtBins);
   hzptbb1_el_dn->Sumw2();
   tree1->Draw("llnunu_l1_pt>>hzptbb1_el_dn", zjet_selec_el_dn.c_str());
@@ -381,7 +383,7 @@ int main(int argc, char** argv) {
   // mu up
   // profile
   TProfile* pr_zpt_1_mu_up = new TProfile("pr_zpt_1_mu_up", "pr_zpt_1_mu_up", NZPtBins, ZPtBins);
-  tree1->Draw("llnunu_l1_pt:llnunu_l1_pt>>pr_zpt_1_mu_up",zjet_selec_up.c_str());
+  tree1->Draw("llnunu_l1_pt:llnunu_l1_pt>>pr_zpt_1_mu_up",zjet_selec_mu_up.c_str());
   TH1D* hzptbb1_mu_up = new TH1D("hzptbb1_mu_up", "hzptbb1_mu_up", NZPtBins, ZPtBins);
   hzptbb1_mu_up->Sumw2();
   tree1->Draw("llnunu_l1_pt>>hzptbb1_mu_up", zjet_selec_mu_up.c_str());
@@ -396,7 +398,7 @@ int main(int argc, char** argv) {
   // mu dn
   // profile
   TProfile* pr_zpt_1_mu_dn = new TProfile("pr_zpt_1_mu_dn", "pr_zpt_1_mu_dn", NZPtBins, ZPtBins);
-  tree1->Draw("llnunu_l1_pt:llnunu_l1_pt>>pr_zpt_1_mu_dn",zjet_selec_dn.c_str());
+  tree1->Draw("llnunu_l1_pt:llnunu_l1_pt>>pr_zpt_1_mu_dn",zjet_selec_mu_dn.c_str());
   TH1D* hzptbb1_mu_dn = new TH1D("hzptbb1_mu_dn", "hzptbb1_mu_dn", NZPtBins, ZPtBins);
   hzptbb1_mu_dn->Sumw2();
   tree1->Draw("llnunu_l1_pt>>hzptbb1_mu_dn", zjet_selec_mu_dn.c_str());
@@ -555,6 +557,53 @@ int main(int argc, char** argv) {
   hzptsbr12->Divide(hzptsb2);
   hzptsbr12_el->Divide(hzptsb2);
   hzptsbr12_mu->Divide(hzptsb2);
+
+
+
+  // use TGraph with mean pt value to model
+  TGraphErrors* gr_zpt_ratio = new TGraphErrors(pr_zpt_2->GetNbinsX());
+  TGraphErrors* gr_zpt_ratio_el = new TGraphErrors(pr_zpt_2->GetNbinsX());
+  TGraphErrors* gr_zpt_ratio_mu = new TGraphErrors(pr_zpt_2->GetNbinsX());
+  TGraphErrors* gr_zpt_ratio_up = new TGraphErrors(pr_zpt_2->GetNbinsX());
+  TGraphErrors* gr_zpt_ratio_dn = new TGraphErrors(pr_zpt_2->GetNbinsX());
+  TGraphErrors* gr_zpt_ratio_el_up = new TGraphErrors(pr_zpt_2->GetNbinsX());
+  TGraphErrors* gr_zpt_ratio_el_dn = new TGraphErrors(pr_zpt_2->GetNbinsX());
+  TGraphErrors* gr_zpt_ratio_mu_up = new TGraphErrors(pr_zpt_2->GetNbinsX());
+  TGraphErrors* gr_zpt_ratio_mu_dn = new TGraphErrors(pr_zpt_2->GetNbinsX());
+  TGraphErrors* gr_zpt_lowlpt_ratio = new TGraphErrors(pr_zpt_2->GetNbinsX());
+  TGraphErrors* gr_zpt_lowlpt_ratio_el = new TGraphErrors(pr_zpt_2->GetNbinsX());
+  TGraphErrors* gr_zpt_lowlpt_ratio_mu = new TGraphErrors(pr_zpt_2->GetNbinsX());
+
+
+
+  for (int i=0; i<pr_zpt_2->GetNbinsX(); i++){
+    gr_zpt_ratio->SetPoint(i, pr_zpt_1->GetBinContent(i+1), hzptbbr12->GetBinContent(i+1));
+    gr_zpt_ratio_el->SetPoint(i, pr_zpt_1_el->GetBinContent(i+1), hzptbbr12_el->GetBinContent(i+1));
+    gr_zpt_ratio_mu->SetPoint(i, pr_zpt_1_mu->GetBinContent(i+1), hzptbbr12_mu->GetBinContent(i+1));
+    gr_zpt_ratio_up->SetPoint(i, pr_zpt_1_up->GetBinContent(i+1), hzptbbr12_up->GetBinContent(i+1));
+    gr_zpt_ratio_dn->SetPoint(i, pr_zpt_1_dn->GetBinContent(i+1), hzptbbr12_dn->GetBinContent(i+1));
+    gr_zpt_ratio_el_up->SetPoint(i, pr_zpt_1_el_up->GetBinContent(i+1), hzptbbr12_el_up->GetBinContent(i+1));
+    gr_zpt_ratio_el_dn->SetPoint(i, pr_zpt_1_el_dn->GetBinContent(i+1), hzptbbr12_el_dn->GetBinContent(i+1));
+    gr_zpt_ratio_mu_up->SetPoint(i, pr_zpt_1_mu_up->GetBinContent(i+1), hzptbbr12_mu_up->GetBinContent(i+1));
+    gr_zpt_ratio_mu_dn->SetPoint(i, pr_zpt_1_mu_dn->GetBinContent(i+1), hzptbbr12_mu_dn->GetBinContent(i+1));
+    gr_zpt_lowlpt_ratio->SetPoint(i, pr_zpt_1_lowlpt->GetBinContent(i+1), hzptbbr12_lowlpt->GetBinContent(i+1));
+    gr_zpt_lowlpt_ratio_el->SetPoint(i, pr_zpt_1_lowlpt_el->GetBinContent(i+1), hzptbbr12_lowlpt_el->GetBinContent(i+1));
+    gr_zpt_lowlpt_ratio_mu->SetPoint(i, pr_zpt_1_lowlpt_mu->GetBinContent(i+1), hzptbbr12_lowlpt_mu->GetBinContent(i+1));
+
+    gr_zpt_ratio->SetPointError(i, pr_zpt_1->GetBinError(i+1), hzptbbr12->GetBinError(i+1));
+    gr_zpt_ratio_el->SetPointError(i, pr_zpt_1_el->GetBinError(i+1), hzptbbr12_el->GetBinError(i+1));
+    gr_zpt_ratio_mu->SetPointError(i, pr_zpt_1_mu->GetBinError(i+1), hzptbbr12_mu->GetBinError(i+1));
+    gr_zpt_ratio_up->SetPointError(i, pr_zpt_1_up->GetBinError(i+1), hzptbbr12_up->GetBinError(i+1));
+    gr_zpt_ratio_dn->SetPointError(i, pr_zpt_1_dn->GetBinError(i+1), hzptbbr12_dn->GetBinError(i+1));
+    gr_zpt_ratio_el_up->SetPointError(i, pr_zpt_1_el_up->GetBinError(i+1), hzptbbr12_el_up->GetBinError(i+1));
+    gr_zpt_ratio_el_dn->SetPointError(i, pr_zpt_1_el_dn->GetBinError(i+1), hzptbbr12_el_dn->GetBinError(i+1));
+    gr_zpt_ratio_mu_up->SetPointError(i, pr_zpt_1_mu_up->GetBinError(i+1), hzptbbr12_mu_up->GetBinError(i+1));
+    gr_zpt_ratio_mu_dn->SetPointError(i, pr_zpt_1_mu_dn->GetBinError(i+1), hzptbbr12_mu_dn->GetBinError(i+1));
+    gr_zpt_lowlpt_ratio->SetPointError(i, pr_zpt_1_lowlpt->GetBinError(i+1), hzptbbr12_lowlpt->GetBinError(i+1));
+    gr_zpt_lowlpt_ratio_el->SetPointError(i, pr_zpt_1_lowlpt_el->GetBinError(i+1), hzptbbr12_lowlpt_el->GetBinError(i+1));
+    gr_zpt_lowlpt_ratio_mu->SetPointError(i, pr_zpt_1_lowlpt_mu->GetBinError(i+1), hzptbbr12_lowlpt_mu->GetBinError(i+1));
+  }
+
 
 
 /*
@@ -962,6 +1011,19 @@ int main(int argc, char** argv) {
   hzptsbr12->Write("h_zpt_ratio_sb");
   hzptsbr12_el->Write("h_zpt_ratio_el_sb");
   hzptsbr12_mu->Write("h_zpt_ratio_mu_sb");
+
+  gr_zpt_ratio->Write("gr_zpt_ratio");
+  gr_zpt_ratio_el->Write("gr_zpt_ratio_el");
+  gr_zpt_ratio_mu->Write("gr_zpt_ratio_mu");
+  gr_zpt_ratio_up->Write("gr_zpt_ratio_up");
+  gr_zpt_ratio_dn->Write("gr_zpt_ratio_dn");
+  gr_zpt_ratio_el_up->Write("gr_zpt_ratio_el_up");
+  gr_zpt_ratio_el_dn->Write("gr_zpt_ratio_el_dn");
+  gr_zpt_ratio_mu_up->Write("gr_zpt_ratio_mu_up");
+  gr_zpt_ratio_mu_dn->Write("gr_zpt_ratio_mu_dn");
+  gr_zpt_lowlpt_ratio->Write("gr_zpt_lowlpt_ratio");
+  gr_zpt_lowlpt_ratio_el->Write("gr_zpt_lowlpt_ratio_el");
+  gr_zpt_lowlpt_ratio_mu->Write("gr_zpt_lowlpt_ratio_mu");
 
 
 /*

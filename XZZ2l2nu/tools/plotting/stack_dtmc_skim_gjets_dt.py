@@ -39,6 +39,7 @@ test=options.test
 DrawLeptons=False
 doRhoScale=True
 doGMCEtaScale=True
+doGMCPhPtScale=True
 dyGJets=options.dyGJets
 
 if test: DrawLeptons = False
@@ -64,6 +65,9 @@ if doGMCEtaScale:
     tag+="GMCEtaWt_"
     g_scale=g_scale+"*(0.87*TMath::Gaus(llnunu_l1_eta,0.65,0.56)+0.87*TMath::Gaus(llnunu_l1_eta,-0.65,0.56)+0.65*TMath::Gaus(llnunu_l1_eta,1.90,0.25)+0.65*TMath::Gaus(llnunu_l1_eta,-1.90,0.25))"
 
+if doGMCPhPtScale:
+    tag+="GMCPhPtWt_"
+    g_scale=g_scale+"*((-1.06624+0.0580113*pow(llnunu_l1_pt,1)-5.09328e-4*pow(llnunu_l1_pt,2)+2.28513e-6*pow(llnunu_l1_pt,3)-6.03131e-9*pow(llnunu_l1_pt,4)+9.84946e-12*pow(llnunu_l1_pt,5)-1.00558e-14*pow(llnunu_l1_pt,6)+6.244e-18*pow(llnunu_l1_pt,7)-2.15543e-21*pow(llnunu_l1_pt,8)+3.17021e-25*pow(llnunu_l1_pt,9))*(llnunu_l1_pt<=1000)+(0.688060)*(llnunu_l1_pt>1000))"
 
 outdir='plots_gjets_36p46'
 
@@ -113,6 +117,8 @@ metfilter='(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Fl
 cuts_loose='(nllnunu)'
 cuts_lepaccept="((abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13&&llnunu_l1_l1_pt>50&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID>0.99||llnunu_l1_l2_highPtID>0.99))"
 cuts_lepaccept+="||(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11&&llnunu_l1_l1_pt>115&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5)"
+#cuts_lepaccept="((abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13&&llnunu_l1_l1_pt>20&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID>0.99||llnunu_l1_l2_highPtID>0.99)&&llnunu_l1_pt>100)"
+#cuts_lepaccept+="||(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11&&llnunu_l1_l1_pt>25&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>25&&abs(llnunu_l1_l2_eta)<2.5&&llnunu_l1_pt>100)"
 cuts_lepaccept+="||(llnunu_l1_l1_pdgId==19801117))"
 cuts_zmass="(llnunu_l1_mass_to_plot>70&&llnunu_l1_mass_to_plot<110)"
 cuts_zpt100="(llnunu_l1_pt>100)"
@@ -304,7 +310,7 @@ for sample in gdataSamples:
     if channel=='el' :
         gdataPlotters[-1].addCorrectionFactor('GJetsZPtWeightEl','GJetsZPtWeight')
         gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecEl),'zjetsFidXsecEl')
-        gdataPlotters[-1].addCorrectionFactor('(1.02585)','GJetsNorm')
+        gdataPlotters[-1].addCorrectionFactor('(1.09480)','GJetsNorm')
     elif channel=='mu' :
         gdataPlotters[-1].addCorrectionFactor('GJetsZPtWeightMu','GJetsZPtWeight')
         gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecMu),'zjetsFidXsecMu')

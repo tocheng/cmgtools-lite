@@ -1749,23 +1749,22 @@ void prepareGJetsSkim()
     _gjets_h_zpt_ratio_mu_up = (TH1D*)_gjets_input_file->Get("h_zpt_ratio_mu_up");
     _gjets_h_zpt_ratio_mu_dn = (TH1D*)_gjets_input_file->Get("h_zpt_ratio_mu_dn");
 
-    // change to tgraph for smoothing
-    _gjets_gr_zpt_ratio = new TGraphErrors(_gjets_h_zpt_ratio);
-    _gjets_gr_zpt_ratio_el = new TGraphErrors(_gjets_h_zpt_ratio_el);
-    _gjets_gr_zpt_ratio_mu = new TGraphErrors(_gjets_h_zpt_ratio_mu);
-    _gjets_gr_zpt_lowlpt_ratio = new TGraphErrors(_gjets_h_zpt_lowlpt_ratio);
-    _gjets_gr_zpt_lowlpt_ratio_el = new TGraphErrors(_gjets_h_zpt_lowlpt_ratio_el);
-    _gjets_gr_zpt_lowlpt_ratio_mu = new TGraphErrors(_gjets_h_zpt_lowlpt_ratio_mu);
+    // tgraph
+    _gjets_gr_zpt_ratio = (TGraphErrors*)_gjets_input_file->Get("gr_zpt_ratio");
+    _gjets_gr_zpt_ratio_el = (TGraphErrors*)_gjets_input_file->Get("gr_zpt_ratio_el");
+    _gjets_gr_zpt_ratio_mu = (TGraphErrors*)_gjets_input_file->Get("gr_zpt_ratio_mu");
+    _gjets_gr_zpt_ratio_up = (TGraphErrors*)_gjets_input_file->Get("gr_zpt_ratio_up");
+    _gjets_gr_zpt_ratio_dn = (TGraphErrors*)_gjets_input_file->Get("gr_zpt_ratio_dn");
+    _gjets_gr_zpt_ratio_el_up = (TGraphErrors*)_gjets_input_file->Get("gr_zpt_ratio_el_up");
+    _gjets_gr_zpt_ratio_el_dn = (TGraphErrors*)_gjets_input_file->Get("gr_zpt_ratio_el_dn");
+    _gjets_gr_zpt_ratio_mu_up = (TGraphErrors*)_gjets_input_file->Get("gr_zpt_ratio_mu_up");
+    _gjets_gr_zpt_ratio_mu_dn = (TGraphErrors*)_gjets_input_file->Get("gr_zpt_ratio_mu_dn");
+    _gjets_gr_zpt_lowlpt_ratio = (TGraphErrors*)_gjets_input_file->Get("gr_zpt_lowlpt_ratio");
+    _gjets_gr_zpt_lowlpt_ratio_el = (TGraphErrors*)_gjets_input_file->Get("gr_zpt_lowlpt_ratio_el");
+    _gjets_gr_zpt_lowlpt_ratio_mu = (TGraphErrors*)_gjets_input_file->Get("gr_zpt_lowlpt_ratio_mu");
+ 
 
-    _gjets_gr_zpt_ratio_up = new TGraphErrors(_gjets_h_zpt_ratio_up);
-    _gjets_gr_zpt_ratio_dn = new TGraphErrors(_gjets_h_zpt_ratio_dn);
-    _gjets_gr_zpt_ratio_el_up = new TGraphErrors(_gjets_h_zpt_ratio_el_up);
-    _gjets_gr_zpt_ratio_el_dn = new TGraphErrors(_gjets_h_zpt_ratio_el_dn);
-    _gjets_gr_zpt_ratio_mu_up = new TGraphErrors(_gjets_h_zpt_ratio_mu_up);
-    _gjets_gr_zpt_ratio_mu_dn = new TGraphErrors(_gjets_h_zpt_ratio_mu_dn);
-
-    //new TGraphErrors
-
+    // project mass to 1d
     for (int ix=0; ix<(int)_gjets_h_zmass_zpt->GetNbinsX(); ix++) {
       for (int iy=0; iy<(int)_gjets_h_zmass_zpt->GetNbinsY(); iy++) {
         if (_gjets_h_zmass_zpt->GetBinContent(ix+1, iy+1)<0) {
@@ -1907,9 +1906,9 @@ void doGJetsSkim()
   int ipt;
 
   // use 2d
-  ipt = _gjets_h_zmass_zpt->GetXaxis()->FindBin(_llnunu_l1_pt) - 1;
+  ipt = _gjets_h_zmass_zpt->GetYaxis()->FindBin(_llnunu_l1_pt) - 1;
   if (ipt<=0) ipt=0;
-  if (ipt>=_gjets_h_zmass_zpt->GetNbinsX()) ipt=_gjets_h_zmass_zpt->GetNbinsX()-1;
+  if (ipt>=_gjets_h_zmass_zpt->GetNbinsY()) ipt=_gjets_h_zmass_zpt->GetNbinsY()-1;
   if (_debug) std::cout << "doGJetsSkim:: begin all zmass random " << std::endl;
   _llnunu_l1_mass = _gjets_h_zmass_zpt_1d_vec.at(ipt)->GetRandom();
   if (_debug) std::cout << "doGJetsSkim:: end all zmass random " << std::endl;
@@ -1924,9 +1923,9 @@ void doGJetsSkim()
 
   //  el
   // use 2d
-  ipt = _gjets_h_zmass_zpt_el->GetXaxis()->FindBin(_llnunu_l1_pt) - 1;
+  ipt = _gjets_h_zmass_zpt_el->GetYaxis()->FindBin(_llnunu_l1_pt) - 1;
   if (ipt<=0) ipt=0;
-  if (ipt>=_gjets_h_zmass_zpt_el->GetNbinsX()) ipt=_gjets_h_zmass_zpt_el->GetNbinsX()-1;
+  if (ipt>=_gjets_h_zmass_zpt_el->GetNbinsY()) ipt=_gjets_h_zmass_zpt_el->GetNbinsY()-1;
   if (_debug) std::cout << "doGJetsSkim:: begin el zmass random " << std::endl;
   _llnunu_l1_mass_el = _gjets_h_zmass_zpt_el_1d_vec.at(ipt)->GetRandom();
   if (_debug) std::cout << "doGJetsSkim:: end el zmass random " << std::endl;
@@ -1940,9 +1939,9 @@ void doGJetsSkim()
 
   //  mu
   // use 2d
-  ipt = _gjets_h_zmass_zpt_mu->GetXaxis()->FindBin(_llnunu_l1_pt) - 1;
+  ipt = _gjets_h_zmass_zpt_mu->GetYaxis()->FindBin(_llnunu_l1_pt) - 1;
   if (ipt<=0) ipt=0;
-  if (ipt>=_gjets_h_zmass_zpt_mu->GetNbinsX()) ipt=_gjets_h_zmass_zpt_mu->GetNbinsX()-1;
+  if (ipt>=_gjets_h_zmass_zpt_mu->GetNbinsY()) ipt=_gjets_h_zmass_zpt_mu->GetNbinsY()-1;
   if (_debug) std::cout << "doGJetsSkim:: begin mu zmass random " << std::endl;
   _llnunu_l1_mass_mu = _gjets_h_zmass_zpt_mu_1d_vec.at(ipt)->GetRandom();
   if (_debug) std::cout << "doGJetsSkim:: end mu zmass random " << std::endl;
@@ -1955,6 +1954,7 @@ void doGJetsSkim()
                  -_llnunu_l1_pt*sin(_llnunu_l1_phi)*_llnunu_l2_pt_mu*sin(_llnunu_l2_phi_mu)));
 
 
+  if (_debug) std::cout << "doGJetsSkim:: start getting photon pt weight " << std::endl;
   // get zpt weight
   ipt = _gjets_h_zpt_ratio->GetXaxis()->FindBin(_llnunu_l1_pt); 
 
@@ -1979,6 +1979,7 @@ void doGJetsSkim()
   _GJetsZPtWeightMu_up = _gjets_gr_zpt_ratio_mu_up->Eval(_llnunu_l1_pt);
   _GJetsZPtWeightMu_dn = _gjets_gr_zpt_ratio_mu_dn->Eval(_llnunu_l1_pt);
 
+  if (_debug) std::cout << "doGJetsSkim:: end getting photon pt weight " << std::endl;
   // get photon phi weight
   if (_doGJetsSkimAddPhiWeight) {
     _GJetsPhiWeight = _gjets_h_photon_phi_weight->GetBinContent(_gjets_h_photon_phi_weight->FindBin(_llnunu_l1_phi));
