@@ -19,6 +19,7 @@ parser.add_option("--LogY",action="store_true", dest="LogY", default=False, help
 parser.add_option("--Blind",action="store_true", dest="Blind", default=False,help="")
 parser.add_option("--test",action="store_true", dest="test", default=False,help="")
 parser.add_option("--dyGJets",action="store_true", dest="dyGJets", default=False,help="")
+parser.add_option("--muoneg",action="store_true", dest="muoneg", default=False,help="")
 parser.add_option("-l",action="callback",callback=callback_rootargs)
 parser.add_option("-q",action="callback",callback=callback_rootargs)
 parser.add_option("-b",action="callback",callback=callback_rootargs)
@@ -41,6 +42,7 @@ doRhoScale=True
 doGMCEtaScale=True
 doGMCPhPtScale=True
 dyGJets=options.dyGJets
+muoneg=options.muoneg
 
 if test: DrawLeptons = False
 
@@ -165,6 +167,25 @@ ROOT.gROOT.ProcessLine('.x tdrstyle.C')
 
 
 #################
+
+nonresPlotters=[]
+nonresSamples = ['muonegtrgsf']
+for sample in nonresSamples:
+    nonresPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
+    if channel=='el' :
+        nonresPlotters[-1].addCorrectionFactor('etrgsf', 'etrgsf')
+        nonresPlotters[-1].addCorrectionFactor('0.377075586068', 'norm')
+    elif channel=='mu' :
+        nonresPlotters[-1].addCorrectionFactor('mtrgsf', 'mtrgsf')
+        nonresPlotters[-1].addCorrectionFactor('0.602260745361', 'norm')
+    else:
+        nonresPlotters[-1].addCorrectionFactor('(etrgsf*0.377075586068+mtrgsf*0.602260745361)','norm')
+    nonresPlotters[-1].addCorrectionFactor('1./({0}*1000)'.format(lumi), 'lumi')
+
+NONRES = MergedPlotter(nonresPlotters)
+NONRES.setFillProperties(1001,ROOT.kOrange)
+
+
 wwPlotters=[]
 wwSamples = ['WWTo2L2Nu','WWToLNuQQ_BIG','WZTo1L1Nu2Q']
 
@@ -522,6 +543,11 @@ VV.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
 VV.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
 VV.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
 
+NONRES.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
+NONRES.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
+NONRES.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
+NONRES.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
+
 if dyGJets and channel=='el':
     ZJets.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass_el')
     ZJets.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt_el')
@@ -543,10 +569,13 @@ else:
 Stack = StackPlotter(outTag=tag, outDir=outdir)
 Stack.setPaveText(paveText)
 Stack.addPlotter(Data, "data_obs", "Data", "data")
-Stack.addPlotter(WW, "NonReso","WW/WZ/WJets non-reson.", "background")
-Stack.addPlotter(TT, "TT","TT", "background")
+if muoneg: 
+    Stack.addPlotter(NONRES, "NonReso","Non-reson. (e#mu data)", "background")
+else:
+    Stack.addPlotter(WW, "NonReso","WW/WZ/WJets non-reson.", "background")
+    Stack.addPlotter(TT, "TT","TT", "background")
 Stack.addPlotter(VV, "VVZReso","ZZ WZ reson.", "background")
-if dyGJets: Stack.addPlotter(ZJets, "ZJets","ZJets(#gamma+Jets)", "background")
+if dyGJets: Stack.addPlotter(ZJets, "ZJets","ZJets(#gamma+Jets data)", "background")
 else: Stack.addPlotter(ZJets, "ZJets","ZJets(MC)", "background")
 
 for i in range(len(sigSamples)):
