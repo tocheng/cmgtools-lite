@@ -225,16 +225,18 @@ gdataLumi=36.46*1000
 gdataYield=3451449849.011390686 
 gdataFidXsec=gdataYield/gdataLumi
 
-zjetsFidXsecAll = 151.05786960709534128
-zjetsFidXsecEl =  1.8943343589531727034
-zjetsFidXsecMu =  149.16353524814221032
-zjetsFidXsecAll_up = 151.85434375709266419
-zjetsFidXsecAll_dn = 150.26139540596781785
-zjetsFidXsecEl_up = 1.9354105753681851709
-zjetsFidXsecEl_dn = 1.853258142538151132
-zjetsFidXsecMu_up = 149.91893318172452609
-zjetsFidXsecMu_dn = 148.40813726342966561
-
+zjetsFidXsecAll = 151.06068438939382759
+zjetsFidXsecEl =  1.8318217140038339785
+zjetsFidXsecMu =  149.22886267539001892
+zjetsFidXsecAll_up = 151.85715853322426483
+zjetsFidXsecAll_dn = 150.26421019455997907
+zjetsFidXsecEl_up = 1.8728979304188486665
+zjetsFidXsecEl_dn = 1.7907454975888201787
+zjetsFidXsecMu_up = 149.98426060280544903
+zjetsFidXsecMu_dn = 148.47346469697114912
+zjetsFidXsecLowLptAll = 807.42655018368884612
+zjetsFidXsecLowLptEl = 229.77648821257676559
+zjetsFidXsecLowLptMu = 577.65006197098625762
 
 # for GJets photon bkg subtraction
 
@@ -297,7 +299,8 @@ for sample in phymetSamples:
 gdataPlotters=[]
 gdataSamples = [
 #'SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_Rc36p46ReCalib',
-'SinglePhoton_Run2016B2H_ReReco_36p46_ResBosRefit_Rc36p46ReCalib',
+#'SinglePhoton_Run2016B2H_ReReco_36p46_ResBosRefit_Rc36p46ReCalib',
+'SinglePhoton_Run2016B2H_ReReco_36p46_Rc36p46ReCalib',
 ]
 
 
@@ -310,19 +313,19 @@ for sample in gdataSamples:
     if channel=='el' :
         gdataPlotters[-1].addCorrectionFactor('GJetsZPtWeightEl','GJetsZPtWeight')
         gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecEl),'zjetsFidXsecEl')
-        gdataPlotters[-1].addCorrectionFactor('(1.09480)','GJetsNorm')
+        gdataPlotters[-1].addCorrectionFactor('(1.16725)','GJetsNorm')
     elif channel=='mu' :
         gdataPlotters[-1].addCorrectionFactor('GJetsZPtWeightMu','GJetsZPtWeight')
         gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecMu),'zjetsFidXsecMu')
-        gdataPlotters[-1].addCorrectionFactor('(1.11636)','GJetsNorm')
+        gdataPlotters[-1].addCorrectionFactor('(1.15559)','GJetsNorm')
     else :
         gdataPlotters[-1].addCorrectionFactor('GJetsZPtWeight','GJetsZPtWeight')
         gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecAll),'zjetsFidXsecAll')
-        gdataPlotters[-1].addCorrectionFactor('(1.11636)','GJetsNorm')
+        gdataPlotters[-1].addCorrectionFactor('(1.15559)','GJetsNorm')
 
 # the GJets plotter
-#gjetsPlotters = gdataPlotters
-gjetsPlotters = gdataPlotters+phymetPlotters
+gjetsPlotters = gdataPlotters
+#gjetsPlotters = gdataPlotters+phymetPlotters
 
 
 GJets = MergedPlotter(gjetsPlotters)
@@ -334,7 +337,8 @@ mczjetsPlotters=[]
 mczjetsSamples = [
 #'DYJetsToLL_M50_BIG_ResBos_NoRecoil',
 #'DYJetsToLL_M50_BIG_ResBos_Rc36p46',
-'DYJetsToLL_M50_BIG_ResBosRefit_Rc36p46',
+#'DYJetsToLL_M50_BIG_ResBosRefit_Rc36p46',
+'DYJetsToLL_M50_BIG_Rc36p46DtReCalib',
 ]
 
 
@@ -352,14 +356,14 @@ for sample in mczjetsSamples:
     mczjetsPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
     mczjetsPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
     if channel=='el' :
-        mczjetsPlotters[-1].addCorrectionFactor('(1.12777)','scale') #el ResBos for DtReCalib
+#        mczjetsPlotters[-1].addCorrectionFactor('(1.12777)','scale') #el ResBos for DtReCalib
 #        mczjetsPlotters[-1].addCorrectionFactor('(0.985054)','scale') #el ResBos
-#        mczjetsPlotters[-1].addCorrectionFactor('(1.06937)','scale') #el
+        mczjetsPlotters[-1].addCorrectionFactor('(1.13748)','scale') #el
 #        mczjetsPlotters[-1].addCorrectionFactor('(1)','scale') #el
     elif channel=='mu' :
-        mczjetsPlotters[-1].addCorrectionFactor('(1.16187)','scale') #mu ResBos for DtReCalib
+#        mczjetsPlotters[-1].addCorrectionFactor('(1.16187)','scale') #mu ResBos for DtReCalib
 #        mczjetsPlotters[-1].addCorrectionFactor('(1.11546)','scale') #mu ResBos
-#        mczjetsPlotters[-1].addCorrectionFactor('(1.12403)','scale') #mu
+        mczjetsPlotters[-1].addCorrectionFactor('(1.16246)','scale') #mu
 #        mczjetsPlotters[-1].addCorrectionFactor('(1)','scale') #mu
     else :
 #        mczjetsPlotters[-1].addCorrectionFactor('(1.11376)','scale') #all ResBos
@@ -562,12 +566,14 @@ if test:
 #    Stack.drawStack('nVert', cuts, str(lumi*1000), 80, 0.0, 80.0, titlex = "N vertices", units = "",output=tag+'nVert',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('rho', cuts, str(lumi*1000), 55, 0.0, 55.0, titlex = "#rho", units = "",output=tag+'rho',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 50, 0.0, 500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt_low',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 75, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 30, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 75, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 60, 60, 120, titlex = "M(Z)", units = "GeV",output=tag+'zmass',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 50, 100.0, 600.0, titlex = "M_{T}", units = "GeV",output=tag+'mt_low',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
 #    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output=tag+'met_low',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
-    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 50, 0, 1000, titlex = "MET", units = "GeV",output=tag+'met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
+    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 20, 0, 1000, titlex = "MET", units = "GeV",output=tag+'met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
+#    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 50, 0, 1000, titlex = "MET", units = "GeV",output=tag+'met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
 #    Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 100, -300, 300.0, titlex = "MET_{#parallel}", units = "GeV",output=tag+'met_para',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_l2_pt_to_plot*sin(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 100, -300, 300.0, titlex = "MET_{#perp}", units = "GeV",output=tag+'met_perp',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))', cuts, str(lumi*1000), 50, 0, 5, titlex = "#Delta#phi(Z,MET)", units = "",output=tag+'dphiZMet',outDir=outdir,separateSignal=sepSig)

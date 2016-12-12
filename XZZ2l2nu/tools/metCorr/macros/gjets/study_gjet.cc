@@ -27,15 +27,16 @@
 int main(int argc, char** argv) {
 
 
-  //TFile* file1 = TFile::Open("/home/heli/XZZ/80X_20161029_light_Skim/DYJetsToLL_M50_BIG_NoRecoil.root");
   //TFile* file1 = TFile::Open("/home/heli/XZZ/80X_20161029_light_Skim/DYJetsToLL_M50_BIG_ResBos_NoRecoil.root");
   //TFile* file1 = TFile::Open("/home/heli/XZZ/80X_20161029_light_Skim/DYJetsToLL_M50_BIG_ResBosRefit_NoRecoil.root");
   //TFile* file2 = TFile::Open("/home/heli/XZZ/80X_20161029_GJets_light_Skim/SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil.root");
-  TFile* file1 = TFile::Open("/home/heli/XZZ/80X_20161029_light_Skim/DYJetsToLL_M50_BIG_ResBosRefit_Rc36p46.root");
+  //TFile* file1 = TFile::Open("/home/heli/XZZ/80X_20161029_light_Skim/DYJetsToLL_M50_BIG_ResBosRefit_Rc36p46.root");
+  TFile* file1 = TFile::Open("/home/heli/XZZ/80X_20161029_light_Skim/DYJetsToLL_M50_BIG_NoRecoil.root");
   TFile* file2 = TFile::Open("/home/heli/XZZ/80X_20161029_GJets_light_Skim/SinglePhoton_Run2016B2H_ReReco_36p46_ResBosRefit_Rc36p46ReCalib.root");
 
   //std::string outtag="study_gjets_data_36p46_resbos_norm_npucut";
-  std::string outtag="study_gjets_data_36p46_resbosrefit_norm_npucut";
+  //std::string outtag="study_gjets_data_36p46_resbosrefit_norm_npucut";
+  std::string outtag="study_gjets_data_36p46_norm_npucut";
 
   // yields:
 

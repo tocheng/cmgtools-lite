@@ -2,13 +2,13 @@
 
 std::string channel = "all";
 bool doMC = false;
-bool doGJets = false;
-bool useZSelecLowLPt = false;
+bool doGJets = true;
+bool useZSelecLowLPt = true;
 bool useNPUCut = false; // true for MC 80x old mc, not for data, not for GJets
 bool useEffSf = false;
 bool mcTrgSf = false;
 bool dtTrgSf = false;
-bool dtHLT = true;
+bool dtHLT = false;
 
 // recipe:
 // 1.) useZSelecLowLPt can well reproduce the results with full cuts (useZSelec) + HLT (dtHLT or dtTrgSf or mcTrgSf) 
@@ -22,7 +22,8 @@ std::string filename;
 std::string outputdir = "./recoil_out7";
 std::vector< std::string > channels = {"all", "mu", "el"};
 std::vector< std::string > mcfiles = {
-    "DYJetsToLL_M50_BIG_ResBos_NoRecoil", 
+    //"DYJetsToLL_M50_BIG_ResBos_NoRecoil", 
+    "DYJetsToLL_M50_BIG_NoRecoil", 
  };
 
 std::vector< std::string > dtfiles = {
@@ -31,7 +32,8 @@ std::vector< std::string > dtfiles = {
  };
 
 std::vector< std::string > gjfiles = {
-    "SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil"
+    //"SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil"
+    "SinglePhoton_Run2016B2H_ReReco_36p46_NoRecoil"
  };
 
 
