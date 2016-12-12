@@ -201,24 +201,39 @@ WJets.setFillProperties(1001,ROOT.kBlue-6)
 
 
 zjetsPlotters=[]
+#zjetsSamples = ['DYJetsToLL_M50_BIG_Rc36p22']
 zjetsSamples = ['DYJetsToLL_M50_BIG_ResBos_Rc36p22']
+#zjetsSamples = ['DYJetsToLL_M50_BIG_NoRecoil']
+
+
 
 for sample in zjetsSamples:
     zjetsPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
     zjetsPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
+    #zjetsPlotters[-1].addCorrectionFactor('(1)','norm')
     if ZJetsZPtWeight: zjetsPlotters[-1].addCorrectionFactor(ZPtWeight,'ZPtWeight')
+    #zjetsPlotters[-1].addCorrectionFactor('xsec','xsec')
     zjetsPlotters[-1].addCorrectionFactor('(1921.8*3)','xsec') # FEWZ NNLO.results_z_m50_nnlo_inclusive_NNPDF30_nlo_as_0118
+    #zjetsPlotters[-1].addCorrectionFactor('(1907.0*3)','xsec') # FEWZ NNLO.results_z_m50_nnlo_fsrOn_lowstat_inclusive_NNPDF30_nlo_as_0118
     zjetsPlotters[-1].addCorrectionFactor('genWeight','genWeight')
     #zjetsPlotters[-1].addCorrectionFactor("ZJetsGenWeight",'genWeight')
     zjetsPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
     zjetsPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
     if channel=='el' :
         zjetsPlotters[-1].addCorrectionFactor('(0.985054)','scale') #el ResBos
+        #zjetsPlotters[-1].addCorrectionFactor('(1.06937)','scale') #el
+        #zjetsPlotters[-1].addCorrectionFactor('(1)','scale') #el
     elif channel=='mu' :
         zjetsPlotters[-1].addCorrectionFactor('(1.11546)','scale') #mu ResBos
+        #zjetsPlotters[-1].addCorrectionFactor('(1.12403)','scale') #mu
+        #zjetsPlotters[-1].addCorrectionFactor('(1)','scale') #mu
     else :
         zjetsPlotters[-1].addCorrectionFactor('(1.11376)','scale') #all ResBos
+        #zjetsPlotters[-1].addCorrectionFactor('(1.12337)','scale') #all
+        #zjetsPlotters[-1].addCorrectionFactor('(1)','scale') #all
     allPlotters[sample] = zjetsPlotters[-1]
+
+
 
 ZJets = MergedPlotter(zjetsPlotters)
 ZJets.setFillProperties(1001,ROOT.kGreen+2)

@@ -120,7 +120,6 @@ std::string _selection = "(1)";
 // store old branches 
 bool _storeOldBranches = false;
 
-
 //=========================
 // add PU weights
 //=========================
@@ -499,6 +498,21 @@ Float_t _llnunu_mt_ElectronEnUp,_llnunu_mt_ElectronEnDn;
 Float_t _llnunu_mt_PhotonEnUp,_llnunu_mt_PhotonEnDn;
 Float_t _llnunu_mt_TauEnUp,_llnunu_mt_TauEnDn;
 Float_t _llnunu_mt_UnclusterUp,_llnunu_mt_UnclusterDn;
+////////////////////
+Float_t _llnunu_mt_el_JetEnUp,_llnunu_mt_el_JetEnDn, _llnunu_mt_el_JetResUp,_llnunu_mt_el_JetResDn;
+Float_t _llnunu_mt_el_MuonEnUp,_llnunu_mt_el_MuonEnDn;
+Float_t _llnunu_mt_el_ElectronEnUp,_llnunu_mt_el_ElectronEnDn;
+Float_t _llnunu_mt_el_PhotonEnUp,_llnunu_mt_el_PhotonEnDn;
+Float_t _llnunu_mt_el_TauEnUp,_llnunu_mt_el_TauEnDn;
+Float_t _llnunu_mt_el_UnclusterUp,_llnunu_mt_el_UnclusterDn;
+////
+Float_t _llnunu_mt_mu_JetEnUp,_llnunu_mt_mu_JetEnDn, _llnunu_mt_mu_JetResUp,_llnunu_mt_mu_JetResDn;
+Float_t _llnunu_mt_mu_MuonEnUp,_llnunu_mt_mu_MuonEnDn;
+Float_t _llnunu_mt_mu_ElectronEnUp,_llnunu_mt_mu_ElectronEnDn;
+Float_t _llnunu_mt_mu_PhotonEnUp,_llnunu_mt_mu_PhotonEnDn;
+Float_t _llnunu_mt_mu_TauEnUp,_llnunu_mt_mu_TauEnDn;
+Float_t _llnunu_mt_mu_UnclusterUp,_llnunu_mt_mu_UnclusterDn;
+
 //////////////////// 
 Float_t _llnunu_l1_mass, _llnunu_l1_mt;
 Float_t _llnunu_l1_pt, _llnunu_l1_phi, _llnunu_l1_eta;
@@ -594,6 +608,11 @@ Float_t _gjet_l1_trigerob_pt, _gjet_l1_trigerob_eta, _gjet_l1_trigerob_phi;
 Int_t   _llnunu_l1_trigerob_HLTbit;
 Float_t _llnunu_l1_trigerob_pt, _llnunu_l1_trigerob_eta, _llnunu_l1_trigerob_phi;
 Float_t _gjet_l2_pt, _gjet_l2_phi, _gjet_l2_sumEt, _gjet_l2_rawPt, _gjet_l2_rawPhi, _gjet_l2_rawSumEt;
+
+Float_t _gjet_l2_t1Pt_JECUp,_gjet_l2_t1Phi_JECUp,_gjet_l2_t1Pt_JECDn,_gjet_l2_t1Phi_JECDn;
+Float_t _gjet_l2_t1Pt_JERUp,_gjet_l2_t1Phi_JERUp,_gjet_l2_t1Pt_JERDn,_gjet_l2_t1Phi_JERDn;
+Float_t _gjet_l2_t1Pt_UnclusterUp,_gjet_l2_t1Phi_UnclusterUp,_gjet_l2_t1Pt_UnclusterDn,_gjet_l2_t1Phi_UnclusterDn;
+
 Float_t _gjet_l2_genPhi, _gjet_l2_genEta;
 Float_t _llnunu_mt_el, _llnunu_l1_mass_el;
 Float_t _llnunu_mt_mu, _llnunu_l1_mass_mu;
@@ -669,8 +688,12 @@ void doGJetsSkim();
 
 // do MT alternatives
 float MTCalc(float pt, float phi);
+float MTCalcEl(float pt, float phi);
+float MTCalcMu(float pt, float phi);
 
 void doMTUnc();
+void doMTUncMu();
+void doMTUncEl();
 
 // 
 

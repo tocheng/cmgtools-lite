@@ -1,9 +1,9 @@
 #!/bin/sh
 
 #inputs
-inputdir=/data2/XZZ2/80X_20161029_light
-outputdir=/datab/tocheng/XZZ/80X_20161029_light_Skim
-config=config/parameters_light_testType
+inputdir=/datac/tocheng/XZZ2/80X_20161029_GJets_light
+outputdir=/datab/tocheng/XZZ/80X_20161029_GJets_light_Skim
+config=config/parameters_light_gjets_testType
 
 mkdir -p ${outputdir}
 
@@ -11,15 +11,18 @@ gmake all
 
 njob="0"
 
-for infile in $inputdir/SingleEMU_Run2016B2H_ReReco_36p22fbinv/vvTreeProducer/tree.root ; 
+for infile in $inputdir/SinglePhoton_Run2016B2H_ReReco_36p46/vvTreeProducer/tree.root ; 
 do
   echo "+++ skimming $infile +++"
   outfile="${outputdir}/${infile/$inputdir\//}"
+
+  # options for outputs
   outfile="${outfile/\/vvTreeProducer\/tree/}"
+  #outfile="${outfile/\/vvTreeProducer\/tree/_ResBos_NoRecoil}"
 
   inSkimFile=${infile/vvTreeProducer\/tree.root/skimAnalyzerCount\/SkimReport.txt}
 
-  echo "inSkimFile" $inSkimFile
+  #echo $inSkimFile
   AllEvents=`grep "All Events" ${inSkimFile} | awk {'print $3'}`
   SumWeights=`grep "Sum Weights" ${inSkimFile} | awk {'print $3'}`
 

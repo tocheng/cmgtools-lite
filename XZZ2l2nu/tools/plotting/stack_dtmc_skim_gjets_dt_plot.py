@@ -19,13 +19,13 @@ parser.add_option("--LogY",action="store_true", dest="LogY", default=False, help
 parser.add_option("--Blind",action="store_true", dest="Blind", default=False,help="")
 parser.add_option("--test",action="store_true", dest="test", default=False,help="")
 parser.add_option("--dyGJets",action="store_true", dest="dyGJets", default=False,help="")
+parser.add_option("--muoneg",action="store_true", dest="muoneg", default=False,help="")
 parser.add_option("-l",action="callback",callback=callback_rootargs)
 parser.add_option("-q",action="callback",callback=callback_rootargs)
 parser.add_option("-b",action="callback",callback=callback_rootargs)
 
 
-
-
+####################################
 
 (options,args) = parser.parse_args()
 
@@ -40,17 +40,10 @@ DrawLeptons=False
 doRhoScale=True
 doGMCEtaScale=True
 dyGJets=options.dyGJets
-
+muoneg=options.muoneg
 if test: DrawLeptons = False
 
-#lepsf="(1)"
-#lepsf="idsf"
-#lepsf="trgsf"
-#lepsf="isosf"
-#lepsf="isosf*idsf"
 lepsf="trgsf*isosf*idsf"
-#lepsf="trgsf*isosf*idsf*trksf"
-
 
 g_scale='(1)'
 
@@ -64,10 +57,9 @@ if doGMCEtaScale:
     tag+="GMCEtaWt_"
     g_scale=g_scale+"*(0.87*TMath::Gaus(llnunu_l1_eta,0.65,0.56)+0.87*TMath::Gaus(llnunu_l1_eta,-0.65,0.56)+0.65*TMath::Gaus(llnunu_l1_eta,1.90,0.25)+0.65*TMath::Gaus(llnunu_l1_eta,-1.90,0.25))"
 
-
 outdir='plots_gjets_36p46'
 
-indir='/datab/tocheng/XZZ/80X_20161029_light_Skim/'
+indir='/datac/heli/XZZ2/80X_20161029_light_Skim/'
 lumi=36.4592
 sepSig=True
 doRatio=True
@@ -80,15 +72,15 @@ DataHLT=True
 k=1 # signal scale
 ZPtWeight="ZPtWeight"
 
-elChannel='((abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11)||(llnunu_l1_l1_pdgId==19801117))'
-muChannel='((abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13)||(llnunu_l1_l1_pdgId==19801117))'
+elChannel='((abs(llnunu_l1_l1_pdgId)==11||abs(llnunu_l1_l2_pdgId)==11)||(llnunu_l1_l1_pdgId==19801117))'
+muChannel='((abs(llnunu_l1_l1_pdgId)==13||abs(llnunu_l1_l2_pdgId)==13)||(llnunu_l1_l1_pdgId==19801117))'
 
 if not os.path.exists(outdir): os.system('mkdir -p '+outdir)
 
 tag = tag+cutChain+'_'
 tag = tag+puWeight+'_'
 
-
+if doSys: tag = tag+"sys_"
 if UseMETFilter: tag = tag+'metfilter_'
 if not Blind: tag = tag+'unblind_'
 
@@ -99,16 +91,13 @@ if SignalAll1pb:
 else:
     tag += 'scale'+str(k)
 
-#tag += '_'
-
-
 paveText="#sqrt{s} = 13 TeV 2016 L = "+"{:.4}".format(float(lumi))+" fb^{-1}"
 
 metfilter='(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter)'
 
 cuts_loose='(nllnunu)'
-cuts_lepaccept="((abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13&&llnunu_l1_l1_pt>50&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID>0.99||llnunu_l1_l2_highPtID>0.99))"
-cuts_lepaccept+="||(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11&&llnunu_l1_l1_pt>115&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5)"
+cuts_lepaccept="((abs(llnunu_l1_l1_pdgId)==13||abs(llnunu_l1_l2_pdgId)==13&&llnunu_l1_l1_pt>50&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID>0.99||llnunu_l1_l2_highPtID>0.99))"
+cuts_lepaccept+="||(abs(llnunu_l1_l1_pdgId)==11||abs(llnunu_l1_l2_pdgId)==11&&llnunu_l1_l1_pt>115&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5)"
 cuts_lepaccept+="||(llnunu_l1_l1_pdgId==19801117))"
 cuts_zmass="(llnunu_l1_mass_to_plot>70&&llnunu_l1_mass_to_plot<110)"
 cuts_zpt100="(llnunu_l1_pt>100)"
@@ -151,10 +140,29 @@ cuts = '('+cuts+')'
 
 ROOT.gROOT.ProcessLine('.x tdrstyle.C') 
 
+#########################################################################
+## NON-RESONANCE
+#########################################################################
 
+nonresPlotters=[]
+nonresSamples = ['muonegtrgsf']
+for sample in nonresSamples:
+    nonresPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
+    if channel=='el' :
+        nonresPlotters[-1].addCorrectionFactor('etrgsf', 'etrgsf')
+        nonresPlotters[-1].addCorrectionFactor('0.377075586068', 'norm')
+    elif channel=='mu' :
+        nonresPlotters[-1].addCorrectionFactor('mtrgsf', 'mtrgsf')
+        nonresPlotters[-1].addCorrectionFactor('0.602260745361', 'norm')
+    else:
+        nonresPlotters[-1].addCorrectionFactor('(etrgsf*0.377075586068+mtrgsf*0.602260745361)','norm')
+    nonresPlotters[-1].addCorrectionFactor('1./({0}*1000)'.format(lumi), 'lumi')
 
+NONRES = MergedPlotter(nonresPlotters)
+NONRES.setFillProperties(1001,ROOT.kOrange)
 
-#################
+############################################################################
+
 wwPlotters=[]
 wwSamples = ['WWTo2L2Nu','WWToLNuQQ_BIG','WZTo1L1Nu2Q']
 
@@ -169,6 +177,7 @@ for sample in wwSamples:
 WW = MergedPlotter(wwPlotters)
 WW.setFillProperties(1001,ROOT.kOrange)
 
+########################################################################################
 
 vvPlotters=[]
 vvSamples = ['WZTo2L2Q','WZTo3LNu_AMCNLO',
@@ -209,7 +218,6 @@ WJets.setFillProperties(1001,ROOT.kBlue-6)
 ################################
 # ZJets
 
-
 # parameters for GJets
 gdataLumi=36.46*1000
 gdataYield=3447971384.222
@@ -225,8 +233,6 @@ zjetsFidXsecMu_up =157.22129586806292423
 zjetsFidXsecAll_dn=157.67618228330914576
 zjetsFidXsecEl_dn =2.0275338821661335054
 zjetsFidXsecMu_dn =155.64864840114299227
-
-
 
 # for GJets photon bkg subtraction
 
@@ -315,10 +321,8 @@ for sample in gdataSamples:
 #gjetsPlotters = gdataPlotters
 gjetsPlotters = gdataPlotters+phymetPlotters
 
-
 GJets = MergedPlotter(gjetsPlotters)
 GJets.setFillProperties(1001,ROOT.kGreen+2)
-
 
 ### MC ZJets
 mczjetsPlotters=[]
@@ -326,8 +330,6 @@ mczjetsSamples = [
 #'DYJetsToLL_M50_BIG_ResBos_NoRecoil',
 'DYJetsToLL_M50_BIG_ResBos_Rc36p22HLTPUcutEffSf',
 ]
-
-
 
 for sample in mczjetsSamples:
     mczjetsPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
@@ -505,6 +507,11 @@ VV.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
 VV.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
 VV.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
 
+NONRES.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
+NONRES.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
+NONRES.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
+NONRES.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
+
 if dyGJets and channel=='el':
     ZJets.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass_el')
     ZJets.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt_el')
@@ -526,8 +533,11 @@ else:
 Stack = StackPlotter(outTag=tag, outDir=outdir)
 Stack.setPaveText(paveText)
 Stack.addPlotter(Data, "data_obs", "Data", "data")
-Stack.addPlotter(WW, "NonReso","WW/WZ/WJets non-reson.", "background")
-Stack.addPlotter(TT, "TT","TT", "background")
+if muoneg: 
+    Stack.addPlotter(NONRES, "NONReso","non reson.", "background")
+else:
+    Stack.addPlotter(WW, "NonReso","WW/WZ/WJets non-reson.", "background")
+    Stack.addPlotter(TT, "TT","TT", "background")
 Stack.addPlotter(VV, "VVZReso","ZZ WZ reson.", "background")
 if dyGJets: Stack.addPlotter(ZJets, "ZJets","ZJets(#gamma+Jets)", "background")
 else: Stack.addPlotter(ZJets, "ZJets","ZJets(MC)", "background")
@@ -546,20 +556,7 @@ tag+='_'
 
 
 if test: 
-#    Stack.drawStack('nVert', cuts, str(lumi*1000), 100, 0.0, 100.0, titlex = "N vertices", units = "",output=tag+'nVert',outDir=outdir,separateSignal=sepSig)
-#    Stack.drawStack('rho', cuts, str(lumi*1000), 55, 0.0, 55.0, titlex = "#rho", units = "",output=tag+'rho',outDir=outdir,separateSignal=sepSig)
-#    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 50, 0.0, 500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt_low',outDir=outdir,separateSignal=sepSig)
-#    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 75, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt',outDir=outdir,separateSignal=sepSig)
     Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 500, 50, 150, titlex = "M(Z)", units = "GeV",output=tag+'zmass_smbin',outDir=outdir,separateSignal=sepSig)
-    #Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 50, 50, 150, titlex = "M(Z)", units = "GeV",output=tag+'zmass',outDir=outdir,separateSignal=sepSig)
-#    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 50, 100.0, 600.0, titlex = "M_{T}", units = "GeV",output=tag+'mt_low',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
-
-#    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output=tag+'met_low',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
-#    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 50, 0, 1000, titlex = "MET", units = "GeV",output=tag+'met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
-#    Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 100, -200, 200.0, titlex = "MET_{#parallel}", units = "GeV",output=tag+'met_para',outDir=outdir,separateSignal=sepSig)
-#    Stack.drawStack('llnunu_l2_pt_to_plot*sin(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 100, -200, 200.0, titlex = "MET_{#perp}", units = "GeV",output=tag+'met_perp',outDir=outdir,separateSignal=sepSig)
-#    Stack.drawStack('fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))', cuts, str(lumi*1000), 50, 0, 5, titlex = "#Delta#phi(Z,MET)", units = "",output=tag+'dphiZMet',outDir=outdir,separateSignal=sepSig)
-
 else: 
     Stack.drawStack('nVert', cuts, str(lumi*1000), 100, 0.0, 100.0, titlex = "N vertices", units = "",output=tag+'nVert',outDir=outdir,separateSignal=sepSig)
     Stack.drawStack('rho', cuts, str(lumi*1000), 55, 0.0, 55.0, titlex = "#rho", units = "",output=tag+'rho',outDir=outdir,separateSignal=sepSig)
