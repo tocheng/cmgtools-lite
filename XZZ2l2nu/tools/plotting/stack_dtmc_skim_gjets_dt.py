@@ -37,7 +37,7 @@ cutChain=options.cutChain
 channel=options.channel
 LogY=options.LogY
 test=options.test
-DrawLeptons=False
+DrawLeptons=True
 doRhoScale=True
 doGMCEtaScale=True
 doGMCPhPtScale=False
@@ -57,25 +57,32 @@ lepsf="trgsf*isosf*idsf"
 
 g_scale='(1)'
 mc_scale='(1)'
+zjets_scale='(1)'
 
-if channel=='mu': mc_scale='(1.16067370494)'
-elif channel=='el': mc_scale='(1.13306470197)'
-else: mc_scale='(1.16033036369)'
+if channel=='mu': 
+    #mc_scale='(1.16067370494)'
+    zjets_scale='(1.16067370494)'
+elif channel=='el': 
+    #mc_scale='(1.13306470197)'
+    zjets_scale='(1.13306470197)'
+else: 
+    #mc_scale='(1.16033036369)'
+    zjets_scale='(1.16033036369)'
 
 # non reso alpha
 # zpt>70
 #nonreso_alpha_el=0.368708
 #nonreso_alpha_mu=0.607408
 # zpt>50
-#nonreso_alpha_el=0.353808
-#nonreso_alpha_mu=0.613999
+#nonreso_alpha_el=0.353651462281
+#nonreso_alpha_mu=0.614219922129
 # zpt>50 met<100
-#nonreso_alpha_el=0.332814
-#nonreso_alpha_mu=0.615156
+nonreso_alpha_el=0.3353976161
+nonreso_alpha_mu=0.617645119773 
 
 #
-nonreso_alpha_el=1.0
-nonreso_alpha_mu=1.0
+#nonreso_alpha_el=1.0
+#nonreso_alpha_mu=1.0
 
 #
 if doRhoScale:
@@ -94,7 +101,7 @@ if doGMCPhPtScale:
 
 outdir='plots'
 
-indir='/datab/tocheng/XZZ/80X_20161029_light_Skim/'
+indir='/home/heli/XZZ/80X_20161029_light_Skim/'
 lumi=36.4592
 sepSig=True
 doRatio=True
@@ -145,6 +152,7 @@ cuts_zmass="(llnunu_l1_mass_to_plot>70&&llnunu_l1_mass_to_plot<110)"
 cuts_zmass_50_180="(llnunu_l1_mass_to_plot>50&&llnunu_l1_mass_to_plot<180)"
 cuts_zpt100="(llnunu_l1_pt>100)"
 cuts_zpt150="(llnunu_l1_pt>150)"
+cuts_zpt200="(llnunu_l1_pt>200)"
 cuts_met50="(llnunu_l2_pt_to_plot>50)"
 cuts_met100="(llnunu_l2_pt_to_plot>100)"
 cuts_met200="(llnunu_l2_pt_to_plot>200)"
@@ -154,6 +162,7 @@ cuts_loose_zpt50="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>50)"
 cuts_loose_zptgt50lt200="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>50&&llnunu_l1_pt<200)"
 cuts_loose_zll="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt100+")"
 cuts_loose_zpt150="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt150+")"
+cuts_loose_zpt200="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt200+")"
 cuts_loose_zll_met50="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt100+"&&"+cuts_met50+")"
 cuts_loose_zll_met100="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt100+"&&"+cuts_met100+")"
 cuts_loose_zll_met200="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt100+"&&"+cuts_met200+")"
@@ -169,6 +178,7 @@ elif cutChain=='tightzpt50': cuts=cuts_loose_zpt50
 elif cutChain=='tightzptgt50lt200': cuts=cuts_loose_zptgt50lt200
 elif cutChain=='tightzpt100': cuts=cuts_loose_zll
 elif cutChain=='tightzpt150': cuts=cuts_loose_zpt150
+elif cutChain=='tightzpt200': cuts=cuts_loose_zpt200
 elif cutChain=='tightzpt100met50': cuts=cuts_loose_zll_met50
 elif cutChain=='tightzpt100met100': cuts=cuts_loose_zll_met100
 elif cutChain=='tightzpt100met200': cuts=cuts_loose_zll_met200
@@ -335,6 +345,7 @@ for sample in phymetSamples:
     phymetPlotters[-1].addCorrectionFactor(g_scale,'scale')
     phymetPlotters[-1].addCorrectionFactor(str(1/gdataFidXsec),'frac') # divided by g data fid-xsec
     phymetPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
+    phymetPlotters[-1].addCorrectionFactor(zjets_scale,'zjets_scale')
     if channel=='el' :
         phymetPlotters[-1].addCorrectionFactor('GJetsZPtWeightEl','GJetsZPtWeight')
         phymetPlotters[-1].addCorrectionFactor(str(zjetsFidXsecEl),'zjetsFidXsecEl')
@@ -361,6 +372,7 @@ for sample in gdataSamples:
     gdataPlotters[-1].addCorrectionFactor('GJetsRhoWeight','GJetsRhoWeight')
     gdataPlotters[-1].addCorrectionFactor(str(1/gdataYield),'GJetsNorm0')
     gdataPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
+    gdataPlotters[-1].addCorrectionFactor(zjets_scale,'zjets_scale')
     if channel=='el' :
         gdataPlotters[-1].addCorrectionFactor('GJetsZPtWeightEl','GJetsZPtWeight')
         gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecEl),'zjetsFidXsecEl')
@@ -404,20 +416,7 @@ for sample in mczjetsSamples:
     mczjetsPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
     mczjetsPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
     mczjetsPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
-    if channel=='el' :
-#        mczjetsPlotters[-1].addCorrectionFactor('(1.12777)','scale') #el ResBos for DtReCalib
-#        mczjetsPlotters[-1].addCorrectionFactor('(0.985054)','scale') #el ResBos
-#        mczjetsPlotters[-1].addCorrectionFactor('(1.13748)','scale') #el
-        mczjetsPlotters[-1].addCorrectionFactor('(1)','scale') #el
-    elif channel=='mu' :
-#        mczjetsPlotters[-1].addCorrectionFactor('(1.16187)','scale') #mu ResBos for DtReCalib
-#        mczjetsPlotters[-1].addCorrectionFactor('(1.11546)','scale') #mu ResBos
-#        mczjetsPlotters[-1].addCorrectionFactor('(1.16246)','scale') #mu
-        mczjetsPlotters[-1].addCorrectionFactor('(1)','scale') #mu
-    else :
-#        mczjetsPlotters[-1].addCorrectionFactor('(1.11376)','scale') #all ResBos
-#        mczjetsPlotters[-1].addCorrectionFactor('(1.16187)','scale') #all
-        mczjetsPlotters[-1].addCorrectionFactor('(1)','scale') #all
+    mczjetsPlotters[-1].addCorrectionFactor(zjets_scale,'zjets_scale')
 
 
 MCZJets = MergedPlotter(mczjetsPlotters)
