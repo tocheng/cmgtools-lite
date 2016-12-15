@@ -59,7 +59,6 @@ std::string _file_config_name;
 TFile* _file_in;
 TFile* _file_out;
 
-
 // input output root trees
 TTree* _tree_in;
 TTree* _tree_out;
@@ -121,7 +120,6 @@ std::string _selection = "(1)";
 // store old branches 
 bool _storeOldBranches = false;
 
-
 //=========================
 // add PU weights
 //=========================
@@ -153,6 +151,15 @@ std::string _MuonPtRecalibInputForData, _MuonPtRecalibInputForMC;
 // not from config file:
 KalmanMuonCalibrator* _muCalib;
 
+// electron simple recalib
+bool _doElecPtRecalibSimpleData = false;
+// elec escale
+double _ElecPtRecalibSimpleDataScale = 1.0;
+
+// muon simple recalib
+bool _doMuonPtRecalibSimpleData = false;
+// muon escale
+double _MuonPtRecalibSimpleDataScale = 1.0;
 
 //========================
 // Add DYJet gen reweight 
@@ -169,6 +176,9 @@ bool _addDyZPtWeightUseFunction = true;
 
 // for NLO MC use function from resbos nnlo gluon resummation
 bool _addDyZPtWeightUseResummationFunction = true;
+
+// for NLO MC use function from resbos nnlo gluon resummation but refitted to data
+bool _addDyZPtWeightUseResummationRefitFunction = true;
 
 // for LO MC to NLO, also use function  
 bool _addDyZPtWeightLOUseFunction = true;
@@ -187,6 +197,7 @@ TFile* _fdyzpt;
 TH1D*  _hdyzpt_dtmc_ratio;
 TF1*   _fcdyzpt_dtmc_ratio;
 TF1*   _fcdyzpt_dtmc_ratio_resbos;
+TF1*   _fcdyzpt_dtmc_ratio_resbos_refit;
 TH1D*  _hdyzpt_mc_nlo_lo_ratio;
 TF1*   _fcdyzpt_mc_nlo_lo_ratio;
 
@@ -428,36 +439,30 @@ TFile* _gjets_input_file;
 TH2D* _gjets_h_zmass_zpt;
 TH2D* _gjets_h_zmass_zpt_el;
 TH2D* _gjets_h_zmass_zpt_mu;
-TH3D* _gjets_h_zmass_zpt_zrap;
-TH3D* _gjets_h_zmass_zpt_zrap_el;
-TH3D* _gjets_h_zmass_zpt_zrap_mu;
-TH2D* _gjets_h_zpt_zrap_ratio;
-TH2D* _gjets_h_zpt_zrap_ratio_el;
-TH2D* _gjets_h_zpt_zrap_ratio_mu;
-TH2D* _gjets_h_zpt_zrap_ratio_up;
-TH2D* _gjets_h_zpt_zrap_ratio_el_up;
-TH2D* _gjets_h_zpt_zrap_ratio_mu_up;
-TH2D* _gjets_h_zpt_zrap_ratio_dn;
-TH2D* _gjets_h_zpt_zrap_ratio_el_dn;
-TH2D* _gjets_h_zpt_zrap_ratio_mu_dn;
-TH2D* _gjets_h_zpt_zrap_lowlpt_ratio;
-TH2D* _gjets_h_zpt_zrap_lowlpt_ratio_el;
-TH2D* _gjets_h_zpt_zrap_lowlpt_ratio_mu;
 TH1D* _gjets_h_zpt_ratio;
 TH1D* _gjets_h_zpt_ratio_el;
 TH1D* _gjets_h_zpt_ratio_mu;
 TH1D* _gjets_h_zpt_lowlpt_ratio;
 TH1D* _gjets_h_zpt_lowlpt_ratio_el;
 TH1D* _gjets_h_zpt_lowlpt_ratio_mu;
+TH1D* _gjets_h_zpt_ratio_up;
+TH1D* _gjets_h_zpt_ratio_dn;
+TH1D* _gjets_h_zpt_ratio_el_up;
+TH1D* _gjets_h_zpt_ratio_el_dn;
+TH1D* _gjets_h_zpt_ratio_mu_up;
+TH1D* _gjets_h_zpt_ratio_mu_dn;
 TGraphErrors* _gjets_gr_zpt_ratio;
 TGraphErrors* _gjets_gr_zpt_ratio_el;
 TGraphErrors* _gjets_gr_zpt_ratio_mu;
 TGraphErrors* _gjets_gr_zpt_lowlpt_ratio;
 TGraphErrors* _gjets_gr_zpt_lowlpt_ratio_el;
 TGraphErrors* _gjets_gr_zpt_lowlpt_ratio_mu;
-std::vector< std::vector< TH1D* > > _gjets_h_zmass_zpt_zrap_1d_vec;
-std::vector< std::vector< TH1D* > > _gjets_h_zmass_zpt_zrap_el_1d_vec;
-std::vector< std::vector< TH1D* > > _gjets_h_zmass_zpt_zrap_mu_1d_vec;
+TGraphErrors* _gjets_gr_zpt_ratio_up;
+TGraphErrors* _gjets_gr_zpt_ratio_dn;
+TGraphErrors* _gjets_gr_zpt_ratio_el_up;
+TGraphErrors* _gjets_gr_zpt_ratio_el_dn;
+TGraphErrors* _gjets_gr_zpt_ratio_mu_up;
+TGraphErrors* _gjets_gr_zpt_ratio_mu_dn;
 std::vector< TH1D* > _gjets_h_zmass_zpt_1d_vec;
 std::vector< TH1D* > _gjets_h_zmass_zpt_el_1d_vec;
 std::vector< TH1D* > _gjets_h_zmass_zpt_mu_1d_vec;
@@ -468,7 +473,8 @@ TH1D* _gjets_h_photon_phi_weight;
 TFile* _gjet_rho_weight_input_file;
 TH2D* _gjet_h_rho_weight;
 
-
+/// MT Unc from MET Unc
+bool _doMTUnc;
 
 //======================================================
 // ╔╦╗╦═╗╔═╗╔═╗  ╦  ╦╔═╗╦═╗╦╔═╗╔╗ ╦  ╔═╗╔═╗
@@ -492,10 +498,50 @@ Float_t _rho;
 
 // leptons, Z, MET
 Float_t _llnunu_mt;
+// alternative mts
+Float_t _llnunu_mt_JetEnUp,_llnunu_mt_JetEnDn, _llnunu_mt_JetResUp,_llnunu_mt_JetResDn;
+Float_t _llnunu_mt_MuonEnUp,_llnunu_mt_MuonEnDn; 
+Float_t _llnunu_mt_ElectronEnUp,_llnunu_mt_ElectronEnDn;
+Float_t _llnunu_mt_PhotonEnUp,_llnunu_mt_PhotonEnDn;
+Float_t _llnunu_mt_TauEnUp,_llnunu_mt_TauEnDn;
+Float_t _llnunu_mt_UnclusterUp,_llnunu_mt_UnclusterDn;
+////////////////////
+Float_t _llnunu_mt_el_JetEnUp,_llnunu_mt_el_JetEnDn, _llnunu_mt_el_JetResUp,_llnunu_mt_el_JetResDn;
+Float_t _llnunu_mt_el_MuonEnUp,_llnunu_mt_el_MuonEnDn;
+Float_t _llnunu_mt_el_ElectronEnUp,_llnunu_mt_el_ElectronEnDn;
+Float_t _llnunu_mt_el_PhotonEnUp,_llnunu_mt_el_PhotonEnDn;
+Float_t _llnunu_mt_el_TauEnUp,_llnunu_mt_el_TauEnDn;
+Float_t _llnunu_mt_el_UnclusterUp,_llnunu_mt_el_UnclusterDn;
+////
+Float_t _llnunu_mt_mu_JetEnUp,_llnunu_mt_mu_JetEnDn, _llnunu_mt_mu_JetResUp,_llnunu_mt_mu_JetResDn;
+Float_t _llnunu_mt_mu_MuonEnUp,_llnunu_mt_mu_MuonEnDn;
+Float_t _llnunu_mt_mu_ElectronEnUp,_llnunu_mt_mu_ElectronEnDn;
+Float_t _llnunu_mt_mu_PhotonEnUp,_llnunu_mt_mu_PhotonEnDn;
+Float_t _llnunu_mt_mu_TauEnUp,_llnunu_mt_mu_TauEnDn;
+Float_t _llnunu_mt_mu_UnclusterUp,_llnunu_mt_mu_UnclusterDn;
+
+//////////////////// 
 Float_t _llnunu_l1_mass, _llnunu_l1_mt;
 Float_t _llnunu_l1_pt, _llnunu_l1_phi, _llnunu_l1_eta;
 Float_t _llnunu_l1_deltaPhi, _llnunu_l1_deltaR, _llnunu_l1_rapidity;
 Float_t _llnunu_l2_pt, _llnunu_l2_phi;
+// alternative METs
+// _llnunu_l2_t1Phi_JetEnDn
+Float_t _llnunu_l2_pt_JetEnUp, _llnunu_l2_phi_JetEnUp;
+Float_t _llnunu_l2_pt_JetEnDn, _llnunu_l2_phi_JetEnDn;
+Float_t _llnunu_l2_pt_JetResUp, _llnunu_l2_phi_JetResUp;
+Float_t _llnunu_l2_pt_JetResDn, _llnunu_l2_phi_JetResDn;
+Float_t _llnunu_l2_pt_MuonEnUp, _llnunu_l2_phi_MuonEnUp;
+Float_t _llnunu_l2_pt_MuonEnDn, _llnunu_l2_phi_MuonEnDn;
+Float_t _llnunu_l2_pt_ElectronEnUp, _llnunu_l2_phi_ElectronEnUp;
+Float_t _llnunu_l2_pt_ElectronEnDn, _llnunu_l2_phi_ElectronEnDn;
+Float_t _llnunu_l2_pt_PhotonEnUp, _llnunu_l2_phi_PhotonEnUp;
+Float_t _llnunu_l2_pt_PhotonEnDn, _llnunu_l2_phi_PhotonEnDn;
+Float_t _llnunu_l2_pt_TauEnUp, _llnunu_l2_phi_TauEnUp;
+Float_t _llnunu_l2_pt_TauEnDn, _llnunu_l2_phi_TauEnDn;
+Float_t _llnunu_l2_pt_UnclusterUp, _llnunu_l2_phi_UnclusterUp;
+Float_t _llnunu_l2_pt_UnclusterDn, _llnunu_l2_phi_UnclusterDn;
+///////////////////
 Float_t _llnunu_l2_sumEt, _llnunu_l2_rawPt, _llnunu_l2_rawPhi, _llnunu_l2_rawSumEt;
 Float_t _llnunu_l2_genPhi, _llnunu_l2_genEta;
 Float_t _llnunu_l1_l1_pt, _llnunu_l1_l1_eta, _llnunu_l1_l1_phi;
@@ -554,12 +600,10 @@ Float_t _trgsf_up, _trgsf_dn, _idisotrksf_up, _idisotrksf_dn,_etrgsf_up, _etrgsf
 // for GJets samples
 Float_t _GJetsPhiWeight;
 Float_t _GJetsRhoWeight;
-Float_t _GJetsWeight, _GJetsWeightEl, _GJetsWeightMu;
-Float_t _GJetsWeight_up, _GJetsWeightEl_up, _GJetsWeightMu_up;
-Float_t _GJetsWeight_dn, _GJetsWeightEl_dn, _GJetsWeightMu_dn;
-Float_t _GJetsWeightLowLPt, _GJetsWeightLowLPtEl, _GJetsWeightLowLPtMu;
 Float_t _GJetsZPtWeight, _GJetsZPtWeightEl, _GJetsZPtWeightMu;
 Float_t _GJetsZPtWeightLowLPt, _GJetsZPtWeightLowLPtEl, _GJetsZPtWeightLowLPtMu;
+Float_t _GJetsZPtWeight_up, _GJetsZPtWeightEl_up, _GJetsZPtWeightMu_up;
+Float_t _GJetsZPtWeight_dn, _GJetsZPtWeightEl_dn, _GJetsZPtWeightMu_dn;
 Int_t   _PreScale22, _PreScale30, _PreScale36, _PreScale50, _PreScale75, _PreScale90, _PreScale120, _PreScale165;
 Float_t _GJetsPreScaleWeight;
 Float_t _gjet_mt, _gjet_l1_pt, _gjet_l1_eta, _gjet_l1_rapidity, _gjet_l1_phi;
@@ -569,6 +613,11 @@ Float_t _gjet_l1_trigerob_pt, _gjet_l1_trigerob_eta, _gjet_l1_trigerob_phi;
 Int_t   _llnunu_l1_trigerob_HLTbit;
 Float_t _llnunu_l1_trigerob_pt, _llnunu_l1_trigerob_eta, _llnunu_l1_trigerob_phi;
 Float_t _gjet_l2_pt, _gjet_l2_phi, _gjet_l2_sumEt, _gjet_l2_rawPt, _gjet_l2_rawPhi, _gjet_l2_rawSumEt;
+
+Float_t _gjet_l2_t1Pt_JECUp,_gjet_l2_t1Phi_JECUp,_gjet_l2_t1Pt_JECDn,_gjet_l2_t1Phi_JECDn;
+Float_t _gjet_l2_t1Pt_JERUp,_gjet_l2_t1Phi_JERUp,_gjet_l2_t1Pt_JERDn,_gjet_l2_t1Phi_JERDn;
+Float_t _gjet_l2_t1Pt_UnclusterUp,_gjet_l2_t1Phi_UnclusterUp,_gjet_l2_t1Pt_UnclusterDn,_gjet_l2_t1Phi_UnclusterDn;
+
 Float_t _gjet_l2_genPhi, _gjet_l2_genEta;
 Float_t _llnunu_mt_el, _llnunu_l1_mass_el;
 Float_t _llnunu_mt_mu, _llnunu_l1_mass_mu;
@@ -601,6 +650,13 @@ void prepareMuonPtRecalib();
 
 // do muon re-calib
 void doMuonPtRecalib();
+
+// do elec re-calib, simple version
+void doElecPtRecalibSimpleData();
+
+// do muon re-calib, simple version
+void doMuonPtRecalibSimpleData();
+
 
 // prepare inputs for addDyZPtWeight
 void prepareDyZPtWeight();
@@ -641,6 +697,15 @@ void prepareGJetsSkim();
 
 // do gjets skim
 void doGJetsSkim();
+
+// do MT alternatives
+float MTCalc(float pt, float phi);
+float MTCalcEl(float pt, float phi);
+float MTCalcMu(float pt, float phi);
+
+void doMTUnc();
+void doMTUncMu();
+void doMTUncEl();
 
 // 
 
