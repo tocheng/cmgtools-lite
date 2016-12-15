@@ -120,6 +120,12 @@ std::string _selection = "(1)";
 // store old branches 
 bool _storeOldBranches = false;
 
+
+/// MT Unc from MET Unc
+bool _doMTUnc = true;
+bool _doMTUncDummy = false;
+
+
 //=========================
 // add PU weights
 //=========================
@@ -473,8 +479,6 @@ TH1D* _gjets_h_photon_phi_weight;
 TFile* _gjet_rho_weight_input_file;
 TH2D* _gjet_h_rho_weight;
 
-/// MT Unc from MET Unc
-bool _doMTUnc;
 
 //======================================================
 // ╔╦╗╦═╗╔═╗╔═╗  ╦  ╦╔═╗╦═╗╦╔═╗╔╗ ╦  ╔═╗╔═╗
