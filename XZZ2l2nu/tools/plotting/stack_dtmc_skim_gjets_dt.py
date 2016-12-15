@@ -58,10 +58,9 @@ lepsf="trgsf*isosf*idsf"
 g_scale='(1)'
 mc_scale='(1)'
 
-
-if channel=='mu': mc_scale='(1.16048328893)'
-elif channel=='el': mc_scale='(1.13232804188)'
-else: mc_scale='(1.16013298643)'
+if channel=='mu': mc_scale='(1.16067370494)'
+elif channel=='el': mc_scale='(1.13306470197)'
+else: mc_scale='(1.16033036369)'
 
 # non reso alpha
 # zpt>70
@@ -71,12 +70,12 @@ else: mc_scale='(1.16013298643)'
 #nonreso_alpha_el=0.353808
 #nonreso_alpha_mu=0.613999
 # zpt>50 met<100
-nonreso_alpha_el=0.332814
-nonreso_alpha_mu=0.615156
+#nonreso_alpha_el=0.332814
+#nonreso_alpha_mu=0.615156
 
 #
-#nonreso_alpha_el=1.0
-#nonreso_alpha_mu=1.0
+nonreso_alpha_el=1.0
+nonreso_alpha_mu=1.0
 
 #
 if doRhoScale:
@@ -246,7 +245,7 @@ for sample in vvSamples:
     vvPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
     vvPlotters[-1].addCorrectionFactor(lepsf, 'lepsf')
     vvPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
-    if sample == 'ZZTo2L2Nu' : vvPlotters[-1].addCorrectionFactor("(ZZEwkCorrWeight*ZZQcdCorrWeight)", 'nnlo')
+    if sample == 'ZZTo2L2Nu' : vvPlotters[-1].addCorrectionFactor("(ZZEwkCorrWeight*ZZQcdCorrWeight*xsec)", 'nnlo')
     if 'ggZZTo2' in sample: vvPlotters[-1].addCorrectionFactor('0.01898','xsec')
     else: vvPlotters[-1].addCorrectionFactor('xsec','xsec')
 
@@ -634,7 +633,7 @@ if test:
 #    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 30, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 75, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 60, 60, 120, titlex = "M(Z)", units = "GeV",output=tag+'zmass',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 200, 0, 200, titlex = "M(Z)", units = "GeV",output=tag+'zmass',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 100, 0, 200, titlex = "M(Z)", units = "GeV",output=tag+'zmass',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 50, 100.0, 600.0, titlex = "M_{T}", units = "GeV",output=tag+'mt_low',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 #    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 50, 100.0, 1600.0, titlex = "M_{T}", units = "GeV",output=tag+'mt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
