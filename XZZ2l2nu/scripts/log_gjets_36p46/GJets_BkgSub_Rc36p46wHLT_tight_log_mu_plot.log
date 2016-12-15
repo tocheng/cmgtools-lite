@@ -1,0 +1,28 @@
+Info in <TCanvas::Print>: ps file plots_gjets_36p46/GJets_BkgSub_Rc36p46wHLT_RhoWt_GMCEtaWt_tight_puWeightmoriondMC_metfilter_unblind_mu_log_scale1.ps has been created
+Info in <TCanvas::Print>: pdf file plots_gjets_36p46/GJets_BkgSub_Rc36p46wHLT_RhoWt_GMCEtaWt_tight_puWeightmoriondMC_metfilter_unblind_mu_log_scale1.pdf has been created
+Info in <TCanvas::Print>: Current canvas added to ps file plots_gjets_36p46/GJets_BkgSub_Rc36p46wHLT_RhoWt_GMCEtaWt_tight_puWeightmoriondMC_metfilter_unblind_mu_log_scale1.ps
+Info in <TCanvas::Print>: Current canvas added to pdf file plots_gjets_36p46/GJets_BkgSub_Rc36p46wHLT_RhoWt_GMCEtaWt_tight_puWeightmoriondMC_metfilter_unblind_mu_log_scale1.pdf
+Info in <TCanvas::Print>: Current canvas added to ps file plots_gjets_36p46/GJets_BkgSub_Rc36p46wHLT_RhoWt_GMCEtaWt_tight_puWeightmoriondMC_metfilter_unblind_mu_log_scale1.ps
+Info in <TCanvas::Print>: Current canvas added to pdf file plots_gjets_36p46/GJets_BkgSub_Rc36p46wHLT_RhoWt_GMCEtaWt_tight_puWeightmoriondMC_metfilter_unblind_mu_log_scale1.pdf
+Using customized style
+Data : 9918984.000000
+
+non reson. : 53291.363728
+
+ZZ WZ reson. : 28489.965491
+
+ZJets(MC) : 6384068.236886
+
+1 x BulkG-600 : 72.832389
+
+1 x BulkG-1000 : 3.821569
+
+1 x BulkG-2000 : 0.043788
+
+---------------------------
+Signal 1 x BulkG-2000 = 0.0437875296806
+Signal 1 x BulkG-1000 = 3.82156870982
+Signal 1 x BulkG-600 = 72.8323889774
+Bkg    = 6465849.566104
+Observed = 9918984.000000
+Data/Bkg= 1.53405734213 +- 0.0026099111975

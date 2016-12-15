@@ -27,14 +27,12 @@
 
 # debug
 debug: false
-#debug: true
 
 # starting entry number 
 n_start: 0
 
 # number of entries to be run, -1 means all entries
 n_test: -1
-#n_test: 100
 
 # n entries interval between which print once entry number
 n_interval: 1000000
@@ -84,10 +82,8 @@ PUWeightHistName: puweight_dtmc
 #  ║ ╦ ║║╣  ║ ╚═╗  ╚═╗╠╩╗║║║║
 #  ╚═╝╚╝╚═╝ ╩ ╚═╝  ╚═╝╩ ╩╩╩ ╩
 #====================================================================
-doGJetsSkim: false
-doGJetsSkimAddPhiWeight: true
-#GJetsSkimInputFileName: data/gjets/study_gjets_data_b2h36p22fbinv.root
-#GJetsSkimInputFileName: data/gjets/study_gjets_data_b2h36p22fbinv_v5resbos_norm.root
+doGJetsSkim: true
+doGJetsSkimAddPhiWeight: false
 GJetsSkimInputFileName: data/gjets/study_gjets_data_b2h36p22fbinv_v5resbos_norm_modify.root
 
 GJetsSkimPhiWeightInputFileName: data/gjets/gjet_photon_phi_weight.root
@@ -104,18 +100,20 @@ doMuonPtRecalib: false
 MuonPtRecalibInputForData: data/kalman/DATA_80X_13TeV.root
 MuonPtRecalibInputForMC: data/kalman/MC_80X_13TeV.root
 
-doElecPtRecalibSimpleData: true
+
+doElecPtRecalibSimpleData: false
 ElecPtRecalibSimpleDataScale: 1.00971
 
 doMuonPtRecalibSimpleData: false
 MuonPtRecalibSimpleDataScale: 0.999744
+
 
 #====================================================================
 #  ╔═╗╔╦╗  ╔═╗╔═╗  ╔═╗╔═╗╦═╗╦═╗╔═╗╔═╗╔╦╗╦╔═╗╔╗╔
 #  ╚═╗║║║  ╔═╝╔═╝  ║  ║ ║╠╦╝╠╦╝║╣ ║   ║ ║║ ║║║║
 #  ╚═╝╩ ╩  ╚═╝╚═╝  ╚═╝╚═╝╩╚═╩╚═╚═╝╚═╝ ╩ ╩╚═╝╝╚╝
 #====================================================================
-addZZCorrections: true
+addZZCorrections: false
 ZZCorrectionEwkInputFileName: data/zzcorr/ZZ_EwkCorrections.dat
 ZZCorrectionQcdInputFileName: data/zzcorr/zzqcd.root
 
@@ -152,16 +150,13 @@ JERParTxt_SF_MC:     data/jer2016/Spring16_25nsV6_MC_SF_AK4PFchs.txt
 # will also reweight LO to NLO MC samples to gain statistics.
 
 # default will use histograms for both NLO and LO reweight
-addDyZPtWeight: true
+addDyZPtWeight: false
 
 # for NLO MC use function parametrization instead of hist.
 addDyZPtWeightUseFunction: true
 
 # for NLO MC use Resummation function from Resbos instead of from data.
 addDyZPtWeightUseResummationFunction: false
-
-# for NLO MC use Resummation function from Resbos BUT refitted to data.
-addDyZPtWeightUseResummationRefitFunction: false
 
 # for LO MC to NLO, also use function  
 addDyZPtWeightLOUseFunction: true
@@ -172,7 +167,7 @@ addDyNewGenWeight: true
 
 # input root file
 #DyZPtWeightInputFileName: data/zptweight/dyjets_zpt_weight_lo_nlo_sel.root
-DyZPtWeightInputFileName: data/zptweight/dyjets_zpt_weight_lo_nlo_genAccV2.root
+DyZPtWeightInputFileName: data/zptweight/dyjets_zpt_weight_lo_nlo_genAcc.root
 
 
 
@@ -195,47 +190,22 @@ doRecoilUseSmooth: true
 doRecoilUseSmoothGraph: true
 
 # Input files
-#RecoilInputFileNameData_all: data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib_met_para_study_dtHLT.root
-#RecoilInputFileNameData_mu:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib_met_para_study_dtHLT_mu.root
-#RecoilInputFileNameData_el:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib_met_para_study_dtHLT_el.root
-RecoilInputFileNameData_all: data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib_met_para_study_ZSelecLowLPt.root
-RecoilInputFileNameData_mu:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib_met_para_study_ZSelecLowLPt_mu.root
-RecoilInputFileNameData_el:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib_met_para_study_ZSelecLowLPt_el.root
-#RecoilInputFileNameData_all: data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_dtHLT.root
-#RecoilInputFileNameData_mu:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_dtHLT_mu.root
-#RecoilInputFileNameData_el:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_dtHLT_el.root
-#RecoilInputFileNameData_all: data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_ZSelecLowLPt.root
-#RecoilInputFileNameData_mu:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_ZSelecLowLPt_mu.root
-#RecoilInputFileNameData_el:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_ZSelecLowLPt_el.root
-
-
-# 2015 data
-RecoilInputFileNameMC_all: data/recoil/DYJetsToLL_M50_BIG_NoRecoil_met_para_study_ZSelecLowLPt.root
-RecoilInputFileNameMC_mu:  data/recoil/DYJetsToLL_M50_BIG_NoRecoil_met_para_study_ZSelecLowLPt_mu.root
-RecoilInputFileNameMC_el:  data/recoil/DYJetsToLL_M50_BIG_NoRecoil_met_para_study_ZSelecLowLPt_el.root
+RecoilInputFileNameData_all: data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_dtHLT.root
+RecoilInputFileNameData_mu:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_dtHLT_mu.root
+RecoilInputFileNameData_el:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_dtHLT_el.root
 
 # resbos
-#RecoilInputFileNameMC_all: data/recoil/DYJetsToLL_M50_BIG_ResBos_NoRecoil_met_para_study_NPUCut_effSf_trgSf.root
-#RecoilInputFileNameMC_mu:  data/recoil/DYJetsToLL_M50_BIG_ResBos_NoRecoil_met_para_study_NPUCut_effSf_trgSf_mu.root
-#RecoilInputFileNameMC_el:  data/recoil/DYJetsToLL_M50_BIG_ResBos_NoRecoil_met_para_study_NPUCut_effSf_trgSf_el.root
-
-#RecoilInputFileNameMC_all: data/recoil/DYJetsToLL_M50_BIG_ResBos_NoRecoil_met_para_study_ZSelecLowLPt_NPUCut.root
-#RecoilInputFileNameMC_mu:  data/recoil/DYJetsToLL_M50_BIG_ResBos_NoRecoil_met_para_study_ZSelecLowLPt_NPUCut_mu.root
-#RecoilInputFileNameMC_el:  data/recoil/DYJetsToLL_M50_BIG_ResBos_NoRecoil_met_para_study_ZSelecLowLPt_NPUCut_el.root
+RecoilInputFileNameMC_all: data/recoil/DYJetsToLL_M50_BIG_ResBos_NoRecoil_met_para_study_NPUCut_effSf_trgSf.root
+RecoilInputFileNameMC_mu:  data/recoil/DYJetsToLL_M50_BIG_ResBos_NoRecoil_met_para_study_NPUCut_effSf_trgSf_mu.root
+RecoilInputFileNameMC_el:  data/recoil/DYJetsToLL_M50_BIG_ResBos_NoRecoil_met_para_study_NPUCut_effSf_trgSf_el.root
 
 RecoilInputFileNameMCLO_all: data/recoil/DYJetsToLL_M50_MGMLM_Ext1_NoRecoil_NoRhoWt_met_para_study_ZSelecLowLPt.root
 RecoilInputFileNameMCLO_mu:  data/recoil/DYJetsToLL_M50_MGMLM_Ext1_NoRecoil_NoRhoWt_met_para_study_ZSelecLowLPt_mu.root
 RecoilInputFileNameMCLO_el:  data/recoil/DYJetsToLL_M50_MGMLM_Ext1_NoRecoil_NoRhoWt_met_para_study_ZSelecLowLPt_el.root
 
-#RecoilInputFileNameGJets_all: data/recoil/SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil_met_para_study.root
-#RecoilInputFileNameGJets_mu:  data/recoil/SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil_met_para_study_mu.root
-#RecoilInputFileNameGJets_el:  data/recoil/SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil_met_para_study_el.root
-RecoilInputFileNameGJets_all: data/recoil/SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil_met_para_study_ZSelecLowLPt.root 
-RecoilInputFileNameGJets_mu:  data/recoil/SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil_met_para_study_ZSelecLowLPt_mu.root
-RecoilInputFileNameGJets_el:  data/recoil/SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil_met_para_study_ZSelecLowLPt_el.root
-
-
-
+RecoilInputFileNameGJets_all: data/recoil/SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil_met_para_study.root 
+RecoilInputFileNameGJets_mu:  data/recoil/SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil_met_para_study_mu.root
+RecoilInputFileNameGJets_el:  data/recoil/SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil_met_para_study_el.root
 
 
 
@@ -244,7 +214,7 @@ RecoilInputFileNameGJets_el:  data/recoil/SinglePhoton_Run2016B2H_ReReco_36p46_R
 #  ║  ║╣ ╠═╝ ║ ║ ║║║║  ║╣ ╠╣ ╠╣   ║  ║ ║╠╦╝╠╦╝
 #  ╩═╝╚═╝╩   ╩ ╚═╝╝╚╝  ╚═╝╚  ╚    ╚═╝╚═╝╩╚═╩╚═
 #====================================================================
-addEffScale: true
+addEffScale: false
 addEffScaleOnData: true
 addEMuTrgScale: false
 # input files
@@ -252,13 +222,8 @@ EffScaleInputFileName_IdIso_El: data/eff/egammaEffi.txt_SF2D.root
 EffScaleInputFileName_Trk_El: data/eff/egammatracking.root
 EffScaleInputFileName_IdIso_Mu: data/eff/muon80x12p9.root
 EffScaleInputFileName_Trk_Mu: data/eff/muontrackingsf.root
-#EffScaleInputFileName_Trg_El: data/eff/trigereff_el_b2h33fbinv.root
-EffScaleInputFileName_Trg_El: data/eff/eff_out_ell1pteta_36p46recalib.root
-#EffScaleInputFileName_Trg_Mu: data/eff/trigeff_mu_datab2h33fbinv.root
-#EffScaleInputFileName_Trg_Mu: data/eff/trigeff_mu_36p46recalib.root
-EffScaleInputFileName_Trg_Mu: data/eff/trigeff_mu_36p46.root
-
-
+EffScaleInputFileName_Trg_El: data/eff/trigereff_el_b2h33fbinv.root
+EffScaleInputFileName_Trg_Mu: data/eff/trigeff_mu_datab2h33fbinv.root
 
 
 

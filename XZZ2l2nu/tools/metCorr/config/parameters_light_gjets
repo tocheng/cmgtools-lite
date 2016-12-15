@@ -27,13 +27,14 @@
 
 # debug
 debug: false
+#debug: true
 
 # starting entry number 
 n_start: 0
 
 # number of entries to be run, -1 means all entries
-#n_test: 100
 n_test: -1
+#n_test: 100
 
 # n entries interval between which print once entry number
 n_interval: 1000000
@@ -43,6 +44,7 @@ useLightTree: true
 storeErr: false
 removeHLTFlag: true
 removeMETFlag: true
+doMTUnc: true
 
 # tree selection string
 selection: (1)
