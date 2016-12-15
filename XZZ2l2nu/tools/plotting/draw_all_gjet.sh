@@ -1,7 +1,7 @@
 #!/bin/sh
 
-#tag="36p46__Rc36p46DtReCalib_"
-tag="GJets_BkgSub_Rc36p46DtReCalib_NonReso_"
+tag="MC_Rc36p46DtReCalib_"
+#tag="GJets_BkgSub_Rc36p46DtReCalib_NonReso_"
 #tag="testscale_"
 #tag="Test2_GJets_BkgSub_Rc36p46DtReCalib_NonReso_"
 #tag="Test2_GJets_BkgSub_Rc36p46DtReCalib_"
