@@ -191,7 +191,6 @@ ROOT.gROOT.ProcessLine('.x tdrstyle.C')
 
 #################
 
-
 if channel=="el": 
     emuscale="(etrgsf*"+str(nonreso_alpha_el)+")"
 elif channel=="mu": 
