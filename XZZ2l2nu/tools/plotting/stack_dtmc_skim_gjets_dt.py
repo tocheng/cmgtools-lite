@@ -60,16 +60,23 @@ mc_scale='(1)'
 zjets_scale='(1)'
 
 if channel=='mu': 
+    mc_scale='(1.14905419293)'
     #mc_scale='(1.16067370494)'
-    zjets_scale='(1.16067370494)'
+    #zjets_scale='(1.16067370494)'
+#    zjets_scale='(1.16067370494*0.992580650355)'
 elif channel=='el': 
-    #mc_scale='(1.13306470197)'
-    zjets_scale='(1.13306470197)'
+    mc_scale='(1.13338415211)'
+#    mc_scale='(1.13306470197)'
+    #zjets_scale='(1.13306470197)'
+#    zjets_scale='(1.13306470197*1.03713620559)'
 else: 
+    mc_scale='(1.1484406619)'
     #mc_scale='(1.16033036369)'
-    zjets_scale='(1.16033036369)'
+#    zjets_scale='(1.16033036369)'
 
 # non reso alpha
+nonreso_alpha_el=1.0
+nonreso_alpha_mu=1.0
 # zpt>70
 #nonreso_alpha_el=0.368708
 #nonreso_alpha_mu=0.607408
@@ -77,12 +84,10 @@ else:
 #nonreso_alpha_el=0.353651462281
 #nonreso_alpha_mu=0.614219922129
 # zpt>50 met<100
-nonreso_alpha_el=0.3353976161
-nonreso_alpha_mu=0.617645119773 
+#nonreso_alpha_el=0.3353976161
+#nonreso_alpha_mu=0.617645119773 
 
 #
-#nonreso_alpha_el=1.0
-#nonreso_alpha_mu=1.0
 
 #
 if doRhoScale:
