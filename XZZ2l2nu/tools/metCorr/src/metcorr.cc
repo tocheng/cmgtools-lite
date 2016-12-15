@@ -56,6 +56,14 @@ int main(int argc, char** argv) {
   // read config file
   readConfigFile();
 
+  // make sure to turn off not needed options if _doGJetsSkim is true
+  if (_doGJetsSkim) {
+    _isDyJets = false;
+    _isDyJetsLO = false;
+    _isZZ = false;
+  }
+
+
   // prepare the trees
   prepareTrees();
 
@@ -79,7 +87,8 @@ int main(int argc, char** argv) {
   if (_doJEC )  prepareJECJER();
 
   // prepare inputs for simple met recoil tune.
-  if (_doRecoil && ((!_isData && _isDyJets) || (_isData && _doGJetsSkim)) ) prepareRecoil();
+  //if (_doRecoil && ((!_isData && _isDyJets) || (_isData && _doGJetsSkim)) ) prepareRecoil();
+  if (_doRecoil && ((!_isData && _isDyJets) || ( _doGJetsSkim)) ) prepareRecoil();
 
 
   // prepare eff scale factors
@@ -139,7 +148,8 @@ int main(int argc, char** argv) {
     if (_doJEC )  doJECJER();
     
     // simple met recoil tune.
-    if (_doRecoil && ((!_isData && _isDyJets) || (_isData && _doGJetsSkim))) doRecoil();
+    //if (_doRecoil && ((!_isData && _isDyJets) || (_isData && _doGJetsSkim))) doRecoil();
+    if (_doRecoil && ((!_isData && _isDyJets) || (_doGJetsSkim))) doRecoil();
 
     // add eff scale factors
     if (_addEffScale && (!_isData || _addEffScaleOnData) && !_doGJetsSkim ) addEffScale();
@@ -368,6 +378,7 @@ bool  prepareTrees()
 
   // isData  
   _tree_in->SetBranchAddress("isData",&_isData);
+
 
   // check if tree has events
   if (_tree_in->GetEntries()<=0) {
@@ -713,9 +724,10 @@ void doMuonPtRecalib()
 // do elec pt recalib simple
 void doElecPtRecalibSimpleData()
 {
-  if (abs(_llnunu_l1_l1_pdgId)==11&&abs(_llnunu_l1_l2_pdgId)==11 && _isData ) {
-    _llnunu_l1_l1_pt = Float_t(_llnunu_l1_l1_pt*_ElecPtRecalibSimpleDataScale);
-    _llnunu_l1_l2_pt = Float_t(_llnunu_l1_l2_pt*_ElecPtRecalibSimpleDataScale);
+  if ((abs(_llnunu_l1_l1_pdgId)==11||abs(_llnunu_l1_l2_pdgId)==11) && _isData ) {
+    
+    if (abs(_llnunu_l1_l1_pdgId)==11) _llnunu_l1_l1_pt = Float_t(_llnunu_l1_l1_pt*_ElecPtRecalibSimpleDataScale);
+    if (abs(_llnunu_l1_l2_pdgId)==11) _llnunu_l1_l2_pt = Float_t(_llnunu_l1_l2_pt*_ElecPtRecalibSimpleDataScale);
 
     TLorentzVector l1v, l2v;
     l1v.SetPtEtaPhiM(_llnunu_l1_l1_pt, _llnunu_l1_l1_eta, _llnunu_l1_l1_phi, _llnunu_l1_l1_mass);
@@ -747,9 +759,9 @@ void doElecPtRecalibSimpleData()
 // do muon pt recalib simple
 void doMuonPtRecalibSimpleData()
 {
-  if (abs(_llnunu_l1_l1_pdgId)==13&&abs(_llnunu_l1_l2_pdgId)==13 && _isData ) {
-    _llnunu_l1_l1_pt = Float_t(_llnunu_l1_l1_pt*_MuonPtRecalibSimpleDataScale);
-    _llnunu_l1_l2_pt = Float_t(_llnunu_l1_l2_pt*_MuonPtRecalibSimpleDataScale);
+  if ((abs(_llnunu_l1_l1_pdgId)==13||abs(_llnunu_l1_l2_pdgId)==13) && _isData ) {
+    if (abs(_llnunu_l1_l1_pdgId)==13) _llnunu_l1_l1_pt = Float_t(_llnunu_l1_l1_pt*_MuonPtRecalibSimpleDataScale);
+    if (abs(_llnunu_l1_l2_pdgId)==13) _llnunu_l1_l2_pt = Float_t(_llnunu_l1_l2_pt*_MuonPtRecalibSimpleDataScale);
 
     TLorentzVector l1v, l2v;
     l1v.SetPtEtaPhiM(_llnunu_l1_l1_pt, _llnunu_l1_l1_eta, _llnunu_l1_l1_phi, _llnunu_l1_l1_mass);

@@ -25,12 +25,12 @@
   double s;
 
   // gr_zpt_ratio_el
-  i=47; x=105; y=0;
+  i=47; x=100; y=0;
   hzpt_el->SetPoint(i, x, y);
   hzpt_el_up->SetPoint(i, x, y);
   hzpt_el_dn->SetPoint(i, x, y);
   
-  i=59; s=0.9;
+  i=60; s=0.97;
   hzpt_el->GetPoint(i,x,y);
   hzpt_el->SetPoint(i,x,s*y);
   hzpt_el_up->GetPoint(i,x,y);
@@ -38,7 +38,15 @@
   hzpt_el_dn->GetPoint(i,x,y);
   hzpt_el_dn->SetPoint(i,x,s*y);
 
-  i=58; s=1.02;
+  i=59; s=0.92;
+  hzpt_el->GetPoint(i,x,y);
+  hzpt_el->SetPoint(i,x,s*y);
+  hzpt_el_up->GetPoint(i,x,y);
+  hzpt_el_up->SetPoint(i,x,s*y);
+  hzpt_el_dn->GetPoint(i,x,y);
+  hzpt_el_dn->SetPoint(i,x,s*y);
+
+  i=58; s=1.03;
   hzpt_el->GetPoint(i,x,y);
   hzpt_el->SetPoint(i,x,s*y);
   hzpt_el_up->GetPoint(i,x,y);
@@ -55,6 +63,7 @@
   hzpt_el_dn->SetPoint(i,x,s*y);
 
   hzpt_el->Draw("apl");
+  hzpt_el->Print();
 
 
   // gr_zpt_ratio_mu
@@ -79,7 +88,7 @@
   hzpt_mu_dn->GetPoint(i,x,y);
   hzpt_mu_dn->SetPoint(i,x,s*y);
 
-  i=55; s=1.04;
+  i=56; s=1.04;
   hzpt_mu->GetPoint(i,x,y);
   hzpt_mu->SetPoint(i,x,s*y);
   hzpt_mu_up->GetPoint(i,x,y);
@@ -87,7 +96,23 @@
   hzpt_mu_dn->GetPoint(i,x,y);
   hzpt_mu_dn->SetPoint(i,x,s*y);
 
-  i=59; s=1.09;
+  i=57; s=1.02;
+  hzpt_mu->GetPoint(i,x,y);
+  hzpt_mu->SetPoint(i,x,s*y);
+  hzpt_mu_up->GetPoint(i,x,y);
+  hzpt_mu_up->SetPoint(i,x,s*y);
+  hzpt_mu_dn->GetPoint(i,x,y);
+  hzpt_mu_dn->SetPoint(i,x,s*y);
+
+  i=58; s=1.05;
+  hzpt_mu->GetPoint(i,x,y);
+  hzpt_mu->SetPoint(i,x,s*y);
+  hzpt_mu_up->GetPoint(i,x,y);
+  hzpt_mu_up->SetPoint(i,x,s*y);
+  hzpt_mu_dn->GetPoint(i,x,y);
+  hzpt_mu_dn->SetPoint(i,x,s*y);
+
+  i=59; s=1.12;
   hzpt_mu->GetPoint(i,x,y);
   hzpt_mu->SetPoint(i,x,s*y);
   hzpt_mu_up->GetPoint(i,x,y);
@@ -105,8 +130,8 @@
 
 
 
-  hzpt_mu->Draw("apl");
-  hzpt_mu->Print();
+  //hzpt_mu->Draw("apl");
+  //hzpt_mu->Print();
 
 
   //gr_zpt_lowlpt_ratio, _el, _mu
@@ -130,7 +155,7 @@
 
 
 
-  hzpt_lowlpt_el->Draw("apl");
+//  hzpt_lowlpt_el->Draw("apl");
 
 
   // gr_zpt_lowlpt_ratio_mu
@@ -155,7 +180,7 @@
   hzpt_lowlpt_mu->SetPoint(i,x,s*y);
 
 
-  hzpt_lowlpt_mu->Draw("apl");
+//  hzpt_lowlpt_mu->Draw("apl");
 
 
   file->cd();

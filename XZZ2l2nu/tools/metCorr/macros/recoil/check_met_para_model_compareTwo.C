@@ -8,10 +8,12 @@ std::string  name1 =
 //"SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil_met_para_study_el"
 //"SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil_met_para_study_mu"
 //"SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_dtHLT_el"
-"SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_ZSelecLowLPt_el"
+//"SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_ZSelecLowLPt_el"
+"SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib_met_para_study_ZSelecLowLPt_mu"
 ;
 std::string  name2 =
-"SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib_met_para_study_ZSelecLowLPt_el"
+"SinglePhoton_Run2016B2H_ReReco_36p46_NoRecoil_met_para_study_ZSelecLowLPt_mu"
+//"SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib_met_para_study_ZSelecLowLPt_el"
 //"SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib_met_para_study_ZSelecLowLPt_mu"
 //"SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil_met_para_study_ZSelecLowLPt_el"
 //"SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil_met_para_study_ZSelecLowLPt_mu"
@@ -35,6 +37,9 @@ TFile* _file_mc_sigma[10];
 TH1D* _h_dt_met_para_shift[10];
 TH1D* _h_mc_met_para_shift[10];
 TH1D* _h_met_para_shift_dtmc[10];
+TH1D* _h_dt_met_perp_shift[10];
+TH1D* _h_mc_met_perp_shift[10];
+TH1D* _h_met_perp_shift_dtmc[10];
 TH1D* _h_dt_met_para_sigma[10];
 TH1D* _h_dt_met_perp_sigma[10];
 TH1D* _h_mc_met_para_sigma[10];
@@ -54,7 +59,7 @@ _h_dt_met_para_shift[0] = (TH1D*)_file_dt_sigma[0]->Get("h_met_para_vs_zpt_mean"
 _h_mc_met_para_shift[0] = (TH1D*)_file_mc_sigma[0]->Get("h_met_para_vs_zpt_mean");
 _h_met_para_shift_dtmc[0] = (TH1D*)_h_dt_met_para_shift[0]->Clone("h_met_para_shift_dtmc_all");
 _h_met_para_shift_dtmc[0]->Add(_h_mc_met_para_shift[0], -1);
-_h_met_para_shift_dtmc[0]->GetYaxis()->SetTitle("mean diff. (GeV)");
+_h_met_para_shift_dtmc[0]->GetYaxis()->SetTitle("MET para mean diff. (GeV)");
 _h_met_para_shift_dtmc[0]->GetYaxis()->SetRangeUser(-1,1);
 
 
@@ -65,6 +70,13 @@ _h_mc_met_para_shift[0]->SetMarkerColor(4);
 
 _h_dt_met_para_shift[0]->GetXaxis()->SetRangeUser(2,3000);
 _h_mc_met_para_shift[0]->GetXaxis()->SetRangeUser(2,3000);
+
+double ymax;
+double ymin;
+ymax = _h_met_para_shift_dtmc[0]->GetBinContent(_h_met_para_shift_dtmc[0]->GetMaximumBin());
+ymin = _h_met_para_shift_dtmc[0]->GetBinContent(_h_met_para_shift_dtmc[0]->GetMinimumBin());
+_h_met_para_shift_dtmc[0]->GetYaxis()->SetRangeUser(ymin, ymax);
+
 
 plots->Clear();
 _h_dt_met_para_shift[0]->Draw();
@@ -84,6 +96,44 @@ plots->SetLogx(0);
 plots->Clear();
 
 
+_h_dt_met_perp_shift[0] = (TH1D*)_file_dt_sigma[0]->Get("h_met_perp_vs_zpt_mean");
+_h_mc_met_perp_shift[0] = (TH1D*)_file_mc_sigma[0]->Get("h_met_perp_vs_zpt_mean");
+_h_met_perp_shift_dtmc[0] = (TH1D*)_h_dt_met_perp_shift[0]->Clone("h_met_perp_shift_dtmc_all");
+_h_met_perp_shift_dtmc[0]->Add(_h_mc_met_perp_shift[0], -1);
+_h_met_perp_shift_dtmc[0]->GetYaxis()->SetTitle("MET perp, mean diff. (GeV)");
+_h_met_perp_shift_dtmc[0]->GetYaxis()->SetRangeUser(-1,1);
+
+
+_h_dt_met_perp_shift[0]->SetLineColor(2);
+_h_dt_met_perp_shift[0]->SetMarkerColor(2);
+_h_mc_met_perp_shift[0]->SetLineColor(4);
+_h_mc_met_perp_shift[0]->SetMarkerColor(4);
+
+_h_dt_met_perp_shift[0]->GetXaxis()->SetRangeUser(2,3000);
+_h_mc_met_perp_shift[0]->GetXaxis()->SetRangeUser(2,3000);
+
+ymax = _h_met_perp_shift_dtmc[0]->GetBinContent(_h_met_perp_shift_dtmc[0]->GetMaximumBin());
+ymin = _h_met_perp_shift_dtmc[0]->GetBinContent(_h_met_perp_shift_dtmc[0]->GetMinimumBin());
+_h_met_perp_shift_dtmc[0]->GetYaxis()->SetRangeUser(ymin, ymax);
+
+
+plots->Clear();
+_h_dt_met_perp_shift[0]->Draw();
+_h_mc_met_perp_shift[0]->Draw("same");
+plots->SetLogx(1);
+sprintf(name, "%s.pdf", plots_file.c_str());
+plots->Print(name);
+plots->SetLogx(0);
+plots->Clear();
+
+plots->Clear();
+_h_met_perp_shift_dtmc[0]->Draw();
+plots->SetLogx(1);
+sprintf(name, "%s.pdf", plots_file.c_str());
+plots->Print(name);
+plots->SetLogx(0);
+plots->Clear();
+
 _h_dt_met_para_sigma[0] = (TH1D*)_file_dt_sigma[0]->Get("h_met_para_vs_zpt_sigma");
 _h_dt_met_perp_sigma[0] = (TH1D*)_file_dt_sigma[0]->Get("h_met_perp_vs_zpt_sigma");
 _h_mc_met_para_sigma[0] = (TH1D*)_file_mc_sigma[0]->Get("h_met_para_vs_zpt_sigma");
@@ -93,8 +143,8 @@ _h_ratio_met_para_sigma_dtmc[0] = (TH1D*)_h_dt_met_para_sigma[0]->Clone("h_ratio
 _h_ratio_met_perp_sigma_dtmc[0] = (TH1D*)_h_dt_met_perp_sigma[0]->Clone("h_ratio_met_perp_sigma_dtmc_all");
 _h_ratio_met_para_sigma_dtmc[0]->Divide(_h_mc_met_para_sigma[0]);
 _h_ratio_met_perp_sigma_dtmc[0]->Divide(_h_mc_met_perp_sigma[0]);
-_h_ratio_met_para_sigma_dtmc[0]->GetYaxis()->SetTitle("Sigma Ratio");
-_h_ratio_met_perp_sigma_dtmc[0]->GetYaxis()->SetTitle("Sigma Ratio");
+_h_ratio_met_para_sigma_dtmc[0]->GetYaxis()->SetTitle("MET para Sigma Ratio");
+_h_ratio_met_perp_sigma_dtmc[0]->GetYaxis()->SetTitle("MET perp Sigma Ratio");
 _h_ratio_met_para_sigma_dtmc[0]->GetYaxis()->SetRangeUser(0.5,1.5);
 _h_ratio_met_perp_sigma_dtmc[0]->GetYaxis()->SetRangeUser(0.5,1.5);
 
