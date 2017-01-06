@@ -130,13 +130,6 @@ class XZZLeptonAnalyzer( Analyzer ):
         event.selectedElectrons = []
         event.otherLeptons = []
         
-
-        #self.IsolationComputer.setPackedCandidates(self.handles['packedCandidates'].product())
-        #for lep in self.handles['muons'].product():
-        #    self.IsolationComputer.addVetos(lep)
-        #for lep in self.handles['electrons'].product():
-        #    self.IsolationComputer.addVetos(lep)
-
         #muons
         allmuons = self.makeAllMuons(event)
 
@@ -156,7 +149,6 @@ class XZZLeptonAnalyzer( Analyzer ):
                 for i in minc: 
                     if i.physObj.innerTrack().isNonnull():mu.trackerIso-=i.physObj.innerTrack().pt()
                 mu.trackerIso/=mu.pt()
-                #if mu.miniRelIso<0.2 or not self.applyIso:
                 if mu.trackerIso<0.1 or not self.applyIso:
                     event.selectedLeptons.append(mu)
                     event.selectedMuons.append(mu)
@@ -164,10 +156,8 @@ class XZZLeptonAnalyzer( Analyzer ):
             else:
                 event.otherLeptons.append(mu)
         for ele in allelectrons:
-            #if ( (self.electronIDVersion=='HEEPv6' and ele.heepV60_noISO) or (self.electronIDVersion=='looseID' and ele.loose_nonISO)) or not self.applyID:
             if  ele.loose_nonISO or not self.applyID:
                 self.n_el_passId += 1
-                #if ((self.electronIsoVersion=='miniISO' and ele.miniRelIso<0.1) or (self.electronIsoVersion=='pfISO' and ele.looseiso)) or not self.applyIso:
                 if ele.looseiso or not self.applyIso:
                     event.selectedLeptons.append(ele)
                     event.selectedElectrons.append(ele)
@@ -292,6 +282,19 @@ class XZZLeptonAnalyzer( Analyzer ):
               elif SCEta < 2.400: ele.EffectiveArea03 = 0.2243
               elif SCEta < 5.000: ele.EffectiveArea03 = 0.2687
               else:               ele.EffectiveArea03 = 0.0000
+          elif self.eleEffectiveArea == "Spring16_25ns_v1":
+              SCEta = abs(ele.superCluster().eta())
+              ## ----- https://github.com/ikrav/cmssw/blob/egm_id_747_v2/RecoEgamma/ElectronIdentification/data/Spring15/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_25ns.txt
+              if   SCEta < 1.000: ele.EffectiveArea03 = 0.1703
+              elif SCEta < 1.479: ele.EffectiveArea03 = 0.1715
+              elif SCEta < 2.000: ele.EffectiveArea03 = 0.1213
+              elif SCEta < 2.200: ele.EffectiveArea03 = 0.1230
+              elif SCEta < 2.300: ele.EffectiveArea03 = 0.1635
+              elif SCEta < 2.400: ele.EffectiveArea03 = 0.1937
+              else:              ele.EffectiveArea03 = 0.2393
+              # warning: EAs not computed for cone DR=0.4 yet. Do not correct
+              ele.EffectiveArea04 = 0.0
+
           else: 
               raise RuntimeError,  "Unsupported value for ele_effectiveAreas: can only use Data2012 (rho: ?), Phys14_v1 and Spring15_v1 (rho: fixedGridRhoFastjetAll)"
 

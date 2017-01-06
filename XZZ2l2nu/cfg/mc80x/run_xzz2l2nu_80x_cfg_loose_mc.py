@@ -12,7 +12,7 @@ from PhysicsTools.HeppyCore.framework.heppy_loop import getHeppyOption
 from CMGTools.XZZ2l2nu.analyzers.coreXZZ_cff import *
 
 #-------- SAMPLES AND TRIGGERS -----------
-from CMGTools.XZZ2l2nu.samples.loadSamples80x import *
+from CMGTools.XZZ2l2nu.samples.loadSamples80xSummer16 import *
 selectedComponents = mcSamples+dataSamples
 
 triggerFlagsAna.triggerBits ={
@@ -81,7 +81,7 @@ if test==1:
     #selectedComponents = [RSGravToZZToZZinv_narrow_800]
     #selectedComponents = [WJetsToLNu]
     #selectedComponents = [ZZTo2L2Nu]
-    selectedComponents = [DYJetsToLL_M50_reHLT]
+    #selectedComponents = [DYJetsToLL_M50_reHLT]
     #selectedComponents = [DYJetsToLL_M50]
     #selectedComponents = [DYJetsToLL_M50_MGMLM_Ext1]
     #selectedComponents = [DY1JetsToLL_M50_MGMLM]
@@ -93,7 +93,7 @@ if test==1:
     #selectedComponents = [TTTo2L2Nu]
     #selectedComponents = [ZZTo2L2Nu]
     #selectedComponents = [BulkGravToZZ_narrow_800]
-    #selectedComponents = [BulkGravToZZToZlepZhad_narrow_800]
+    selectedComponents = [BulkGravToZZToZlepZinv_narrow_800]
     for c in selectedComponents:
         c.files = c.files[:1]
         #c.splitFactor = (len(c.files)/10 if len(c.files)>10 else 1)

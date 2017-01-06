@@ -13,12 +13,6 @@ from CMGTools.XZZ2l2nu.samples.samples_13TeV_signal80X import *
 from CMGTools.XZZ2l2nu.samples.samples_13TeV_DATA2016 import *
 # Load triggers
 from CMGTools.XZZ2l2nu.samples.triggers_13TeV_Spring16 import *
-# Load reference sample for jet energy corrections and jet resolution
-from CMGTools.XZZ2l2nu.samples.samples_JERCReference import * 
-
-# mc reference sample for jet energy corrections and jet resolution
-jercRefMC=[JERCRef_MC, JERCRef_MC_eos]
-jercRefdt=[JERCRef_data]
 
 # backgrounds
 backgroundSamples = [
