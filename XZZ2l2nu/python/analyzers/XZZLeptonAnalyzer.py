@@ -71,6 +71,7 @@ class XZZLeptonAnalyzer( Analyzer ):
         self.handles['rhoEleMiniIso'] = AutoHandle( self.cfg_ana.rhoElectronMiniIso, 'double')
         #rho for electron pfIso
         self.handles['rhoElePfIso'] = AutoHandle( self.cfg_ana.rhoElectronPfIso, 'double')
+        self.handles['rhoEleHLT'] = AutoHandle( 'fixedGridRhoFastjetCentralCalo', 'double')
 
         # decide to filter events not passing lepton requirements
         self.do_filter = getattr(self.cfg_ana, 'do_filter', True)
@@ -300,9 +301,8 @@ class XZZLeptonAnalyzer( Analyzer ):
 
         # calculate miniIso and pfIso
         for ele in allelectrons:
-            #ele.rho = float(self.handles['rhoEleMiniIso'].product()[0])
-            #self.attachMiniIsolation(ele)
             ele.rho = float(self.handles['rhoElePfIso'].product()[0])
+            ele.rhoHLT = float(self.handles['rhoEleHLT'].product()[0])
             ele.relIsoea03=ele.absIsoWithFSR(0.3)/ele.pt()
             if abs(ele.physObj.superCluster().eta())<1.479:
                 ele.looseiso=True if ele.relIsoea03<0.0893 else False
@@ -322,28 +322,7 @@ class XZZLeptonAnalyzer( Analyzer ):
 
         # define electron ID
         for ele in allelectrons:
-            ele.loose_nonISO=ele.electronID("POG_Cuts_ID_full5x5_SPRING15_25ns_v1_ConvVetoDxyDz_Loose")
-            ele.heepV60_noISO_EB = ele.pt()>35.0 \
-                         and abs(ele.superCluster().eta())<1.4442 \
-                         and abs(ele.deltaEtaSeedClusterTrackAtVtx())<0.004 \
-                         and abs(ele.deltaPhiSuperClusterTrackAtVtx())<0.06 \
-                         and (ele.full5x5_e5x5()>0 and ( ele.full5x5_e2x5Max()>ele.full5x5_e5x5()*0.94 or ele.full5x5_e1x5()>ele.full5x5_e5x5()*0.83)) \
-                         and (ele.hadronicOverEm()*ele.superCluster().energy()<1.0+0.05*ele.superCluster().energy()) \
-                         and abs(ele.gsfTrack().dxy(ele.associatedVertex.position()))<0.02 \
-                         and (ele.gsfTrack().hitPattern().numberOfHits(ROOT.reco.HitPattern.MISSING_INNER_HITS)<=1) \
-                         and ele.ecalDriven() 
-
-            ele.heepV60_noISO_EE = ele.pt()>35.0 \
-                         and abs(ele.superCluster().eta())>1.566 and abs(ele.superCluster().eta())<2.5 \
-                         and abs(ele.deltaEtaSeedClusterTrackAtVtx())<0.006 \
-                         and abs(ele.deltaPhiSuperClusterTrackAtVtx())<0.06 \
-                         and ele.full5x5_sigmaIetaIeta()<0.03 \
-                         and (ele.hadronicOverEm()*ele.superCluster().energy()<5.0+0.05*ele.superCluster().energy()) \
-                         and abs(ele.gsfTrack().dxy(ele.associatedVertex.position()))<0.05 \
-                         and (ele.gsfTrack().hitPattern().numberOfHits(ROOT.reco.HitPattern.MISSING_INNER_HITS)<=1) \
-                         and ele.ecalDriven() 
-
-            ele.heepV60_noISO = ele.heepV60_noISO_EB or ele.heepV60_noISO_EE
+            ele.loose_nonISO=ele.electronID("POG_Cuts_ID_SPRING16_25ns_v1_ConvVetoDxyDz_Loose")
         if self.cfg_comp.isMC:
             for ele in allelectrons:
                 ele.lepsf=self.esfh2.GetBinContent(self.esfh2.GetXaxis().FindBin(abs(ele.superCluster().eta())),self.esfh2.GetYaxis().FindBin(ele.pt()))
