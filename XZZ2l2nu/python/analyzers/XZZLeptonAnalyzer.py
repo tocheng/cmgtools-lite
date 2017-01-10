@@ -237,7 +237,6 @@ class XZZLeptonAnalyzer( Analyzer ):
  
         # calculate miniIso
         for mu in allmuons:
-            #self.attachMiniIsolation(mu)
             mu.trackerIso=mu.physObj.isolationR03().sumPt
             
         # Attach the vertex to them, for dxy/dz calculation
@@ -305,9 +304,11 @@ class XZZLeptonAnalyzer( Analyzer ):
             ele.rhoHLT = float(self.handles['rhoEleHLT'].product()[0])
             ele.relIsoea03=ele.absIsoWithFSR(0.3)/ele.pt()
             if abs(ele.physObj.superCluster().eta())<1.479:
-                ele.looseiso=True if ele.relIsoea03<0.0893 else False
+                #ele.looseiso=True if ele.relIsoea03<0.0893 else False
+                ele.looseiso=True if ele.relIsoea03<0.0994 else False
             else:
-                ele.looseiso=True if ele.relIsoea03<0.121 else False
+                #ele.looseiso=True if ele.relIsoea03<0.121 else False
+                ele.looseiso=True if ele.relIsoea03<0.107 else False
 
         # Electron scale calibrations
         if self.cfg_ana.doElectronScaleCorrections:
@@ -323,51 +324,17 @@ class XZZLeptonAnalyzer( Analyzer ):
         # define electron ID
         for ele in allelectrons:
             ele.loose_nonISO=ele.electronID("POG_Cuts_ID_SPRING16_25ns_v1_ConvVetoDxyDz_Loose")
-        if self.cfg_comp.isMC:
-            for ele in allelectrons:
-                ele.lepsf=self.esfh2.GetBinContent(self.esfh2.GetXaxis().FindBin(abs(ele.superCluster().eta())),self.esfh2.GetYaxis().FindBin(ele.pt()))
-                ele.lepsfE=self.esfh2.GetBinError(self.esfh2.GetXaxis().FindBin(abs(ele.superCluster().eta())),self.esfh2.GetYaxis().FindBin(ele.pt()))
-                ele.lepsf=ele.lepsf if ele.lepsf else 1
-                ele.lepsfUp=ele.lepsf+ele.lepsfE
-                ele.lepsfLo=ele.lepsf-ele.lepsfE
+            ele.hltSafeId = ele.electronID("POG_Cuts_ID_SPRING16_25ns_v1_HLT")
+# remove the below eff sf part, to be added in skimming framework.
+#        if self.cfg_comp.isMC:
+#            for ele in allelectrons:
+#                ele.lepsf=self.esfh2.GetBinContent(self.esfh2.GetXaxis().FindBin(abs(ele.superCluster().eta())),self.esfh2.GetYaxis().FindBin(ele.pt()))
+#                ele.lepsfE=self.esfh2.GetBinError(self.esfh2.GetXaxis().FindBin(abs(ele.superCluster().eta())),self.esfh2.GetYaxis().FindBin(ele.pt()))
+#                ele.lepsf=ele.lepsf if ele.lepsf else 1
+#                ele.lepsfUp=ele.lepsf+ele.lepsfE
+#                ele.lepsfLo=ele.lepsf-ele.lepsfE
         return allelectrons 
 
-
-    def attachMiniIsolation(self, lep):
-        lep.miniIsoR = 10.0/min(max(lep.pt(), 50.0),200.0)
-        what = "mu" if (abs(lep.pdgId()) == 13) else ("eleB" if lep.isEB() else "eleE")
-
-        if what=="mu":
-            lep.miniAbsIsoChargedHad = self.IsolationComputer.chargedHadAbsIso(lep.physObj, lep.miniIsoR, 0.0001, 0.0, self.IsolationComputer.selfVetoNone);
-        else:
-            lep.miniAbsIsoChargedHad = self.IsolationComputer.chargedHadAbsIso(lep.physObj, lep.miniIsoR, {"mu":0.0001,"eleB":0,"eleE":0.015}[what], 0.0, self.IsolationComputer.selfVetoNone);
-
-        if self.miniIsolationPUCorr == None: puCorr = self.cfg_ana.mu_isoCorr if what=="mu" else self.cfg_ana.ele_isoCorr
-        else: puCorr = self.miniIsolationPUCorr
-
-        if puCorr == "weights":
-            if what == "mu":
-                lep.miniAbsIsoNeutral = self.IsolationComputer.neutralAbsIsoWeighted(lep.physObj, lep.miniIsoR, 0.01, 0.5,self.IsolationComputer.selfVetoNone);
-            else:
-                lep.miniAbsIsoNeutral = ( self.IsolationComputer.photonAbsIsoWeighted(lep.physObj, lep.miniIsoR, 0.08 if what=="eleE" else 0.0, 0.0, self.IsolationComputer.selfVetoNone) + self.IsolationComputer.neutralHadAbsIsoWeighted(lep.physObj, lep.miniIsoR, 0.0, 0.0, self.IsolationComputer.selfVetoNone) )
-        else:
-            if what == "mu":
-                #lep.miniAbsIsoNeutral = self.IsolationComputer.neutralAbsIsoRaw(lep.physObj, lep.miniIsoR, 0.01, 0.5);
-                lep.miniAbsIsoPho  = self.IsolationComputer.photonAbsIsoRaw(lep.physObj, lep.miniIsoR, 0.01, 0.5,self.IsolationComputer.selfVetoNone)
-                lep.miniAbsIsoNeutralHad = self.IsolationComputer.neutralHadAbsIsoRaw(lep.physObj, lep.miniIsoR, 0.01, 0.5,self.IsolationComputer.selfVetoNone)
-            else:
-                lep.miniAbsIsoPho  = self.IsolationComputer.photonAbsIsoRaw(lep.physObj, lep.miniIsoR, 0.08 if what == "eleE" else 0.0, 0.0, self.IsolationComputer.selfVetoNone)
-                lep.miniAbsIsoNeutralHad = self.IsolationComputer.neutralHadAbsIsoRaw(lep.physObj, lep.miniIsoR, 0.0, 0.0, self.IsolationComputer.selfVetoNone)
-            # only calculate rhoArea
-            lep.miniAbsIsoNeutral = lep.miniAbsIsoPho + lep.miniAbsIsoNeutralHad
-            lep.miniAbsIsoNeutral = max(0.0, lep.miniAbsIsoNeutral - lep.rho * lep.EffectiveArea03 * (lep.miniIsoR/0.3)**2)
-
-        if lep.pt()<5.0:
-            lep.miniAbsIso = 9999.0
-            lep.miniRelIso = 9999.0
-        else:
-            lep.miniAbsIso = lep.miniAbsIsoChargedHad + lep.miniAbsIsoNeutral
-            lep.miniRelIso = lep.miniAbsIso/lep.pt()
 
     def process(self, event):
         self.readCollections( event.input )

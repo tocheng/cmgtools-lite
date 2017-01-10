@@ -7,9 +7,17 @@ process = cms.Process("NEW")
 # Load the standard set of configuration modules
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('Configuration.StandardSequences.GeometryDB_cff')
-process.load('Configuration.StandardSequences.MagneticField_38T_cff')
+#process.load('Configuration.StandardSequences.MagneticField_38T_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
+# Load for e/gamma regression
+#process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
+process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
+process.load('Configuration.StandardSequences.EndOfProcess_cff')
+
+# import of standard configurations
+process.load('SimGeneral.MixingModule.mixNoPU_cfi')
+process.load('Configuration.StandardSequences.MagneticField_cff')
 
 # Message Logger settings
 process.load("FWCore.MessageService.MessageLogger_cfi")
@@ -37,10 +45,15 @@ process.source = cms.Source("PoolSource",
 process.OUT = cms.OutputModule("PoolOutputModule",
     fileName = cms.untracked.string('test.root'),
     outputCommands = cms.untracked.vstring(['drop *', 
-                'keep *_slimmedMETs_*_NEW'
+                'keep *_slimmedMETs_*_NEW',
+                'keep *_TriggerResults_*_NEW',
+                'keep *_slimmedElectrons_*_NEW',
+                'keep *_slimmedPhotons_*_NEW'
     ])
 )
-process.endpath= cms.EndPath(process.OUT)
+
+
+
 
 from Configuration.AlCa.autoCond import autoCond
 if runOnData:
@@ -49,6 +62,12 @@ else:
   process.GlobalTag.globaltag = autoCond['run2_mc']
 
 
+# e/gamma regression
+process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
+process.EGMenergyCorrection = cms.Path(process.regressionApplication)
+
+
+# met 
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 
 # If you only want to re-correct and get the proper uncertainties
@@ -64,6 +83,8 @@ runMetCorAndUncFromMiniAOD(process,
 #                           )
 
 
-
 #process.p = cms.Path(process.fullPatMetSequence)
 
+
+
+process.endpath= cms.EndPath(process.OUT)
