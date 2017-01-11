@@ -1,6 +1,7 @@
-!*
 /.gitignore
-/XZZ2l2nu
-/Production
-/RootTools
+/Production/*
+/RootTools/*
+/XZZ2l2nu/*
+
+
 
