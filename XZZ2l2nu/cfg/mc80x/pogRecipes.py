@@ -55,11 +55,15 @@ process.OUT = cms.OutputModule("PoolOutputModule",
 
 
 
-from Configuration.AlCa.autoCond import autoCond
+#from Configuration.AlCa.autoCond import autoCond
 if runOnData:
-  process.GlobalTag.globaltag = autoCond['run2_data']
+  #process.GlobalTag.globaltag = autoCond['run2_data']
+  # Spring16_25nsV6_DATA_AK4PFchs
+  process.GlobalTag.globaltag = '80X_dataRun2_2016SeptRepro_v6'
 else:
-  process.GlobalTag.globaltag = autoCond['run2_mc']
+  #process.GlobalTag.globaltag = autoCond['run2_mc']
+  # Summer16_25nsV5_MC_AK4PFchs
+  process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v7'
 
 
 # e/gamma regression

@@ -7,11 +7,15 @@ g++ preskim.cc -o preskim.exe `root-config --cflags` `root-config --libs`
 
 #inputs
 indir=/data2/XZZ2/80X_20161029
+#indir=/data2/XZZ2/80X_20161006
 #indir=/home/heli/XZZ/80X_20161029
 #outdir=/datab/heli/XZZ/80X_20161029_light
 outdir=/home/heli/XZZ/80X_20161029_light
-samples="Single*_Run2016B_23Sep2016_v2_resub"
-#samples="SingleEMU_Run2016B2G_ReReco_27fbinv"
+#samples="SingleEMU_Run2016B2H_ReReco_36p1fbinv"
+#samples="SingleEMU_Run2016H_PromptReco_new"
+#samples="Single*_Run2016B_23Sep2016_v2_resub"
+#samples="SingleEMU_Run2016B2G_PromptReco"
+samples="SingleEMU_Run2016B2G_ReReco_27fbinv"
 #samples="ggZZ*"
 #samples="ZZ*"
 #samples="WW*"

@@ -234,6 +234,10 @@ zjetsFidXsecAll_dn=157.67618228330914576
 zjetsFidXsecEl_dn =2.0275338821661335054
 zjetsFidXsecMu_dn =155.64864840114299227
 
+print "zjetsFidXsecAll = ",zjetsFidXsecAll," +- ",(zjetsFidXsecAll_up-zjetsFidXsecAll_dn)/zjetsFidXsecAll/2.0,"%"
+print "zjetsFidXsecEl = ",zjetsFidXsecEl," +- ",(zjetsFidXsecEl_up-zjetsFidXsecEl_dn)/zjetsFidXsecEl/2.0,"%"
+print "zjetsFidXsecMu = ",zjetsFidXsecMu," +- ",(zjetsFidXsecMu_up-zjetsFidXsecMu_dn)/zjetsFidXsecMu/2.0,"%"
+
 # for GJets photon bkg subtraction
 
 phymetPlotters=[]

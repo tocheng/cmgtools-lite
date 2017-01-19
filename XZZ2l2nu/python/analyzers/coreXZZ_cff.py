@@ -85,7 +85,7 @@ lepAna = cfg.Analyzer(
     electronIsoVersion = 'pfISO', # can be pfISO or miniISO
     mu_isoCorr = "rhoArea" ,
     ele_isoCorr = "rhoArea" ,
-    mu_effectiveAreas = "Spring16_25ns_v1",
+    mu_effectiveAreas = "Spring15_25ns_v1",
     ele_effectiveAreas = "Spring16_25ns_v1",
     miniIsolationPUCorr = None, # Allowed options: 'rhoArea' (EAs for 03 cone scaled by R^2), 'deltaBeta', 
                                      # 'raw' (uncorrected), 'weights' (delta beta weights; not validated)

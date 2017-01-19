@@ -43,7 +43,8 @@ process.source = cms.Source(
     #fileNames  = inputDYJets,
     #fileNames  = inputDYJetsPtZ100,
     #fileNames  = inputGGZZ2e2nu,
-    fileNames  = inputGGZZ2mu2nu,
+    #fileNames  = inputGGZZ2mu2nu,
+    fileNames = inputQCD_HT50to100,
 
     duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
 )

@@ -304,8 +304,8 @@ class StackPlotter(object):
                     if bkname1!=bkname2:
                         yd2 -= bkgYields[bkname2][0]
                         er2 += bkgYields[bkname2][1]*bkgYields[bkname2][1]
-                rt21 = yd2/yd1
-                er21 = math.sqrt((yd1**2*er2+yd2**2*er1)/(yd1**4))
+                rt21 = yd2/yd1 if yd1>0 else 0
+                er21 = math.sqrt((yd1**2*er2+yd2**2*er1)/(yd1**4)) if yd1>0 else 0
                 print bkname1+": (data-others)/"+bkname1+" = "+str(rt21)+" +- "+str(er21) 
 
 

@@ -20,6 +20,7 @@ parser.add_option("--Blind",action="store_true", dest="Blind", default=False,hel
 parser.add_option("--test",action="store_true", dest="test", default=False,help="")
 parser.add_option("--ZWeight",action="store_true", dest="ZWeight", default=False,help="")
 parser.add_option("--SeparateProcess",action="store_true", dest="SeparateProcess", default=False,help="")
+parser.add_option("--WtQCDToGJets",action="store_true", dest="WtQCDToGJets", default=False,help="")
 
 parser.add_option("-l",action="callback",callback=callback_rootargs)
 parser.add_option("-q",action="callback",callback=callback_rootargs)
@@ -40,10 +41,11 @@ ZWeight=options.ZWeight
 LogY=options.LogY
 test=options.test
 SeparateProcess=options.SeparateProcess
+WtQCDToGJets=options.WtQCDToGJets
 doRhoScale=True
 doVtxScale=False
 doEtaScale=True
-doPhPtScale=True
+doPhPtScale=False
 
 
 
@@ -68,6 +70,11 @@ if doPhPtScale:
     tag+="PhPtWt_"
     scale=scale+"*((-1.06624+0.0580113*pow(llnunu_l1_pt,1)-5.09328e-4*pow(llnunu_l1_pt,2)+2.28513e-6*pow(llnunu_l1_pt,3)-6.03131e-9*pow(llnunu_l1_pt,4)+9.84946e-12*pow(llnunu_l1_pt,5)-1.00558e-14*pow(llnunu_l1_pt,6)+6.244e-18*pow(llnunu_l1_pt,7)-2.15543e-21*pow(llnunu_l1_pt,8)+3.17021e-25*pow(llnunu_l1_pt,9))*(llnunu_l1_pt<=1000)+(0.688060)*(llnunu_l1_pt>1000))"
 
+
+wt_qcd_to_gjets = "((1/(1.525e-01*exp(-6.201e-02*llnunu_l1_pt+5.999e+00)+-5.024e-04*llnunu_l1_pt+1.646e-01))*(llnunu_l1_pt<200)+(1/(8.801e-02*exp(-4.075e-02*llnunu_l1_pt+5.228e+00)-8.291e-05*llnunu_l1_pt+7.234e-02))*(llnunu_l1_pt>=200&&llnunu_l1_pt<600)+(44.2595)*(llnunu_l1_pt>=600))"
+
+if WtQCDToGJets:
+    tag+="WtQCDToGJets_"
 
 outdir='plots_ph_36p46'
 
@@ -99,9 +106,22 @@ paveText="#sqrt{s} = 13 TeV 2016 L = "+"{:.4}".format(float(lumi))+" fb^{-1}"
 
 cuts_loose='(1)'
 cuts_tight='llnunu_l1_pt>50'
-
+cuts_tightzptgt50lt100='llnunu_l1_pt>50&&llnunu_l1_pt<100'
+cuts_tightzptgt100='llnunu_l1_pt>100'
+cuts_SR="llnunu_l1_pt>100&&llnunu_l2_pt>50"
+cuts_CR="llnunu_l1_pt>50&&!(llnunu_l1_pt>100&&llnunu_l2_pt>50)"
+cuts_CR1="llnunu_l1_pt>100&&llnunu_l2_pt<50"
+cuts_CR2="llnunu_l1_pt>50&&llnunu_l1_pt<100&&llnunu_l2_pt>50"
+cuts_CR3="llnunu_l1_pt>50&&llnunu_l1_pt<100&&llnunu_l2_pt<50"
 if cutChain=='loosecut': cuts=cuts_loose
 elif cutChain=='tight': cuts=cuts_tight
+elif cutChain=='tightzptgt50lt100': cuts=cuts_tightzptgt50lt100
+elif cutChain=='tightzptgt100': cuts=cuts_tightzptgt100
+elif cutChain=='SR': cuts=cuts_SR
+elif cutChain=='CR': cuts=cuts_CR
+elif cutChain=='CR1': cuts=cuts_CR1
+elif cutChain=='CR2': cuts=cuts_CR2
+elif cutChain=='CR3': cuts=cuts_CR3
 else : cuts=cuts_loose
 
 cuts = '('+cuts+')'
@@ -280,7 +300,7 @@ phymetPlotters = zllPlotters+znnPlotters+znngPlotters+wlngPlotters+wlnPlotters+t
 ##########################
 
 gjetsSamples = [
-#'GJets_HT40to100',
+'GJets_HT40to100',
 'GJets_HT100to200',
 'GJets_HT200to400',
 'GJets_HT400to600',
@@ -302,7 +322,7 @@ for sample in gjetsSamples:
 # QCD
 ##########################
 
-qcdSamples = [
+QCD_EMEnriched_samples = [
 'QCD_Pt20to30_EMEnriched',
 'QCD_Pt30to50_EMEnriched',
 'QCD_Pt50to80_EMEnriched',
@@ -312,6 +332,19 @@ qcdSamples = [
 'QCD_Pt300toInf_EMEnriched',
 ]
 
+QCD_HT_samples = [
+"QCD_HT1000to1500_BIG",
+"QCD_HT100to200_BIG",
+"QCD_HT1500to2000_BIG",
+"QCD_HT2000toInf_BIG",
+"QCD_HT200to300_BIG",
+"QCD_HT300to500_BIG",
+"QCD_HT500to700_BIG",
+"QCD_HT700to1000_BIG"
+]
+
+qcdSamples=QCD_HT_samples
+ 
 qcdPlotters=[]
 for sample in qcdSamples:
     qcdPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
@@ -320,6 +353,7 @@ for sample in qcdSamples:
     qcdPlotters[-1].addCorrectionFactor('genWeight','genWeight')
     qcdPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
     qcdPlotters[-1].addCorrectionFactor(scale,'scale')
+    if WtQCDToGJets: qcdPlotters[-1].addCorrectionFactor(wt_qcd_to_gjets,'wt_qcd_to_gjets')
 
 
 
@@ -492,14 +526,15 @@ Stack.doRatio(doRatio)
 tag+='_'
 
 if test: 
-    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 75, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt_low',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 75, 0.0, 1500.0, titlex = "P_{T}(#gamma)", units = "GeV",output=tag+'zpt_low',outDir=outdir,separateSignal=sepSig)
     Stack.drawStack('llnunu_l2_pt', cuts, str(lumi*1000), 25, 0, 1000, titlex = "MET", units = "GeV",output=tag+'met_low',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
 else: 
     Stack.drawStack('nVert', cuts, str(lumi*1000), 100, 0.0, 100.0, titlex = "N vertices", units = "",output=tag+'nVert',outDir=outdir,separateSignal=sepSig)
     Stack.drawStack('rho', cuts, str(lumi*1000), 55, 0.0, 55.0, titlex = "#rho", units = "",output=tag+'rho',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 75, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt_low',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('llnunu_l1_eta', cuts, str(lumi*1000), 100, -2.5, 2.5, titlex = "#eta(Z) ", units = "",output=tag+'zeta',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('llnunu_l1_phi', cuts, str(lumi*1000), 64, -3.2, 3.2, titlex = "#phi(Z)", units = "",output=tag+'zphi',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 75, 0.0, 1500.0, titlex = "P_{T}(#gamma)", units = "GeV",output=tag+'zpt',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 250, 50, 300.0, titlex = "P_{T}(#gamma)", units = "GeV",output=tag+'zpt_low',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l1_eta', cuts, str(lumi*1000), 100, -2.5, 2.5, titlex = "#eta(#gamma) ", units = "",output=tag+'zeta',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l1_phi', cuts, str(lumi*1000), 64, -3.2, 3.2, titlex = "#phi(#gamma)", units = "",output=tag+'zphi',outDir=outdir,separateSignal=sepSig)
     Stack.drawStack('llnunu_l2_pt', cuts, str(lumi*1000), 25, 0, 1000, titlex = "MET", units = "GeV",output=tag+'met_low',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
     Stack.drawStack('llnunu_l2_pt*cos(llnunu_l2_phi-llnunu_l1_phi)', cuts, str(lumi*1000), 100, -500, 500.0, titlex = "MET_{#parallel}", units = "GeV",output=tag+'met_para',outDir=outdir,separateSignal=sepSig)
     Stack.drawStack('llnunu_l2_pt*sin(llnunu_l2_phi-llnunu_l1_phi)', cuts, str(lumi*1000), 100, -500, 500.0, titlex = "MET_{#perp}", units = "GeV",output=tag+'met_perp',outDir=outdir,separateSignal=sepSig)

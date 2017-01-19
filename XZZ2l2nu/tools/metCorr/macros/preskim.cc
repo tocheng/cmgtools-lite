@@ -158,8 +158,11 @@ int main(int argc, char** argv) {
     tree->SetBranchStatus("genNeu_*",0);
   }
 
-/*
+
   // add back jets info
+  tree->SetBranchStatus("nlep", 1);
+  tree->SetBranchStatus("njet", 1);
+/*
   tree->SetBranchStatus("jet_rawPt",1);
   tree->SetBranchStatus("jet_eta",1);
   tree->SetBranchStatus("jet_phi",1);
@@ -215,11 +218,12 @@ int main(int argc, char** argv) {
     tree_tmp1->SetBranchStatus("llnunu_l1_l1_isfromX", 0);
     tree_tmp1->SetBranchStatus("llnunu_l1_l2_hasgen", 0);
     tree_tmp1->SetBranchStatus("llnunu_l1_l2_isfromX", 0);
-    tree_tmp1->SetBranchStatus("ngenjet", 0);
-    tree_tmp1->SetBranchStatus("ngenZ", 0);
-    tree_tmp1->SetBranchStatus("ngenX", 0);
+    //tree_tmp1->SetBranchStatus("ngenjet", 0);
+    //tree_tmp1->SetBranchStatus("ngenZ", 0);
+    //tree_tmp1->SetBranchStatus("ngenX", 0);
 
   }
+
 
 
   foutput->cd();

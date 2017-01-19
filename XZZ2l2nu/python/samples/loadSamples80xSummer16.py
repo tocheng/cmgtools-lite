@@ -16,12 +16,9 @@ from CMGTools.XZZ2l2nu.samples.triggers_13TeV_Spring16 import *
 
 # backgrounds
 backgroundSamples = [
-DYJetsToLL_M50,
-#DYJetsToLL_M50_reHLT,
+#DYJetsToLL_M50,
 #DYJetsToLL_M50_Ext,
-#DYJetsToLL_M50_PtZ100,
-#DYJetsToLL_M50_MGMLM_PtZ150,
-DYJetsToLL_M50_MGMLM,
+#DYJetsToLL_M50_MGMLM,
 DYJetsToLL_M50_MGMLM_Ext1,
 WJetsToLNu,
 #TTTo2L2Nu,
@@ -34,7 +31,7 @@ WWTo2L2Nu,
 WWToLNuQQ,
 WWToLNuQQ_Ext1,
 WZTo1L1Nu2Q,
-#WZTo2L2Q,
+WZTo2L2Q,
 WZTo3LNu,
 TTZToLLNuNu,
 #TTWJetsToLNu,
@@ -45,14 +42,6 @@ ggZZTo2mu2nu,
 ]
 
 extraBackgroundMC = [
-# DYJetsToLL_M50_HT100to200,
-# DYJetsToLL_M50_HT200to400,
-# DYJetsToLL_M50_HT400to600,
-# DYJetsToLL_M50_HT600toInf,
-#WW,
-#WZ,
-#ZZ,
-#TT,
 DY1JetsToLL_M50_MGMLM,
 DY2JetsToLL_M50_MGMLM,
 DY3JetsToLL_M50_MGMLM,
@@ -63,97 +52,19 @@ DY4JetsToLL_M50_MGMLM,
 
 
 
-MajorGJetsMC=[
-WJetsToLNu,
-WGToLNuG,
-TTGJets,
-TToLeptons_tch_powheg,
-TBarToLeptons_tch_powheg,
-TBar_tWch,
-T_tWch,
-TGJets,
-TGJets_ext,
-GJet_Pt_20toInf_DoubleEMEnriched,
-GJet_Pt_40toInf_DoubleEMEnriched,
-GJet_Pt_20to40_DoubleEMEnriched,
-GJets_HT40to100,
-GJets_HT100to200,
-GJets_HT200to400,
-GJets_HT400to600,
-GJets_HT600toInf,
-ZNuNuGJetsGt130,
-ZNuNuGJetsGt40Lt130,
-DYJetsToLL_M50_reHLT,
-QCD_HT200to300_ext,
-QCD_HT300to500,
-QCD_HT300to500_ext,
-QCD_HT500to700,
-QCD_HT500to700_ext,
-#QCD_HT700to1000,
-QCD_HT700to1000_ext,
-QCD_HT1000to1500,
-QCD_HT1000to1500_ext,
-QCD_HT1500to2000,
-QCD_HT1500to2000_ext,
-QCD_HT2000toInf,
-QCD_HT2000toInf_ext,
-QCD_Pt20to30_EMEnriched,
-QCD_Pt30to50_EMEnriched,
-QCD_Pt50to80_EMEnriched,
-QCD_Pt80to120_EMEnriched,
-QCD_Pt120to170_EMEnriched,
-QCD_Pt170to300_EMEnriched,
-QCD_Pt300toInf_EMEnriched,
-ZJetsToNuNu_HT100to200,
-ZJetsToNuNu_HT100to200_ext,
-ZJetsToNuNu_HT200to400,
-ZJetsToNuNu_HT200to400_ext,
-ZJetsToNuNu_HT400to600,
-#ZJetsToNuNu_HT400to600_ext,
-#ZJetsToNuNu_HT600toInf,
-ZJetsToNuNu_HT600to800,
-#ZJetsToNuNu_HT600to800_ext,
-ZJetsToNuNu_HT800to1200,
-#ZJetsToNuNu_HT800to1200ext,
-ZJetsToNuNu_HT1200to2500,
-ZJetsToNuNu_HT1200to2500_ext,
-ZJetsToNuNu_HT2500toInf,
-#ZJetsToNuNu_HT2500toInf_ext,
-WJetsToLNu_HT100to200,
-WJetsToLNu_HT100to200_ext1,
-WJetsToLNu_HT100to200_ext2,
-#WJetsToLNu_HT200to400,
-WJetsToLNu_HT200to400_ext1,
-WJetsToLNu_HT200to400_ext2,
-WJetsToLNu_HT400to600,
-WJetsToLNu_HT400to600_ext1,
-WJetsToLNu_HT600to800,
-WJetsToLNu_HT600to800_ext1,
-#WJetsToLNu_HT800to1200,
-WJetsToLNu_HT800to1200_ext1,
-WJetsToLNu_HT1200to2500,
-#WJetsToLNu_HT1200to2500_ext1,
-WJetsToLNu_HT2500toInf,
-WJetsToLNu_HT2500toInf_ext1
-
-]
-OtherGJetsMC=[
-QCD_Pt50to80,
-QCD_Pt80to120,
-QCD_Pt120to170,
-QCD_Pt170to300,
-QCD_Pt300to470,
-QCD_Pt470to600,
-QCD_Pt600to800,
-QCD_Pt800to1000,
-QCD_Pt1000to1400,
-QCD_Pt1400to1800,
-QCD_Pt1800to2400,
-QCD_Pt2400to3200,
-]
+GJetsMC= WJetsToLNuHT 
+            + ZJetsToNuNuHT
+            + SingleTop
+            + ZNuNuGJets
+            + ttgjets
+            + wgjets 
+            + GJet_Pt_EMEnriched
+            + GJetsHT
+            + QCDPtEMEnriched
+            + QCDPt
+            + QCDHT
 
 
-GJetsMC=MajorGJetsMC+OtherGJetsMC
 
 # signals
 signalSamples = [
@@ -168,7 +79,7 @@ BulkGravToZZToZlepZinv_narrow_2000,
 BulkGravToZZToZlepZinv_narrow_2500,
 BulkGravToZZToZlepZinv_narrow_3000,
 BulkGravToZZToZlepZinv_narrow_3500,
-#BulkGravToZZToZlepZinv_narrow_4000,
+BulkGravToZZToZlepZinv_narrow_4000,
 BulkGravToZZToZlepZinv_narrow_4500,
 ]
 
@@ -177,12 +88,12 @@ BulkGravToZZToZlepZhad_narrow_600,
 BulkGravToZZToZlepZhad_narrow_800,
 BulkGravToZZToZlepZhad_narrow_1000,
 BulkGravToZZToZlepZhad_narrow_1200,
-#BulkGravToZZToZlepZhad_narrow_1400,
+BulkGravToZZToZlepZhad_narrow_1400,
 BulkGravToZZToZlepZhad_narrow_1600,
 BulkGravToZZToZlepZhad_narrow_1800,
 BulkGravToZZToZlepZhad_narrow_2000,
 BulkGravToZZToZlepZhad_narrow_2500,
-#BulkGravToZZToZlepZhad_narrow_3000,
+BulkGravToZZToZlepZhad_narrow_3000,
 BulkGravToZZToZlepZhad_narrow_3500,
 BulkGravToZZToZlepZhad_narrow_4000,
 BulkGravToZZToZlepZhad_narrow_4500,

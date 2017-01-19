@@ -18,6 +18,7 @@ parser.add_option("--cutChain",dest="cutChain",default='tight',help="")
 parser.add_option("--LogY",action="store_true", dest="LogY", default=False, help="")
 parser.add_option("--Blind",action="store_true", dest="Blind", default=False,help="")
 parser.add_option("--test",action="store_true", dest="test", default=False,help="")
+parser.add_option("--ThreeLepVeto",action="store_true", dest="ThreeLepVeto", default=False,help="")
 parser.add_option("-l",action="callback",callback=callback_rootargs)
 parser.add_option("-q",action="callback",callback=callback_rootargs)
 parser.add_option("-b",action="callback",callback=callback_rootargs)
@@ -53,14 +54,18 @@ sepSig=True
 if test: DrawLeptons = False
 
 
-outdir='plots_cmp_data_36p46'
+outdir='plots_cmp_data_27p1'
+#outdir='plots_cmp_data_36p46'
 
 indir='/home/heli/XZZ/80X_20161029_light_Skim'
-lumi=36.46
+#indir='/data2/XZZ2/80X_20161029_light_Skim'
+#lumi=36.46
+lumi=27.1
 doRatio=True
 Blind=options.Blind
 UseMETFilter=True
 DataHLT=True
+ThreeLepVeto=options.ThreeLepVeto
 
 elChannel='(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11)'
 muChannel='(abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13)'
@@ -70,6 +75,10 @@ if not os.path.exists(outdir): os.system('mkdir '+outdir)
 tag = tag+cutChain+'_'
 
 if UseMETFilter: tag = tag+'metfilter_'
+
+if ThreeLepVeto:
+    tag+="ThreeLepVeto_"
+    
 
 if not Blind: tag = tag+'unblind_'
 
@@ -110,9 +119,13 @@ else : cuts=cuts_loose
 if channel=='el': cuts = cuts+'&&'+elChannel
 elif channel=='mu': cuts = cuts+'&&'+muChannel
 
-if UseMETFilter:
-    #cuts = '('+cuts+'&&'+metfilter+')'
-    cuts = '('+cuts+')'
+#if UseMETFilter:
+    #cuts = cuts+'&&'+metfilter
+
+if ThreeLepVeto:
+    cuts+='&&'+"nlep<=2"
+
+cuts = '('+cuts+')'
 
 ROOT.gROOT.ProcessLine('.x tdrstyle.C') 
 
@@ -120,7 +133,8 @@ allPlotters = {}
 
 dataPlotters=[]
 dataSamples = [
-'SingleEMU_Run2016B2H_ReReco_36p46',
+#'SingleEMU_Run2016B2H_ReReco_36p46',
+'SingleEMU_Run2016B2G_ReReco_27fbinv',
 ]
 for sample in dataSamples:
     dataPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
@@ -133,7 +147,8 @@ Data = MergedPlotter(dataPlotters)
 
 data2Plotters=[]
 data2Samples = [
-'SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib', 
+#'SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib', 
+'SingleEMU_Run2016B2G_PromptReco'
 ]
 for sample in data2Samples:
     data2Plotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
@@ -145,6 +160,16 @@ if DataHLT:
 
 Data2 = MergedPlotter(data2Plotters)
 
+
+Data.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
+Data.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
+Data.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
+Data.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
+
+Data2.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
+Data2.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
+Data2.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
+Data2.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
 
 Stack = StackPlotter(outTag=tag, outDir=outdir)
 Stack.setPaveText(paveText)
@@ -164,12 +189,12 @@ if test:
 #    Stack.drawStack('nVert', cuts, str(lumi*1000), 80, 0.0, 80.0, titlex = "N vertices", units = "",output=tag+'nVert',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('rho', cuts, str(lumi*1000), 55, 0.0, 55.0, titlex = "#rho", units = "",output=tag+'rho',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 50, 0.0, 500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt_low',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 75, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 30, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 60, 60, 120, titlex = "M(Z)", units = "GeV",output=tag+'zmass',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 50, 100.0, 600.0, titlex = "M_{T}", units = "GeV",output=tag+'mt_low',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
 #    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output=tag+'met_low',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
-    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 50, 0, 1000, titlex = "MET", units = "GeV",output=tag+'met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
+    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 30, 0, 1500, titlex = "MET", units = "GeV",output=tag+'met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
 #    Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 100, -300, 300.0, titlex = "MET_{#parallel}", units = "GeV",output=tag+'met_para',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_l2_pt_to_plot*sin(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 100, -300, 300.0, titlex = "MET_{#perp}", units = "GeV",output=tag+'met_perp',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))', cuts, str(lumi*1000), 50, 0, 5, titlex = "#Delta#phi(Z,MET)", units = "",output=tag+'dphiZMet',outDir=outdir,separateSignal=sepSig)

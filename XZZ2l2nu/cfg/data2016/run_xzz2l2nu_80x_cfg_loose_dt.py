@@ -12,7 +12,7 @@ from PhysicsTools.HeppyCore.framework.heppy_loop import getHeppyOption
 from CMGTools.XZZ2l2nu.analyzers.coreXZZ_cff import *
 
 #-------- SAMPLES AND TRIGGERS -----------
-from CMGTools.XZZ2l2nu.samples.loadSamples80x import *
+from CMGTools.XZZ2l2nu.samples.loadSamples80xSummer16 import *
 selectedComponents = mcSamples+dataSamples
 
 triggerFlagsAna.triggerBits ={
@@ -126,6 +126,7 @@ if test==1:
         #c.triggers=triggers_1mu_noniso
         #c.triggers=triggers_1e_noniso
 
+
 ## output histogram
 outputService=[]
 from PhysicsTools.HeppyCore.framework.services.tfile import TFileService
@@ -138,16 +139,24 @@ output_service = cfg.Service(
     )
 outputService.append(output_service)
 
+from PhysicsTools.Heppy.utils.cmsswPreprocessor import CmsswPreprocessor
+preprocessor = CmsswPreprocessor("pogRecipes.py")
+
 from PhysicsTools.HeppyCore.framework.eventsfwlite import Events
-from CMGTools.TTHAnalysis.tools.EOSEventsWithDownload import EOSEventsWithDownload
-event_class = EOSEventsWithDownload
 event_class = Events
-if getHeppyOption("nofetch"):
-    event_class = Events
 config = cfg.Config( components = selectedComponents,
                      sequence = sequence,
                      services = [],
+                     preprocessor=preprocessor, #this would run cmsRun before running Heppy
                      events_class = event_class)
+
+# and the following runs the process directly if running as with python filename.py  
+if __name__ == '__main__':
+    from PhysicsTools.HeppyCore.framework.looper import Looper
+    looper = Looper( 'Loop', config, nPrint = 5,nEvents=300)
+    looper.loop()
+    looper.write()
+
 
 
 

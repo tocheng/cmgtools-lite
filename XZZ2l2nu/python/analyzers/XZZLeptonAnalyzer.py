@@ -282,7 +282,7 @@ class XZZLeptonAnalyzer( Analyzer ):
               elif SCEta < 2.400: ele.EffectiveArea03 = 0.2243
               elif SCEta < 5.000: ele.EffectiveArea03 = 0.2687
               else:               ele.EffectiveArea03 = 0.0000
-          elif self.eleEffectiveArea == "Spring16_25ns_v1":
+          elif self.ele_effectiveAreas == "Spring16_25ns_v1":
               SCEta = abs(ele.superCluster().eta())
               ## ----- https://github.com/ikrav/cmssw/blob/egm_id_747_v2/RecoEgamma/ElectronIdentification/data/Spring15/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_25ns.txt
               if   SCEta < 1.000: ele.EffectiveArea03 = 0.1703
