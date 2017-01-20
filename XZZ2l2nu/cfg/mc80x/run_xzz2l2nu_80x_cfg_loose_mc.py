@@ -20,6 +20,7 @@ triggerFlagsAna.triggerBits ={
     "MU":triggers_1mu_noniso,
     "MUv2":triggers_1mu_noniso_v2,
     "MU50":triggers_1mu_noniso_M50,
+    "TkMU50":triggers_1mu_noniso_tkM50,
     "ISOELE":triggers_1e,
     "ELE":triggers_1e_noniso,
     "ELEv2":triggers_1e_noniso_v2,

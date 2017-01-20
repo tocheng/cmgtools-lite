@@ -52,17 +52,9 @@ DY4JetsToLL_M50_MGMLM,
 
 
 
-GJetsMC= WJetsToLNuHT 
-            + ZJetsToNuNuHT
-            + SingleTop
-            + ZNuNuGJets
-            + ttgjets
-            + wgjets 
-            + GJet_Pt_EMEnriched
-            + GJetsHT
-            + QCDPtEMEnriched
-            + QCDPt
-            + QCDHT
+GJetsMC= WJetsToLNuHT + ZJetsToNuNuHT + SingleTop + ZNuNuGJets + ttgjets + wgjets
+GJetsMC +=GJet_Pt_EMEnriched + GJetsHT
+GJetsMC += QCDPtEMEnriched + QCDPt + QCDHT
 
 
 
