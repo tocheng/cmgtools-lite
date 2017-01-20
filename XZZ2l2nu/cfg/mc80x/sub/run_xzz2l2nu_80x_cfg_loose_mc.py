@@ -12,7 +12,7 @@ from PhysicsTools.HeppyCore.framework.heppy_loop import getHeppyOption
 from CMGTools.XZZ2l2nu.analyzers.coreXZZ_cff import *
 
 #-------- SAMPLES AND TRIGGERS -----------
-from CMGTools.XZZ2l2nu.samples.loadSamples80x import *
+from CMGTools.XZZ2l2nu.samples.loadSamples80xSummer16 import *
 selectedComponents = mcSamples+dataSamples
 
 triggerFlagsAna.triggerBits ={
@@ -20,6 +20,7 @@ triggerFlagsAna.triggerBits ={
     "MU":triggers_1mu_noniso,
     "MUv2":triggers_1mu_noniso_v2,
     "MU50":triggers_1mu_noniso_M50,
+    "TkMU50":triggers_1mu_noniso_tkM50,
     "ISOELE":triggers_1e,
     "ELE":triggers_1e_noniso,
     "ELEv2":triggers_1e_noniso_v2,
@@ -81,7 +82,6 @@ if test==1:
     #selectedComponents = [RSGravToZZToZZinv_narrow_800]
     #selectedComponents = [WJetsToLNu]
     #selectedComponents = [ZZTo2L2Nu]
-    #selectedComponents = [DYJetsToLL_M50, DYJetsToLL_M50_reHLT]
     #selectedComponents = [DYJetsToLL_M50_reHLT]
     #selectedComponents = [DYJetsToLL_M50]
     #selectedComponents = [DYJetsToLL_M50_MGMLM_Ext1]
@@ -89,18 +89,16 @@ if test==1:
     #selectedComponents = [DY1JetsToLL_M50_MGMLM, DY2JetsToLL_M50_MGMLM, DY3JetsToLL_M50_MGMLM, DY4JetsToLL_M50_MGMLM, DYBJetsToLL_M50_MGMLM]
     #selectedComponents = [BulkGravToZZToZlepZinv_narrow_1600] 
     #selectedComponents = signalSamples
-    selectedComponents = signalSamples+backgroundSamples[2:]
-    #selectedComponents = [WZTo1L1Nu2Q, WZTo2L2Q,WZTo3LNu_AMCNLO,TTZToLLNuNu,TTWJetsToLNu,ggZZTo2e2nu,ggZZTo2mu2nu,]
+    #selectedComponents = signalSamples+backgroundSamples[4:]
     #selectedComponents = backgroundSamples[1:4]
     #selectedComponents = [TTTo2L2Nu]
     #selectedComponents = [ZZTo2L2Nu]
     #selectedComponents = [BulkGravToZZ_narrow_800]
-    #selectedComponents = [BulkGravToZZToZlepZhad_narrow_800]
+    selectedComponents = [BulkGravToZZToZlepZinv_narrow_800]
     for c in selectedComponents:
-        #c.files = c.files[:1]
-        c.splitFactor = (len(c.files))
-        #c.splitFactor = (len(c.files)/5 if len(c.files)>1 else 1)
-        #c.splitFactor = 1
+        c.files = c.files[:1]
+        #c.splitFactor = (len(c.files)/10 if len(c.files)>10 else 1)
+        c.splitFactor = 1
         #c.triggers=triggers_1mu_noniso
         #c.triggers=triggers_1e_noniso
 
