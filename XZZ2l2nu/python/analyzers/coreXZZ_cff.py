@@ -112,6 +112,7 @@ multtrg = cfg.Analyzer(
         'HLT_Ele115_CaloIdVT_GsfTrkIdT',
         'HLT_Mu45_eta2p1',
         'HLT_Mu50',
+        'HLT_TkMu50',
         'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ',
         'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ',
         'HLT_Ele23_WPLoose_Gsf',
