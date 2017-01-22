@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-runOnData=False
+runOnData=True
 
 process = cms.Process("NEW")
 
