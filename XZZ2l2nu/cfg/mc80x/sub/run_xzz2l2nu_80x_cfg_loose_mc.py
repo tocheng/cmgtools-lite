@@ -94,11 +94,16 @@ if test==1:
     #selectedComponents = [TTTo2L2Nu]
     #selectedComponents = [ZZTo2L2Nu]
     #selectedComponents = [BulkGravToZZ_narrow_800]
-    selectedComponents = [BulkGravToZZToZlepZinv_narrow_800]
+    #selectedComponents = [BulkGravToZZToZlepZinv_narrow_800]
+#    selectedComponents = [DYJetsToLL_M50_MGMLM_Ext1,]
+#    selectedComponents = [WJetsToLNu,WWTo2L2Nu,WWToLNuQQ,WWToLNuQQ_Ext1,WZTo1L1Nu2Q,WZTo2L2Q,WZTo3LNu,]
+#    selectedComponents = [TTTo2L2Nu_noSC,TTTo2L2Nu_forTTH,TTZToLLNuNu,TTWJetsToLNu_ext1,TTWJetsToLNu_ext2,]
+#    selectedComponents = [ZZTo4L,ZZTo2L2Q,ggZZTo2e2nu,ggZZTo2mu2nu,]
+    selectedComponents = extraBackgroundMC
     for c in selectedComponents:
-        c.files = c.files[:1]
-        #c.splitFactor = (len(c.files)/10 if len(c.files)>10 else 1)
-        c.splitFactor = 1
+#        c.files = c.files[:1]
+        c.splitFactor = (len(c.files))
+#        c.splitFactor = 1
         #c.triggers=triggers_1mu_noniso
         #c.triggers=triggers_1e_noniso
 

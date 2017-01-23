@@ -30,7 +30,13 @@ class XZZMETAnalyzer( Analyzer ):
 
     def declareHandles(self):
         super(XZZMETAnalyzer, self).declareHandles()
+        # met filters
+        self.handles['BadPFMuonFilter'] = AutoHandle( 'BadPFMuonFilter', 'bool' )
+        self.handles['BadChargedCandidateFilter'] = AutoHandle( 'BadChargedCandidateFilter', 'bool' )
+
+        # met
         self.handles['met'] = AutoHandle( self.cfg_ana.metCollection, 'std::vector<pat::MET>' )
+
         if self.cfg_ana.doMetNoPU: 
             self.handles['nopumet'] = AutoHandle( self.cfg_ana.noPUMetCollection, 'std::vector<pat::MET>' )
         if self.cfg_ana.doTkMet:
@@ -288,6 +294,10 @@ class XZZMETAnalyzer( Analyzer ):
     def process(self, event):
         self.readCollections( event.input)
         self.counters.counter('events').inc('all events')
+
+        #met filters
+        event.BadPFMuonFilter = self.handles['BadPFMuonFilter'].product()[0]
+        event.BadChargedCandidateFilter = self.handles['BadChargedCandidateFilter'].product()[0]
 
         self.makeMETs(event)
 

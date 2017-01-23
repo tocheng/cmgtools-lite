@@ -1,7 +1,7 @@
 #!/bin/sh
 
-dir="gjetsmc11"
-#dir="dyjets"
+dir=$1
+#dir="mc_zz"
 #dir="othermc1"
 queue="1nd"
 

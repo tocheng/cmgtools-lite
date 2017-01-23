@@ -11,8 +11,11 @@ from PhysicsTools.Heppy.physicsutils.ElectronCalibrator import Run2ElectronCalib
 from PhysicsTools.HeppyCore.utils.deltar import * 
 from PhysicsTools.Heppy.physicsutils.genutils import *
 import ROOT
-
 from ROOT import heppy
+
+# bad muon tagger
+from RecoMET.METFilters.badGlobalMuonTaggerFWLite import *
+
 cmgMuonCleanerBySegments = heppy.CMGMuonCleanerBySegmentsAlgo()
 
 class XZZLeptonAnalyzer( Analyzer ):
@@ -177,8 +180,31 @@ class XZZLeptonAnalyzer( Analyzer ):
         """
                make a list of all muons, and apply basic corrections to them
         """
+
+
         allmuons = map( Muon, self.handles['muons'].product() )
+        allmuons0 = self.handles['muons'].product() 
  
+        # tag bad muons
+        badGlobalMuonTagger = BadGlobalMuonTagger(True,20.0)
+        
+        # bad muons
+        badMuons = badGlobalMuonTagger.badMuons(allmuons0,event.goodVertices)
+
+        # flag out
+        for mu in allmuons: 
+            if mu.physObj in badMuons: 
+                mu.isBadMuon = 1
+                #debug
+                print "bad muon pt=",mu.pt(),",eta=",mu.eta(),",phi=",mu.phi()
+            else:
+                mu.isBadMuon = 0
+
+        # debug
+        if len(badMuons)>0: 
+            print "Have",len(badMuons),"bad muons"
+
+
         # set options for muons to use default pt or TuneP pt
         for mu in allmuons: mu.setMuonUseTuneP(self.muonUseTuneP)
         

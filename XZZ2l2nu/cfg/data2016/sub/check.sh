@@ -9,10 +9,12 @@
 # privide chunks running directory, 
 # and directory to copy jobs out
 
-#dir=dt_emu_rereco_resub
-dir=gjetsdt_resub
-#dir=dtnew
-out=/data2/XZZ2/80X_20161029_Chunks
+dir=$1
+#dir=dt_b2h_mu_d
+#dir=dt_b2h_mu_c
+#dir=dt_b2h_mu
+#dir=gjetsdt_resub
+out=/data2/XZZ2/80X_20170122_Chunks
 
 mkdir -p $out
 
@@ -47,9 +49,9 @@ do
     echo "- job is done correctly with ${n1} root files and ${n2} pck files."
     echo "  - copy out and delete .. "
     echo " > rsync -var $job $out/$dir/"
-    rsync -var $job $out/$dir/
-    echo " > rm -rf $job"
-    rm -rf $job
+    rsync -var $job $out/$dir/ && rm -rf $job &
+    #echo " > rm -rf $job"
+    #rm -rf $job
   else
     echo "- job is not finished or has problem to be resubmitted .. with ${n1} root files and ${n2} pck files. "
   fi

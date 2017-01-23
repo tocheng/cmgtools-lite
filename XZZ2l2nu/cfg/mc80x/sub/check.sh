@@ -9,17 +9,11 @@
 # privide chunks running directory, 
 # and directory to copy jobs out
 
-dir=gjetsmc11
-#dir=dyjets
-#dir=dyjets1
-#dir=othermc1
-#dir=othermc2
-#dir=othermc3
-out=/data2/XZZ2/80X_20161029_Chunks
-#out=/data2/XZZ2/80X_20161018_Chunks
-#out=/home/heli/80X_20160825_Chunks
-#out=/data2/XZZ2/80X_20160825_Chunks
-#out=/data2/XZZ2/80X_20161006_Chunks
+dir=$1
+#dir=mc_z
+#dir=mc_zjet
+#dir=mc_zz1
+out=/data2/XZZ2/80X_20170122_Chunks
 
 mkdir -p $out
 

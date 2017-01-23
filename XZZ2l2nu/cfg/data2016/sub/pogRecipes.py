@@ -32,13 +32,14 @@ process.options = cms.untracked.PSet(
 
 # How many events to process
 process.maxEvents = cms.untracked.PSet( 
-   input = cms.untracked.int32(100)
+   input = cms.untracked.int32(10)
 )
 
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        'root://eoscms.cern.ch//eos/cms/store/mc/RunIISpring16MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/00000/02404626-C64D-E611-9744-485B39897231.root'
+#        'root://eoscms.cern.ch//eos/cms/store/mc/RunIISpring16MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/00000/02404626-C64D-E611-9744-485B39897231.root'
+         'root://eoscms.cern.ch//eos/cms/store/mc/RunIISummer16MiniAODv2/BulkGravToZZToZlepZinv_narrow_M-1000_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/80000/98AD845E-23B7-E611-B336-141877637B68.root'
     )
 )
 
@@ -48,7 +49,9 @@ process.OUT = cms.OutputModule("PoolOutputModule",
                 'keep *_slimmedMETs_*_NEW',
                 'keep *_TriggerResults_*_NEW',
                 'keep *_slimmedElectrons_*_NEW',
-                'keep *_slimmedPhotons_*_NEW'
+                'keep *_slimmedPhotons_*_NEW',
+                'keep *_BadChargedCandidateFilter_*_*',
+                'keep *_BadPFMuonFilter_*_*',
     ])
 )
 
@@ -90,5 +93,15 @@ runMetCorAndUncFromMiniAOD(process,
 #process.p = cms.Path(process.fullPatMetSequence)
 
 
+# met filters
+process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
+process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
+process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
 
-process.endpath= cms.EndPath(process.OUT)
+process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
+process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
+process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+
+
+
+process.endpath= cms.EndPath(process.BadPFMuonFilter * process.BadChargedCandidateFilter * process.OUT)

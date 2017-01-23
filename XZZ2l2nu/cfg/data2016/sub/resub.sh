@@ -1,7 +1,8 @@
 #!/bin/sh
 
-dir="gjets_left"
-queue="1nd"
+dir=$1
+#dir="gjets_left"
+queue="2nd"
 
 # need to check your jobs with the expected n root files and n pck files
 # to verify if the job is finished sucessfully.

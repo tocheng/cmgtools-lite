@@ -20,6 +20,7 @@ triggerFlagsAna.triggerBits ={
     "MU":triggers_1mu_noniso,
     "MUv2":triggers_1mu_noniso_v2,
     "MU50":triggers_1mu_noniso_M50,
+    "TkMU50":triggers_1mu_noniso_tkM50,
     "ISOELE":triggers_1e,
     "ELE":triggers_1e_noniso,
     "ELEv2":triggers_1e_noniso_v2,
@@ -68,17 +69,9 @@ multiStateAna.processTypes = ['PhotonJets']
 multiStateAna.selectPhotonJets = (lambda x: x.leg1.pt()>20.0 and x.leg2.pt()>-0.0)
 vvSkimmer.required = ['PhotonJets']
 
-vvTreeProducer.globalVariables = [
-         NTupleVariable("nVert",  lambda ev: len(ev.goodVertices), int, help="Number of good vertices"), 
-         NTupleVariable("nVertAll",  lambda ev: len(ev.vertices), int, help="Number of good vertices"), 
-         NTupleVariable("vtx_z",  lambda ev: ev.goodVertices[0].z(), float, help="primary vertex z"),
-         NTupleVariable("rho", lambda ev: ev.rho , float),
-     ]
-vvTreeProducer.globalObjects =  {  }
-
 vvTreeProducer.collections = {
 	 "jets"       : NTupleCollection("jet",JetType,100, help="all jets in miniaod"),
-#         "selectedPhotons"       : NTupleCollection("photon",photonType,100, help="selected photons in miniaod"),
+         "selectedPhotons"       : NTupleCollection("photon",photonType,100, help="selected photons in miniaod"),
          "selectedLeptons" : NTupleCollection("lep",leptonType,10, help="selected leptons"),
          "PhotonJets"     : NTupleCollection("gjet",PhotonJetType ,100, help="photon and MET"),
      }
@@ -102,10 +95,39 @@ coreSequence = [
     eventFlagsAna,
     triggerFlagsAna,
 ]
-    
+multtrg.photonjet=True
+multtrg.HLTlist=[
+    "HLT_Photon22_R9Id90_HE10_IsoM_v",
+    "HLT_Photon30_R9Id90_HE10_IsoM_v",
+    "HLT_Photon36_R9Id90_HE10_IsoM_v",
+    "HLT_Photon50_R9Id90_HE10_IsoM_v",
+    "HLT_Photon75_R9Id90_HE10_IsoM_v",
+    "HLT_Photon90_R9Id90_HE10_IsoM_v",
+    "HLT_Photon120_R9Id90_HE10_IsoM_v",
+    "HLT_Photon165_R9Id90_HE10_IsoM_v",
+    ]    
+'''
+README
+
+The branch gjet_l1_trigerob_HLTbit in the output ntuple can be used to determin which HLT object could be matched with the photon. For example, "HLT_Photon50_R9Id90_HE10_IsoM" is the 3rd element in the list multtrg.HLTlist, then by doing "(gjet_l1_trigerob_HLTbit>>3)&1", one can tell if HLT_Photon50_R9Id90_HE10_IsoM is matched with the photon (1 for yes 0 for no)
+
+'''
+#for ihlt in multtrg.HLTlist:
+#    vvTreeProducer.globalVariables.append(
+#         NTupleVariable("PreScale"+ihlt[3:-2],  lambda ev: getattr(ev,ihlt+"PS"), int, help="Photon HLT prescale")
+#)
+vvTreeProducer.globalVariables.append(NTupleVariable("PreScale22",  lambda ev: getattr(ev,"HLT_Photon22_R9Id90_HE10_IsoM_vPS"), int, help="Photon HLT prescale"))
+vvTreeProducer.globalVariables.append(NTupleVariable("PreScale30",  lambda ev: getattr(ev,"HLT_Photon30_R9Id90_HE10_IsoM_vPS"), int, help="Photon HLT prescale"))
+vvTreeProducer.globalVariables.append(NTupleVariable("PreScale36",  lambda ev: getattr(ev,"HLT_Photon36_R9Id90_HE10_IsoM_vPS"), int, help="Photon HLT prescale"))
+vvTreeProducer.globalVariables.append(NTupleVariable("PreScale50",  lambda ev: getattr(ev,"HLT_Photon50_R9Id90_HE10_IsoM_vPS"), int, help="Photon HLT prescale"))
+vvTreeProducer.globalVariables.append(NTupleVariable("PreScale75",  lambda ev: getattr(ev,"HLT_Photon75_R9Id90_HE10_IsoM_vPS"), int, help="Photon HLT prescale"))
+vvTreeProducer.globalVariables.append(NTupleVariable("PreScale90",  lambda ev: getattr(ev,"HLT_Photon90_R9Id90_HE10_IsoM_vPS"), int, help="Photon HLT prescale"))
+vvTreeProducer.globalVariables.append(NTupleVariable("PreScale120",  lambda ev: getattr(ev,"HLT_Photon120_R9Id90_HE10_IsoM_vPS"), int, help="Photon HLT prescale"))
+vvTreeProducer.globalVariables.append(NTupleVariable("PreScale165",  lambda ev: getattr(ev,"HLT_Photon165_R9Id90_HE10_IsoM_vPS"), int, help="Photon HLT prescale"))
+
 #sequence = cfg.Sequence(coreSequence)
-sequence = cfg.Sequence(coreSequence+[vvSkimmer,vvTreeProducer])
-#sequence = cfg.Sequence(coreSequence+[vvSkimmer,multtrg,vvTreeProducer])
+#sequence = cfg.Sequence(coreSequence+[vvSkimmer,vvTreeProducer])
+sequence = cfg.Sequence(coreSequence+[vvSkimmer,multtrg,vvTreeProducer])
 #sequence = cfg.Sequence(coreSequence+[vvSkimmer,fullTreeProducer])
  
 
@@ -116,6 +138,10 @@ if test==1:
     #selectedComponents = dataSamples
     #selectedComponents = mcSamples
     #selectedComponents = SinglePhoton
+    #selectedComponents = SinglePhoton23Sep2016+[SinglePhoton_Run2016H_PromptReco_v1,SinglePhoton_Run2016H_PromptReco_v2]
+    #selectedComponents = SinglePhoton23Sep2016+[SinglePhoton_Run2016H_PromptReco_v2]
+    #selectedComponents = [SinglePhoton_Run2016C_23Sep2016]
+    #selectedComponents = [SinglePhoton_Run2016D_23Sep2016]
     #selectedComponents = [SinglePhoton_Run2016B_PromptReco,
     #                      SinglePhoton_Run2016B_PromptReco_v2,
     #                      SinglePhoton_Run2016C_PromptReco_v2,
@@ -125,8 +151,15 @@ if test==1:
     #                      SinglePhoton_Run2016G_PromptReco_v1,]
  
     #selectedComponents = [SinglePhoton_Run2016D_PromptReco_v2]
-    
-    selectedComponents = [SinglePhoton_Run2016H_PromptReco_v1, SinglePhoton_Run2016H_PromptReco_v2]
+    #selectedComponents = [SinglePhoton_Run2016B_23Sep2016, SinglePhoton_Run2016B_23Sep2016_v2,]
+    #selectedComponents = [SinglePhoton_Run2016C_23Sep2016,]
+    #selectedComponents = [SinglePhoton_Run2016D_23Sep2016,]
+    #selectedComponents = [SinglePhoton_Run2016E_23Sep2016,]
+    #selectedComponents = [SinglePhoton_Run2016F_23Sep2016,]
+    #selectedComponents = [SinglePhoton_Run2016G_23Sep2016,]
+    #selectedComponents = [SinglePhoton_Run2016H_PromptReco_v1, SinglePhoton_Run2016H_PromptReco_v2, SinglePhoton_Run2016H_PromptReco_v3]
+    #selectedComponents = [SinglePhoton_Run2016H_PromptReco_v2]
+    #selectedComponents = [SinglePhoton_Run2016H_PromptReco_v2, SinglePhoton_Run2016H_PromptReco_v3]
 
     #selectedComponents = [SinglePhoton_Run2016F_PromptReco_v1]
     #selectedComponents = [GJet_Pt_20toInf_DoubleEMEnriched]
@@ -147,9 +180,10 @@ if test==1:
     #selectedComponents = [BulkGravToZZ_narrow_800]
     #selectedComponents = [BulkGravToZZToZlepZhad_narrow_800]
     for c in selectedComponents:
-        c.files = c.files[3:100]
-        #c.splitFactor = (len(c.files)/5 if len(c.files)>5 else 1)
-        c.splitFactor = 1
+#        c.files = c.files[10:20]
+        #c.splitFactor = (len(c.files)/10 if len(c.files)>10 else 1)
+        c.splitFactor = len(c.files)
+#        c.splitFactor = 1
         #c.triggers=triggers_1mu_noniso
         #c.triggers=triggers_1e_noniso
 
@@ -165,16 +199,24 @@ output_service = cfg.Service(
     )
 outputService.append(output_service)
 
+from PhysicsTools.Heppy.utils.cmsswPreprocessor import CmsswPreprocessor
+preprocessor = CmsswPreprocessor("pogRecipes.py")
+
 from PhysicsTools.HeppyCore.framework.eventsfwlite import Events
-from CMGTools.TTHAnalysis.tools.EOSEventsWithDownload import EOSEventsWithDownload
-event_class = EOSEventsWithDownload
 event_class = Events
-if getHeppyOption("nofetch"):
-    event_class = Events
 config = cfg.Config( components = selectedComponents,
                      sequence = sequence,
                      services = [],
+                     preprocessor=preprocessor, #this would run cmsRun before running Heppy
                      events_class = event_class)
+
+# and the following runs the process directly if running as with python filename.py  
+if __name__ == '__main__':
+    from PhysicsTools.HeppyCore.framework.looper import Looper
+    looper = Looper( 'Loop', config, nPrint = 5,nEvents=300)
+    looper.loop()
+    looper.write()
+
 
 
 
