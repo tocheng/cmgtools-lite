@@ -132,10 +132,10 @@ if test==1:
 #            SingleMuon_Run2016H_PromptReco_v3,
 #            ]
     for c in selectedComponents:
-#        c.files = c.files[:2]
+        c.files = c.files[:2]
         #c.splitFactor = (len(c.files)/10 if len(c.files)>10 else 1)
-        c.splitFactor = (len(c.files))
-#        c.splitFactor = 1
+#        c.splitFactor = (len(c.files))
+        c.splitFactor = 1
         #c.triggers=triggers_1mu_noniso
         #c.triggers=triggers_1e_noniso
 

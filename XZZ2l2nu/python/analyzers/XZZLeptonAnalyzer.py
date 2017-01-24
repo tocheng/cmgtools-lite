@@ -189,11 +189,13 @@ class XZZLeptonAnalyzer( Analyzer ):
         badGlobalMuonTagger = BadGlobalMuonTagger(True,20.0)
         
         # bad muons
-        badMuons = badGlobalMuonTagger.badMuons(allmuons0,event.goodVertices)
+        badMuons0 = badGlobalMuonTagger.badMuons(allmuons0,event.goodVertices)
+        # store badMuons in event
+        event.badMuons = map( Muon, badMuons0 )
 
         # flag out
         for mu in allmuons: 
-            if mu.physObj in badMuons: 
+            if mu.physObj in badMuons0: 
                 mu.isBadMuon = 1
                 #debug
                 print "bad muon pt=",mu.pt(),",eta=",mu.eta(),",phi=",mu.phi()
@@ -201,9 +203,10 @@ class XZZLeptonAnalyzer( Analyzer ):
                 mu.isBadMuon = 0
 
         # debug
-        if len(badMuons)>0: 
-            print "Have",len(badMuons),"bad muons"
-
+        event.hasBadMuon=0
+        if len(badMuons0)>0: 
+            event.hasBadMuon=1
+            print "Have",len(badMuons0),"bad muons"
 
         # set options for muons to use default pt or TuneP pt
         for mu in allmuons: mu.setMuonUseTuneP(self.muonUseTuneP)
@@ -267,6 +270,10 @@ class XZZLeptonAnalyzer( Analyzer ):
             
         # Attach the vertex to them, for dxy/dz calculation
         for mu in allmuons:
+            mu.associatedVertex = event.goodVertices[0] if hasattr(event,"goodVertices") and len(event.goodVertices)>0 else event.vertices[0]
+
+        # also do this for bad muons
+        for mu in event.badMuons:
             mu.associatedVertex = event.goodVertices[0] if hasattr(event,"goodVertices") and len(event.goodVertices)>0 else event.vertices[0]
 
         # define muon id

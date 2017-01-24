@@ -74,8 +74,10 @@ vvTreeProducer = cfg.Analyzer(
          NTupleVariable("pdf_x1", lambda ev: ev.pdf_x1, float, mcOnly=True),
          NTupleVariable("pdf_x2", lambda ev: ev.pdf_x2, float, mcOnly=True),
          # met filters
-         NTupleVariable("Flag_BadPFMuonFilter", lambda ev: ev.BadPFMuonFilter if hasattr(ev, 'BadPFMuonFilter') else 0, int),
-         NTupleVariable("Flag_BadChargedCandidateFilter", lambda ev: ev.BadChargedCandidateFilter if hasattr(ev, 'BadChargedCandidateFilter') else 0, int),
+         NTupleVariable("Flag_BadPFMuonFilter", lambda ev: ev.BadPFMuonFilter if hasattr(ev, 'BadPFMuonFilter') else 1, int),
+         NTupleVariable("Flag_BadChargedCandidateFilter", lambda ev: ev.BadChargedCandidateFilter if hasattr(ev, 'BadChargedCandidateFilter') else 1, int),
+         # bad muon filter
+         NTupleVariable("Flag_hasBadMuon", lambda ev: ev.hasBadMuon if hasattr(ev, 'hasBadMuon') else 0, int),
          
      ],
 
@@ -92,6 +94,7 @@ vvTreeProducer = cfg.Analyzer(
          #"LL"  : NTupleCollection("Zll",LLType,5, help="Z to ll"),
          #"ElMu"  : NTupleCollection("elmu",LLType,5, help="electron - muon pair for non-resonant bkg"),
          "selectedLeptons" : NTupleCollection("lep",leptonType,100, help="selected leptons"),
+         "badMuons" : NTupleCollection("badmuon",leptonType,100, help="bad muons"),
          "genNeutrinos" : NTupleCollection("genNeu", genParticleType, 100, mcOnly=True, help="Generated neutrinos (e/mu) from W/Z decays"),
          "genLeptons" : NTupleCollection("genLep", genParticleType, 100, mcOnly=True, help="Generated leptons (e/mu) from W/Z decays"),
          "genLeptonsFsr" : NTupleCollection("genLepFsr", genParticleType, 100, mcOnly=True, help="Generated leptons (e/mu) from W/Z decays"),
