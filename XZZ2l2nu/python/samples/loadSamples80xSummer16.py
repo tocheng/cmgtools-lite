@@ -162,6 +162,9 @@ SingleMuon23Sep2016=[
             SingleMuon_Run2016E_23Sep2016,
             SingleMuon_Run2016F_23Sep2016,
             SingleMuon_Run2016G_23Sep2016,
+            SingleMuon_Run2016H_PromptReco_v1,
+            SingleMuon_Run2016H_PromptReco_v2,
+            SingleMuon_Run2016H_PromptReco_v3,
             ]
 SingleElectron23Sep2016=[
                 SingleElectron_Run2016B_23Sep2016,
@@ -171,6 +174,9 @@ SingleElectron23Sep2016=[
                 SingleElectron_Run2016E_23Sep2016,
                 SingleElectron_Run2016F_23Sep2016,
                 SingleElectron_Run2016G_23Sep2016,
+                SingleElectron_Run2016H_PromptReco_v1,
+                SingleElectron_Run2016H_PromptReco_v2,
+                SingleElectron_Run2016H_PromptReco_v3,
                ]
 SinglePhoton23Sep2016=[
               SinglePhoton_Run2016B_23Sep2016,
@@ -180,6 +186,9 @@ SinglePhoton23Sep2016=[
               SinglePhoton_Run2016E_23Sep2016,
               SinglePhoton_Run2016F_23Sep2016,
               SinglePhoton_Run2016G_23Sep2016,
+              SinglePhoton_Run2016H_PromptReco_v1,
+              SinglePhoton_Run2016H_PromptReco_v2,
+              SinglePhoton_Run2016H_PromptReco_v3,
              ]
 MuonEG23Sep2016=[
       MuonEG_Run2016B_23Sep2016,
@@ -189,6 +198,9 @@ MuonEG23Sep2016=[
       MuonEG_Run2016E_23Sep2016,
       MuonEG_Run2016F_23Sep2016,
       MuonEG_Run2016G_23Sep2016,
+      MuonEG_Run2016H_PromptReco_v1,
+      MuonEG_Run2016H_PromptReco_v2,
+      MuonEG_Run2016H_PromptReco_v3,
       ]
 
 MET23Sep2016=[
@@ -199,6 +211,9 @@ MET23Sep2016=[
       MET_Run2016E_23Sep2016,
       MET_Run2016F_23Sep2016,
       MET_Run2016G_23Sep2016,
+      MET_Run2016H_PromptReco_v1,
+      MET_Run2016H_PromptReco_v2,
+      MET_Run2016H_PromptReco_v3,
       ]
 
 Data23Sep2016 = SingleMuon23Sep2016+SingleElectron23Sep2016+SinglePhoton23Sep2016+MuonEG23Sep2016+MET23Sep2016

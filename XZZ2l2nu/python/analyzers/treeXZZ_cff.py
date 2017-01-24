@@ -56,12 +56,12 @@ vvTreeProducer = cfg.Analyzer(
      saveTLorentzVectors = False,  # can set to True to get also the TLorentzVectors, but trees will be bigger
      defaultFloatType = 'F', # use Float_t for floating point
      globalVariables = [
-         NTupleVariable("nLL",lambda ev: len(ev.LL) , int),      
+         #NTupleVariable("nLL",lambda ev: len(ev.LL) , int),      
          #NTupleVariable("LHEweight_original", lambda ev: ev.LHE_originalWeight if  hasattr(ev,'LHE_originalWeight') else  0, mcOnly=True, help="original LHE weight"), 
          #NTupleVariable("nElMu",lambda ev: len(ev.ElMu) , int),       
-         NTupleVariable("nLLNuNu",lambda ev: len(ev.LLNuNu) , int),       
+         #NTupleVariable("nLLNuNu",lambda ev: len(ev.LLNuNu) , int),       
          NTupleVariable("nVert",  lambda ev: len(ev.goodVertices), int, help="Number of good vertices"), 
-         #NTupleVariable("nVertAll",  lambda ev: len(ev.vertices), int, help="Number of good vertices"), 
+         NTupleVariable("nVertAll",  lambda ev: len(ev.vertices), int, help="Number of good vertices"), 
          NTupleVariable("vtx_x",  lambda ev: ev.goodVertices[0].x(), float, help="primary vertex x"), 
          NTupleVariable("vtx_y",  lambda ev: ev.goodVertices[0].y(), float, help="primary vertex y"), 
          NTupleVariable("vtx_z",  lambda ev: ev.goodVertices[0].z(), float, help="primary vertex z"), 
@@ -73,6 +73,12 @@ vvTreeProducer = cfg.Analyzer(
          NTupleVariable("lheNj", lambda ev: ev.lheNj, int, mcOnly=True),
          NTupleVariable("pdf_x1", lambda ev: ev.pdf_x1, float, mcOnly=True),
          NTupleVariable("pdf_x2", lambda ev: ev.pdf_x2, float, mcOnly=True),
+         # met filters
+         NTupleVariable("Flag_BadPFMuonFilter", lambda ev: ev.BadPFMuonFilter if hasattr(ev, 'BadPFMuonFilter') else 1, int),
+         NTupleVariable("Flag_BadChargedCandidateFilter", lambda ev: ev.BadChargedCandidateFilter if hasattr(ev, 'BadChargedCandidateFilter') else 1, int),
+         # bad muon filter
+         NTupleVariable("Flag_hasBadMuon", lambda ev: ev.hasBadMuon if hasattr(ev, 'hasBadMuon') else 0, int),
+         
      ],
 
      globalObjects =  {
@@ -88,6 +94,7 @@ vvTreeProducer = cfg.Analyzer(
          #"LL"  : NTupleCollection("Zll",LLType,5, help="Z to ll"),
          #"ElMu"  : NTupleCollection("elmu",LLType,5, help="electron - muon pair for non-resonant bkg"),
          "selectedLeptons" : NTupleCollection("lep",leptonType,100, help="selected leptons"),
+         "badMuons" : NTupleCollection("badmuon",leptonType,100, help="bad muons"),
          "genNeutrinos" : NTupleCollection("genNeu", genParticleType, 100, mcOnly=True, help="Generated neutrinos (e/mu) from W/Z decays"),
          "genLeptons" : NTupleCollection("genLep", genParticleType, 100, mcOnly=True, help="Generated leptons (e/mu) from W/Z decays"),
          "genLeptonsFsr" : NTupleCollection("genLepFsr", genParticleType, 100, mcOnly=True, help="Generated leptons (e/mu) from W/Z decays"),
