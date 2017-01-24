@@ -120,9 +120,9 @@ if test==1:
     #selectedComponents = [ZZTo2L2Nu]
     #selectedComponents = [BulkGravToZZ_narrow_800]
     #selectedComponents = [BulkGravToZZToZlepZhad_narrow_800]
-    #selectedComponents = SingleElectron23Sep2016
-    #selectedComponents = SingleMuon23Sep2016
-    selectedComponents = [SingleMuon_Run2016C_23Sep2016]
+#    selectedComponents = SingleElectron23Sep2016
+    selectedComponents = SingleMuon23Sep2016
+#    selectedComponents = [SingleMuon_Run2016C_23Sep2016]
 #    selectedComponents = [SingleMuon_Run2016D_23Sep2016]
 #    selectedComponents = [SingleMuon_Run2016E_23Sep2016]
 #    selectedComponents = [SingleMuon_Run2016F_23Sep2016]
@@ -132,10 +132,10 @@ if test==1:
 #            SingleMuon_Run2016H_PromptReco_v3,
 #            ]
     for c in selectedComponents:
-        c.files = c.files[:2]
+#        c.files = c.files[:2]
         #c.splitFactor = (len(c.files)/10 if len(c.files)>10 else 1)
-#        c.splitFactor = (len(c.files))
-        c.splitFactor = 1
+        c.splitFactor = (len(c.files))
+#        c.splitFactor = 1
         #c.triggers=triggers_1mu_noniso
         #c.triggers=triggers_1e_noniso
 
