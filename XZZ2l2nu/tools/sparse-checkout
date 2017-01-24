@@ -1,4 +1,5 @@
-/.gitignore/
+/.gitignore
+/DataFormats/PatCandidates/
 /EgammaAnalysis/ElectronTools/
 /KaMuCa/Calibration/
 /PhysicsTools/Heppy/
@@ -6,5 +7,5 @@
 /PhysicsTools/PatAlgos/
 /PhysicsTools/PatUtils/
 /RecoMET/METAlgorithms/
+/RecoMET/METFilters/
 /RecoMET/METProducers/
-/DataFormats/PatCandidates/
