@@ -74,6 +74,7 @@ vvTreeProducer.collections = {
          "selectedPhotons"       : NTupleCollection("photon",photonType,100, help="selected photons in miniaod"),
          "selectedLeptons" : NTupleCollection("lep",leptonType,10, help="selected leptons"),
          "PhotonJets"     : NTupleCollection("gjet",PhotonJetType ,100, help="photon and MET"),
+         "badMuons" : NTupleCollection("badmuon",leptonType,100, help="bad muons"),
      }
 
 
@@ -153,7 +154,7 @@ if test==1:
     #selectedComponents = [SinglePhoton_Run2016D_PromptReco_v2]
     #selectedComponents = [SinglePhoton_Run2016B_23Sep2016, SinglePhoton_Run2016B_23Sep2016_v2,]
     #selectedComponents = [SinglePhoton_Run2016C_23Sep2016,]
-    #selectedComponents = [SinglePhoton_Run2016D_23Sep2016,]
+    selectedComponents = [SinglePhoton_Run2016D_23Sep2016,]
     #selectedComponents = [SinglePhoton_Run2016E_23Sep2016,]
     #selectedComponents = [SinglePhoton_Run2016F_23Sep2016,]
     #selectedComponents = [SinglePhoton_Run2016G_23Sep2016,]
@@ -180,10 +181,10 @@ if test==1:
     #selectedComponents = [BulkGravToZZ_narrow_800]
     #selectedComponents = [BulkGravToZZToZlepZhad_narrow_800]
     for c in selectedComponents:
-#        c.files = c.files[10:20]
+        c.files = c.files[10:20]
         #c.splitFactor = (len(c.files)/10 if len(c.files)>10 else 1)
-        c.splitFactor = len(c.files)
-#        c.splitFactor = 1
+#        c.splitFactor = len(c.files)
+        c.splitFactor = 1
         #c.triggers=triggers_1mu_noniso
         #c.triggers=triggers_1e_noniso
 
