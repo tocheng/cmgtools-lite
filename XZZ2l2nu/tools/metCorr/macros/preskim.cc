@@ -162,6 +162,7 @@ int main(int argc, char** argv) {
   // add back jets info
   tree->SetBranchStatus("nlep", 1);
   tree->SetBranchStatus("njet", 1);
+  tree->SetBranchStatus("nbadmuon", 1);
 /*
   tree->SetBranchStatus("jet_rawPt",1);
   tree->SetBranchStatus("jet_eta",1);
@@ -184,25 +185,17 @@ int main(int argc, char** argv) {
 
   // remove other HLT only keep useful ones
   tree->SetBranchStatus("HLT_*", 0);
-  // if MC remove all HLT
-  if (isData){
-    tree->SetBranchStatus("HLT_MU", 1);
-    tree->SetBranchStatus("HLT_MU50", 1);
-    tree->SetBranchStatus("HLT_MUv2", 1);
-    tree->SetBranchStatus("HLT_ELE", 1);
-    tree->SetBranchStatus("HLT_ELE115", 1);
-    tree->SetBranchStatus("HLT_ELEv2", 1);
-  }
+  tree->SetBranchStatus("HLT_MU", 1);
+  tree->SetBranchStatus("HLT_MU50", 1);
+  tree->SetBranchStatus("HLT_TkMU50", 1);
+  tree->SetBranchStatus("HLT_ELE", 1);
+  tree->SetBranchStatus("HLT_ELE115", 1);
+
   // alias
   tree->SetAlias("muselec", "(abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13&&abs(llnunu_l1_l1_eta)<2.4&&abs(llnunu_l1_l2_eta)<2.4&&llnunu_l1_l1_pt>20&&llnunu_l1_l2_pt>20&&(llnunu_l1_l1_highPtID>0.99||llnunu_l1_l2_highPtID>0.99))");
   tree->SetAlias("elselec", "(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11&&abs(llnunu_l1_l1_eta)<2.5&&abs(llnunu_l1_l2_eta)<2.5&&llnunu_l1_l1_pt>20&&llnunu_l1_l2_pt>20)");
 
-  tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter)");
-  tree->SetAlias("hlt", "(HLT_MUv2||HLT_ELEv2)");
-
-  tree->SetAlias("muv0", "(hlt&&metfilter&&muselec)");
-  tree->SetAlias("elv0", "(hlt&&metfilter&&elselec)");
-  //tree->SetAlias("selecv0", "(hlt&&metfilter&&(muselec||elselec))");
+  tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter&&Flag_BadPFMuonFilter&&Flag_BadChargedCandidateFilter)");
   tree->SetAlias("selecv0", "(metfilter&&(muselec||elselec))");
 
   char ftmp1_name[1000];
@@ -212,6 +205,7 @@ int main(int argc, char** argv) {
 
   // remove further useless branches
   tree_tmp1->SetBranchStatus("Flag_*", 0);
+  tree_tmp1->SetBranchStatus("Flag_hasBadMuon", 1);
 
   if (isData) {
     tree_tmp1->SetBranchStatus("llnunu_l1_l1_hasgen", 0);
