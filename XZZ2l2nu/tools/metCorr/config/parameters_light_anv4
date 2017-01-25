@@ -37,7 +37,7 @@ n_test: -1
 #n_test: 100
 
 # n entries interval between which print once entry number
-n_interval: 100000
+n_interval: 10
 
 # tree branch config
 useLightTree: true
