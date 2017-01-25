@@ -89,6 +89,8 @@ int main(int argc, char** argv) {
   // prepare eff scale factors
   if (_addEffScale && (!_isData || _addEffScaleOnData) && !_doGJetsSkim ) prepareEffScale();
 
+  // prepare eff scale factor for emu
+  if (_addEMuTrgScale) prepareEmuTrgsf();
 
   // loop
   int n_pass = 0;
@@ -147,6 +149,9 @@ int main(int argc, char** argv) {
 
     // add eff scale factors
     if (_addEffScale && (!_isData || _addEffScaleOnData) && !_doGJetsSkim ) addEffScale();
+
+    // add eff scale factors for emu
+    if (_addEMuTrgScale) addEmuTrgsf();
 
     // add alternative MT due to MET unc NOT for data
     if (_doMTUnc ) doMTUnc();
@@ -223,6 +228,7 @@ void readConfigFile()
   // add PU weights
   //=========================
   _addPUWeights = parm.GetBool("addPUWeights", kTRUE);
+  _PUWeightProtectionCut = parm.GetDouble("PUWeightProtectionCut", 1000);
 
   if (_addPUWeights) {
     _PUTags = parm.GetVString("PUTags");
@@ -329,6 +335,14 @@ void readConfigFile()
     _EffScaleInputFileName_Trk_El = parm.GetString("EffScaleInputFileName_Trk_El", "data/eff/egammatracking.root");
     _EffScaleInputFileName_IdIso_Mu = parm.GetString("EffScaleInputFileName_IdIso_Mu", "data/eff/muon80x12p9.root");
     _EffScaleInputFileName_Trk_Mu = parm.GetString("EffScaleInputFileName_Trk_Mu", "data/eff/muontrackingsf.root");
+  }
+
+  //==============================================
+  // Add trigger efficiency scale factors for EMu
+  //==============================================  
+  _addEMuTrgScale = parm.GetBool("addEMuTrgScale", kFALSE);
+  
+  if (_addEMuTrgScale || _addEffScale){
     _EffScaleInputFileName_Trg_El = parm.GetString("EffScaleInputFileName_Trg_El", "data/eff/trigereff12p9.root");
     _EffScaleInputFileName_Trg_Mu = parm.GetString("EffScaleInputFileName_Trg_Mu", "data/eff/trigeff_mu.root");
   }
@@ -799,6 +813,8 @@ void addPUWeights()
   // for each puWeight, get the weight
   for (int i=0; i<(int)_PUTags.size(); i++){
     *(_PUWeights.at(i)) = _PUHists.at(i)->GetBinContent(_PUHists.at(i)->FindBin(_nTrueInt));
+    // protect over big PU weight
+    if ( *(_PUWeights.at(i))>_PUWeightProtectionCut ) *(_PUWeights.at(i)) = 1.0; 
   }
 }
 
@@ -2357,6 +2373,177 @@ void addEffScale()
 
 
   }
+
+}
+
+
+// prepare eff sf for emu
+void prepareEmuTrgsf()
+{
+  _tree_out->Branch("etrgsf", &_etrgsf, "etrgsf/F");
+  _tree_out->Branch("etrgsf_err", &_etrgsf_err, "etrgsf_err/F");
+  _tree_out->Branch("etrgsf_up", &_etrgsf_up, "etrgsf_up/F");
+  _tree_out->Branch("etrgsf_dn", &_etrgsf_dn, "etrgsf_dn/F");
+  _tree_out->Branch("mtrgsf", &_mtrgsf, "mtrgsf/F");
+  _tree_out->Branch("mtrgsf_err", &_mtrgsf_err, "mtrgsf_err/F");
+  _tree_out->Branch("mtrgsf_up", &_mtrgsf_up, "mtrgsf_up/F");
+  _tree_out->Branch("mtrgsf_dn", &_mtrgsf_dn, "mtrgsf_dn/F");
+  _file_trg_el = TFile::Open(_EffScaleInputFileName_Trg_El.c_str());
+  _h_sf_trg_el_l1=(TH2D*)_file_trg_el->Get("ell1pteta");
+  _file_trg_mu = TFile::Open(_EffScaleInputFileName_Trg_Mu.c_str());
+  _h_eff_trg_mu_l1_tot = (TH2D*)_file_trg_mu->Get("htrg_l1_tot");
+  _h_eff_trg_mu_l2_tot = (TH2D*)_file_trg_mu->Get("htrg_l2_tot");
+  _h_eff_trg_mu_l1_l1p = (TH2D*)_file_trg_mu->Get("htrg_l1_l1p");
+  _h_eff_trg_mu_l2_l1p = (TH2D*)_file_trg_mu->Get("htrg_l2_l1p");
+  _h_eff_trg_mu_l1_l1f = (TH2D*)_file_trg_mu->Get("htrg_l1_l1f");
+  _h_eff_trg_mu_l2_l1f = (TH2D*)_file_trg_mu->Get("htrg_l2_l1f");
+  _h_eff_trg_mu_l1_l1pl2f = (TH2D*)_file_trg_mu->Get("htrg_l1_l1pl2f");
+  _h_eff_trg_mu_l1_l1pl2p = (TH2D*)_file_trg_mu->Get("htrg_l1_l1pl2p");
+  _h_eff_trg_mu_l1_l1fl2p = (TH2D*)_file_trg_mu->Get("htrg_l1_l1fl2p");
+  _h_eff_trg_mu_l2_l1pl2f = (TH2D*)_file_trg_mu->Get("htrg_l2_l1pl2f");
+  _h_eff_trg_mu_l2_l1pl2p = (TH2D*)_file_trg_mu->Get("htrg_l2_l1pl2p");
+  _h_eff_trg_mu_l2_l1fl2p = (TH2D*)_file_trg_mu->Get("htrg_l2_l1fl2p");
+
+  _NPtBins_eff_trg_mu = _h_eff_trg_mu_l2_tot->GetNbinsX();
+  _NEtaBins_eff_trg_mu = _h_eff_trg_mu_l2_tot->GetNbinsY();
+  _N_eff_trg_mu_tot = _h_eff_trg_mu_l2_tot->IntegralAndError(Int_t(1), _NPtBins_eff_trg_mu, Int_t(1), _NEtaBins_eff_trg_mu, _N_eff_trg_mu_tot_err);
+  _N_eff_trg_mu_l1p = _h_eff_trg_mu_l2_l1p->IntegralAndError(Int_t(1), _NPtBins_eff_trg_mu, Int_t(1), _NEtaBins_eff_trg_mu, _N_eff_trg_mu_l1p_err);
+  _N_eff_trg_mu_l1f = _h_eff_trg_mu_l2_l1f->IntegralAndError(Int_t(1), _NPtBins_eff_trg_mu, Int_t(1), _NEtaBins_eff_trg_mu, _N_eff_trg_mu_l1f_err);
+  _N_eff_trg_mu_l1pl2f = _h_eff_trg_mu_l2_l1pl2f->IntegralAndError(Int_t(1), _NPtBins_eff_trg_mu, Int_t(1), _NEtaBins_eff_trg_mu, _N_eff_trg_mu_l1pl2f_err);
+  _N_eff_trg_mu_l1pl2p = _h_eff_trg_mu_l2_l1pl2p->IntegralAndError(Int_t(1), _NPtBins_eff_trg_mu, Int_t(1), _NEtaBins_eff_trg_mu, _N_eff_trg_mu_l1pl2p_err);
+  _N_eff_trg_mu_l1fl2p = _h_eff_trg_mu_l2_l1fl2p->IntegralAndError(Int_t(1), _NPtBins_eff_trg_mu, Int_t(1), _NEtaBins_eff_trg_mu, _N_eff_trg_mu_l1fl2p_err);
+
+  _h_eff_trg_mu_l1_tot_norm = (TH2D*)_h_eff_trg_mu_l1_tot->Clone("htrg_l1_tot_norm");
+  _h_eff_trg_mu_l2_tot_norm = (TH2D*)_h_eff_trg_mu_l2_tot->Clone("htrg_l2_tot_norm");
+  _h_eff_trg_mu_l1_l1p_norm = (TH2D*)_h_eff_trg_mu_l1_l1p->Clone("htrg_l1_l1p_norm");
+  _h_eff_trg_mu_l1_l1f_norm = (TH2D*)_h_eff_trg_mu_l1_l1f->Clone("htrg_l1_l1f_norm");
+  _h_eff_trg_mu_l2_l1p_norm = (TH2D*)_h_eff_trg_mu_l2_l1p->Clone("htrg_l2_l1p_norm");
+  _h_eff_trg_mu_l2_l1f_norm = (TH2D*)_h_eff_trg_mu_l2_l1f->Clone("htrg_l2_l1f_norm");
+  _h_eff_trg_mu_l1_l1pl2f_norm = (TH2D*)_h_eff_trg_mu_l1_l1pl2f->Clone("htrg_l1_l1pl2f_norm");
+  _h_eff_trg_mu_l1_l1pl2p_norm = (TH2D*)_h_eff_trg_mu_l1_l1pl2p->Clone("htrg_l1_l1pl2p_norm");
+  _h_eff_trg_mu_l1_l1fl2p_norm = (TH2D*)_h_eff_trg_mu_l1_l1fl2p->Clone("htrg_l1_l1fl2p_norm");
+  _h_eff_trg_mu_l2_l1pl2f_norm = (TH2D*)_h_eff_trg_mu_l2_l1pl2f->Clone("htrg_l2_l1pl2f_norm");
+  _h_eff_trg_mu_l2_l1pl2p_norm = (TH2D*)_h_eff_trg_mu_l2_l1pl2p->Clone("htrg_l2_l1pl2p_norm");
+  _h_eff_trg_mu_l2_l1fl2p_norm = (TH2D*)_h_eff_trg_mu_l2_l1fl2p->Clone("htrg_l2_l1fl2p_norm");
+
+ 
+  _h_eff_trg_mu_l1_tot_norm->Scale(1./_N_eff_trg_mu_tot);
+  _h_eff_trg_mu_l2_tot_norm->Scale(1./_N_eff_trg_mu_tot);
+  _h_eff_trg_mu_l1_l1p_norm->Scale(1./_N_eff_trg_mu_l1p);
+  _h_eff_trg_mu_l1_l1f_norm->Scale(1./_N_eff_trg_mu_l1f);
+  _h_eff_trg_mu_l2_l1p_norm->Scale(1./_N_eff_trg_mu_l1p);
+  _h_eff_trg_mu_l2_l1f_norm->Scale(1./_N_eff_trg_mu_l1f);
+  _h_eff_trg_mu_l1_l1pl2f_norm->Scale(1./_N_eff_trg_mu_l1pl2f);
+  _h_eff_trg_mu_l1_l1pl2p_norm->Scale(1./_N_eff_trg_mu_l1pl2p);
+  _h_eff_trg_mu_l1_l1fl2p_norm->Scale(1./_N_eff_trg_mu_l1fl2p);
+  _h_eff_trg_mu_l2_l1pl2f_norm->Scale(1./_N_eff_trg_mu_l1pl2f);
+  _h_eff_trg_mu_l2_l1pl2p_norm->Scale(1./_N_eff_trg_mu_l1pl2p);
+  _h_eff_trg_mu_l2_l1fl2p_norm->Scale(1./_N_eff_trg_mu_l1fl2p);
+
+  _h_eff_trg_mu_l1_l1p_norm_vs_tot    = (TH2D*)_h_eff_trg_mu_l1_l1p_norm->Clone("htrg_l1_l1p_norm_vs_tot");
+  _h_eff_trg_mu_l1_l1f_norm_vs_tot    = (TH2D*)_h_eff_trg_mu_l1_l1f_norm->Clone("htrg_l1_l1f_norm_vs_tot");
+  _h_eff_trg_mu_l2_l1p_norm_vs_tot    = (TH2D*)_h_eff_trg_mu_l2_l1p_norm->Clone("htrg_l2_l1p_norm_vs_tot");
+  _h_eff_trg_mu_l2_l1f_norm_vs_tot    = (TH2D*)_h_eff_trg_mu_l2_l1f_norm->Clone("htrg_l2_l1f_norm_vs_tot");
+  _h_eff_trg_mu_l1_l1pl2f_norm_vs_tot = (TH2D*)_h_eff_trg_mu_l1_l1pl2f_norm->Clone("htrg_l1_l1pl2f_norm_vs_tot");
+  _h_eff_trg_mu_l1_l1pl2p_norm_vs_tot = (TH2D*)_h_eff_trg_mu_l1_l1pl2p_norm->Clone("htrg_l1_l1pl2p_norm_vs_tot");
+  _h_eff_trg_mu_l1_l1fl2p_norm_vs_tot = (TH2D*)_h_eff_trg_mu_l1_l1fl2p_norm->Clone("htrg_l1_l1fl2p_norm_vs_tot");
+  _h_eff_trg_mu_l2_l1pl2f_norm_vs_tot = (TH2D*)_h_eff_trg_mu_l2_l1pl2f_norm->Clone("htrg_l2_l1pl2f_norm_vs_tot");
+  _h_eff_trg_mu_l2_l1pl2p_norm_vs_tot = (TH2D*)_h_eff_trg_mu_l2_l1pl2p_norm->Clone("htrg_l2_l1pl2p_norm_vs_tot");
+  _h_eff_trg_mu_l2_l1fl2p_norm_vs_tot = (TH2D*)_h_eff_trg_mu_l2_l1fl2p_norm->Clone("htrg_l2_l1fl2p_norm_vs_tot");
+  _h_eff_trg_mu_l1_l1pl2f_norm_vs_l1p = (TH2D*)_h_eff_trg_mu_l1_l1pl2f_norm->Clone("htrg_l1_l1pl2f_norm_vs_l1p");
+  _h_eff_trg_mu_l1_l1pl2p_norm_vs_l1p = (TH2D*)_h_eff_trg_mu_l1_l1pl2p_norm->Clone("htrg_l1_l1pl2p_norm_vs_l1p");
+  _h_eff_trg_mu_l1_l1fl2p_norm_vs_l1f = (TH2D*)_h_eff_trg_mu_l1_l1fl2p_norm->Clone("htrg_l1_l1fl2p_norm_vs_l1f");
+  _h_eff_trg_mu_l2_l1pl2f_norm_vs_l1p = (TH2D*)_h_eff_trg_mu_l2_l1pl2f_norm->Clone("htrg_l2_l1pl2f_norm_vs_l1p");
+  _h_eff_trg_mu_l2_l1pl2p_norm_vs_l1p = (TH2D*)_h_eff_trg_mu_l2_l1pl2p_norm->Clone("htrg_l2_l1pl2p_norm_vs_l1p");
+  _h_eff_trg_mu_l2_l1fl2p_norm_vs_l1f = (TH2D*)_h_eff_trg_mu_l2_l1fl2p_norm->Clone("htrg_l2_l1fl2p_norm_vs_l1f");
+
+  _h_eff_trg_mu_l1_l1p_norm_vs_tot->Divide(_h_eff_trg_mu_l1_tot_norm);
+  _h_eff_trg_mu_l1_l1f_norm_vs_tot->Divide(_h_eff_trg_mu_l1_tot_norm);
+  _h_eff_trg_mu_l2_l1p_norm_vs_tot->Divide(_h_eff_trg_mu_l2_tot_norm);
+  _h_eff_trg_mu_l2_l1f_norm_vs_tot->Divide(_h_eff_trg_mu_l2_tot_norm);
+  _h_eff_trg_mu_l1_l1pl2f_norm_vs_tot->Divide(_h_eff_trg_mu_l1_tot_norm);
+  _h_eff_trg_mu_l1_l1pl2p_norm_vs_tot->Divide(_h_eff_trg_mu_l1_tot_norm);
+  _h_eff_trg_mu_l1_l1fl2p_norm_vs_tot->Divide(_h_eff_trg_mu_l1_tot_norm);
+  _h_eff_trg_mu_l2_l1pl2f_norm_vs_tot->Divide(_h_eff_trg_mu_l2_tot_norm);
+  _h_eff_trg_mu_l2_l1pl2p_norm_vs_tot->Divide(_h_eff_trg_mu_l2_tot_norm);
+  _h_eff_trg_mu_l2_l1fl2p_norm_vs_tot->Divide(_h_eff_trg_mu_l2_tot_norm);
+  _h_eff_trg_mu_l1_l1pl2f_norm_vs_l1p->Divide(_h_eff_trg_mu_l1_l1p_norm);
+  _h_eff_trg_mu_l1_l1pl2p_norm_vs_l1p->Divide(_h_eff_trg_mu_l1_l1p_norm);
+  _h_eff_trg_mu_l1_l1fl2p_norm_vs_l1f->Divide(_h_eff_trg_mu_l1_l1f_norm);
+  _h_eff_trg_mu_l2_l1pl2f_norm_vs_l1p->Divide(_h_eff_trg_mu_l2_l1p_norm);
+  _h_eff_trg_mu_l2_l1pl2p_norm_vs_l1p->Divide(_h_eff_trg_mu_l2_l1p_norm);
+  _h_eff_trg_mu_l2_l1fl2p_norm_vs_l1f->Divide(_h_eff_trg_mu_l2_l1f_norm);
+}
+
+// add efficiency scale factors for emu
+void addEmuTrgsf()
+{
+      int trg_bin_l1 = _h_eff_trg_mu_l1_l1p_norm_vs_tot->FindBin(_llnunu_l1_l1_pt,fabs(_llnunu_l1_l1_eta));
+    int trg_bin_l2 = _h_eff_trg_mu_l2_l1pl2f_norm_vs_l1p->FindBin(_llnunu_l1_l2_pt,fabs(_llnunu_l1_l2_eta));
+    double trg_sc_l1_l1p_vs_tot = _h_eff_trg_mu_l1_l1p_norm_vs_tot->GetBinContent(trg_bin_l1);
+    double trg_sc_l2_l1pl2f_vs_l1p = _h_eff_trg_mu_l2_l1pl2f_norm_vs_l1p->GetBinContent(trg_bin_l2);
+    double trg_sc_l2_l1pl2p_vs_l1p = _h_eff_trg_mu_l2_l1pl2p_norm_vs_l1p->GetBinContent(trg_bin_l2);
+    double trg_sc_l2_l1fl2p_vs_tot = _h_eff_trg_mu_l2_l1fl2p_norm_vs_tot->GetBinContent(trg_bin_l2);
+    double trg_sc_l1_l1p_vs_tot_err = _h_eff_trg_mu_l1_l1p_norm_vs_tot->GetBinError(trg_bin_l1);
+    double trg_sc_l2_l1pl2f_vs_l1p_err = _h_eff_trg_mu_l2_l1pl2f_norm_vs_l1p->GetBinError(trg_bin_l2);
+    double trg_sc_l2_l1pl2p_vs_l1p_err = _h_eff_trg_mu_l2_l1pl2p_norm_vs_l1p->GetBinError(trg_bin_l2);
+    double trg_sc_l2_l1fl2p_vs_tot_err = _h_eff_trg_mu_l2_l1fl2p_norm_vs_tot->GetBinError(trg_bin_l2);
+
+    double trg_npass = _N_eff_trg_mu_l1pl2f*trg_sc_l1_l1p_vs_tot*trg_sc_l2_l1pl2f_vs_l1p
+                     + _N_eff_trg_mu_l1pl2p*trg_sc_l1_l1p_vs_tot*trg_sc_l2_l1pl2p_vs_l1p
+                     + _N_eff_trg_mu_l1fl2p*trg_sc_l2_l1fl2p_vs_tot
+                     ;
+    double trg_npass_err = pow(_N_eff_trg_mu_l1pl2f_err*trg_sc_l1_l1p_vs_tot*trg_sc_l2_l1pl2f_vs_l1p,2)
+                         + pow(_N_eff_trg_mu_l1pl2f*trg_sc_l1_l1p_vs_tot_err*trg_sc_l2_l1pl2f_vs_l1p,2)
+                         + pow(_N_eff_trg_mu_l1pl2f*trg_sc_l1_l1p_vs_tot*trg_sc_l2_l1pl2f_vs_l1p_err,2)
+                         + pow(_N_eff_trg_mu_l1pl2p_err*trg_sc_l1_l1p_vs_tot*trg_sc_l2_l1pl2p_vs_l1p,2)
+                         + pow(_N_eff_trg_mu_l1pl2p*trg_sc_l1_l1p_vs_tot_err*trg_sc_l2_l1pl2p_vs_l1p,2)
+                         + pow(_N_eff_trg_mu_l1pl2p*trg_sc_l1_l1p_vs_tot*trg_sc_l2_l1pl2p_vs_l1p_err,2)
+                         + pow(_N_eff_trg_mu_l1fl2p_err*trg_sc_l2_l1fl2p_vs_tot,2)
+                         + pow(_N_eff_trg_mu_l1fl2p*trg_sc_l2_l1fl2p_vs_tot_err,2)
+                         ;
+    trg_npass_err = sqrt(trg_npass_err);
+
+    double trg_nfail = _N_eff_trg_mu_tot-trg_npass;
+    double trg_nfail_err = sqrt(_N_eff_trg_mu_tot_err*_N_eff_trg_mu_tot_err
+                                 - _N_eff_trg_mu_l1pl2f_err*_N_eff_trg_mu_l1pl2f_err
+                                 - _N_eff_trg_mu_l1pl2p_err*_N_eff_trg_mu_l1pl2p_err
+                                 - _N_eff_trg_mu_l1fl2p_err*_N_eff_trg_mu_l1fl2p_err);
+
+    double trg_eff = trg_npass/(trg_npass+trg_nfail);
+    double trg_eff_err = (pow(trg_nfail*trg_npass_err,2)+pow(trg_npass*trg_nfail_err,2))/pow(trg_npass+trg_nfail,4);
+    trg_eff_err = sqrt(trg_eff_err);
+
+    double trg_eff_up = trg_eff+0.5*trg_eff_err;
+    double trg_eff_dn = trg_eff-0.5*trg_eff_err;
+
+    if (trg_eff>=1) trg_eff=1;
+    if (trg_eff<=0) trg_eff=0;
+    if (trg_eff_up>=1) trg_eff_up=1;
+    if (trg_eff_dn>=1) trg_eff_dn=1;
+    if (trg_eff_up<=0) trg_eff_up=0;
+    if (trg_eff_dn<=0) trg_eff_dn=0;
+    trg_eff_err = fabs(trg_eff_up-trg_eff_dn);
+
+    _mtrgsf = trg_eff;
+    _mtrgsf_err = trg_eff_err;
+    _mtrgsf_up = trg_eff_up;
+    _mtrgsf_dn = trg_eff_dn;
+
+    _etrgsf = _h_sf_trg_el_l1->GetBinContent(_h_sf_trg_el_l1->FindBin(_llnunu_l1_l1_pt,fabs(_llnunu_l1_l1_eta)))/100;
+    _etrgsf_err = _h_sf_trg_el_l1->GetBinError(_h_sf_trg_el_l1->FindBin(_llnunu_l1_l1_pt,fabs(_llnunu_l1_l1_eta)))/100;
+
+    _etrgsf_up = _etrgsf+0.5*_etrgsf_err;
+    _etrgsf_dn = _etrgsf-0.5*_etrgsf_err;
+    if (_etrgsf>=1) _etrgsf = 1;
+    if (_etrgsf<=0) _etrgsf = 0;
+    if (_etrgsf_up>=1) _etrgsf_up=1;
+    if (_etrgsf_up<=0) _etrgsf_up=0;
+    if (_etrgsf_dn>=1) _etrgsf_dn=1;
+    if (_etrgsf_dn<=0) _etrgsf_dn=0;
+
+    _etrgsf_err = fabs(_etrgsf_up-_etrgsf_dn);
+
 
 }
 
