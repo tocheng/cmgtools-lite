@@ -20,7 +20,7 @@
 #include "TGraphErrors.h"
 #include "TEntryList.h"
 #include "TLorentzVector.h"
-
+#include "TRandom3.h"
 
 // std
 #include <iostream>
@@ -78,6 +78,8 @@ bool _isZZ;
 // strings for temporary usage
 char name[3000], name1[3000], name2[3000];
 
+// random number
+TRandom3* _rand3;
 
 //======================================================
 // ╔═╗╔═╗╔╗╔╔═╗╦╔═╗  ╔═╗╔═╗╦═╗╔═╗╔╦╗╔═╗╔╦╗╔═╗╦═╗╔═╗
@@ -331,6 +333,8 @@ TGraphErrors* _gr_ratio_met_perp_sigma_dtmc[10];
 bool _addEffScale = true;
 bool _addEMuTrgScale = false;
 bool _addEffScaleOnData = false;
+// eff scale options
+std::string _EffScaleMCVersion = "80xSummer16";
 // Input files for:
 // - el id iso eff
 std::string _EffScaleInputFileName_IdIso_El = "data/eff/egammaEffi.txt_SF2D.root";
@@ -365,6 +369,16 @@ TH2F* _h_eff_trkhpt_mu_mc;
 TH2F* _h_eff_hpt_mu_dt;
 TH2F* _h_eff_hpt_mu_mc;
 TH2F* _h_sf_iso_mu;
+TH2F* _h_eff_trkhpt_mu_dt_1;
+TH2F* _h_eff_trkhpt_mu_mc_1;
+TH2F* _h_eff_hpt_mu_dt_1;
+TH2F* _h_eff_hpt_mu_mc_1;
+TH2F* _h_sf_iso_mu_1;
+TH2F* _h_eff_trkhpt_mu_dt_2;
+TH2F* _h_eff_trkhpt_mu_mc_2;
+TH2F* _h_eff_hpt_mu_dt_2;
+TH2F* _h_eff_hpt_mu_mc_2;
+TH2F* _h_sf_iso_mu_2;
 
 // electron trigger sf
 TFile* _file_trg_el;
