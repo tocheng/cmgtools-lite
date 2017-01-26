@@ -248,18 +248,29 @@ RecoilInputFileNameGJets_el:  data/recoil/SinglePhoton_Run2016B2H_ReReco_36p46_R
 addEffScale: true
 addEffScaleOnData: true
 addEMuTrgScale: false
+
+# Efficiency scale versions, can be 80xSummer16, 80xSpring16
+EffScaleMCVersion: 80xSummer16  
+
+#
+
 # input files
+# for 80xSpring16 MC
+#EffScaleInputFileName_IdIso_El: data/eff/egammaEffi.txt_SF2D.root
+#EffScaleInputFileName_Trk_El: data/eff/egammatracking.root
+#EffScaleInputFileName_IdIso_Mu: data/eff/muon80x12p9.root
+#EffScaleInputFileName_Trk_Mu: data/eff/muontrackingsf.root
+#EffScaleInputFileName_Trg_El: data/eff/eff_out_ell1pteta_36p46recalib.root
+#EffScaleInputFileName_Trg_Mu: data/eff/trigeff_mu_36p46.root
+
+# for 80xSummer16 MC
+EffScaleInputFileName_Trg_El: data/eff/eff_out_ell1pteta_36p46recalib.root
 EffScaleInputFileName_IdIso_El: data/eff/egammaEffi.txt_SF2D.root
 EffScaleInputFileName_Trk_El: data/eff/egammatracking.root
-EffScaleInputFileName_IdIso_Mu: data/eff/muon80x12p9.root
-EffScaleInputFileName_Trk_Mu: data/eff/muontrackingsf.root
-#EffScaleInputFileName_Trg_El: data/eff/trigereff_el_b2h33fbinv.root
-EffScaleInputFileName_Trg_El: data/eff/eff_out_ell1pteta_36p46recalib.root
-#EffScaleInputFileName_Trg_Mu: data/eff/trigeff_mu_datab2h33fbinv.root
-#EffScaleInputFileName_Trg_Mu: data/eff/trigeff_mu_36p46recalib.root
+
 EffScaleInputFileName_Trg_Mu: data/eff/trigeff_mu_36p46.root
-
-
+EffScaleInputFileName_IdIso_Mu: data/eff/muon_idiso_summer16.root
+EffScaleInputFileName_Trk_Mu: data/eff/muontrackingsf.root
 
 
 
