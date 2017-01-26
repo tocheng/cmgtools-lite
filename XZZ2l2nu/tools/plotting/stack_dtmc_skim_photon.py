@@ -79,7 +79,7 @@ if WtQCDToGJets:
 outdir='plots_ph_36p46'
 
 indir='/home/heli/XZZ/80X_20161029_GJets_light_Skim'
-lumi=36.46
+lumi=36.814
 sepSig=True
 doRatio=True
 Blind=options.Blind
