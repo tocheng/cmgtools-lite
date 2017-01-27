@@ -2131,7 +2131,7 @@ void prepareEffScale()
   _file_trg_mu = TFile::Open(_EffScaleInputFileName_Trg_Mu.c_str());
 
   // options
-//  if (_EffScaleMCVersion=="80xSpring16") {
+  if (_EffScaleMCVersion=="80xSpring16") {
     _h_eff_trg_mu_l1_tot = (TH2D*)_file_trg_mu->Get("htrg_l1_tot");
     _h_eff_trg_mu_l2_tot = (TH2D*)_file_trg_mu->Get("htrg_l2_tot");
     _h_eff_trg_mu_l1_l1p = (TH2D*)_file_trg_mu->Get("htrg_l1_l1p");
@@ -2215,11 +2215,17 @@ void prepareEffScale()
     _h_eff_trg_mu_l2_l1pl2p_norm_vs_l1p->Divide(_h_eff_trg_mu_l2_l1p_norm);
     _h_eff_trg_mu_l2_l1fl2p_norm_vs_l1f->Divide(_h_eff_trg_mu_l2_l1f_norm);
 
-//  }
-//  else if (_EffScaleMCVersion=="80xSummer16") {
-
-
-//  }
+  }
+  else if (_EffScaleMCVersion=="80xSummer16") {
+    _h_eff_trg_mu50_sf_1 = (TH2F*)_file_trg_mu->Get("h_trg_mu50_sf_1");
+    _h_eff_trg_mu50_sf_2 = (TH2F*)_file_trg_mu->Get("h_trg_mu50_sf_2");
+    _h_eff_trg_mu50_sf_3 = (TH2F*)_file_trg_mu->Get("h_trg_mu50_sf_3");
+    _h_eff_trg_mu50_sf_4 = (TH2F*)_file_trg_mu->Get("h_trg_mu50_sf_4");
+    _h_eff_trg_mu50tkmu50_sf_1 = (TH2F*)_file_trg_mu->Get("h_trg_mu50tkmu50_sf_1");
+    _h_eff_trg_mu50tkmu50_sf_2 = (TH2F*)_file_trg_mu->Get("h_trg_mu50tkmu50_sf_2");
+    _h_eff_trg_mu50tkmu50_sf_3 = (TH2F*)_file_trg_mu->Get("h_trg_mu50tkmu50_sf_3");
+    _h_eff_trg_mu50tkmu50_sf_4 = (TH2F*)_file_trg_mu->Get("h_trg_mu50tkmu50_sf_4");
+  }
 
 }
 
@@ -2396,22 +2402,23 @@ void addEffScale()
     _idisotrksf_dn = _idisotrksf-0.5*idisotrksf_err;
 
     // trigger
-    int trg_bin_l1 = _h_eff_trg_mu_l1_l1p_norm_vs_tot->FindBin(_llnunu_l1_l1_pt,fabs(_llnunu_l1_l1_eta));
-    int trg_bin_l2 = _h_eff_trg_mu_l2_l1pl2f_norm_vs_l1p->FindBin(_llnunu_l1_l2_pt,fabs(_llnunu_l1_l2_eta));
-    double trg_sc_l1_l1p_vs_tot = _h_eff_trg_mu_l1_l1p_norm_vs_tot->GetBinContent(trg_bin_l1);
-    double trg_sc_l2_l1pl2f_vs_l1p = _h_eff_trg_mu_l2_l1pl2f_norm_vs_l1p->GetBinContent(trg_bin_l2);
-    double trg_sc_l2_l1pl2p_vs_l1p = _h_eff_trg_mu_l2_l1pl2p_norm_vs_l1p->GetBinContent(trg_bin_l2);
-    double trg_sc_l2_l1fl2p_vs_tot = _h_eff_trg_mu_l2_l1fl2p_norm_vs_tot->GetBinContent(trg_bin_l2);
-    double trg_sc_l1_l1p_vs_tot_err = _h_eff_trg_mu_l1_l1p_norm_vs_tot->GetBinError(trg_bin_l1);
-    double trg_sc_l2_l1pl2f_vs_l1p_err = _h_eff_trg_mu_l2_l1pl2f_norm_vs_l1p->GetBinError(trg_bin_l2);
-    double trg_sc_l2_l1pl2p_vs_l1p_err = _h_eff_trg_mu_l2_l1pl2p_norm_vs_l1p->GetBinError(trg_bin_l2);
-    double trg_sc_l2_l1fl2p_vs_tot_err = _h_eff_trg_mu_l2_l1fl2p_norm_vs_tot->GetBinError(trg_bin_l2);
+    if (_EffScaleMCVersion=="80xSprint16") {
+      int trg_bin_l1 = _h_eff_trg_mu_l1_l1p_norm_vs_tot->FindBin(_llnunu_l1_l1_pt,fabs(_llnunu_l1_l1_eta));
+      int trg_bin_l2 = _h_eff_trg_mu_l2_l1pl2f_norm_vs_l1p->FindBin(_llnunu_l1_l2_pt,fabs(_llnunu_l1_l2_eta));
+      double trg_sc_l1_l1p_vs_tot = _h_eff_trg_mu_l1_l1p_norm_vs_tot->GetBinContent(trg_bin_l1);
+      double trg_sc_l2_l1pl2f_vs_l1p = _h_eff_trg_mu_l2_l1pl2f_norm_vs_l1p->GetBinContent(trg_bin_l2);
+      double trg_sc_l2_l1pl2p_vs_l1p = _h_eff_trg_mu_l2_l1pl2p_norm_vs_l1p->GetBinContent(trg_bin_l2);
+      double trg_sc_l2_l1fl2p_vs_tot = _h_eff_trg_mu_l2_l1fl2p_norm_vs_tot->GetBinContent(trg_bin_l2);
+      double trg_sc_l1_l1p_vs_tot_err = _h_eff_trg_mu_l1_l1p_norm_vs_tot->GetBinError(trg_bin_l1);
+      double trg_sc_l2_l1pl2f_vs_l1p_err = _h_eff_trg_mu_l2_l1pl2f_norm_vs_l1p->GetBinError(trg_bin_l2);
+      double trg_sc_l2_l1pl2p_vs_l1p_err = _h_eff_trg_mu_l2_l1pl2p_norm_vs_l1p->GetBinError(trg_bin_l2);
+      double trg_sc_l2_l1fl2p_vs_tot_err = _h_eff_trg_mu_l2_l1fl2p_norm_vs_tot->GetBinError(trg_bin_l2);
 
-    double trg_npass = _N_eff_trg_mu_l1pl2f*trg_sc_l1_l1p_vs_tot*trg_sc_l2_l1pl2f_vs_l1p
-                     + _N_eff_trg_mu_l1pl2p*trg_sc_l1_l1p_vs_tot*trg_sc_l2_l1pl2p_vs_l1p
-                     + _N_eff_trg_mu_l1fl2p*trg_sc_l2_l1fl2p_vs_tot
-                     ;
-    double trg_npass_err = pow(_N_eff_trg_mu_l1pl2f_err*trg_sc_l1_l1p_vs_tot*trg_sc_l2_l1pl2f_vs_l1p,2)
+      double trg_npass = _N_eff_trg_mu_l1pl2f*trg_sc_l1_l1p_vs_tot*trg_sc_l2_l1pl2f_vs_l1p
+                       + _N_eff_trg_mu_l1pl2p*trg_sc_l1_l1p_vs_tot*trg_sc_l2_l1pl2p_vs_l1p
+                       + _N_eff_trg_mu_l1fl2p*trg_sc_l2_l1fl2p_vs_tot
+                       ;
+      double trg_npass_err = pow(_N_eff_trg_mu_l1pl2f_err*trg_sc_l1_l1p_vs_tot*trg_sc_l2_l1pl2f_vs_l1p,2)
                          + pow(_N_eff_trg_mu_l1pl2f*trg_sc_l1_l1p_vs_tot_err*trg_sc_l2_l1pl2f_vs_l1p,2)
                          + pow(_N_eff_trg_mu_l1pl2f*trg_sc_l1_l1p_vs_tot*trg_sc_l2_l1pl2f_vs_l1p_err,2)
                          + pow(_N_eff_trg_mu_l1pl2p_err*trg_sc_l1_l1p_vs_tot*trg_sc_l2_l1pl2p_vs_l1p,2)
@@ -2420,33 +2427,39 @@ void addEffScale()
                          + pow(_N_eff_trg_mu_l1fl2p_err*trg_sc_l2_l1fl2p_vs_tot,2)
                          + pow(_N_eff_trg_mu_l1fl2p*trg_sc_l2_l1fl2p_vs_tot_err,2)
                          ;
-    trg_npass_err = sqrt(trg_npass_err);
+      trg_npass_err = sqrt(trg_npass_err);
 
-    double trg_nfail = _N_eff_trg_mu_tot-trg_npass;
-    double trg_nfail_err = sqrt(_N_eff_trg_mu_tot_err*_N_eff_trg_mu_tot_err
+      double trg_nfail = _N_eff_trg_mu_tot-trg_npass;
+      double trg_nfail_err = sqrt(_N_eff_trg_mu_tot_err*_N_eff_trg_mu_tot_err
                                  - _N_eff_trg_mu_l1pl2f_err*_N_eff_trg_mu_l1pl2f_err
                                  - _N_eff_trg_mu_l1pl2p_err*_N_eff_trg_mu_l1pl2p_err
                                  - _N_eff_trg_mu_l1fl2p_err*_N_eff_trg_mu_l1fl2p_err);
 
-    double trg_eff = trg_npass/(trg_npass+trg_nfail);
-    double trg_eff_err = (pow(trg_nfail*trg_npass_err,2)+pow(trg_npass*trg_nfail_err,2))/pow(trg_npass+trg_nfail,4);
-    trg_eff_err = sqrt(trg_eff_err);
+      double trg_eff = trg_npass/(trg_npass+trg_nfail);
+      double trg_eff_err = (pow(trg_nfail*trg_npass_err,2)+pow(trg_npass*trg_nfail_err,2))/pow(trg_npass+trg_nfail,4);
+      trg_eff_err = sqrt(trg_eff_err);
 
-    double trg_eff_up = trg_eff+0.5*trg_eff_err;
-    double trg_eff_dn = trg_eff-0.5*trg_eff_err;
+      double trg_eff_up = trg_eff+0.5*trg_eff_err;
+      double trg_eff_dn = trg_eff-0.5*trg_eff_err;
 
-    if (trg_eff>=1) trg_eff=1;
-    if (trg_eff<=0) trg_eff=0;
-    if (trg_eff_up>=1) trg_eff_up=1;
-    if (trg_eff_dn>=1) trg_eff_dn=1;
-    if (trg_eff_up<=0) trg_eff_up=0;
-    if (trg_eff_dn<=0) trg_eff_dn=0;
-    trg_eff_err = fabs(trg_eff_up-trg_eff_dn);
+      if (trg_eff>=1) trg_eff=1;
+      if (trg_eff<=0) trg_eff=0;
+      if (trg_eff_up>=1) trg_eff_up=1;
+      if (trg_eff_dn>=1) trg_eff_dn=1;
+      if (trg_eff_up<=0) trg_eff_up=0;
+      if (trg_eff_dn<=0) trg_eff_dn=0;
+      trg_eff_err = fabs(trg_eff_up-trg_eff_dn);
 
-    _trgsf = trg_eff;
-    _trgsf_err = trg_eff_err;
-    _trgsf_up = trg_eff_up;
-    _trgsf_dn = trg_eff_dn;
+      _trgsf = trg_eff;
+      _trgsf_err = trg_eff_err;
+      _trgsf_up = trg_eff_up;
+      _trgsf_dn = trg_eff_dn;
+    }
+    else if (_EffScaleMCVersion=="80xSummer16") {
+
+      _h_eff_trg_mu50_sf_1
+
+    }
 
   }
   // electron

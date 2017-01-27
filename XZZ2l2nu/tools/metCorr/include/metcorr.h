@@ -364,11 +364,13 @@ TH1F* _h_sf_trk_mu;
 
 // muon id iso sf
 TFile* _file_idiso_mu;
+// for Spring16
 TH2F* _h_eff_trkhpt_mu_dt;
 TH2F* _h_eff_trkhpt_mu_mc;
 TH2F* _h_eff_hpt_mu_dt;
 TH2F* _h_eff_hpt_mu_mc;
 TH2F* _h_sf_iso_mu;
+// for Summer16
 TH2F* _h_eff_trkhpt_mu_dt_1;
 TH2F* _h_eff_trkhpt_mu_mc_1;
 TH2F* _h_eff_hpt_mu_dt_1;
@@ -387,6 +389,7 @@ TH2D* _h_sf_trg_el_l1;
 
 // muon trigger sf
 TFile* _file_trg_mu;
+// for Spring16
 TH2D* _h_eff_trg_mu_l1_tot;
 TH2D* _h_eff_trg_mu_l2_tot;
 TH2D* _h_eff_trg_mu_l1_l1p;
@@ -441,8 +444,15 @@ TH2D* _h_eff_trg_mu_l1_l1fl2p_norm_vs_l1f;
 TH2D* _h_eff_trg_mu_l2_l1pl2f_norm_vs_l1p;
 TH2D* _h_eff_trg_mu_l2_l1pl2p_norm_vs_l1p;
 TH2D* _h_eff_trg_mu_l2_l1fl2p_norm_vs_l1f;
-
-
+// for Spring16
+TH2F* _h_eff_trg_mu50_sf_1;
+TH2F* _h_eff_trg_mu50_sf_2;
+TH2F* _h_eff_trg_mu50_sf_3;
+TH2F* _h_eff_trg_mu50_sf_4;
+TH2F* _h_eff_trg_mu50tkmu50_sf_1;
+TH2F* _h_eff_trg_mu50tkmu50_sf_2;
+TH2F* _h_eff_trg_mu50tkmu50_sf_3;
+TH2F* _h_eff_trg_mu50tkmu50_sf_4;
 
 
 //==================================================
