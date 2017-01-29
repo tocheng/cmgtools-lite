@@ -264,11 +264,11 @@ EffScaleMCVersion: 80xSummer16
 #EffScaleInputFileName_Trg_Mu: data/eff/trigeff_mu_36p46.root
 
 # for 80xSummer16 MC
-EffScaleInputFileName_Trg_El: data/eff/eff_out_ell1pteta_36p46recalib.root
-EffScaleInputFileName_IdIso_El: data/eff/egammaEffi.txt_SF2D.root
-EffScaleInputFileName_Trk_El: data/eff/egammatracking.root
+EffScaleInputFileName_Trg_El: data/eff/hlt115electron_2016fulleff_absetapt.root
+EffScaleInputFileName_IdIso_El: data/eff/egammaEffi_LooseIDISO_EGM2D.root
+EffScaleInputFileName_Trk_El: data/eff/egammaEffi_RECO_SF2D.root
 
-EffScaleInputFileName_Trg_Mu: data/eff/trigeff_mu_36p46.root
+EffScaleInputFileName_Trg_Mu: data/eff/muon_trg_summer16.root
 EffScaleInputFileName_IdIso_Mu: data/eff/muon_idiso_summer16.root
 EffScaleInputFileName_Trk_Mu: data/eff/muontrackingsf.root
 

@@ -2128,7 +2128,12 @@ void prepareEffScale()
 
   // electron trigger scale factors
   _file_trg_el = TFile::Open(_EffScaleInputFileName_Trg_El.c_str());
-  _h_sf_trg_el_l1=(TH2D*)_file_trg_el->Get("ell1pteta"); 
+  if (_EffScaleMCVersion=="80xSpring16") {
+    _h_sf_trg_el_l1=(TH2D*)_file_trg_el->Get("ell1pteta"); 
+  }
+  else {
+    _h_sf_trg_el_l1=(TH2D*)_file_trg_el->Get("scalefactor");
+  }
 
   // muon trigger scale factors
   _file_trg_mu = TFile::Open(_EffScaleInputFileName_Trg_Mu.c_str());
@@ -2400,14 +2405,21 @@ void addEffScale()
     _isosf_err = TMath::Power((TMath::Power(effdt1*errdt2,2) + TMath::Power(errdt1*effdt2,2)), .5);
 
     // tracking
-    effdt1 = _h_sf_trk_mu->GetBinContent(_h_sf_trk_mu->FindBin(_llnunu_l1_l1_eta));
-    effdt2 = _h_sf_trk_mu->GetBinContent(_h_sf_trk_mu->FindBin(_llnunu_l1_l2_eta));
-    errdt1 = _h_sf_trk_mu->GetBinError(_h_sf_trk_mu->FindBin(_llnunu_l1_l1_eta));
-    errdt2 = _h_sf_trk_mu->GetBinError(_h_sf_trk_mu->FindBin(_llnunu_l1_l2_eta));
-    _trksf = effdt1*effdt2;
-    _trksf_err = TMath::Power((TMath::Power(effdt1*errdt2,2) + TMath::Power(errdt1*effdt2,2)), .5);
-
-    // id, iso, tracking combined uncertainty up/down
+    if (_EffScaleMCVersion=="80xSpring16") {
+      effdt1 = _h_sf_trk_mu->GetBinContent(_h_sf_trk_mu->FindBin(_llnunu_l1_l1_eta));
+      effdt2 = _h_sf_trk_mu->GetBinContent(_h_sf_trk_mu->FindBin(_llnunu_l1_l2_eta));
+      errdt1 = _h_sf_trk_mu->GetBinError(_h_sf_trk_mu->FindBin(_llnunu_l1_l1_eta));
+      errdt2 = _h_sf_trk_mu->GetBinError(_h_sf_trk_mu->FindBin(_llnunu_l1_l2_eta));
+      _trksf = effdt1*effdt2;
+      _trksf_err = TMath::Power((TMath::Power(effdt1*errdt2,2) + TMath::Power(errdt1*effdt2,2)), .5);
+    }
+    else {
+      // since Summer16, tracking eff is included into id eff.
+      _trksf = 1.0;
+      _trksf_err = 0.0;
+    }
+    
+   // id, iso, tracking combined uncertainty up/down
     double idisotrksf_err = sqrt(_idsf_err*_idsf_err+_isosf_err*_isosf_err+_trksf_err*_trksf_err);
     _idisotrksf = _idsf*_isosf*_trksf;
     _idisotrksf_up = _idisotrksf+0.5*idisotrksf_err;
@@ -2617,13 +2629,20 @@ void addEffScale()
   else if (abs(_llnunu_l1_l1_pdgId)==11 && abs(_llnunu_l1_l2_pdgId)==11) {
 
     // id
+    double el_sf_ptmax=_h_sf_idiso_el->GetYaxis()->GetXmax();
     double effdt1 = 1.0;
-    if(_llnunu_l1_l1_pt<=200) {
+    if(_llnunu_l1_l1_pt<=el_sf_ptmax) {
       effdt1 = _h_sf_idiso_el->GetBinContent(_h_sf_idiso_el->FindBin(_llnunu_l1_l1_eSCeta,_llnunu_l1_l1_pt));
+    }
+    else {
+      effdt1 = _h_sf_idiso_el->GetBinContent(_h_sf_idiso_el->FindBin(_llnunu_l1_l1_eSCeta,el_sf_ptmax-0.1));
     }
     double effdt2 = 1.0;
     if(_llnunu_l1_l2_pt<=200) {
       effdt2 = _h_sf_idiso_el->GetBinContent(_h_sf_idiso_el->FindBin(_llnunu_l1_l2_eSCeta,_llnunu_l1_l2_pt));
+    }
+    else {
+      effdt2 = _h_sf_idiso_el->GetBinContent(_h_sf_idiso_el->FindBin(_llnunu_l1_l2_eSCeta,el_sf_ptmax-0.1));
     }
     double errdt1 = _h_sf_idiso_el->GetBinError(_h_sf_idiso_el->FindBin(_llnunu_l1_l1_eSCeta,_llnunu_l1_l1_pt));
     double errdt2 = _h_sf_idiso_el->GetBinError(_h_sf_idiso_el->FindBin(_llnunu_l1_l2_eSCeta,_llnunu_l1_l2_pt));
@@ -2650,8 +2669,19 @@ void addEffScale()
     _idisotrksf_dn = _idisotrksf-0.5*idisotrksf_err;
 
     // trigger
-    _trgsf = _h_sf_trg_el_l1->GetBinContent(_h_sf_trg_el_l1->FindBin(_llnunu_l1_l1_pt,fabs(_llnunu_l1_l1_eta)))/100;
-    _trgsf_err = _h_sf_trg_el_l1->GetBinError(_h_sf_trg_el_l1->FindBin(_llnunu_l1_l1_pt,fabs(_llnunu_l1_l1_eta)))/100;
+    if (_EffScaleMCVersion=="80xSprint16") {
+      _trgsf = _h_sf_trg_el_l1->GetBinContent(_h_sf_trg_el_l1->FindBin(_llnunu_l1_l1_pt,fabs(_llnunu_l1_l1_eta)))/100;
+      _trgsf_err = _h_sf_trg_el_l1->GetBinError(_h_sf_trg_el_l1->FindBin(_llnunu_l1_l1_pt,fabs(_llnunu_l1_l1_eta)))/100;
+    }
+    else {
+      double el_eta=fabs(_llnunu_l1_l1_eta);
+      double el_pt = _llnunu_l1_l1_pt;
+      if (el_eta>_h_sf_trg_el_l1->GetXaxis()->GetXmax()) el_eta = -0.1 + _h_sf_trg_el_l1->GetXaxis()->GetXmax();
+      if (el_pt>_h_sf_trg_el_l1->GetYaxis()->GetXmax()) el_pt = -0.1 + _h_sf_trg_el_l1->GetYaxis()->GetXmax();
+      if (el_pt<_h_sf_trg_el_l1->GetYaxis()->GetXmin()) el_pt = +0.1 + _h_sf_trg_el_l1->GetYaxis()->GetXmin();
+      _trgsf = _h_sf_trg_el_l1->GetBinContent(_h_sf_trg_el_l1->FindBin(el_pt, el_eta));
+      _trgsf_err = _h_sf_trg_el_l1->GetBinError(_h_sf_trg_el_l1->FindBin(el_pt, el_eta));
+    }
 
     _trgsf_up = _trgsf+0.5*_trgsf_err;
     _trgsf_dn = _trgsf-0.5*_trgsf_err;
