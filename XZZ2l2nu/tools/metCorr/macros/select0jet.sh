@@ -5,3 +5,7 @@
 # compile
 g++ select0jet.cc -o select0jet.exe `root-config --cflags` `root-config --libs`
 
+input=/home/heli/XZZ/80X_20170124_light/DYJetsToLL_M50_MGMLM_Ext1/vvTreeProducer/tree.root
+output=/home/heli/XZZ/80X_20170124_light/DY0JetsToLL_M50_MGMLM_Ext1/vvTreeProducer/tree.root
+
+./select0jet.exe $input $output

@@ -106,7 +106,7 @@ if doGMCPhPtScale:
 outdir='plots'
 
 indir='/home/heli/XZZ/80X_20161029_light_Skim/'
-lumi=36.4592
+lumi=36.814
 sepSig=True
 doRatio=True
 Blind=options.Blind

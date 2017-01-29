@@ -60,7 +60,7 @@ outdir='plots_gjets_36p46'
 
 indir='/datab/tocheng/XZZ/80X_20161029_light_Skim/'
 indirGJets='/datab/tocheng/XZZ/80X_20161029_GJets_light_Skim/'
-lumi=36.4592
+lumi=36.814
 sepSig=True
 doRatio=True
 Blind=options.Blind
