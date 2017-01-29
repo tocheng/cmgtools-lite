@@ -475,6 +475,7 @@ bool  prepareTrees()
     _tree_in->SetBranchAddress("llnunu_l1_l1_charge", &_llnunu_l1_l1_charge);
     _tree_in->SetBranchAddress("llnunu_l1_l1_ptErr", &_llnunu_l1_l1_ptErr);
     _tree_in->SetBranchAddress("llnunu_l1_l1_eSCeta", &_llnunu_l1_l1_eSCeta);
+    _tree_in->SetBranchAddress("llnunu_l1_l1_trigerob_HLTbit", &_llnunu_l1_l1_trigerob_HLTbit);
 
     _tree_in->SetBranchAddress("llnunu_l1_l2_pt", &_llnunu_l1_l2_pt);
     _tree_in->SetBranchAddress("llnunu_l1_l2_eta", &_llnunu_l1_l2_eta);
@@ -485,6 +486,7 @@ bool  prepareTrees()
     _tree_in->SetBranchAddress("llnunu_l1_l2_charge", &_llnunu_l1_l2_charge);
     _tree_in->SetBranchAddress("llnunu_l1_l2_ptErr", &_llnunu_l1_l2_ptErr);
     _tree_in->SetBranchAddress("llnunu_l1_l2_eSCeta", &_llnunu_l1_l2_eSCeta);
+    _tree_in->SetBranchAddress("llnunu_l1_l2_trigerob_HLTbit", &_llnunu_l1_l2_trigerob_HLTbit);
 
   }
 
@@ -2074,6 +2076,7 @@ void prepareEffScale()
 
   // needed branches 
   _tree_out->Branch("trgsf", &_trgsf, "trgsf/F");
+  //_tree_out->Branch("trgmu50tkmu50sf", &_trgmu50tkmu50sf, "trgmu50tkmu50sf/F");
   _tree_out->Branch("isosf", &_isosf, "isosf/F");
   _tree_out->Branch("idsf", &_idsf, "idsf/F");
   _tree_out->Branch("trksf", &_trksf, "trksf/F");
@@ -2217,14 +2220,23 @@ void prepareEffScale()
 
   }
   else if (_EffScaleMCVersion=="80xSummer16") {
-    _h_eff_trg_mu50_sf_1 = (TH2F*)_file_trg_mu->Get("h_trg_mu50_sf_1");
-    _h_eff_trg_mu50_sf_2 = (TH2F*)_file_trg_mu->Get("h_trg_mu50_sf_2");
-    _h_eff_trg_mu50_sf_3 = (TH2F*)_file_trg_mu->Get("h_trg_mu50_sf_3");
-    _h_eff_trg_mu50_sf_4 = (TH2F*)_file_trg_mu->Get("h_trg_mu50_sf_4");
-    _h_eff_trg_mu50tkmu50_sf_1 = (TH2F*)_file_trg_mu->Get("h_trg_mu50tkmu50_sf_1");
-    _h_eff_trg_mu50tkmu50_sf_2 = (TH2F*)_file_trg_mu->Get("h_trg_mu50tkmu50_sf_2");
-    _h_eff_trg_mu50tkmu50_sf_3 = (TH2F*)_file_trg_mu->Get("h_trg_mu50tkmu50_sf_3");
-    _h_eff_trg_mu50tkmu50_sf_4 = (TH2F*)_file_trg_mu->Get("h_trg_mu50tkmu50_sf_4");
+    _h_eff_trg_mu50_dt_1 = (TH2F*)_file_trg_mu->Get("h_eff_trg_mu50_dt_1");
+    _h_eff_trg_mu50_dt_2 = (TH2F*)_file_trg_mu->Get("h_eff_trg_mu50_dt_2");
+    _h_eff_trg_mu50_dt_3 = (TH2F*)_file_trg_mu->Get("h_eff_trg_mu50_dt_3");
+    _h_eff_trg_mu50_dt_4 = (TH2F*)_file_trg_mu->Get("h_eff_trg_mu50_dt_4");
+    _h_eff_trg_mu50_mc_1 = (TH2F*)_file_trg_mu->Get("h_eff_trg_mu50_mc_1");
+    _h_eff_trg_mu50_mc_2 = (TH2F*)_file_trg_mu->Get("h_eff_trg_mu50_mc_2");
+    _h_eff_trg_mu50_mc_3 = (TH2F*)_file_trg_mu->Get("h_eff_trg_mu50_mc_3");
+    _h_eff_trg_mu50_mc_4 = (TH2F*)_file_trg_mu->Get("h_eff_trg_mu50_mc_4");
+    _h_eff_trg_mu50tkmu50_dt_1 = (TH2F*)_file_trg_mu->Get("h_eff_trg_mu50tkmu50_dt_1");
+    _h_eff_trg_mu50tkmu50_dt_2 = (TH2F*)_file_trg_mu->Get("h_eff_trg_mu50tkmu50_dt_2");
+    _h_eff_trg_mu50tkmu50_dt_3 = (TH2F*)_file_trg_mu->Get("h_eff_trg_mu50tkmu50_dt_3");
+    _h_eff_trg_mu50tkmu50_dt_4 = (TH2F*)_file_trg_mu->Get("h_eff_trg_mu50tkmu50_dt_4");
+    _h_eff_trg_mu50tkmu50_mc_1 = (TH2F*)_file_trg_mu->Get("h_eff_trg_mu50tkmu50_mc_1");
+    _h_eff_trg_mu50tkmu50_mc_2 = (TH2F*)_file_trg_mu->Get("h_eff_trg_mu50tkmu50_mc_2");
+    _h_eff_trg_mu50tkmu50_mc_3 = (TH2F*)_file_trg_mu->Get("h_eff_trg_mu50tkmu50_mc_3");
+    _h_eff_trg_mu50tkmu50_mc_4 = (TH2F*)_file_trg_mu->Get("h_eff_trg_mu50tkmu50_mc_4");
+
   }
 
 }
@@ -2457,7 +2469,146 @@ void addEffScale()
     }
     else if (_EffScaleMCVersion=="80xSummer16") {
 
-      _h_eff_trg_mu50_sf_1
+      double eta1a = fabs(_llnunu_l1_l1_eta);
+      double pt1a = _llnunu_l1_l1_pt;
+      double eta2a = fabs(_llnunu_l1_l2_eta);
+      double pt2a = _llnunu_l1_l2_pt;
+
+      double eta1b = fabs(_llnunu_l1_l1_eta);
+      double pt1b = _llnunu_l1_l1_pt;
+      double eta2b = fabs(_llnunu_l1_l2_eta);
+      double pt2b = _llnunu_l1_l2_pt;
+
+      double eff1a_dt, err1a_dt, eff1a_mc, err1a_mc;
+      double eff2a_dt, err2a_dt, eff2a_mc, err2a_mc;
+      double eff1b_dt, err1b_dt, eff1b_mc, err1b_mc;
+      double eff2b_dt, err2b_dt, eff2b_mc, err2b_mc;
+
+
+      double rnd = _rand3->Rndm();
+
+      TH1F *h_effa_dt, *h_effa_mc, *h_effb_dt, * h_effb_mc;
+
+      if (rnd<=0.5/(0.5+17.0+3.0+16.0)) {
+        // for 2016 period1 0.5/fb, run B, including starkup problems, up to run 274094
+        h_effa_dt = (TH1F*)_h_eff_trg_mu50_dt_1;
+        h_effa_mc = (TH1F*)_h_eff_trg_mu50_mc_1;
+        h_effb_dt = (TH1F*)_h_eff_trg_mu50tkmu50_dt_1;
+        h_effb_mc = (TH1F*)_h_eff_trg_mu50tkmu50_mc_1;
+      }
+      else if (rnd>0.5/(0.5+17.0+3.0+16.0)&&rnd<=(0.5+17.0)/(0.5+17.0+3.0+16.0)) {
+        // for 2016 period2 17.0/fb, run BCDEF, until L1 EMTF fixed
+        h_effa_dt = (TH1F*)_h_eff_trg_mu50_dt_2;
+        h_effa_mc = (TH1F*)_h_eff_trg_mu50_mc_2;
+        h_effb_dt = (TH1F*)_h_eff_trg_mu50tkmu50_dt_2;
+        h_effb_mc = (TH1F*)_h_eff_trg_mu50tkmu50_mc_2;
+      }
+      else if (rnd>(0.5+17.0)/(0.5+17.0+3.0+16.0)&&rnd<=(0.5+17.0+3.0)/(0.5+17.0+3.0+16.0)) {
+        // for 2016 period3 3.0/fb, run F post L1 EMFT fix from Run 278167
+        h_effa_dt = (TH1F*)_h_eff_trg_mu50_dt_3;
+        h_effa_mc = (TH1F*)_h_eff_trg_mu50_mc_3;
+        h_effb_dt = (TH1F*)_h_eff_trg_mu50tkmu50_dt_3;
+        h_effb_mc = (TH1F*)_h_eff_trg_mu50tkmu50_mc_3;
+      } 
+      else {
+        // for 2016 period4 16.0/fb, run GH, post HIP fix
+        h_effa_dt = (TH1F*)_h_eff_trg_mu50_dt_4;
+        h_effa_mc = (TH1F*)_h_eff_trg_mu50_mc_4;
+        h_effb_dt = (TH1F*)_h_eff_trg_mu50tkmu50_dt_4;
+        h_effb_mc = (TH1F*)_h_eff_trg_mu50tkmu50_mc_4;
+      }    
+
+      // protection
+      if (eta1a<h_effa_dt->GetXaxis()->GetXmin()) eta1a =  0.1+h_effa_dt->GetXaxis()->GetXmin();
+      if (eta1a>h_effa_dt->GetXaxis()->GetXmax()) eta1a = -0.1+h_effa_dt->GetXaxis()->GetXmax();
+      if (pt1a<h_effa_dt->GetYaxis()->GetXmin()) pt1a =  0.1+h_effa_dt->GetYaxis()->GetXmin();
+      if (pt1a>h_effa_dt->GetYaxis()->GetXmax()) pt1a = -0.1+h_effa_dt->GetYaxis()->GetXmax();
+      if (eta1b<h_effb_dt->GetXaxis()->GetXmin()) eta1b =  0.1+h_effb_dt->GetXaxis()->GetXmin();
+      if (eta1b>h_effb_dt->GetXaxis()->GetXmax()) eta1b = -0.1+h_effb_dt->GetXaxis()->GetXmax();
+      if (pt1b<h_effb_dt->GetYaxis()->GetXmin()) pt1b =  0.1+h_effb_dt->GetYaxis()->GetXmin();
+      if (pt1b>h_effb_dt->GetYaxis()->GetXmax()) pt1b = -0.1+h_effb_dt->GetYaxis()->GetXmax();
+
+      // get eff
+      eff1a_dt = h_effa_dt->GetBinContent(h_effa_dt->FindBin(eta1a,pt1a));
+      eff1a_mc = h_effa_mc->GetBinContent(h_effa_mc->FindBin(eta1a,pt1a));
+      err1a_dt = h_effa_dt->GetBinError(h_effa_dt->FindBin(eta1a,pt1a));
+      err1a_mc = h_effa_mc->GetBinError(h_effa_mc->FindBin(eta1a,pt1a));
+      eff2a_dt = h_effa_dt->GetBinContent(h_effa_dt->FindBin(eta2a,pt2a));
+      eff2a_mc = h_effa_mc->GetBinContent(h_effa_mc->FindBin(eta2a,pt2a));
+      err2a_dt = h_effa_dt->GetBinError(h_effa_dt->FindBin(eta2a,pt2a));
+      err2a_mc = h_effa_mc->GetBinError(h_effa_mc->FindBin(eta2a,pt2a));      
+
+      eff1b_dt = h_effb_dt->GetBinContent(h_effb_dt->FindBin(eta1b,pt1b));
+      eff1b_mc = h_effb_mc->GetBinContent(h_effb_mc->FindBin(eta1b,pt1b));
+      err1b_dt = h_effb_dt->GetBinError(h_effb_dt->FindBin(eta1b,pt1b));
+      err1b_mc = h_effb_mc->GetBinError(h_effb_mc->FindBin(eta1b,pt1b));
+      eff2b_dt = h_effb_dt->GetBinContent(h_effb_dt->FindBin(eta2b,pt2b));
+      eff2b_mc = h_effb_mc->GetBinContent(h_effb_mc->FindBin(eta2b,pt2b));
+      err2b_dt = h_effb_dt->GetBinError(h_effb_dt->FindBin(eta2b,pt2b));
+      err2b_mc = h_effb_mc->GetBinError(h_effb_mc->FindBin(eta2b,pt2b));
+
+      // get eff/err
+      double effdt, effmc, errdt, errmc;
+/*
+      // mu50 only
+      if (_llnunu_l1_l1_trigerob_HLTbit>>3&1) {
+        // leading pass
+        effdt = eff1a_dt;
+        effmc = eff1a_mc;
+        errdt = err1a_dt;
+        errmc = err1a_mc;
+      }
+      else if (_llnunu_l1_l2_trigerob_HLTbit>>3&1) {
+        // subleading pass
+        effdt = eff2a_dt;
+        effmc = eff2a_mc;
+        errdt = err2a_dt;
+        errmc = err2a_mc;
+      }
+      else {
+        // no pass
+        effdt = 0;
+        effmc = 1;
+        errdt = 0;
+        effmc = 1;
+      }
+*/      
+      // if use mu50||tkmu50
+      if ((_llnunu_l1_l1_trigerob_HLTbit>>3&1)||(_llnunu_l1_l1_trigerob_HLTbit>>4&1)) {
+        // leading pass
+        effdt = eff1b_dt;
+        effmc = eff1b_mc;
+        errdt = err1b_dt;
+        errmc = err1b_mc;
+      }
+      else if ((_llnunu_l1_l2_trigerob_HLTbit>>3&1)||(_llnunu_l1_l2_trigerob_HLTbit>>4&1)) {
+        // subleading pass
+        effdt = eff2b_dt;
+        effmc = eff2b_mc;
+        errdt = err2b_dt;
+        errmc = err2b_mc;
+      }
+      else {
+        // no pass
+        effdt = 0;
+        effmc = 1;
+        errdt = 0;
+        effmc = 1;
+      }
+
+
+      if (effmc>0.0) {
+        _trgsf = effdt/effmc;
+        _trgsf_err = sqrt(effmc*effmc*errdt*errdt+effdt*effdt*errmc*errmc)/(effmc*effmc);
+      }
+      else {
+        _trgsf = 1.0;
+        _trgsf_err = 1.0;
+      } 
+
+      _trgsf_up = _trgsf+0.5*_trgsf_err;
+      _trgsf_dn = _trgsf-0.5*_trgsf_err;
+
 
     }
 
