@@ -118,7 +118,6 @@ UseMETFilter=True
 SignalAll1pb=True
 #puWeight='puWeightmoriondMC'
 puWeight='(1)' # temp turn off puWeight
-DataHLT=True
 k=1 # signal scale
 ZPtWeight="ZPtWeight"
 
@@ -210,6 +209,7 @@ elif cutChain=='nonreso_zptgt50_metlt20': cuts=cuts_nonreso_zptgt50_metlt20
 elif cutChain=='nonreso_zptgt50_metlt30': cuts=cuts_nonreso_zptgt50_metlt30
 elif cutChain=='nonreso_zptgt50_metlt50': cuts=cuts_nonreso_zptgt50_metlt50
 elif cutChain=='nonreso_zptgt50_metlt100': cuts=cuts_nonreso_zptgt50_metlt100
+elif cutChain=='SR': cuts=cuts_loose_zll_met50
 elif cutChain=='CR': cuts=cuts_CR
 elif cutChain=='CR1': cuts=cuts_CR1
 elif cutChain=='CR2': cuts=cuts_CR2
@@ -229,7 +229,7 @@ ROOT.gROOT.ProcessLine('.x tdrstyle.C')
 #######################
 #  VV Reso backgrounds
 #######################
-vvSamples = ['WZTo2L2Q','WZTo3LNu_AMCNLO',
+vvSamples = ['WZTo2L2Q','WZTo3LNu',
 'ZZTo2L2Nu',
 'ZZTo2L2Q','ZZTo4L',
 'ggZZTo2e2nu','ggZZTo2mu2nu',
@@ -243,9 +243,11 @@ for sample in vvSamples:
     vvPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
     vvPlotters[-1].addCorrectionFactor(lepsf, 'lepsf')
     vvPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
-    if sample == 'ZZTo2L2Nu' : vvPlotters[-1].addCorrectionFactor("(ZZEwkCorrWeight*ZZQcdCorrWeight*xsec)", 'nnlo')
-    if 'ggZZTo2' in sample: vvPlotters[-1].addCorrectionFactor('0.01898','xsec')
-    else: vvPlotters[-1].addCorrectionFactor('xsec','xsec')
+    vvPlotters[-1].addCorrectionFactor('xsec','xsec')
+    if sample == 'ZZTo2L2Nu' : vvPlotters[-1].addCorrectionFactor("(ZZEwkCorrWeight*ZZQcdCorrWeight)", 'nnlo')
+    vvPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
+    vvPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
+    vvPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
 
 VV = MergedPlotter(vvPlotters)
 VV.setFillProperties(1001,ROOT.kMagenta)
@@ -305,6 +307,9 @@ else:
         wwPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
         wwPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
         wwPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
+        wwPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
+        wwPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
+        wwPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
     
     WW = MergedPlotter(wwPlotters)
     WW.setFillProperties(1001,ROOT.kOrange)
@@ -319,6 +324,9 @@ else:
         ttPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
         ttPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
         ttPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
+        ttPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
+        ttPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
+        ttPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
     
     TT = MergedPlotter(ttPlotters)
     TT.setFillProperties(1001,ROOT.kAzure-9)
@@ -473,7 +481,7 @@ else:
 
     ### MC ZJets
     mczjetsSamples = [
-    'DYJetsToLL_M50_BIG_Rc36p46DtReCalib',
+    'DYJetsToLL_M50_MGMLM_BIG'
     ]
 
     mczjetsPlotters=[]
@@ -489,7 +497,9 @@ else:
         mczjetsPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
         mczjetsPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
         mczjetsPlotters[-1].addCorrectionFactor(zjets_scale,'zjets_scale')
-    
+        mczjetsPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
+        mczjetsPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
+        mczjetsPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT') 
 
     MCZJets = MergedPlotter(mczjetsPlotters)
     MCZJets.setFillProperties(1001,ROOT.kGreen+2)
@@ -595,7 +605,9 @@ for sample in sigSamples:
     sigPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
     sigPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
     sigPlotters[-1].setFillProperties(0,ROOT.kWhite)
-    # some plotting definition
+    sigPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
+    sigPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
+    sigPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
     sigPlotters[-1].setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
     sigPlotters[-1].setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
     sigPlotters[-1].setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
@@ -608,16 +620,15 @@ for sample in sigSamples:
 ##########################
 
 dataSamples = [
-#'SingleEMU_Run2016B2H_ReReco_36p46',
-'SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib',
+'SingleEMU_Run2016Full_ReReco_v1'
 ]
 
 dataPlotters=[]
 for sample in dataSamples:
     dataPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
-
-if DataHLT:
-    dataPlotters[0].addCorrectionFactor('(HLT_MUv2||HLT_ELEv2)','HLT')
+    dataPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
+    dataPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
+    dataPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
 
 
 Data = MergedPlotter(dataPlotters)
