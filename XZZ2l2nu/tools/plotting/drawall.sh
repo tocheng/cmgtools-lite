@@ -4,7 +4,7 @@
 #tag="MT_GJets2_BkgSub_Rc36p46DtReCalib_NonReso_"
 #tag="test_GJets2_BkgSub_Rc36p46DtReCalib_NonReso_"
 #tag="GJets2_BkgSub_Rc36p46DtReCalib_NonReso_"
-tag="test_"
+tag="test1_"
 #tag="testscale2_wjsub_"
 #tag="Test2_GJets_BkgSub_Rc36p46DtReCalib_NonReso_"
 #tag="Test2_GJets_BkgSub_Rc36p46DtReCalib_"
@@ -13,10 +13,13 @@ tag="test_"
 #tag="Test1_GJets_ResBos_BkgSub_Rc36p46wHLT_"
 #tag="Test1_GJets_ResBos_NoBkgSub_Rc36p46wHLT_"
 
-#channels="mu el"
-channels="el"
+channels="mu el"
+#channels="el"
 #channels="mu"
-cutChains="CR1"
+#cutChains="tight"
+#cutChains="tightzpt50"
+#cutChains="SR"
+cutChains="SR tightzpt50 tight CR1"
 #cutChains="CR1 CR2 CR3"
 #cutChains="CR2 CR3"
 #cutChains="tightzpt50 tightzpt100 tightzpt100met50"
@@ -63,9 +66,9 @@ do
 #      ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --dyGJets --muoneg --test &> ${logdir}/${tag}${cutChain}_${channel}.log &
 #      ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --dyGJets --muoneg --LogY  --test &> ${logdir}/${tag}${cutChain}_log_${channel}.log &
 
-#      ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel"  --LogY --test &> ${logdir}/${tag}${cutChain}_log_${channel}.log &
+      ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel"  --LogY --test &> ${logdir}/${tag}${cutChain}_log_${channel}.log &
 #       ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --muoneg  --LogY --test &> ${logdir}/${tag}${cutChain}_emu_log_${channel}.log &
-       ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --dyGJets  --muoneg --LogY --test &> ${logdir}/${tag}${cutChain}_emu_gjet_log_${channel}.log &
+#       ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --dyGJets  --muoneg --LogY --test &> ${logdir}/${tag}${cutChain}_emu_gjet_log_${channel}.log &
 #       ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --Blind --dyGJets  --muoneg --LogY --test &> ${logdir}/${tag}${cutChain}_emu_gjet_bld_log_${channel}.log &
 
    done

@@ -60,18 +60,18 @@ mc_scale='(1)'
 zjets_scale='(1)'
 
 if channel=='mu': 
-    mc_scale='(1.14905419293)'
+    mc_scale='(1.15458491817)'
     zjets_scale='(1.0)'
     #zjets_scale='(0.98418652884)'
 elif channel=='el': 
-    mc_scale='(1.13338415211)'
+    mc_scale='(1.22042610863)'
     zjets_scale='(1.0)'
 else: 
     mc_scale='(1.1484406619)'
     zjets_scale='(1)'
 
 # temp turn off mc_scale
-mc_scale="(1)"
+#mc_scale="(1)"
 
 # non reso alpha
 nonreso_alpha_el=1.0
@@ -108,7 +108,7 @@ if doGMCPhPtScale:
 
 outdir='plots'
 
-indir='/home/heli/XZZ/80X_20161029_light_Skim/'
+indir='/home/heli/XZZ/80X_20170124_light_Skim/'
 lumi=36.814
 sepSig=True
 doRatio=True
@@ -117,7 +117,7 @@ FakeData=False
 UseMETFilter=True
 SignalAll1pb=True
 #puWeight='puWeightmoriondMC'
-puWeight='(1)' # temp turn off puWeight
+puWeight='1' # temp turn off puWeight
 k=1 # signal scale
 ZPtWeight="ZPtWeight"
 
@@ -481,7 +481,8 @@ else:
 
     ### MC ZJets
     mczjetsSamples = [
-    'DYJetsToLL_M50_MGMLM_BIG'
+    #'DYJetsToLL_M50_MGMLM_BIG',
+    'DY0JetsToLL_M50_MGMLM_Ext1', 'DY1JetsToLL_M50_MGMLM', 'DY2JetsToLL_M50_MGMLM', 'DY3JetsToLL_M50_MGMLM', 'DY4JetsToLL_M50_MGMLM', 
     ]
 
     mczjetsPlotters=[]
@@ -491,6 +492,7 @@ else:
         #mczjetsPlotters[-1].addCorrectionFactor('(1)','norm')
         mczjetsPlotters[-1].addCorrectionFactor(ZPtWeight,'ZPtWeight')
         mczjetsPlotters[-1].addCorrectionFactor('xsec','xsec')
+        if 'DY0JetsToLL' not in sample: mczjetsPlotters[-1].addCorrectionFactor('(1.23531)', 'nlokfactor')
         mczjetsPlotters[-1].addCorrectionFactor('genWeight','genWeight')
         #mczjetsPlotters[-1].addCorrectionFactor("ZJetsGenWeight",'genWeight')
         mczjetsPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
@@ -674,12 +676,12 @@ tag+='_'
 
 
 if test: 
-    Stack.drawStack('nVert', cuts, str(lumi*1000), 80, 0.0, 80.0, titlex = "N vertices", units = "",output=tag+'nVert',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('nVert', cuts, str(lumi*1000), 80, 0.0, 80.0, titlex = "N vertices", units = "",output=tag+'nVert',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('rho', cuts, str(lumi*1000), 55, 0.0, 55.0, titlex = "#rho", units = "",output=tag+'rho',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 50, 0.0, 500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt_low',outDir=outdir,separateSignal=sepSig)
-#    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 30, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 30, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 75, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt',outDir=outdir,separateSignal=sepSig)
-#    Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 60, 60, 120, titlex = "M(Z)", units = "GeV",output=tag+'zmass',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 60, 60, 120, titlex = "M(Z)", units = "GeV",output=tag+'zmass',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 100, 0, 200, titlex = "M(Z)", units = "GeV",output=tag+'zmass',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 50, 100.0, 600.0, titlex = "M_{T}", units = "GeV",output=tag+'mt_low',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 #    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 50, 100.0, 1600.0, titlex = "M_{T}", units = "GeV",output=tag+'mt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)

@@ -44,8 +44,15 @@ int main(int argc, char** argv) {
   //   Makes sure output NLO DYJets MC output file name has string
   //   "DYJets" but does not have "MGMLM", and LO DYJets one has 
   //   both strings "DYJets" and "MGMLM". 
-  _isDyJets = (_file_out_name.find("DYJets")!=std::string::npos);
-  _isDyJetsLO = (_file_out_name.find("DYJets")!=std::string::npos && _file_out_name.find("MGMLM")!=std::string::npos);
+  _isDyJets = (_file_out_name.find("DYJets")!=std::string::npos)
+            ||(_file_out_name.find("DY0Jets")!=std::string::npos)
+            ||(_file_out_name.find("DY1Jets")!=std::string::npos)
+            ||(_file_out_name.find("DY2Jets")!=std::string::npos)
+            ||(_file_out_name.find("DY3Jets")!=std::string::npos)
+            ||(_file_out_name.find("DY4Jets")!=std::string::npos)
+            ;
+
+  _isDyJetsLO = (_isDyJets && _file_out_name.find("MGMLM")!=std::string::npos);
  
   // check if it is sm ZZ sample, based on file names
   _isZZ = (_file_out_name.find("ZZTo2L2Nu")!=std::string::npos);
@@ -62,6 +69,10 @@ int main(int argc, char** argv) {
     _isZZ = false;
   }
 
+  // make sure _doMTUncDummy is on if DyJets
+  if (_isDyJets) {
+    _doMTUncDummy = true;
+  }
 
   // prepare the trees
   prepareTrees();

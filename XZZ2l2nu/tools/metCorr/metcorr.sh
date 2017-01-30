@@ -34,7 +34,8 @@ njob="0"
 #for infile in $inputdir/SingleEMU_Run2016B2G_PromptReco/vvTreeProducer/tree.root ; 
 #for infile in $inputdir/SingleEMU_Run2016B2G_ReReco_27fbinv/vvTreeProducer/tree.root ; 
 #for infile in $inputdir/BulkGravToZZToZlepZinv_narrow_1000/vvTreeProducer/tree.root ;
-for infile in $inputdir/*/vvTreeProducer/tree.root ;
+#for infile in $inputdir/*/vvTreeProducer/tree.root ;
+for infile in $inputdir/DY*JetsToLL_M50_*/vvTreeProducer/tree.root ;
 do
   echo "+++ skimming $infile +++"
   outfile="${outputdir}/${infile/$inputdir\//}"
