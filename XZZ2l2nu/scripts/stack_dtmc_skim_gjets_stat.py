@@ -254,7 +254,7 @@ for sample in vvSamples:
     vvPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
     vvPlotters[-1].addCorrectionFactor(lepsf, 'lepsf')
     vvPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
-    if sample == 'ZZTo2L2Nu' : vvPlotters[-1].addCorrectionFactor("(ZZEwkCorrWeight*ZZQcdCorrWeight)*xsec", 'nnlo')
+    if sample == 'ZZTo2L2Nu' : vvPlotters[-1].addCorrectionFactor("(ZZEwkCorrWeight*ZZQcdCorrWeight)", 'nnlo')
     if 'ggZZTo2' in sample: vvPlotters[-1].addCorrectionFactor('0.01898','xsec')
     else: vvPlotters[-1].addCorrectionFactor('xsec','xsec')
 
