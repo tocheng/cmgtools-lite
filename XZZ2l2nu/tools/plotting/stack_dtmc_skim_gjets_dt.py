@@ -60,18 +60,17 @@ mc_scale='(1)'
 zjets_scale='(1)'
 
 if channel=='mu': 
-    mc_scale='(1.15458491817)'
+    mc_scale='(1.03236730989)'
     zjets_scale='(1.0)'
-    #zjets_scale='(0.98418652884)'
 elif channel=='el': 
-    mc_scale='(1.22042610863)'
+    mc_scale='(1.02293661362)'
     zjets_scale='(1.0)'
 else: 
     mc_scale='(1.1484406619)'
     zjets_scale='(1)'
 
 # temp turn off mc_scale
-#mc_scale="(1)"
+mc_scale="(1)"
 
 # non reso alpha
 nonreso_alpha_el=1.0
@@ -481,8 +480,8 @@ else:
 
     ### MC ZJets
     mczjetsSamples = [
-    #'DYJetsToLL_M50_MGMLM_BIG',
-    'DY0JetsToLL_M50_MGMLM_Ext1', 'DY1JetsToLL_M50_MGMLM', 'DY2JetsToLL_M50_MGMLM', 'DY3JetsToLL_M50_MGMLM', 'DY4JetsToLL_M50_MGMLM', 
+    'DYJetsToLL_M50_MGMLM_BIG',
+    #'DY0JetsToLL_M50_MGMLM_Ext1', 'DY1JetsToLL_M50_MGMLM', 'DY2JetsToLL_M50_MGMLM', 'DY3JetsToLL_M50_MGMLM', 'DY4JetsToLL_M50_MGMLM', 
     ]
 
     mczjetsPlotters=[]
