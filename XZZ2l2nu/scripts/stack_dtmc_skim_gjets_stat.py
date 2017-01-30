@@ -261,6 +261,7 @@ for sample in vvSamples:
 VV = MergedPlotter(vvPlotters)
 VV.setFillProperties(1001,ROOT.kMagenta)
 
+
 wjetsPlotters=[]
 wjetsSamples = ['WJetsToLNu']
 
