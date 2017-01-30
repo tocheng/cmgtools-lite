@@ -65,22 +65,26 @@ DYJetsToLL_M50_MGMLM_Ext1 = kreator.makeMCComponent("DYJetsToLL_M50_MGMLM_Ext1",
 "/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v2/MINIAODSIM", 
 "CMS", ".*root", 1921.8*3) # 50M
 
-# LO* NLO kfactor 1.23531
+# LO* NLO kfactor 1.16261343013
+# LO xsec calculated from miniAOD
+# NLO/LO = njets NLO calculation / LO from miniAOD
+#        = 1921.8*3/4959.0 = 1.16261343013
 DY1JetsToLL_M50_MGMLM = kreator.makeMCComponent("DY1JetsToLL_M50_MGMLM",
 "/DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM", 
-"CMS", ".*root", 1016.0*1.23531) 
+"CMS", ".*root", 1013.0*1.16261343013) 
 DY2JetsToLL_M50_MGMLM = kreator.makeMCComponent("DY2JetsToLL_M50_MGMLM",
 "/DY2JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM", 
-"CMS", ".*root", 331.4*1.23531) 
+"CMS", ".*root", 334.7*1.16261343013) 
 DY3JetsToLL_M50_MGMLM = kreator.makeMCComponent("DY3JetsToLL_M50_MGMLM",
 "/DY3JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM", 
-"CMS", ".*root", 96.36*1.23531) 
+"CMS", ".*root", 102.4*1.16261343013) 
 DY4JetsToLL_M50_MGMLM = kreator.makeMCComponent("DY4JetsToLL_M50_MGMLM",
 "/DY4JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM", 
-"CMS", ".*root", 51.4*1.23531) 
+"CMS", ".*root", 54.45*1.16261343013) 
 DYBJetsToLL_M50_MGMLM = kreator.makeMCComponent("DYBJetsToLL_M50_MGMLM",
 "/DYBJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM", 
-"CMS", ".*root", 88.2771*1.23531) 
+"CMS", ".*root", 88.2771*1.16261343013) 
+
 
 # W+Jets
 WJetsToLNu = kreator.makeMCComponent("WJetsToLNu",
