@@ -12,7 +12,7 @@ BIN = $(BIN_DIR)/metcorr.exe
 SRC = $(wildcard $(SRC_DIR)/*.cc)
 OBJ = $(SRC:$(SRC_DIR)/%.cc=$(OBJ_DIR)/%.o)
 
-CC = g++
+CC = g++ -g
 
 CPPFLAGS += -I$(INC_DIR)
 CFLAGS +=  `root-config --cflags`

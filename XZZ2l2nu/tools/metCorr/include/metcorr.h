@@ -9,6 +9,8 @@
 #include "TLegend.h"
 #include "TH1D.h"
 #include "TH2D.h"
+#include "TH2F.h"
+#include "TH2.h"
 #include "TProfile2D.h"
 #include "TF1.h"
 #include "TPaveText.h"
@@ -371,20 +373,20 @@ TH2F* _h_eff_hpt_mu_dt;
 TH2F* _h_eff_hpt_mu_mc;
 TH2F* _h_sf_iso_mu;
 // for Summer16
-TH2F* _h_eff_trkhpt_mu_dt_1;
-TH2F* _h_eff_trkhpt_mu_mc_1;
-TH2F* _h_eff_hpt_mu_dt_1;
-TH2F* _h_eff_hpt_mu_mc_1;
-TH2F* _h_sf_iso_mu_1;
-TH2F* _h_eff_trkhpt_mu_dt_2;
-TH2F* _h_eff_trkhpt_mu_mc_2;
-TH2F* _h_eff_hpt_mu_dt_2;
-TH2F* _h_eff_hpt_mu_mc_2;
-TH2F* _h_sf_iso_mu_2;
+TH2* _h_eff_trkhpt_mu_dt_1;
+TH2* _h_eff_trkhpt_mu_mc_1;
+TH2* _h_eff_hpt_mu_dt_1;
+TH2* _h_eff_hpt_mu_mc_1;
+TH2* _h_sf_iso_mu_1;
+TH2* _h_eff_trkhpt_mu_dt_2;
+TH2* _h_eff_trkhpt_mu_mc_2;
+TH2* _h_eff_hpt_mu_dt_2;
+TH2* _h_eff_hpt_mu_mc_2;
+TH2* _h_sf_iso_mu_2;
 
 // electron trigger sf
 TFile* _file_trg_el;
-TH2D* _h_sf_trg_el_l1;
+TH2* _h_sf_trg_el_l1;
 
 
 // muon trigger sf
@@ -444,23 +446,23 @@ TH2D* _h_eff_trg_mu_l1_l1fl2p_norm_vs_l1f;
 TH2D* _h_eff_trg_mu_l2_l1pl2f_norm_vs_l1p;
 TH2D* _h_eff_trg_mu_l2_l1pl2p_norm_vs_l1p;
 TH2D* _h_eff_trg_mu_l2_l1fl2p_norm_vs_l1f;
-// for Spring16
-TH2F* _h_eff_trg_mu50_dt_1;
-TH2F* _h_eff_trg_mu50_dt_2;
-TH2F* _h_eff_trg_mu50_dt_3;
-TH2F* _h_eff_trg_mu50_dt_4;
-TH2F* _h_eff_trg_mu50_mc_1;
-TH2F* _h_eff_trg_mu50_mc_2;
-TH2F* _h_eff_trg_mu50_mc_3;
-TH2F* _h_eff_trg_mu50_mc_4;
-TH2F* _h_eff_trg_mu50tkmu50_mc_1;
-TH2F* _h_eff_trg_mu50tkmu50_mc_2;
-TH2F* _h_eff_trg_mu50tkmu50_mc_3;
-TH2F* _h_eff_trg_mu50tkmu50_mc_4;
-TH2F* _h_eff_trg_mu50tkmu50_dt_1;
-TH2F* _h_eff_trg_mu50tkmu50_dt_2;
-TH2F* _h_eff_trg_mu50tkmu50_dt_3;
-TH2F* _h_eff_trg_mu50tkmu50_dt_4;
+// for Summer16
+TH2* _h_eff_trg_mu50_dt_1;
+TH2* _h_eff_trg_mu50_dt_2;
+TH2* _h_eff_trg_mu50_dt_3;
+TH2* _h_eff_trg_mu50_dt_4;
+TH2* _h_eff_trg_mu50_mc_1;
+TH2* _h_eff_trg_mu50_mc_2;
+TH2* _h_eff_trg_mu50_mc_3;
+TH2* _h_eff_trg_mu50_mc_4;
+TH2* _h_eff_trg_mu50tkmu50_mc_1;
+TH2* _h_eff_trg_mu50tkmu50_mc_2;
+TH2* _h_eff_trg_mu50tkmu50_mc_3;
+TH2* _h_eff_trg_mu50tkmu50_mc_4;
+TH2* _h_eff_trg_mu50tkmu50_dt_1;
+TH2* _h_eff_trg_mu50tkmu50_dt_2;
+TH2* _h_eff_trg_mu50tkmu50_dt_3;
+TH2* _h_eff_trg_mu50tkmu50_dt_4;
 
 
 //==================================================

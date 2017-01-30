@@ -105,7 +105,7 @@ doMuonPtRecalib: false
 MuonPtRecalibInputForData: data/kalman/DATA_80X_13TeV.root
 MuonPtRecalibInputForMC: data/kalman/MC_80X_13TeV.root
 
-doElecPtRecalibSimpleData: true
+doElecPtRecalibSimpleData: false
 ElecPtRecalibSimpleDataScale: 1.00971
 
 doMuonPtRecalibSimpleData: false
@@ -187,7 +187,7 @@ DyZPtWeightInputFileName: data/zptweight/dyjets_zpt_weight_lo_nlo_genAccV2.root
 #====================================================================
 
 # default use histogram
-doRecoil: true
+doRecoil: false
 
 # use smoothed hist
 doRecoilUseSmooth: true
