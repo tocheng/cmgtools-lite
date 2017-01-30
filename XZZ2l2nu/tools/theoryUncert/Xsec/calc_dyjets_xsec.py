@@ -34,10 +34,27 @@ print "lo_4jets=",lo_4jets
 #4jets= 54.45 
 
 nlo_njets=1921.8*3
-print "nlo_njets=",nlo_njets
 
 r_nlo_lo_njets = nlo_njets/lo_njets
 
 print "r_nlo_lo_njets=",r_nlo_lo_njets
 
+nlo_0jets=lo_0jets*r_nlo_lo_njets
+nlo_1jets=lo_1jets*r_nlo_lo_njets
+nlo_2jets=lo_2jets*r_nlo_lo_njets
+nlo_3jets=lo_3jets*r_nlo_lo_njets
+nlo_4jets=lo_4jets*r_nlo_lo_njets
 
+print "nlo_njets=",nlo_njets
+print "nlo_0jets=",nlo_0jets
+print "nlo_1jets=",nlo_1jets
+print "nlo_2jets=",nlo_2jets
+print "nlo_3jets=",nlo_3jets
+print "nlo_4jets=",nlo_4jets
+
+#nlo_njets= 5765.4
+#nlo_0jets= 4016.1899637
+#nlo_1jets= 1177.72740472
+#nlo_2jets= 389.126715064
+#nlo_3jets= 119.051615245
+#nlo_4jets= 63.3043012704
