@@ -53,6 +53,32 @@ int main(int argc, char** argv) {
             ;
 
   _isDyJetsLO = (_isDyJets && _file_out_name.find("MGMLM")!=std::string::npos);
+
+  // njets samples
+  _isDyJetsLOnjets = -1; // -1 for inclusive
+
+  // nlo xsec for each lo ijets binned samples
+  _DyJetsNLOxsec = 5765.4; // inclusive
+   
+  // find samples
+  if (_isDyJets && _isDyJetsLOnjets) {
+    if (_file_out_name.find("DY1Jets")!=std::string::npos) {
+      _isDyJetsLOnjets = 1;
+      _DyJetsNLOxsec = 1177.72740472;
+    }
+    else if  (_file_out_name.find("DY2Jets")!=std::string::npos) {
+      _isDyJetsLOnjets = 2;
+      _DyJetsNLOxsec = 389.126715064;
+    }
+    else if  (_file_out_name.find("DY3Jets")!=std::string::npos) {
+      _isDyJetsLOnjets = 3;
+      _DyJetsNLOxsec = 119.051615245;
+    }
+    else if  (_file_out_name.find("DY4Jets")!=std::string::npos) {
+      _isDyJetsLOnjets = 4;
+      _DyJetsNLOxsec = 63.3043012704;
+    }
+  }
  
   // check if it is sm ZZ sample, based on file names
   _isZZ = (_file_out_name.find("ZZTo2L2Nu")!=std::string::npos);
@@ -413,6 +439,7 @@ bool  prepareTrees()
   _tree_in->SetBranchAddress("lumi", &_lumi);
   _tree_in->SetBranchAddress("evt", &_evt);
   _tree_in->SetBranchAddress("rho", &_rho);
+  _tree_in->SetBranchAddress("xsec", &_xsec);
 
   if (_doGJetsSkim) {
     _tree_in->SetBranchAddress("gjet_mt", &_gjet_mt);
@@ -1435,6 +1462,11 @@ void addDyZPtWeight()
 
       _ZPtWeight_up = _ZPtWeight+0.5*_hdyzpt_dtmc_ratio->GetBinError(zptBin);
       _ZPtWeight_dn = _ZPtWeight-0.5*_hdyzpt_dtmc_ratio->GetBinError(zptBin);
+
+      // fix njets binned lo sample xsec, modify to nlo version
+      if (_isDyJetsLOnjets>=1) {
+        _xsec = _DyJetsNLOxsec;
+      }
 
     }
   }

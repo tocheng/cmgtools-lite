@@ -71,10 +71,12 @@ PUWeightProtectionCut: 10000
 PUInputDir: data/pileup
 
 # PU input tags, "puWeight<tag>" branches will be added
-PUTags: 67921, 68075, 69200, moriondMC 
+#PUTags: 67921, 68075, 69200, moriondMC 
+PUTags: summer16 
 
 # PU input root files, one-to-one correspnding to the tags above
-PUInputFileNames: pileup_MC_80x_271036-276811_67921.root, pileup_MC_80x_271036-276811_68075.root, pileup_MC_80x_271036-276811_69200.root, mcpileupmoriond.root
+#PUInputFileNames: pileup_MC_80x_271036-276811_67921.root, pileup_MC_80x_271036-276811_68075.root, pileup_MC_80x_271036-276811_69200.root, mcpileupmoriond.root
+PUInputFileNames: pileup_MC_80x_2016FullReReco_69200.root
 
 # PU weight hist name
 PUWeightHistName: puweight_dtmc

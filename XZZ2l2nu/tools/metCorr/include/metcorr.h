@@ -74,6 +74,9 @@ std::string _plots_out_name;
 // if DYJets samples
 bool _isDyJets, _isDyJetsLO;
 
+int _isDyJetsLOnjets;
+double _DyJetsNLOxsec;
+
 // if SM ZZ samples
 bool _isZZ;
 
@@ -533,6 +536,7 @@ ULong64_t _evt;
 
 // other var
 Float_t _rho;
+Float_t _xsec;
 
 // leptons, Z, MET
 Float_t _llnunu_mt;
