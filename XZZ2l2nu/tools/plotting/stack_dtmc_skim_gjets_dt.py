@@ -70,7 +70,7 @@ else:
     zjets_scale='(1)'
 
 # temp turn off mc_scale
-mc_scale="(1)"
+#mc_scale="(1)"
 
 # non reso alpha
 nonreso_alpha_el=1.0
