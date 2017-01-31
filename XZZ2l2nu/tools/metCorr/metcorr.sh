@@ -36,7 +36,8 @@ njob="0"
 #for infile in $inputdir/BulkGravToZZToZlepZinv_narrow_1000/vvTreeProducer/tree.root ;
 #for infile in $inputdir/*/vvTreeProducer/tree.root ;
 #for infile in $inputdir/DY*JetsToLL_M50_*/vvTreeProducer/tree.root ;
-for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v Single | grep -v DY); 
+#for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v Single | grep -v DY); 
+for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep Single ); 
 do
   echo "+++ skimming $infile +++"
   outfile="${outputdir}/${infile/$inputdir\//}"
@@ -46,8 +47,8 @@ do
   #outfile="${outfile/\/vvTreeProducer\/tree/_NoRecoil}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_ResBosRefit_Rc36p46}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_Rc36p46DtReCalib}"
-  #outfile="${outfile/\/vvTreeProducer\/tree/_DtReCalib}"
-  outfile="${outfile/\/vvTreeProducer\/tree/}"
+  outfile="${outfile/\/vvTreeProducer\/tree/_DtReCalib}"
+  #outfile="${outfile/\/vvTreeProducer\/tree/}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_test}"
 
   inSkimFile=${infile/vvTreeProducer\/tree.root/skimAnalyzerCount\/SkimReport.txt}

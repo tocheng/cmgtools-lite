@@ -107,8 +107,9 @@ doMuonPtRecalib: false
 MuonPtRecalibInputForData: data/kalman/DATA_80X_13TeV.root
 MuonPtRecalibInputForMC: data/kalman/MC_80X_13TeV.root
 
-doElecPtRecalibSimpleData: false
-ElecPtRecalibSimpleDataScale: 1.00971
+doElecPtRecalibSimpleData: true 
+ElecPtRecalibSimpleDataScale: 1.00341
+#ElecPtRecalibSimpleDataScale: 1.00971
 
 doMuonPtRecalibSimpleData: false
 MuonPtRecalibSimpleDataScale: 0.999744
