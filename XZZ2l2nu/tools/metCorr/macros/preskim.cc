@@ -42,6 +42,14 @@ int main(int argc, char** argv) {
 
   // check if it is sm ZZ sample, based on file names
   bool isZZ = (inputfile.find("ZZTo2L2Nu")!=std::string::npos);
+  // check if it is ZJets sample, based on file names
+  bool isZJets = (inputfile.find("DYJets")!=std::string::npos)
+               ||(inputfile.find("DY0Jets")!=std::string::npos)
+               ||(inputfile.find("DY1Jets")!=std::string::npos)
+               ||(inputfile.find("DY2Jets")!=std::string::npos)
+               ||(inputfile.find("DY3Jets")!=std::string::npos)
+               ||(inputfile.find("DY4Jets")!=std::string::npos)
+               ;
 
   // tree
   TTree* tree = (TTree*)finput->Get("tree");
@@ -133,7 +141,7 @@ int main(int argc, char** argv) {
   //tree->SetBranchStatus("llnunu_l2_*Smear*",0); 
 
   tree->SetBranchStatus("llnunu_l2_t1*",0); 
-  if (!isData){
+  if (!isData&&!isZJets){
     tree->SetBranchStatus("llnunu_l2_t1XYPt", 1); 
     tree->SetBranchStatus("llnunu_l2_t1XYPhi", 1); 
     tree->SetBranchStatus("llnunu_l2_t1XYSumEt", 1); 

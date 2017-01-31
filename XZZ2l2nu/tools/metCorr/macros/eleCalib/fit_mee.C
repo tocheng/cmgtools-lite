@@ -2,8 +2,8 @@
 
   bool doMu=false;
 
-  TFile* file1 = TFile::Open("/data2/XZZ2/80X_20161029_light_Skim/SingleEMU_Run2016B2H_ReReco_36p46.root");
-  TFile* file2 = TFile::Open("/home/heli/XZZ/80X_20161029_light_Skim/DYJetsToLL_M50_BIG_NoRecoil.root");
+  TFile* file1 = TFile::Open("/home/heli/XZZ/80X_20170124_light_Skim/SingleEMU_Run2016Full_ReReco_v1.root");
+  TFile* file2 = TFile::Open("/home/heli/XZZ/80X_20170124_light_Skim/DYJetsToLL_M50_MGMLM_BIG.root");
 
   TTree* tree1 = (TTree*)file1->Get("tree");
   TTree* tree2 = (TTree*)file2->Get("tree");
@@ -15,25 +15,26 @@
     selec0 += "abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11&&llnunu_l1_l1_pt>115&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5";
   selec0 += "&&llnunu_l1_mass>50&&llnunu_l1_mass<150";
   
-  std::string selec_dt = selec0;
+  std::string selec_trg;
   if (doMu) 
-    selec_dt += "&&HLT_MUv2";
+    selec_trg = "((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))";
   else
-    selec_dt += "&&HLT_ELEv2";
-  selec_dt = "("+selec_dt+")";
+    selec_trg = "((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))";
+
+  std::string selec_dt = selec0;
+  selec_dt = "("+selec_dt+"&&"+selec_trg+")";
 
   std::string selec_mc = selec0;
-  selec_mc += "&&nTrueInt<35";
-  selec_mc = "("+selec_mc+")";
+  selec_mc = "("+selec_mc+"&&"+selec_trg+")";
 
   std::string mc_weight;
-  mc_weight += "trgsf*idsf*isosf";
+  mc_weight += "trgsf*idsf*isosf*trksf";
   mc_weight += "*ZPtWeight";
-  mc_weight += "*(0.32+0.42*TMath::Erf((rho-4.16)/4.58)+0.31*TMath::Erf((rho+115.00)/29.58))";
-  mc_weight += "*puWeightmoriondMC";
-  mc_weight += "*(36460.0*1921.8*3)/SumWeights*genWeight";
+  //mc_weight += "*(0.32+0.42*TMath::Erf((rho-4.16)/4.58)+0.31*TMath::Erf((rho+115.00)/29.58))";
+  mc_weight += "*puWeightsummer16";
+  mc_weight += "*36814*xsec/SumWeights*genWeight";
   if (doMu)
-    mc_weight += "*1.17905";
+    mc_weight += "*1.0";
   else
     mc_weight += "*1.0";
   mc_weight = "("+mc_weight+")";
@@ -53,7 +54,6 @@
  
 
   tree1->Draw("llnunu_l1_mass>>h1", selec_dt.c_str());
-  //tree1->Draw("llnunu_l1_mass*1.00971>>h1", selec_dt.c_str());
   tree2->Draw("llnunu_l1_mass>>h2", selec_mc.c_str());
 
 

@@ -19,10 +19,35 @@
  
   fout->cd();
 
-  TH2F* h_eff_trg_mu50tkmu50_dt_1 = (TH2F*)f_mu50tkmu50_own_1->Get("efficiency_dt");
-  TH2F* h_eff_trg_mu50tkmu50_dt_2 = (TH2F*)f_mu50tkmu50_own_2->Get("efficiency_dt");
-  TH2F* h_eff_trg_mu50tkmu50_mc_1 = (TH2F*)f_mu50tkmu50_own_1->Get("efficiency_mc");
-  TH2F* h_eff_trg_mu50tkmu50_mc_2 = (TH2F*)f_mu50tkmu50_own_2->Get("efficiency_mc");
+  TH2F* h_eff_trg_mu50tkmu50_dt_1_tmp = (TH2F*)f_mu50tkmu50_own_1->Get("efficiency_dt");
+  TH2F* h_eff_trg_mu50tkmu50_dt_2_tmp = (TH2F*)f_mu50tkmu50_own_2->Get("efficiency_dt");
+  TH2F* h_eff_trg_mu50tkmu50_mc_1_tmp = (TH2F*)f_mu50tkmu50_own_1->Get("efficiency_mc");
+  TH2F* h_eff_trg_mu50tkmu50_mc_2_tmp = (TH2F*)f_mu50tkmu50_own_2->Get("efficiency_mc");
+
+  Int_t nbinsx = h_eff_trg_mu50tkmu50_dt_1_tmp->GetYaxis()->GetNbins();
+  Int_t nbinsy = h_eff_trg_mu50tkmu50_dt_1_tmp->GetXaxis()->GetNbins();
+
+  Double_t* xbins = (Double_t*)h_eff_trg_mu50tkmu50_dt_1_tmp->GetYaxis()->GetXbins()->GetArray();
+  Double_t* ybins = (Double_t*)h_eff_trg_mu50tkmu50_dt_1_tmp->GetXaxis()->GetXbins()->GetArray();
+
+  TH2F* h_eff_trg_mu50tkmu50_dt_1 = new TH2F("h_eff_trg_mu50tkmu50_dt_1", "h_eff_trg_mu50tkmu50_dt_1", nbinsx, xbins, nbinsy, ybins);
+  TH2F* h_eff_trg_mu50tkmu50_dt_2 = new TH2F("h_eff_trg_mu50tkmu50_dt_2", "h_eff_trg_mu50tkmu50_dt_2", nbinsx, xbins, nbinsy, ybins);
+  TH2F* h_eff_trg_mu50tkmu50_mc_1 = new TH2F("h_eff_trg_mu50tkmu50_mc_1", "h_eff_trg_mu50tkmu50_mc_1", nbinsx, xbins, nbinsy, ybins);
+  TH2F* h_eff_trg_mu50tkmu50_mc_2 = new TH2F("h_eff_trg_mu50tkmu50_mc_2", "h_eff_trg_mu50tkmu50_mc_2", nbinsx, xbins, nbinsy, ybins);
+
+  for (int ix=1; ix<=nbinsx; ix++){
+    for (int iy=1; iy<=nbinsy; iy++){
+      h_eff_trg_mu50tkmu50_dt_1->SetBinContent(ix, iy, h_eff_trg_mu50tkmu50_dt_1_tmp->GetBinContent(iy, ix));
+      h_eff_trg_mu50tkmu50_dt_2->SetBinContent(ix, iy, h_eff_trg_mu50tkmu50_dt_2_tmp->GetBinContent(iy, ix));
+      h_eff_trg_mu50tkmu50_mc_1->SetBinContent(ix, iy, h_eff_trg_mu50tkmu50_mc_1_tmp->GetBinContent(iy, ix));
+      h_eff_trg_mu50tkmu50_mc_2->SetBinContent(ix, iy, h_eff_trg_mu50tkmu50_mc_2_tmp->GetBinContent(iy, ix));
+      h_eff_trg_mu50tkmu50_dt_1->SetBinError(ix, iy, h_eff_trg_mu50tkmu50_dt_1_tmp->GetBinError(iy, ix));
+      h_eff_trg_mu50tkmu50_dt_2->SetBinError(ix, iy, h_eff_trg_mu50tkmu50_dt_2_tmp->GetBinError(iy, ix));
+      h_eff_trg_mu50tkmu50_mc_1->SetBinError(ix, iy, h_eff_trg_mu50tkmu50_mc_1_tmp->GetBinError(iy, ix));
+      h_eff_trg_mu50tkmu50_mc_2->SetBinError(ix, iy, h_eff_trg_mu50tkmu50_mc_2_tmp->GetBinError(iy, ix));
+
+    }
+  }
 
   //TH2F* h_eff_trg_mu50tkmu50_dt_1 = (TH2F*)f_mu50tkmu50_pog_1->Get("Mu50_OR_TkMu50_PtEtaBins/efficienciesDATA/abseta_pt_DATA");
   //TH2F* h_eff_trg_mu50tkmu50_dt_2 = (TH2F*)f_mu50tkmu50_pog_2->Get("Mu50_OR_TkMu50_PtEtaBins/efficienciesDATA/abseta_pt_DATA");

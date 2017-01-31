@@ -53,7 +53,7 @@ int main(int argc, char** argv) {
 
   // select branches
 //  tree->SetBranchStatus("photon_*",0);
-//  tree->SetBranchStatus("jet_*",0);
+// tree->SetBranchStatus("jet_*",0);
   tree->SetBranchStatus("lep_*",0);
 
 //  tree->SetBranchStatus("gjet_l*_px",0);
@@ -82,10 +82,11 @@ int main(int argc, char** argv) {
   //tree->SetBranchStatus("gjet_l2_metSig",0);
 
   tree->SetBranchStatus("gjet_l2_t1*",0);
-  tree->SetBranchStatus("gjet_l2_t1P*",1);
+  tree->SetBranchStatus("gjet_l2_t1P*",0);
 //  tree->SetBranchStatus("gjet_l2_*smear*", 0);
 //  tree->SetBranchStatus("gjet_l2_*JER*",0);
 //  tree->SetBranchStatus("gjet_l2_*Smear*",0);
+  
 
   if (!isData) {
     //tree->SetBranchStatus("HLT_*",0); 
@@ -94,7 +95,13 @@ int main(int argc, char** argv) {
     tree->SetBranchStatus("gjet_l1_mcEta",0);
     tree->SetBranchStatus("gjet_l1_mcPhi",0);
     tree->SetBranchStatus("gjet_l2_genPt",0);
+    tree->SetBranchStatus("gjet_l2_t1Pt_*",1);
+    tree->SetBranchStatus("gjet_l2_t1Phi_*",1);
   }
+
+  tree->SetBranchStatus("nlep", 1);
+  tree->SetBranchStatus("njet", 1);
+  tree->SetBranchStatus("nbadmuon", 1);
 
   tree->SetAlias("absDeltaPhi", "fabs(TVector2::Phi_mpi_pi(gjet_l2_phi-gjet_l1_phi))");
   tree->SetAlias("metPara", "gjet_l2_pt*cos(gjet_l2_phi-gjet_l1_phi)");
@@ -106,7 +113,7 @@ int main(int argc, char** argv) {
   tree->SetAlias("phi", "gjet_l1_phi");
   tree->SetAlias("pt", "gjet_l1_pt");
   //if (isData) 
-  tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter)");
+  tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter&&Flag_BadPFMuonFilter&&Flag_BadChargedCandidateFilter)");
   //else tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_CSCTightHalo2015Filter)");
 
   tree->SetAlias("ieta", "gjet_l1_ieta");
@@ -161,8 +168,13 @@ int main(int argc, char** argv) {
   std::cout << "tree_tmp1:  " << tree_tmp1->GetEntries() << " Entries" <<  std::endl;
  
   tree_tmp1->SetBranchStatus("Flag_*",0);
+  tree_tmp1->SetBranchStatus("Flag_hasBadMuon", 1);
   tree_tmp1->SetBranchStatus("HLT_*",0);
   tree_tmp1->SetBranchStatus("jet_*",0);
+  tree_tmp1->SetBranchStatus("photon_*",0);
+  tree_tmp1->SetBranchStatus("nphoton",1);
+  tree_tmp1->SetBranchStatus("vtx_x",0);
+  tree_tmp1->SetBranchStatus("vtx_y",0);
   //tree_tmp1->SetBranchStatus("jet_rawPt",1);
   //tree_tmp1->SetBranchStatus("jet_eta",1);
   //tree_tmp1->SetBranchStatus("jet_phi",1);

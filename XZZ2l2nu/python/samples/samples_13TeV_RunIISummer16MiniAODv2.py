@@ -65,21 +65,26 @@ DYJetsToLL_M50_MGMLM_Ext1 = kreator.makeMCComponent("DYJetsToLL_M50_MGMLM_Ext1",
 "/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v2/MINIAODSIM", 
 "CMS", ".*root", 1921.8*3) # 50M
 
+# LO* NLO kfactor 1.16261343013
+# LO xsec calculated from miniAOD
+# NLO/LO = njets NLO calculation / LO from miniAOD
+#        = 1921.8*3/4959.0 = 1.16261343013
 DY1JetsToLL_M50_MGMLM = kreator.makeMCComponent("DY1JetsToLL_M50_MGMLM",
 "/DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM", 
-"CMS", ".*root", 1016.0) 
+"CMS", ".*root", 1013.0*1.16261343013) 
 DY2JetsToLL_M50_MGMLM = kreator.makeMCComponent("DY2JetsToLL_M50_MGMLM",
 "/DY2JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM", 
-"CMS", ".*root", 331.4) 
+"CMS", ".*root", 334.7*1.16261343013) 
 DY3JetsToLL_M50_MGMLM = kreator.makeMCComponent("DY3JetsToLL_M50_MGMLM",
 "/DY3JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM", 
-"CMS", ".*root", 96.36) 
+"CMS", ".*root", 102.4*1.16261343013) 
 DY4JetsToLL_M50_MGMLM = kreator.makeMCComponent("DY4JetsToLL_M50_MGMLM",
 "/DY4JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM", 
-"CMS", ".*root", 51.4) 
+"CMS", ".*root", 54.45*1.16261343013) 
 DYBJetsToLL_M50_MGMLM = kreator.makeMCComponent("DYBJetsToLL_M50_MGMLM",
 "/DYBJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM", 
-"CMS", ".*root", 88.2771) 
+"CMS", ".*root", 88.2771*1.16261343013) 
+
 
 # W+Jets
 WJetsToLNu = kreator.makeMCComponent("WJetsToLNu",
@@ -441,9 +446,9 @@ QCD_Pt80to120_EMEnriched  = kreator.makeMCComponent("QCD_Pt80to120_EMEnriched" ,
 QCD_Pt80to120_EMEnriched_ext  = kreator.makeMCComponent("QCD_Pt80to120_EMEnriched_ext" ,
 "/QCD_Pt-80to120_EMEnriched_TuneCUETP8M1_13TeV_pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/MINIAODSIM",
 "CMS", ".*root", 2800000*0.125)
-#QCD_Pt120to170_EMEnriched = kreator.makeMCComponent("QCD_Pt120to170_EMEnriched",
-#"/QCD_Pt-120to170_EMEnriched_TuneCUETP8M1_13TeV_pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM", #in production
-#"CMS", ".*root", 477000*0.132)
+QCD_Pt120to170_EMEnriched = kreator.makeMCComponent("QCD_Pt120to170_EMEnriched",
+"/QCD_Pt-120to170_EMEnriched_TuneCUETP8M1_13TeV_pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM",
+"CMS", ".*root", 477000*0.132)
 QCD_Pt170to300_EMEnriched = kreator.makeMCComponent("QCD_Pt170to300_EMEnriched",
 "/QCD_Pt-170to300_EMEnriched_TuneCUETP8M1_13TeV_pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM",
 "CMS", ".*root", 114000*0.165)
@@ -460,7 +465,7 @@ QCD_Pt30to50_EMEnriched_ext,
 QCD_Pt50to80_EMEnriched_ext,
 QCD_Pt80to120_EMEnriched,
 QCD_Pt80to120_EMEnriched_ext,
-#QCD_Pt120to170_EMEnriched,
+QCD_Pt120to170_EMEnriched,
 QCD_Pt170to300_EMEnriched,
 QCD_Pt300toInf_EMEnriched
 ]
@@ -534,6 +539,9 @@ ZJetsToNuNu_HT2500toInf = kreator.makeMCComponent("ZJetsToNuNu_HT2500toInf",
 "/ZJetsToNuNu_HT-2500ToInf_13TeV-madgraph/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM",
 "CMS", ".*root",0.008203*1.23)
 
+#280.47*1.23+78.36*1.23+10.94*1.23+1.474*1.23+0.3586*1.23+0.008203*1.23
+
+
 ZJetsToNuNuHT = [
 ZJetsToNuNu_HT100to200,
 ZJetsToNuNu_HT100to200_ext,
@@ -604,6 +612,9 @@ WJetsToLNu_HT2500toInf = kreator.makeMCComponent("WJetsToLNu_HT2500toInf",
 WJetsToLNu_HT2500toInf_ext1 = kreator.makeMCComponent("WJetsToLNu_HT2500toInf_ext1", 
 "/WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/MINIAODSIM", 
 "CMS", ".*root",0.03216*1.21,useAAA=False)
+
+# 1345*1.21+359.7*1.21+48.91*1.21+12.05*1.21+5.501*1.21+1.329*1.21+0.03216*1.21
+
 
 WJetsToLNuHT = [
 WJetsToLNu_HT100to200,

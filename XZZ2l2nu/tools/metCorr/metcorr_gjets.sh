@@ -1,18 +1,8 @@
 #!/bin/sh
 
 #inputs
-#inputdir=/home/heli/XZZ/80X_20161029_GJets_light
-inputdir=/data2/XZZ2/80X_20161029_GJets_light
-outputdir=/home/heli/XZZ/80X_20161029_GJets_light_Skim
-#outputdir=/home/heli/XZZ/80X_20161029_light_Skim
-#inputdir=/home/heli/XZZ/80X_20161029_GJets_light
-#outputdir=/home/heli/XZZ/80X_20161029_light_Skim
-#inputdir=/home/heli/XZZ/80X_20161018_light
-#outputdir=/home/heli/XZZ/80X_20161018_light_Skim
-#inputdir=/home/heli/XZZ/80X_20161006_light
-#outputdir=/home/heli/XZZ/80X_20161006_light_Skim
-#inputdir=/home/heli/XZZ/80X_20160927_light
-#outputdir=/home/heli/XZZ/80X_20160927_light_Skim
+inputdir=/home/heli/XZZ/80X_20170124_GJets_light
+outputdir=/home/heli/XZZ/80X_20170124_GJets_light_Skim
 config=config/parameters_light_gjets
 
 mkdir -p ${outputdir}
@@ -21,12 +11,7 @@ gmake all
 
 njob="0"
 
-#for infile in $inputdir/SinglePhoton_Run2016BCD_PromptReco/vvTreeProducer/tree.root ; 
-#for infile in $inputdir/SinglePhoton_Run2016B2G_PromptReco/vvTreeProducer/tree.root ; 
-#for infile in $inputdir/SinglePhoton_Run2016B2H29fbinv_PromptReco/vvTreeProducer/tree.root ; 
-#for infile in $inputdir/SinglePhoton_Run2016B2H_ReReco_33fbinv/vvTreeProducer/tree.root ; 
 #for infile in $inputdir/GJet_Pt_20toInf_DoubleEMEnriched/vvTreeProducer/tree.root ; 
-#for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v SinglePhoton | grep -v GJet_Pt_ ); 
 #for infile in $inputdir/GJet_Pt_*/vvTreeProducer/tree.root ; 
 #for infile in $inputdir/ZNuNuGJets*/vvTreeProducer/tree.root ; 
 #for infile in $inputdir/GJets_HT40to*/vvTreeProducer/tree.root ; 
@@ -39,7 +24,11 @@ njob="0"
 #for infile in $inputdir/SinglePhoton_Run2016B2H_ReReco_36p46/vvTreeProducer/tree.root ; 
 #for infile in $inputdir/GJets_HT*/vvTreeProducer/tree.root ; 
 #for infile in $inputdir/QCD_HT*/vvTreeProducer/tree.root ; 
-for infile in $inputdir/GJet_Pt_40toInf_DoubleEMEnriched/vvTreeProducer/tree.root ; 
+#for infile in $inputdir/GJet_Pt_40toInf_DoubleEMEnriched/vvTreeProducer/tree.root ; 
+#for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v SinglePhoton | grep -v GJet_Pt_ ); 
+#for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep  SinglePhoton_Run2016Full ); 
+#for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v  SinglePhoton_Run2016Full ); 
+for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep  -v Single ); 
 do
   echo "+++ skimming $infile +++"
   outfile="${outputdir}/${infile/$inputdir\//}"

@@ -5,13 +5,16 @@
 # compile
 g++ preskim_gjets.cc -o preskim_gjets.exe `root-config --cflags` `root-config --libs`
 
+samples="Z*"
+#samples="SinglePhoton_*"
+#samples="SinglePhoton_Run2016H_PromptReco_v3"
 #samples="SinglePhoton_Run2016B_23Sep2016_v2_resub"
 #samples="SinglePhoton_Run2016H_PromptReco_new"
 #samples="SinglePhoton_Run2016B2H_ReReco_36p1fbinv"
 #samples="DYJets*"
 #samples="WGToLNuG"
 #samples="ZJetsToNuNu_HT*_BIG"
-samples="W*"
+#samples="W*"
 #samples="GJet_Pt*"
 #samples="GJets_HT*"
 #samples="GJets_HT40to100"
@@ -21,10 +24,8 @@ samples="W*"
 #samples="T*"
 #samples="ZNuNuGJets*"
 #samples="WJetsToLNu_HT*_BIG"
-indir=/data2/XZZ2/80X_20161029_GJets
-#outdir=/home/heli/XZZ/80X_20161029_GJets_light
-outdir=/home/heli/XZZ2/80X_20161029_GJets_light
-#outdir=/datac/heli/XZZ2/80X_20161029_GJets_light
+indir=/data2/XZZ2/80X_20170124_GJets
+outdir=/home/heli/XZZ/80X_20170124_GJets_light
 
 mkdir -p $outdir
 
@@ -32,6 +33,7 @@ mkdir -p $outdir
 #for dd in ${indir}/SinglePhoton_Run2016BCD_PromptReco/vvTreeProducer;
 #for dd in ${indir}/SinglePhoton_Run2016B2G_PromptReco/vvTreeProducer;
 #for dd in ${indir}/SinglePhoton_Run2016B2H29fbinv_PromptReco/vvTreeProducer;
+#for dd in ${indir}/${samples}/vvTreeProducer;
 for dd in ${indir}/${samples}/vvTreeProducer;
 do 
   infile="${dd}/tree.root";

@@ -71,10 +71,12 @@ PUWeightProtectionCut: 10000
 PUInputDir: data/pileup
 
 # PU input tags, "puWeight<tag>" branches will be added
-PUTags: 67921, 68075, 69200, moriondMC 
+#PUTags: 67921, 68075, 69200, moriondMC 
+PUTags: summer16 
 
 # PU input root files, one-to-one correspnding to the tags above
-PUInputFileNames: pileup_MC_80x_271036-276811_67921.root, pileup_MC_80x_271036-276811_68075.root, pileup_MC_80x_271036-276811_69200.root, mcpileupmoriond.root
+#PUInputFileNames: pileup_MC_80x_271036-276811_67921.root, pileup_MC_80x_271036-276811_68075.root, pileup_MC_80x_271036-276811_69200.root, mcpileupmoriond.root
+PUInputFileNames: pileup_MC_80x_2016FullReReco_69200.root
 
 # PU weight hist name
 PUWeightHistName: puweight_dtmc
@@ -105,8 +107,9 @@ doMuonPtRecalib: false
 MuonPtRecalibInputForData: data/kalman/DATA_80X_13TeV.root
 MuonPtRecalibInputForMC: data/kalman/MC_80X_13TeV.root
 
-doElecPtRecalibSimpleData: true
-ElecPtRecalibSimpleDataScale: 1.00971
+doElecPtRecalibSimpleData: true 
+ElecPtRecalibSimpleDataScale: 1.00341
+#ElecPtRecalibSimpleDataScale: 1.00971
 
 doMuonPtRecalibSimpleData: false
 MuonPtRecalibSimpleDataScale: 0.999744
@@ -196,41 +199,22 @@ doRecoilUseSmooth: true
 doRecoilUseSmoothGraph: true
 
 # Input files
-#RecoilInputFileNameData_all: data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib_met_para_study_dtHLT.root
-#RecoilInputFileNameData_mu:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib_met_para_study_dtHLT_mu.root
-#RecoilInputFileNameData_el:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib_met_para_study_dtHLT_el.root
-RecoilInputFileNameData_all: data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib_met_para_study_ZSelecLowLPt.root
-RecoilInputFileNameData_mu:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib_met_para_study_ZSelecLowLPt_mu.root
-RecoilInputFileNameData_el:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib_met_para_study_ZSelecLowLPt_el.root
-#RecoilInputFileNameData_all: data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_dtHLT.root
-#RecoilInputFileNameData_mu:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_dtHLT_mu.root
-#RecoilInputFileNameData_el:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_dtHLT_el.root
-#RecoilInputFileNameData_all: data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_ZSelecLowLPt.root
-#RecoilInputFileNameData_mu:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_ZSelecLowLPt_mu.root
-#RecoilInputFileNameData_el:  data/recoil/SingleEMU_Run2016B2H_ReReco_36p46_met_para_study_ZSelecLowLPt_el.root
+RecoilInputFileNameData_all: data/recoil/SingleEMU_Run2016Full_ReReco_v1_met_para_study_ZSelecLowLPt.root
+RecoilInputFileNameData_mu:  data/recoil/SingleEMU_Run2016Full_ReReco_v1_met_para_study_ZSelecLowLPt_mu.root
+RecoilInputFileNameData_el:  data/recoil/SingleEMU_Run2016Full_ReReco_v1_met_para_study_ZSelecLowLPt_el.root
 
 
-# 2015 data
+# NLO mc
 RecoilInputFileNameMC_all: data/recoil/DYJetsToLL_M50_BIG_NoRecoil_met_para_study_ZSelecLowLPt.root
 RecoilInputFileNameMC_mu:  data/recoil/DYJetsToLL_M50_BIG_NoRecoil_met_para_study_ZSelecLowLPt_mu.root
 RecoilInputFileNameMC_el:  data/recoil/DYJetsToLL_M50_BIG_NoRecoil_met_para_study_ZSelecLowLPt_el.root
 
-# resbos
-#RecoilInputFileNameMC_all: data/recoil/DYJetsToLL_M50_BIG_ResBos_NoRecoil_met_para_study_NPUCut_effSf_trgSf.root
-#RecoilInputFileNameMC_mu:  data/recoil/DYJetsToLL_M50_BIG_ResBos_NoRecoil_met_para_study_NPUCut_effSf_trgSf_mu.root
-#RecoilInputFileNameMC_el:  data/recoil/DYJetsToLL_M50_BIG_ResBos_NoRecoil_met_para_study_NPUCut_effSf_trgSf_el.root
+# LO mc
+RecoilInputFileNameMCLO_all: data/recoil/DYJetsToLL_M50_MGMLM_BIG_met_para_study_ZSelecLowLPt.root
+RecoilInputFileNameMCLO_mu:  data/recoil/DYJetsToLL_M50_MGMLM_BIG_met_para_study_ZSelecLowLPt_mu.root
+RecoilInputFileNameMCLO_el:  data/recoil/DYJetsToLL_M50_MGMLM_BIG_met_para_study_ZSelecLowLPt_el.root
 
-#RecoilInputFileNameMC_all: data/recoil/DYJetsToLL_M50_BIG_ResBos_NoRecoil_met_para_study_ZSelecLowLPt_NPUCut.root
-#RecoilInputFileNameMC_mu:  data/recoil/DYJetsToLL_M50_BIG_ResBos_NoRecoil_met_para_study_ZSelecLowLPt_NPUCut_mu.root
-#RecoilInputFileNameMC_el:  data/recoil/DYJetsToLL_M50_BIG_ResBos_NoRecoil_met_para_study_ZSelecLowLPt_NPUCut_el.root
-
-RecoilInputFileNameMCLO_all: data/recoil/DYJetsToLL_M50_MGMLM_Ext1_NoRecoil_NoRhoWt_met_para_study_ZSelecLowLPt.root
-RecoilInputFileNameMCLO_mu:  data/recoil/DYJetsToLL_M50_MGMLM_Ext1_NoRecoil_NoRhoWt_met_para_study_ZSelecLowLPt_mu.root
-RecoilInputFileNameMCLO_el:  data/recoil/DYJetsToLL_M50_MGMLM_Ext1_NoRecoil_NoRhoWt_met_para_study_ZSelecLowLPt_el.root
-
-#RecoilInputFileNameGJets_all: data/recoil/SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil_met_para_study.root
-#RecoilInputFileNameGJets_mu:  data/recoil/SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil_met_para_study_mu.root
-#RecoilInputFileNameGJets_el:  data/recoil/SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil_met_para_study_el.root
+# photon data
 RecoilInputFileNameGJets_all: data/recoil/SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil_met_para_study_ZSelecLowLPt.root 
 RecoilInputFileNameGJets_mu:  data/recoil/SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil_met_para_study_ZSelecLowLPt_mu.root
 RecoilInputFileNameGJets_el:  data/recoil/SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil_met_para_study_ZSelecLowLPt_el.root
@@ -264,11 +248,11 @@ EffScaleMCVersion: 80xSummer16
 #EffScaleInputFileName_Trg_Mu: data/eff/trigeff_mu_36p46.root
 
 # for 80xSummer16 MC
-EffScaleInputFileName_Trg_El: data/eff/eff_out_ell1pteta_36p46recalib.root
-EffScaleInputFileName_IdIso_El: data/eff/egammaEffi.txt_SF2D.root
-EffScaleInputFileName_Trk_El: data/eff/egammatracking.root
+EffScaleInputFileName_Trg_El: data/eff/hlt115electron_2016fulleff_absetapt.root
+EffScaleInputFileName_IdIso_El: data/eff/egammaEffi_LooseIDISO_EGM2D.root
+EffScaleInputFileName_Trk_El: data/eff/egammaEffi_RECO_SF2D.root
 
-EffScaleInputFileName_Trg_Mu: data/eff/trigeff_mu_36p46.root
+EffScaleInputFileName_Trg_Mu: data/eff/muon_trg_summer16.root
 EffScaleInputFileName_IdIso_Mu: data/eff/muon_idiso_summer16.root
 EffScaleInputFileName_Trk_Mu: data/eff/muontrackingsf.root
 

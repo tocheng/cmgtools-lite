@@ -39,12 +39,13 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 
 process.source = cms.Source(
     "PoolSource",
+    fileNames = inputDY4Jets_LO,
     #fileNames  = cms.untracked.vstring(options.inputFiles),
     #fileNames  = inputDYJets,
     #fileNames  = inputDYJetsPtZ100,
     #fileNames  = inputGGZZ2e2nu,
     #fileNames  = inputGGZZ2mu2nu,
-    fileNames = inputQCD_HT50to100,
+    #fileNames = inputQCD_HT50to100,
 
     duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
 )

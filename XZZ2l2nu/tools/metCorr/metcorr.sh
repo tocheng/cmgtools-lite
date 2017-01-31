@@ -1,8 +1,8 @@
 #!/bin/sh
 
 #inputs
-inputdir=/home/heli/XZZ/80X_20170122_light
-outputdir=/home/heli/XZZ/80X_20170122_light_Skim
+inputdir=/home/heli/XZZ/80X_20170124_light
+outputdir=/home/heli/XZZ/80X_20170124_light_Skim
 config=config/parameters_light
 
 mkdir -p ${outputdir}
@@ -23,7 +23,6 @@ njob="0"
 #for infile in $inputdir/SingleEMU_Run2016B2H29fbinv_*/vvTreeProducer/tree.root ; 
 #for infile in $inputdir/DYJetsToLL_M50_reHLT/vvTreeProducer/tree.root ; 
 #for infile in $inputdir/Bulk*/vvTreeProducer/tree.root ; 
-#for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v Single | grep -v DYJets | grep -v Bulk); 
 #for infile in $inputdir/SingleEMU_Run2016B2H_ReReco_33fbinv/vvTreeProducer/tree.root ; 
 #for infile in $inputdir/ZZTo2L2Nu/vvTreeProducer/tree.root ; 
 #for infile in $inputdir/SingleEMU_Run2016B2G_ReReco_27fbinv/vvTreeProducer/tree.root ; 
@@ -33,7 +32,12 @@ njob="0"
 #for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v Single | grep -v DYJets  ); 
 #for infile in $inputdir/SingleEMU_Run2016B2G_PromptReco/vvTreeProducer/tree.root ; 
 #for infile in $inputdir/SingleEMU_Run2016B2G_ReReco_27fbinv/vvTreeProducer/tree.root ; 
-for infile in $inputdir/*/vvTreeProducer/tree.root ;
+#for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v Single | grep -v DYJets | grep -v Bulk); 
+#for infile in $inputdir/BulkGravToZZToZlepZinv_narrow_1000/vvTreeProducer/tree.root ;
+#for infile in $inputdir/*/vvTreeProducer/tree.root ;
+#for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v Single | grep -v DY); 
+#for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep Single ); 
+for infile in $inputdir/DY*JetsToLL_M50_*/vvTreeProducer/tree.root ;
 do
   echo "+++ skimming $infile +++"
   outfile="${outputdir}/${infile/$inputdir\//}"
