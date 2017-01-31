@@ -137,6 +137,7 @@
   plots->Clear();
   h_sf_4->Draw("colz text45");
   lumipt_dt->Draw();
+  plots->Print("muon_trg_summer16.pdf");
 
   plots->Print("muon_trg_summer16.pdf]");
 
