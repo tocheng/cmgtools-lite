@@ -2,8 +2,9 @@
 
 std::string channel = "all";
 bool doMC = false;
-bool doGJets = false;
+bool doGJets = true;
 bool useZSelecLowLPt = true;
+bool useNPUCut = false; // true for MC 80x old mc, not for data, not for GJets
 bool useEffSf = false;
 bool mcTrgSf = false;
 bool dtTrgSf = false;
@@ -15,17 +16,19 @@ bool dtHLT = false;
 // 3.) for MC : doMC=false, doGJets=false, useZSelecLowLPt=true, useEffSf=false
 // 4.) for GJets: doGJets=true, doMC=false, useZSelecLowLPt=true, useEffSf=false
 
-std::string inputdir = "/home/heli/XZZ/80X_20170124_light_Skim";
+std::string inputdir = "/home/heli/XZZ/80X_20161029_light_Skim";
 std::string filename;
 
-std::string outputdir = "./recoil_out8";
+std::string outputdir = "./recoil_out7";
 std::vector< std::string > channels = {"all", "mu", "el"};
 std::vector< std::string > mcfiles = {
-    "DYJetsToLL_M50_MGMLM_BIG", 
+    //"DYJetsToLL_M50_BIG_ResBos_NoRecoil", 
+    "DYJetsToLL_M50_BIG_NoRecoil", 
  };
 
 std::vector< std::string > dtfiles = {
-    "SingleEMU_Run2016Full_ReReco_v1"
+//    "SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib"
+    "SingleEMU_Run2016B2H_ReReco_36p46"
  };
 
 std::vector< std::string > gjfiles = {
@@ -110,6 +113,7 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   // tags
   std::string tag = tag0+"_met_para_study";
   if (useZSelecLowLPt) tag += "_ZSelecLowLPt";
+  if (useNPUCut) tag += "_NPUCut";
   if (doMC && useEffSf) tag += "_effSf";
   if ( (doMC && mcTrgSf) || (!doMC && dtTrgSf))  tag += "_trgSf";
   if (!doMC && dtHLT) tag += "_dtHLT";
@@ -131,10 +135,12 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   std::string cuts_loose_z_lowlpt="("+cuts_lepaccept_lowlpt+"&&"+cuts_zmass+")";
 
 
+  std::string cuts_npu="(nTrueInt<35)";
 
   base_selec =  cuts_loose_z;
   if (useZSelecLowLPt) base_selec =  cuts_loose_z_lowlpt;
 
+  if (useNPUCut) base_selec = base_selec+"&&"+cuts_npu;
 
   if (channel=="el") base_selec = base_selec+"&&(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11)";
   else if (channel=="mu") base_selec = base_selec+"&&(abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13)";
@@ -145,24 +151,44 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
 
 
   // add weight
-  std::string weight_selec = std::string("*(genWeight*ZPtWeight*puWeightsummer16/SumWeights*xsec*36814)");
+  //std::string weight_selec = std::string("*(genWeight*ZPtWeight*puWeight68075/SumWeights*1921.8*3*12900.0)");
+  std::string weight_selec = std::string("*(genWeight*ZPtWeight*puWeightmoriondMC/SumWeights*1921.8*3*36460.0)");
   // rho weight
+  //std::string rhoweight_selec = std::string("*(0.602*exp(-0.5*pow((rho-8.890)/6.187,2))+0.829*exp(-0.5*pow((rho-21.404)/10.866,2)))");
+  //std::string rhoweight_selec = std::string("*(0.232+0.064*rho)");
+  //std::string rhoweight_selec = std::string("*(0.038+0.118*rho-4.329e-03*rho*rho+1.011e-04*rho*rho*rho)"); // prompt 29.5fb-1
+  //std::string rhoweight_selec = std::string("*(0.019+0.114*rho+-4.705e-03*rho*rho+1.491e-04*rho*rho*rho)"); // rereco 33.59 fb-1
   std::string rhoweight_selec = std::string("*(0.32+0.42*TMath::Erf((rho-4.16)/4.58)+0.31*TMath::Erf((rho+115.00)/29.58))"); // rereco 36.1 fb-1
 
   // reco vtx
   std::string vtxweight_selec = std::string("*(0.807+0.007*nVert+-3.689e-05*nVert*nVert+6.730e-04*exp(2.500e-01*nVert))"); // rereco 33.59 fb-1
   // scale factors
-  std::string effsf_selec = std::string("*(isosf*idsf*trksf)");
+  //std::string effsf_selec = std::string("*(isosf*idsf*trksf)");
+  std::string effsf_selec = std::string("*(isosf*idsf)");
 
   // selec, cuts + weights
   std::string selec = base_selec;
-  //if (doMC) selec +=  weight_selec + rhoweight_selec;
+  if (doMC) selec +=  weight_selec + rhoweight_selec;
   //if (doMC) selec +=  weight_selec + vtxweight_selec;
-  if (doMC) selec +=  weight_selec;
+  //if (doMC) selec +=  weight_selec;
   if (doMC && useEffSf) selec += effsf_selec;
   if ( (doMC && mcTrgSf) || (!doMC && dtTrgSf) ) selec += "*(trgsf)";
   
   if (doGJets) {
+    //base_selec = "("+metfilter+"&&HLT_PHOTONHZZ)";
+    //base_selec = "("+metfilter+"&&gjet_l1_idCutBased>=2)";
+    //base_selec = "("+metfilter+"&&gjet_l1_idCutBased>=3)";
+    //base_selec = "("+metfilter+"&&HLT_PHOTONHZZ&&gjet_l1_idCutBased>=2)";
+    //base_selec = "("+metfilter+"&&HLT_PHOTONHZZ&&gjet_l1_idCutBased>=3)";
+    //base_selec = "("+metfilter+"&&(HLT_PHOTONIDISO&&!HLT_PHOTONIDISO75))";
+    //base_selec = "("+metfilter+"&&(HLT_PHOTONIDISO&&!HLT_PHOTONIDISO90))";
+    //base_selec = "("+metfilter+"&&HLT_PHOTONIDISO)";
+    //base_selec = "("+metfilter+"&&HLT_PHOTONIDISO&&!(absDeltaPhi>3.0&&metPara/llnunu_l1_pt>-1.5&&metPara/llnunu_l1_pt<-0.5))";
+    //base_selec = "("+metfilter+"&&HLT_PHOTONIDISO&&!(metPara/llnunu_l1_pt<-0.8&&metPara/llnunu_l1_pt>-1.8&&fabs(metPerp/llnunu_l1_pt)<0.3))";
+    //base_selec = "("+metfilter+"&&HLT_PHOTONIDISO&&fabs(llnunu_l1_eta)<1.47)";
+    //base_selec = "("+metfilter+"&&HLT_PHOTONIDISO&&fabs(llnunu_l1_eta)<1.47&&gjet_l1_idCutBased>=3)";
+    //base_selec = "("+metfilter+"&&HLT_PHOTONIDISO&&flag2)";
+    //base_selec = "(phi>-1&&phi<2&&fabs(eta)<1.0)";
     base_selec = "(1)";
     if (useZSelecLowLPt) {
       if (channel=="el")  selec = base_selec+"*(GJetsZPtWeightLowLPtEl)";
@@ -174,6 +200,9 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
       else if (channel=="mu") selec = base_selec+"*(GJetsZPtWeightMu)";
       else  selec = base_selec+"*(GJetsZPtWeight)";
     }
+    //if (channel=="el")  selec = base_selec+"*(GJetsWeightLowLPtEl)";
+    //else if (channel=="mu") selec = base_selec+"*(GJetsWeightLowLPtMu)";
+    //else  selec = base_selec+"*(GJetsWeightLowLPt)";
 
     selec = selec + "*(GJetsRhoWeight*GJetsPreScaleWeight)";
   }
@@ -185,7 +214,11 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   gROOT->ProcessLine(name);
 
   // lumiTag for plotting
-  lumiTag = "CMS 13 TeV 2016 L=36.81 fb^{-1}";
+  lumiTag = "CMS 13 TeV 2016 L=36.46 fb^{-1}";
+  //lumiTag = "CMS 13 TeV 2016 L=33.59 fb^{-1}";
+  //lumiTag = "CMS 13 TeV 2016 L=29.53 fb^{-1}";
+  //lumiTag = "CMS 13 TeV 2016 L=27.22 fb^{-1}";
+  //lumiTag = "CMS 13 TeV 2016 L=12.9 fb^{-1}";
   if (doMC) lumiTag = "CMS 13 TeV Simulation for 2016 Data";
 
   lumipt = new TPaveText(0.2,0.9,0.8,0.98,"brNDC");
@@ -212,7 +245,14 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
 
   TTree* tree = (TTree*)fin->Get("tree");
 
-   plots = new TCanvas("plots", "plots");
+  tree->SetAlias("absDeltaPhi", "fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi-llnunu_l1_phi))");
+  tree->SetAlias("metPara", "llnunu_l2_pt*cos(llnunu_l2_phi-llnunu_l1_phi)");
+  tree->SetAlias("metPerp", "llnunu_l2_pt*sin(llnunu_l2_phi-llnunu_l1_phi)");
+  tree->SetAlias("eta", "llnunu_l1_eta");
+  tree->SetAlias("phi", "llnunu_l1_phi");
+  tree->SetAlias("flag2", "(!(eta>0&&eta<0.15&&phi>0.52&&phi<0.56)&&!(eta>-2.5&&eta<-1.4&&phi>-0.5&&phi<0.5)&&!(eta>1.5&&eta<2.5&&phi>-0.5&&phi<0.5)&&!(eta>1.4&&eta<1.6&&phi>-0.8&&phi<-0.5)&&!(eta>1.4&&eta<2.5&&phi>2.5&&phi<4)&&!(eta>1.4&&eta<2.5&&phi>-4&&phi<-2.5)&&!(eta>-2.5&&eta<-1.4&&phi>2.5&&phi<4)&&!(eta>-2.5&&eta<-1.4&&phi>-4&&phi<-2.5)&&!(eta>2.3&&eta<2.6&&phi>-2.5&&phi<-2.2)&&!(eta>0.2&&eta<0.3&&phi>-2.6&&phi<-2.5)&&!(eta>0.5&&eta<0.7&&phi>-1.5&&phi<-1.2)&&!(eta>-0.85&&eta<-0.7&&phi>-1.8&&phi<-1.4)&&!(eta<-2.4&&eta>-2.5&&phi<-1.75&&phi>-1.9)&&!(eta>-2.5&&eta<-2.4&&phi>-1.2&&phi<-1.1)&&!(eta>-2.4&&eta<-2.3&&phi>-2.4&&phi<-2.3))");
+
+  plots = new TCanvas("plots", "plots");
 
   sprintf(name, "%s/%s%s.pdf[", outputdir.c_str(),filename.c_str(), tag.c_str());
   plots->Print(name);

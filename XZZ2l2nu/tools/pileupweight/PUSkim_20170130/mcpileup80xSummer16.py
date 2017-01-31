@@ -72,7 +72,7 @@ if (True):
 
     pileup_mc.GetYaxis().SetTitleOffset(1.5)
     pileup_dt.GetYaxis().SetTitleOffset(1.5)
-    lg = TLegend(0.6,0.7,0.85,0.85)
+    lg = TLegend(0.65,0.7,0.9,0.9)
     lg.AddEntry(pileup_dt, "Data", "pl")
     lg.AddEntry(pileup_mc, "MC", "pl")
 
@@ -86,8 +86,8 @@ if (True):
     text = pt.AddText(0.55,0.3,"#sqrt{s} = 13 TeV, 2016, L = "+"{:.3}".format(float(lumi))+" fb^{-1}")
 
 
-    pileup_dt.GetXaxis().SetRangeUser(0,100)
-    pileup_mc.GetXaxis().SetRangeUser(0,100)
+    pileup_dt.GetXaxis().SetRangeUser(0,80)
+    pileup_mc.GetXaxis().SetRangeUser(0,80)
     pileup_mc.Draw()
     pileup_dt.Draw("SAME")
     lg.Draw("same")

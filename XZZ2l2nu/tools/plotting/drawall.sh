@@ -1,25 +1,15 @@
 #!/bin/sh
 
-#tag="MC_Rc36p46DtReCalib_"
-#tag="MT_GJets2_BkgSub_Rc36p46DtReCalib_NonReso_"
-#tag="test_GJets2_BkgSub_Rc36p46DtReCalib_NonReso_"
-#tag="GJets2_BkgSub_Rc36p46DtReCalib_NonReso_"
-tag="test_"
-#tag="testscale2_wjsub_"
-#tag="Test2_GJets_BkgSub_Rc36p46DtReCalib_NonReso_"
-#tag="Test2_GJets_BkgSub_Rc36p46DtReCalib_"
-#tag="Test1_GJets_ResBosRefit_NoBkgSub_Rc36p46ReCalib_DtReCalib_"
-#tag="Test1_GJets_ResBosRefit_BkgSub_Rc36p46ReCalib_DtReCalib_"
-#tag="Test1_GJets_ResBos_BkgSub_Rc36p46wHLT_"
-#tag="Test1_GJets_ResBos_NoBkgSub_Rc36p46wHLT_"
+tag="MCSummer16_badMuonFilter_"
+#tag="test_badMuonFilter_"
 
 channels="mu el"
 #channels="el"
 #channels="mu"
-cutChains="tight"
+#cutChains="tight"
 #cutChains="tightzpt50"
 #cutChains="SR"
-#cutChains="SR tightzpt50 tight CR1"
+cutChains="SR tightzpt50 tight CR1"
 #cutChains="CR1 CR2 CR3"
 #cutChains="CR2 CR3"
 #cutChains="tightzpt50 tightzpt100 tightzpt100met50"
@@ -50,7 +40,7 @@ for cutChain in $cutChains;
 do
    for channel in $channels;
    do  
-#      ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --Blind --LogY &> ${logdir}/${tag}${cutChain}_mc_bld_log_${channel}.log &
+      ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --Blind --LogY &> ${logdir}/${tag}${cutChain}_mc_bld_log_${channel}.log &
 #      ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel"  --LogY &> ${logdir}/${tag}${cutChain}_mc_log_${channel}.log &
 #      ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --dyGJets --muoneg --Blind --LogY &> ${logdir}/${tag}${cutChain}_bld_log_${channel}.log &
 #      ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --dyGJets --muoneg --LogY &> ${logdir}/${tag}${cutChain}_log_${channel}.log &
@@ -66,7 +56,7 @@ do
 #      ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --dyGJets --muoneg --test &> ${logdir}/${tag}${cutChain}_${channel}.log &
 #      ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --dyGJets --muoneg --LogY  --test &> ${logdir}/${tag}${cutChain}_log_${channel}.log &
 
-      ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel"  --LogY --test &> ${logdir}/${tag}${cutChain}_log_${channel}.log &
+#      ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel"  --LogY --test &> ${logdir}/${tag}${cutChain}_log_${channel}.log &
 #       ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --muoneg  --LogY --test &> ${logdir}/${tag}${cutChain}_emu_log_${channel}.log &
 #       ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --dyGJets  --muoneg --LogY --test &> ${logdir}/${tag}${cutChain}_emu_gjet_log_${channel}.log &
 #       ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --Blind --dyGJets  --muoneg --LogY --test &> ${logdir}/${tag}${cutChain}_emu_gjet_bld_log_${channel}.log &

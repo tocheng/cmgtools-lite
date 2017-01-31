@@ -60,13 +60,13 @@ mc_scale='(1)'
 zjets_scale='(1)'
 
 if channel=='mu': 
-    mc_scale='(1.03236730989)'
+    mc_scale='(1.02942)'
     zjets_scale='(1.0)'
 elif channel=='el': 
-    mc_scale='(1.02293661362)'
+    mc_scale='(1.02139)'
     zjets_scale='(1.0)'
 else: 
-    mc_scale='(1.1484406619)'
+    mc_scale='(1.02942)'
     zjets_scale='(1)'
 
 # temp turn off mc_scale
@@ -219,6 +219,9 @@ if UseMETFilter:
     #cuts = '('+cuts+'&&'+metfilter+')'
     cuts = '('+cuts+')' # metfilter pre-applied in preskim
 
+# badmuon filter
+cuts += '&&(nbadmuon==0)' 
+
 cuts = '('+cuts+')'
 
 ROOT.gROOT.ProcessLine('.x tdrstyle.C') 
@@ -291,6 +294,7 @@ if muoneg:
     NONRES.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
     NONRES.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
     NONRES.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
+    NONRES.setAlias('nbadmuon', '(!nllnunu)')
 
 # if use mc
 else:
@@ -623,7 +627,7 @@ for sample in sigSamples:
 ##########################
 
 dataSamples = [
-'SingleEMU_Run2016Full_ReReco_v1'
+'SingleEMU_Run2016Full_ReReco_v1_DtReCalib'
 ]
 
 dataPlotters=[]

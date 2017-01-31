@@ -465,7 +465,7 @@ QCD_Pt30to50_EMEnriched_ext,
 QCD_Pt50to80_EMEnriched_ext,
 QCD_Pt80to120_EMEnriched,
 QCD_Pt80to120_EMEnriched_ext,
-#QCD_Pt120to170_EMEnriched,
+QCD_Pt120to170_EMEnriched,
 QCD_Pt170to300_EMEnriched,
 QCD_Pt300toInf_EMEnriched
 ]
@@ -539,6 +539,9 @@ ZJetsToNuNu_HT2500toInf = kreator.makeMCComponent("ZJetsToNuNu_HT2500toInf",
 "/ZJetsToNuNu_HT-2500ToInf_13TeV-madgraph/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM",
 "CMS", ".*root",0.008203*1.23)
 
+#280.47*1.23+78.36*1.23+10.94*1.23+1.474*1.23+0.3586*1.23+0.008203*1.23
+
+
 ZJetsToNuNuHT = [
 ZJetsToNuNu_HT100to200,
 ZJetsToNuNu_HT100to200_ext,
@@ -609,6 +612,9 @@ WJetsToLNu_HT2500toInf = kreator.makeMCComponent("WJetsToLNu_HT2500toInf",
 WJetsToLNu_HT2500toInf_ext1 = kreator.makeMCComponent("WJetsToLNu_HT2500toInf_ext1", 
 "/WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/MINIAODSIM", 
 "CMS", ".*root",0.03216*1.21,useAAA=False)
+
+# 1345*1.21+359.7*1.21+48.91*1.21+12.05*1.21+5.501*1.21+1.329*1.21+0.03216*1.21
+
 
 WJetsToLNuHT = [
 WJetsToLNu_HT100to200,
