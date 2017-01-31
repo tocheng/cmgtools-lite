@@ -5,7 +5,7 @@
 # compile
 g++ preskim_gjets.cc -o preskim_gjets.exe `root-config --cflags` `root-config --libs`
 
-samples="Q*"
+samples="Z*"
 #samples="SinglePhoton_*"
 #samples="SinglePhoton_Run2016H_PromptReco_v3"
 #samples="SinglePhoton_Run2016B_23Sep2016_v2_resub"

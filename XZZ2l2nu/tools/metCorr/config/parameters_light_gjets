@@ -45,7 +45,7 @@ storeErr: true
 removeHLTFlag: true
 removeMETFlag: true
 doMTUnc: true
-doMTUncDummy: true # true for data, no met uncert for data.
+doMTUncDummy: false # true for data, no met uncert for data.
 
 # tree selection string
 selection: (1)
@@ -187,7 +187,7 @@ DyZPtWeightInputFileName: data/zptweight/dyjets_zpt_weight_lo_nlo_genAccV2.root
 #====================================================================
 
 # default use histogram
-doRecoil: false
+doRecoil: true
 
 # use smoothed hist
 doRecoilUseSmooth: true
@@ -213,9 +213,9 @@ RecoilInputFileNameMCLO_mu:  data/recoil/DYJetsToLL_M50_MGMLM_BIG_met_para_study
 RecoilInputFileNameMCLO_el:  data/recoil/DYJetsToLL_M50_MGMLM_BIG_met_para_study_ZSelecLowLPt_el.root
 
 # photon data
-RecoilInputFileNameGJets_all: data/recoil/SinglePhoton_Run2016B2H_ReReco_36p46_NoRecoil_met_para_study_ZSelecLowLPt.root
-RecoilInputFileNameGJets_mu:  data/recoil/SinglePhoton_Run2016B2H_ReReco_36p46_NoRecoil_met_para_study_ZSelecLowLPt_mu.root
-RecoilInputFileNameGJets_el:  data/recoil/SinglePhoton_Run2016B2H_ReReco_36p46_NoRecoil_met_para_study_ZSelecLowLPt_el.root
+RecoilInputFileNameGJets_all: data/recoil/SinglePhoton_Run2016Full_ReReco_v1_NoRecoil_met_para_study_ZSelecLowLPt.root
+RecoilInputFileNameGJets_mu:  data/recoil/SinglePhoton_Run2016Full_ReReco_v1_NoRecoil_met_para_study_ZSelecLowLPt_mu.root
+RecoilInputFileNameGJets_el:  data/recoil/SinglePhoton_Run2016Full_ReReco_v1_NoRecoil_met_para_study_ZSelecLowLPt_el.root
 
 
 

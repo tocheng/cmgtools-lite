@@ -86,6 +86,7 @@ int main(int argc, char** argv) {
 //  tree->SetBranchStatus("gjet_l2_*smear*", 0);
 //  tree->SetBranchStatus("gjet_l2_*JER*",0);
 //  tree->SetBranchStatus("gjet_l2_*Smear*",0);
+  
 
   if (!isData) {
     //tree->SetBranchStatus("HLT_*",0); 
@@ -94,6 +95,8 @@ int main(int argc, char** argv) {
     tree->SetBranchStatus("gjet_l1_mcEta",0);
     tree->SetBranchStatus("gjet_l1_mcPhi",0);
     tree->SetBranchStatus("gjet_l2_genPt",0);
+    tree->SetBranchStatus("gjet_l2_t1Pt_*",1);
+    tree->SetBranchStatus("gjet_l2_t1Phi_*",1);
   }
 
   tree->SetBranchStatus("nlep", 1);

@@ -463,15 +463,15 @@ bool  prepareTrees()
       _tree_in->SetBranchAddress("gjet_l2_genPhi", &_gjet_l2_genPhi);
       _tree_in->SetBranchAddress("gjet_l2_genEta", &_gjet_l2_genEta);
 
-      _tree_in->SetBranchAddress("gjet_l2_t1Pt_JECUp", &_gjet_l2_t1Pt_JECUp);
-      _tree_in->SetBranchAddress("gjet_l2_t1Pt_JECDn", &_gjet_l2_t1Pt_JECDn);
-      _tree_in->SetBranchAddress("gjet_l2_t1Phi_JECUp", &_gjet_l2_t1Phi_JECUp);
-      _tree_in->SetBranchAddress("gjet_l2_t1Phi_JECDn", &_gjet_l2_t1Phi_JECDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_JetEnUp", &_gjet_l2_t1Pt_JECUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_JetEnDn", &_gjet_l2_t1Pt_JECDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_JetEnUp", &_gjet_l2_t1Phi_JECUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_JetEnDn", &_gjet_l2_t1Phi_JECDn);
 
-      _tree_in->SetBranchAddress("gjet_l2_t1Pt_JERUp", &_gjet_l2_t1Pt_JERUp);
-      _tree_in->SetBranchAddress("gjet_l2_t1Pt_JERDn", &_gjet_l2_t1Pt_JERDn);
-      _tree_in->SetBranchAddress("gjet_l2_t1Phi_JERUp", &_gjet_l2_t1Phi_JERUp);
-      _tree_in->SetBranchAddress("gjet_l2_t1Phi_JERDn", &_gjet_l2_t1Phi_JERDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_JetResUp", &_gjet_l2_t1Pt_JERUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_JetResDn", &_gjet_l2_t1Pt_JERDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_JetResUp", &_gjet_l2_t1Phi_JERUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_JetResDn", &_gjet_l2_t1Phi_JERDn);
 
       _tree_in->SetBranchAddress("gjet_l2_t1Pt_UnclusterUp", &_gjet_l2_t1Pt_UnclusterUp);
       _tree_in->SetBranchAddress("gjet_l2_t1Pt_UnclusterDn", &_gjet_l2_t1Pt_UnclusterDn);

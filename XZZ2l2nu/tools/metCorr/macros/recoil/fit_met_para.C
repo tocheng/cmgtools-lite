@@ -2,7 +2,7 @@
 
 std::string channel = "all";
 bool doMC = false;
-bool doGJets = false;
+bool doGJets = true;
 bool useZSelecLowLPt = true;
 bool useEffSf = false;
 bool mcTrgSf = false;
@@ -29,8 +29,7 @@ std::vector< std::string > dtfiles = {
  };
 
 std::vector< std::string > gjfiles = {
-    //"SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_NoRecoil"
-    "SinglePhoton_Run2016B2H_ReReco_36p46_NoRecoil"
+    "SinglePhoton_Run2016Full_ReReco_v1_NoRecoil"
  };
 
 

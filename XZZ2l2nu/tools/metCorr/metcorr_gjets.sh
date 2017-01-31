@@ -26,7 +26,9 @@ njob="0"
 #for infile in $inputdir/QCD_HT*/vvTreeProducer/tree.root ; 
 #for infile in $inputdir/GJet_Pt_40toInf_DoubleEMEnriched/vvTreeProducer/tree.root ; 
 #for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v SinglePhoton | grep -v GJet_Pt_ ); 
-for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep  SinglePhoton_Run2016Full ); 
+#for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep  SinglePhoton_Run2016Full ); 
+#for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v  SinglePhoton_Run2016Full ); 
+for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep  -v Single ); 
 do
   echo "+++ skimming $infile +++"
   outfile="${outputdir}/${infile/$inputdir\//}"
@@ -35,8 +37,8 @@ do
   #outfile="${outfile/\/vvTreeProducer\/tree/_ResBos_Rc36p46ReCalibwHLT}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_ResBos_Rc36p46wHLT}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_Rc36p46ReCalib}"
-  #outfile="${outfile/\/vvTreeProducer\/tree/}"
-  outfile="${outfile/\/vvTreeProducer\/tree/_NoRecoil}"
+  outfile="${outfile/\/vvTreeProducer\/tree/}"
+  #outfile="${outfile/\/vvTreeProducer\/tree/_NoRecoil}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_test}"
 
   inSkimFile=${infile/vvTreeProducer\/tree.root/skimAnalyzerCount\/SkimReport.txt}

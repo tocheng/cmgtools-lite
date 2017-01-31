@@ -76,14 +76,14 @@ wt_qcd_to_gjets = "((1/(1.525e-01*exp(-6.201e-02*llnunu_l1_pt+5.999e+00)+-5.024e
 if WtQCDToGJets:
     tag+="WtQCDToGJets_"
 
-outdir='plots_ph_36p46'
+outdir='plots_ph'
 
-indir='/home/heli/XZZ/80X_20161029_GJets_light_Skim'
+indir='/home/heli/XZZ/80X_20170124_GJets_light_Skim'
 lumi=36.814
 sepSig=True
 doRatio=True
 Blind=options.Blind
-puWeight='puWeightmoriondMC'
+puWeight='puWeightsummer16'
 
 if not os.path.exists(outdir): os.system('mkdir -p '+outdir)
 
@@ -157,17 +157,17 @@ zjetsFidXsecLowLptMu = 577.65006197098625762
 ################
 # DYJets->LL
 ################
-zllSamples = ['DYJetsToLL_M50_reHLT']
+#zllSamples = ['DYJetsToLL_M50_reHLT']
 
-zllPlotters=[]
-for sample in zllSamples:
-    zllPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
-    zllPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
-    zllPlotters[-1].addCorrectionFactor('xsec','xsec')
-    zllPlotters[-1].addCorrectionFactor('genWeight','genWeight')
-    zllPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
-    zllPlotters[-1].addCorrectionFactor(scale,'scale')
-
+#zllPlotters=[]
+#for sample in zllSamples:
+#    zllPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
+#    zllPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
+#    zllPlotters[-1].addCorrectionFactor('xsec','xsec')
+#    zllPlotters[-1].addCorrectionFactor('genWeight','genWeight')
+#    zllPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
+#    zllPlotters[-1].addCorrectionFactor(scale,'scale')
+#    zllPlotters[-1].setAlias('nbadmuon', '(!nllnunu)')
 
 
 ##################
@@ -262,13 +262,14 @@ for sample in wlnSamples:
 ################################
 
 tSamples = [
-'TToLeptons_tch_powheg',
-'TBarToLeptons_tch_powheg',
+'T_tch_powheg',
+'TBar_tch_powheg',
 'T_tWch',
 'TBar_tWch',
 'TGJets_BIG',
-'TTGJets',
+'TTGJets_BIG',
 ]
+
 
 tPlotters=[]
 for sample in tSamples:
@@ -284,7 +285,8 @@ for sample in tSamples:
 # all above  physical met adding together
 ##########################################
 
-phymetPlotters = zllPlotters+znnPlotters+znngPlotters+wlngPlotters+wlnPlotters+tPlotters
+#phymetPlotters = zllPlotters+znnPlotters+znngPlotters+wlngPlotters+wlnPlotters+tPlotters
+phymetPlotters = znnPlotters+znngPlotters+wlngPlotters+wlnPlotters+tPlotters
 
 
 
@@ -300,11 +302,11 @@ phymetPlotters = zllPlotters+znnPlotters+znngPlotters+wlngPlotters+wlnPlotters+t
 ##########################
 
 gjetsSamples = [
-'GJets_HT40to100',
-'GJets_HT100to200',
-'GJets_HT200to400',
-'GJets_HT400to600',
-'GJets_HT600toInf',
+#'GJets_HT40to100_BIG',
+'GJets_HT100to200_BIG',
+'GJets_HT200to400_BIG',
+'GJets_HT400to600_BIG',
+'GJets_HT600toInf_BIG',
 ]
 
 gjetsPlotters=[]
@@ -323,27 +325,28 @@ for sample in gjetsSamples:
 ##########################
 
 QCD_EMEnriched_samples = [
-'QCD_Pt20to30_EMEnriched',
-'QCD_Pt30to50_EMEnriched',
-'QCD_Pt50to80_EMEnriched',
-'QCD_Pt80to120_EMEnriched',
-'QCD_Pt120to170_EMEnriched',
-'QCD_Pt170to300_EMEnriched',
-'QCD_Pt300toInf_EMEnriched',
+'QCD_Pt20to30_EMEnriched_BIG',
+'QCD_Pt30to50_EMEnriched_BIG',
+'QCD_Pt50to80_EMEnriched_BIG',
+'QCD_Pt80to120_EMEnriched_BIG',
+'QCD_Pt120to170_EMEnriched_BIG',
+'QCD_Pt170to300_EMEnriched_BIG',
+'QCD_Pt300toInf_EMEnriched_BIG',
 ]
 
-QCD_HT_samples = [
-"QCD_HT1000to1500_BIG",
-"QCD_HT100to200_BIG",
-"QCD_HT1500to2000_BIG",
-"QCD_HT2000toInf_BIG",
-"QCD_HT200to300_BIG",
-"QCD_HT300to500_BIG",
-"QCD_HT500to700_BIG",
-"QCD_HT700to1000_BIG"
-]
+#QCD_HT_samples = [
+#"QCD_HT1000to1500_BIG",
+#"QCD_HT100to200_BIG",
+#"QCD_HT1500to2000_BIG",
+#"QCD_HT2000toInf_BIG",
+#"QCD_HT200to300_BIG",
+#"QCD_HT300to500_BIG",
+#"QCD_HT500to700_BIG",
+#"QCD_HT700to1000_BIG"
+#]
 
-qcdSamples=QCD_HT_samples
+#qcdSamples=QCD_HT_samples
+qcdSamples=QCD_EMEnriched_samples
  
 qcdPlotters=[]
 for sample in qcdSamples:
@@ -405,7 +408,8 @@ for i in range(len(allmcPlotters)) :
 gdataSamples = [
 #'SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_Rc36p46ReCalib',
 #'SinglePhoton_Run2016B2H_ReReco_36p46_ResBosRefit_Rc36p46ReCalib',
-'SinglePhoton_Run2016B2H_ReReco_36p46_Rc36p46ReCalib',
+#'SinglePhoton_Run2016B2H_ReReco_36p46_Rc36p46ReCalib',
+'SinglePhoton_Run2016Full_ReReco_v1',
 ]
 
 gdataPlotters=[]
@@ -451,8 +455,8 @@ for sample in gdataSamples:
 # Physical MET
 #########################
 
-ZLL = MergedPlotter(zllPlotters)
-ZLL.setFillProperties(1001,ROOT.kOrange)
+#ZLL = MergedPlotter(zllPlotters)
+#ZLL.setFillProperties(1001,ROOT.kOrange)
 ZNN = MergedPlotter(znnPlotters)
 ZNN.setFillProperties(1001,ROOT.kMagenta)
 ZNNG = MergedPlotter(znngPlotters)
@@ -511,7 +515,7 @@ else:
     Stack.addPlotter(ZNN, "ZNN","Z->#nu#nu", "background")
     Stack.addPlotter(ZNNG, "ZNNG","Z#gamma->#nu#nu#gamma", "background")
     Stack.addPlotter(T, "T","Top", "background")
-    Stack.addPlotter(ZLL, "ZLL","Z->ll", "background")
+#    Stack.addPlotter(ZLL, "ZLL","Z->ll", "background")
     Stack.addPlotter(WLNG, "WGToLNuG","W#gamma->l#nu#gamma", "background")
     Stack.addPlotter(WLN, "WLN","W->l#nu", "background")
     Stack.addPlotter(GJETS, "GJETS","#gamma+jets", "background")
