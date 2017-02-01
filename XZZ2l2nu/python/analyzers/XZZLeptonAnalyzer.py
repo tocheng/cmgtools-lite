@@ -350,6 +350,26 @@ class XZZLeptonAnalyzer( Analyzer ):
                 self.electronEnergyCalibrator.correct(ele, event.run)
                 #print 'LeptonAnalyzer:: ele(',idx,'):  after Corr, pT(e) =',ele.pt()
 
+        # Electron 
+        if not self.cfg_comp.isMC:
+            for ele in allelectrons:
+                print "before ele.energy() = ",ele.energy()
+                ele.Ecorr = 1.0
+                ele.seedId = ele.superCluster().seed().seed()
+                for did in self.handles['ebhits'].product():
+                    if did.id()==ele.seedId:
+                        if did.energy()>200 and did.energy()<300: ele.Ecorr = 1.0199 
+                        elif did.energy()>300 and did.energy()<400: ele.Ecorr = 1.052
+                        elif did.energy()>400 and did.energy()<500: ele.Ecorr = 1.015
+                # set p4
+                new_p4 = ROOT.math.PtEtaPhiMLorentzVector(ele.physObj.pt()*ele.Ecorr,
+                            ele.physObj.eta(),
+                            ele.physObj.phi(),
+                            ele.physObj.mass())
+                ele.phyObj.setP4(new_p4)
+                print "after ele.energy() = ",ele.energy()
+
+
         # Attach the vertex
         for ele in allelectrons:
             ele.associatedVertex = event.goodVertices[0] if hasattr(event,"goodVertices") and len(event.goodVertices)>0 else event.vertices[0]

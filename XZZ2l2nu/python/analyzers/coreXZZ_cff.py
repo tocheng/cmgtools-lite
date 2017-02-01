@@ -96,13 +96,13 @@ lepAna = cfg.Analyzer(
         'isSync': False,
         'smearMode': 'ebe'
     }),
-    doElectronScaleCorrections = False 
-#    doElectronScaleCorrections = {
-#        'data' : 'EgammaAnalysis/ElectronTools/data/ScalesSmearings/80X_ichepV1_2016_ele',
-#        'GBRForest': ('$CMSSW_BASE/src/CMGTools/XZZ2l2nu/data/GBRForest_data_ICHEP16_combined.root',
-#                      'gedelectron_p4combination_25ns'),
-#        'isSync': False
-#    },
+#    doElectronScaleCorrections = False 
+    doElectronScaleCorrections = {
+        'data' : 'EgammaAnalysis/ElectronTools/data/ScalesSmearings/Winter_2016_reReco_v1_ele',
+        'GBRForest': ('$CMSSW_BASE/src/CMGTools/XZZ2l2nu/data/GBRForest_data_ICHEP16_combined.root',
+                      'gedelectron_p4combination_25ns'),
+        'isSync': False
+    },
     )
 
 multtrg = cfg.Analyzer(
