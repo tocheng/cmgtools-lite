@@ -138,53 +138,20 @@ if test==1:
     # test a single component, using a single thread.
     #selectedComponents = dataSamples
     #selectedComponents = mcSamples
-    #selectedComponents = SinglePhoton
-    #selectedComponents = SinglePhoton23Sep2016+[SinglePhoton_Run2016H_PromptReco_v1,SinglePhoton_Run2016H_PromptReco_v2]
-    #selectedComponents = SinglePhoton23Sep2016+[SinglePhoton_Run2016H_PromptReco_v2]
-    #selectedComponents = [SinglePhoton_Run2016C_23Sep2016]
-    #selectedComponents = [SinglePhoton_Run2016D_23Sep2016]
-    #selectedComponents = [SinglePhoton_Run2016B_PromptReco,
-    #                      SinglePhoton_Run2016B_PromptReco_v2,
-    #                      SinglePhoton_Run2016C_PromptReco_v2,
-    #                      SinglePhoton_Run2016D_PromptReco_v2,
-    #                      SinglePhoton_Run2016E_PromptReco_v2,
-    #                      SinglePhoton_Run2016F_PromptReco_v1,
-    #                      SinglePhoton_Run2016G_PromptReco_v1,]
- 
-    #selectedComponents = [SinglePhoton_Run2016D_PromptReco_v2]
     #selectedComponents = [SinglePhoton_Run2016B_23Sep2016, SinglePhoton_Run2016B_23Sep2016_v2,]
     #selectedComponents = [SinglePhoton_Run2016C_23Sep2016,]
-    selectedComponents = [SinglePhoton_Run2016D_23Sep2016,]
+    #selectedComponents = [SinglePhoton_Run2016D_23Sep2016,]
     #selectedComponents = [SinglePhoton_Run2016E_23Sep2016,]
     #selectedComponents = [SinglePhoton_Run2016F_23Sep2016,]
     #selectedComponents = [SinglePhoton_Run2016G_23Sep2016,]
     #selectedComponents = [SinglePhoton_Run2016H_PromptReco_v1, SinglePhoton_Run2016H_PromptReco_v2, SinglePhoton_Run2016H_PromptReco_v3]
-    #selectedComponents = [SinglePhoton_Run2016H_PromptReco_v2]
-    #selectedComponents = [SinglePhoton_Run2016H_PromptReco_v2, SinglePhoton_Run2016H_PromptReco_v3]
 
-    #selectedComponents = [SinglePhoton_Run2016F_PromptReco_v1]
-    #selectedComponents = [GJet_Pt_20toInf_DoubleEMEnriched]
-    #selectedComponents = [GJet_Pt_20to40_DoubleEMEnriched, GJet_Pt_40toInf_DoubleEMEnriched]
-    #selectedComponents = [SingleMuon_Run2015D_Promptv4,SingleElectron_Run2015D_Promptv4]
-    #selectedComponents = [SingleMuon_Run2015C_25ns_16Dec]
-    #selectedComponents = [SingleMuon_Run2016B_PromptReco_v2] 
-    #selectedComponents = SingleMuon+SingleElectron
-    #selectedComponents = [SingleMuon_Run2016B_PromptReco_v2,SingleElectron_Run2016B_PromptReco_v2] 
-    #selectedComponents = [SingleMuon_Run2016D_PromptReco_v2,SingleElectron_Run2016D_PromptReco_v2] 
-    #selectedComponents = [MuonEG_Run2015D_16Dec] #MuEG
-    #selectedComponents = [RSGravToZZToZZinv_narrow_800]
-    #selectedComponents = [DYJetsToLL_M50]
-    #selectedComponents = [DYJetsToLL_M50_MGMLM_Ext1]
-    #selectedComponents = [BulkGravToZZToZlepZinv_narrow_600] 
-    #selectedComponents = signalSamples
-    #selectedComponents = [TTTo2L2Nu]
-    #selectedComponents = [BulkGravToZZ_narrow_800]
-    #selectedComponents = [BulkGravToZZToZlepZhad_narrow_800]
+    #selectedComponents = SinglePhoton23Sep2016
     for c in selectedComponents:
-        c.files = c.files[10:20]
+#        c.files = c.files[10:20]
         #c.splitFactor = (len(c.files)/10 if len(c.files)>10 else 1)
-#        c.splitFactor = len(c.files)
-        c.splitFactor = 1
+        c.splitFactor = len(c.files)
+#        c.splitFactor = 1
         #c.triggers=triggers_1mu_noniso
         #c.triggers=triggers_1e_noniso
 

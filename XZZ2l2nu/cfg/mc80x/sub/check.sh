@@ -10,10 +10,7 @@
 # and directory to copy jobs out
 
 dir=$1
-#dir=mc_z
-#dir=mc_zjet
-#dir=mc_zz1
-out=/data2/XZZ2/80X_20170122_Chunks
+out=/data2/XZZ2/80X_20170202_Chunks
 
 mkdir -p $out
 
