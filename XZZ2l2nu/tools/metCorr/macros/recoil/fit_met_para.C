@@ -184,6 +184,7 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   sprintf(name, ".! mkdir -p %s", outputdir.c_str());
   gROOT->ProcessLine(name);
 
+
   // lumiTag for plotting
   lumiTag = "CMS 13 TeV 2016 L=36.81 fb^{-1}";
   if (doMC) lumiTag = "CMS 13 TeV Simulation for 2016 Data";
@@ -217,6 +218,9 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   sprintf(name, "%s/%s%s.pdf[", outputdir.c_str(),filename.c_str(), tag.c_str());
   plots->Print(name);
 
+  sprintf(name, "%s/%s%s.pdf", outputdir.c_str(), filename.c_str(), tag.c_str());
+  std::string plotfilename(name);
+
 
   // other control plots
   Double_t ZPtBins[] = {0,2,4,6,8,10,12,14,16,18,20,22,24,26,28, 30, 35, 40, 50, 60, 70, 80, 90, 100, 120, 140, 160, 180, 220, 260, 300, 500, 5000 };
@@ -247,7 +251,7 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   plots->SetLogx(1);
   pzpt->Draw();
   lumipt->Draw();
-  plots->Print(plotfile.c_str());
+  plots->Print(plotfilename.c_str());
   plots->SetLogx(0);
   plots->Clear();
 
@@ -275,8 +279,6 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   for (int ii=0; ii<Nbins; ii++) fit_min.push_back(-50);
   for (int ii=0; ii<Nbins; ii++) fit_max.push_back(20);
 
-  sprintf(name, "%s/%s%s.pdf", outputdir.c_str(), filename.c_str(), tag.c_str());
-  std::string plotfilename(name);
   fit_slice_gaus(h2d1, h1d1, plotfilename);
   fit_slice_gaus(h2d2, h1d2, plotfilename);
 
