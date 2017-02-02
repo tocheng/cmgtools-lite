@@ -130,14 +130,17 @@ class XZZPhotonAnalyzer( Analyzer ):
             # time
             gamma.seedId = gamma.seed().seed()
             gamma.seedhit = ROOT.EcalRecHit()
-            for did in self.handles['ebhits'].product():
-                if did.id()==gamma.seedId: gamma.seedhit = did
-            for did in self.handles['eehits'].product():
-                if did.id()==gamma.seedId: gamma.seedhit = did
-            for did in self.handles['eshits'].product():
-                if did.id()==gamma.seedId: gamma.seedhit = did
+            if gamma.seedId.subdetId()==1:
+                for did in self.handles['ebhits'].product():
+                    if did.id()==gamma.seedId: gamma.seedhit = did
+            elif gamma.seedId.subdetId()==2: 
+                for did in self.handles['eehits'].product():
+                    if did.id()==gamma.seedId: gamma.seedhit = did
+            else: print "Couldn't find seed Xtal!"
 
             gamma.time = gamma.seedhit.time()
+
+
 
             if self.cfg_ana.gammaID=="PhotonCutBasedIDLoose_CSA14" or self.cfg_ana.gammaID=="PhotonCutBasedIDLoose_PHYS14" :
                 gamma.idCutBased = gamma.photonIDCSA14(self.cfg_ana.gammaID) 

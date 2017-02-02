@@ -75,6 +75,10 @@ class XZZLeptonAnalyzer( Analyzer ):
         #rho for electron pfIso
         self.handles['rhoElePfIso'] = AutoHandle( self.cfg_ana.rhoElectronPfIso, 'double')
         self.handles['rhoEleHLT'] = AutoHandle( 'fixedGridRhoFastjetCentralCalo', 'double')
+        # ecal reco hits collections
+        self.handles['ebhits'] = AutoHandle( ("reducedEgamma","reducedEBRecHits"),'edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> >')
+        self.handles['eehits'] = AutoHandle( ("reducedEgamma","reducedEERecHits"),'edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> >')
+        self.handles['eshits'] = AutoHandle( ("reducedEgamma","reducedESRecHits"),'edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> >')
 
         # decide to filter events not passing lepton requirements
         self.do_filter = getattr(self.cfg_ana, 'do_filter', True)
@@ -349,6 +353,18 @@ class XZZLeptonAnalyzer( Analyzer ):
                 #print 'LeptonAnalyzer:: ele(',idx,'): before Corr, pT(e) =',ele.pt()
                 self.electronEnergyCalibrator.correct(ele, event.run)
                 #print 'LeptonAnalyzer:: ele(',idx,'):  after Corr, pT(e) =',ele.pt()
+
+        # Electron 
+        for ele in allelectrons:
+            seedId = ele.superCluster().seed().seed()
+            if seedId.subdetId()==1:
+                for did in self.handles['ebhits'].product():
+                    if did.id()==seedId: ele.seedXtal = did
+            elif seedId.subdetId()==2: 
+                for did in self.handles['eehits'].product():
+                    if did.id()==seedId: ele.seedXtal = did
+            else: print "Couldn't find seed Xtal!"
+
 
         # Attach the vertex
         for ele in allelectrons:

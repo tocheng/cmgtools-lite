@@ -88,6 +88,8 @@ leptonType = NTupleObjectType("lepton", baseObjectTypes = [ particleType ], vari
     # Extra electron ID working points
     NTupleVariable("looseelectron",   lambda x : x.physObj.electronID("cutBasedElectronID-Spring15-25ns-V1-standalone-loose") if abs(x.pdgId())==11 else -999, int, help="electron POG Loose id"),
     NTupleVariable("eSCeta",   lambda x : x.physObj.superCluster().eta() if abs(x.pdgId())==11 else -999, float, help="electron SC eta"),
+    NTupleVariable("eSeedXtal",   lambda x : x.seedXtal.energy() if (abs(x.pdgId())==11 and hasattr(x, 'seedXtal')) else -999, float, help="electron seed xtral energy"),
+    #NTupleVariable("timeSeedXtal",   lambda x : x.seedXtal.time() if (abs(x.pdgId())==11 and hasattr(x, 'seedXtal')) else -999, float, help="electron seed xtral time"),
     NTupleVariable("looseelectronnoiso",   lambda x : x.loose_nonISO if abs(x.pdgId())==11 else -999, int, help="electron POG Loose id no iso"),
     #NTupleVariable("looseisoelectron",   lambda x : x.looseiso if abs(x.pdgId())==11 else -999, int, help="electron POG Loose id default iso"),
     NTupleVariable("electronrelIsoea03",   lambda x : x.relIsoea03 if abs(x.pdgId())==11 else -999, float, help="electron relisoea03"),

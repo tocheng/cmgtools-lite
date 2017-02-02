@@ -94,8 +94,8 @@ if test==1:
     #                      MET_Run2016H_PromptReco_v1, MET_Run2016H_PromptReco_v2 
     #                     ] 
 
-    #selectedComponents = [SingleElectron_Run2016H_PromptReco_v1] 
-    selectedComponents = [SingleMuon_Run2016H_PromptReco_v3] 
+    selectedComponents = [SingleElectron_Run2016H_PromptReco_v3] 
+    #selectedComponents = [SingleMuon_Run2016H_PromptReco_v3] 
     #selectedComponents = [SingleMuon_Run2016G_PromptReco_v1] 
     #selectedComponents = [SingleElectron_Run2016G_23Sep2016] 
     #selectedComponents = [MET_Run2016G_PromptReco_v1] 

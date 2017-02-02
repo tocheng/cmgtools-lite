@@ -2,7 +2,7 @@
 
 std::string channel = "all";
 bool doMC = false;
-bool doGJets = true;
+bool doGJets = false;
 bool useZSelecLowLPt = true;
 bool useEffSf = false;
 bool mcTrgSf = false;
@@ -55,6 +55,7 @@ TFile* fout;
 std::string histname;
 TPaveText* lumipt;
 TPaveText* pvtxt;
+TProfile* pzpt;
 TH2D* h2d1;
 TH2D* h2d2;
 TH2D* h2d3;
@@ -183,6 +184,7 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   sprintf(name, ".! mkdir -p %s", outputdir.c_str());
   gROOT->ProcessLine(name);
 
+
   // lumiTag for plotting
   lumiTag = "CMS 13 TeV 2016 L=36.81 fb^{-1}";
   if (doMC) lumiTag = "CMS 13 TeV Simulation for 2016 Data";
@@ -216,6 +218,9 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   sprintf(name, "%s/%s%s.pdf[", outputdir.c_str(),filename.c_str(), tag.c_str());
   plots->Print(name);
 
+  sprintf(name, "%s/%s%s.pdf", outputdir.c_str(), filename.c_str(), tag.c_str());
+  std::string plotfilename(name);
+
 
   // other control plots
   Double_t ZPtBins[] = {0,2,4,6,8,10,12,14,16,18,20,22,24,26,28, 30, 35, 40, 50, 60, 70, 80, 90, 100, 120, 140, 160, 180, 220, 260, 300, 500, 5000 };
@@ -230,6 +235,28 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   const Int_t NMetPerpBins=400;
   Double_t MetPerpBins[NMetPerpBins+1];
   for (int i=0; i<=NMetPerpBins; i++) { MetPerpBins[i] = -200.0+400.0/NMetPerpBins*i; };
+
+  // zpt profile
+  pzpt = new TProfile("p_zpt", "p_zpt", NZPtBins, ZPtBins);
+  tree->Draw("llnunu_l1_pt:llnunu_l1_pt>>p_zpt", selec.c_str(), "prof");
+  pzpt->SetLineColor(2);
+  pzpt->SetMarkerColor(2);
+  pzpt->SetMarkerStyle(20);
+  pzpt->GetXaxis()->SetTitle("P_{T}(Z) (GeV)");
+  if (doGJets) pzpt->GetXaxis()->SetTitle("P_{T}(#gamma) (GeV)");
+  pzpt->GetYaxis()->SetTitle("mean P_{T}(Z) (GeV)");
+  if (doGJets) pzpt->GetYaxis()->SetTitle("mean P_{T}(#gamma) (GeV)");
+  plots->cd();
+  plots->Clear();
+  plots->SetLogx(1);
+  pzpt->Draw();
+  lumipt->Draw();
+  plots->Print(plotfilename.c_str());
+  plots->SetLogx(0);
+  plots->Clear();
+
+  fout->cd();
+  pzpt->Write(); 
 
   h2d1 = new TH2D("h_met_para_vs_zpt", "h_met_para_vs_zpt", NZPtBins, ZPtBins, NMetParaBins, MetParaBins);
   h2d2 = new TH2D("h_met_perp_vs_zpt", "h_met_perp_vs_zpt", NZPtBins, ZPtBins, NMetPerpBins, MetPerpBins);
@@ -252,8 +279,6 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   for (int ii=0; ii<Nbins; ii++) fit_min.push_back(-50);
   for (int ii=0; ii<Nbins; ii++) fit_max.push_back(20);
 
-  sprintf(name, "%s/%s%s.pdf", outputdir.c_str(), filename.c_str(), tag.c_str());
-  std::string plotfilename(name);
   fit_slice_gaus(h2d1, h1d1, plotfilename);
   fit_slice_gaus(h2d2, h1d2, plotfilename);
 
