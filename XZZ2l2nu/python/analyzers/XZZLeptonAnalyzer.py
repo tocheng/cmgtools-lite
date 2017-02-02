@@ -75,6 +75,10 @@ class XZZLeptonAnalyzer( Analyzer ):
         #rho for electron pfIso
         self.handles['rhoElePfIso'] = AutoHandle( self.cfg_ana.rhoElectronPfIso, 'double')
         self.handles['rhoEleHLT'] = AutoHandle( 'fixedGridRhoFastjetCentralCalo', 'double')
+        # ecal reco hits collections
+        self.handles['ebhits'] = AutoHandle( ("reducedEgamma","reducedEBRecHits","RECO"),'edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> >')
+        self.handles['eehits'] = AutoHandle( ("reducedEgamma","reducedEERecHits","RECO"),'edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> >')
+        self.handles['eshits'] = AutoHandle( ("reducedEgamma","reducedESRecHits","RECO"),'edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> >')
 
         # decide to filter events not passing lepton requirements
         self.do_filter = getattr(self.cfg_ana, 'do_filter', True)
@@ -351,23 +355,15 @@ class XZZLeptonAnalyzer( Analyzer ):
                 #print 'LeptonAnalyzer:: ele(',idx,'):  after Corr, pT(e) =',ele.pt()
 
         # Electron 
-        if not self.cfg_comp.isMC:
-            for ele in allelectrons:
-                print "before ele.energy() = ",ele.energy()
-                ele.Ecorr = 1.0
-                ele.seedId = ele.superCluster().seed().seed()
+        for ele in allelectrons:
+            seedId = ele.superCluster().seed().seed()
+            if seedId.subdetId()==1:
                 for did in self.handles['ebhits'].product():
-                    if did.id()==ele.seedId:
-                        if did.energy()>200 and did.energy()<300: ele.Ecorr = 1.0199 
-                        elif did.energy()>300 and did.energy()<400: ele.Ecorr = 1.052
-                        elif did.energy()>400 and did.energy()<500: ele.Ecorr = 1.015
-                # set p4
-                new_p4 = ROOT.math.PtEtaPhiMLorentzVector(ele.physObj.pt()*ele.Ecorr,
-                            ele.physObj.eta(),
-                            ele.physObj.phi(),
-                            ele.physObj.mass())
-                ele.phyObj.setP4(new_p4)
-                print "after ele.energy() = ",ele.energy()
+                    if did.id()==seedId: ele.seedXtal = did
+            elif seedId.subdetId()==2: 
+                for did in self.handles['eehits'].product():
+                    if did.id()==seedId: ele.seedXtal = did
+            else: print "Couldn't find seed Xtal!"
 
 
         # Attach the vertex

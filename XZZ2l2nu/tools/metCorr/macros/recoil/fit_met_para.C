@@ -55,6 +55,7 @@ TFile* fout;
 std::string histname;
 TPaveText* lumipt;
 TPaveText* pvtxt;
+TProfile* pzpt;
 TH2D* h2d1;
 TH2D* h2d2;
 TH2D* h2d3;
@@ -230,6 +231,28 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   const Int_t NMetPerpBins=400;
   Double_t MetPerpBins[NMetPerpBins+1];
   for (int i=0; i<=NMetPerpBins; i++) { MetPerpBins[i] = -200.0+400.0/NMetPerpBins*i; };
+
+  // zpt profile
+  pzpt = new TProfile("p_zpt", "p_zpt", NZPtBins, ZPtBins);
+  tree->Draw("llnunu_l1_pt:llnunu_l1_pt>>p_zpt", selec.c_str(), "prof");
+  pzpt->SetLineColor(2);
+  pzpt->SetMarkerColor(2);
+  pzpt->SetMarkerStyle(20);
+  pzpt->GetXaxis()->SetTitle("P_{T}(Z) (GeV)");
+  if (doGJets) pzpt->GetXaxis()->SetTitle("P_{T}(#gamma) (GeV)");
+  pzpt->GetYaxis()->SetTitle("mean P_{T}(Z) (GeV)");
+  if (doGJets) pzpt->GetYaxis()->SetTitle("mean P_{T}(#gamma) (GeV)");
+  plots->cd();
+  plots->Clear();
+  plots->SetLogx(1);
+  pzpt->Draw();
+  lumipt->Draw();
+  plots->Print(plotfile.c_str());
+  plots->SetLogx(0);
+  plots->Clear();
+
+  fout->cd();
+  pzpt->Write(); 
 
   h2d1 = new TH2D("h_met_para_vs_zpt", "h_met_para_vs_zpt", NZPtBins, ZPtBins, NMetParaBins, MetParaBins);
   h2d2 = new TH2D("h_met_perp_vs_zpt", "h_met_perp_vs_zpt", NZPtBins, ZPtBins, NMetPerpBins, MetPerpBins);
