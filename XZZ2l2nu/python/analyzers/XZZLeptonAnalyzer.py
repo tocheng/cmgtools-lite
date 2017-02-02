@@ -76,9 +76,9 @@ class XZZLeptonAnalyzer( Analyzer ):
         self.handles['rhoElePfIso'] = AutoHandle( self.cfg_ana.rhoElectronPfIso, 'double')
         self.handles['rhoEleHLT'] = AutoHandle( 'fixedGridRhoFastjetCentralCalo', 'double')
         # ecal reco hits collections
-        self.handles['ebhits'] = AutoHandle( ("reducedEgamma","reducedEBRecHits","RECO"),'edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> >')
-        self.handles['eehits'] = AutoHandle( ("reducedEgamma","reducedEERecHits","RECO"),'edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> >')
-        self.handles['eshits'] = AutoHandle( ("reducedEgamma","reducedESRecHits","RECO"),'edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> >')
+        self.handles['ebhits'] = AutoHandle( ("reducedEgamma","reducedEBRecHits"),'edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> >')
+        self.handles['eehits'] = AutoHandle( ("reducedEgamma","reducedEERecHits"),'edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> >')
+        self.handles['eshits'] = AutoHandle( ("reducedEgamma","reducedESRecHits"),'edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> >')
 
         # decide to filter events not passing lepton requirements
         self.do_filter = getattr(self.cfg_ana, 'do_filter', True)
