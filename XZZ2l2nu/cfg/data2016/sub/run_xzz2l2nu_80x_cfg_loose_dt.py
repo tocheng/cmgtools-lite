@@ -70,69 +70,24 @@ sequence = cfg.Sequence(coreSequence+[vvSkimmer,multtrg,vvTreeProducer])
 test = 1
 if test==1:
     # test a single component, using a single thread.
-    #selectedComponents = dataSamples
-    #selectedComponents = mcSamples
-    #selectedComponents = [SingleMuon_Run2015D_Promptv4,SingleElectron_Run2015D_Promptv4]
-    #selectedComponents = [SingleMuon_Run2015C_25ns_16Dec]
-    #selectedComponents = [SingleMuon_Run2016B_PromptReco_v2] 
-    #selectedComponents = [SingleMuon_Run2016D_PromptReco_v2] 
-    #selectedComponents = [SingleElectron_Run2016D_PromptReco_v2] 
-    #selectedComponents = [SingleElectron_Run2016F_PromptReco_v1, SingleMuon_Run2016F_PromptReco_v1] 
-    #selectedComponents = [SingleElectron_Run2016E_PromptReco_v2, SingleMuon_Run2016E_PromptReco_v2] 
-    #selectedComponents = [SingleElectron_Run2016D_PromptReco_v2, SingleMuon_Run2016D_PromptReco_v2] 
-    #selectedComponents = [SingleElectron_Run2016G_PromptReco_v1] 
-    #selectedComponents = [SingleElectron_Run2016G_PromptReco_v1, SingleMuon_Run2016G_PromptReco_v1] 
-    #selectedComponents = [SingleElectron_Run2016G_PromptReco_v1, SingleMuon_Run2016G_PromptReco_v1,
-    #                      SingleElectron_Run2016F_PromptReco_v1, SingleMuon_Run2016F_PromptReco_v1, 
-    #                      SingleElectron_Run2016E_PromptReco_v2, SingleMuon_Run2016E_PromptReco_v2,
-    #                      SingleElectron_Run2016D_PromptReco_v2, SingleMuon_Run2016D_PromptReco_v2,
-    #                     ] 
-
-    #selectedComponents = [SingleElectron_Run2016H_PromptReco_v1, SingleElectron_Run2016H_PromptReco_v2,
-    #                      SingleMuon_Run2016H_PromptReco_v1, SingleMuon_Run2016H_PromptReco_v2, 
-    #                      SinglePhoton_Run2016H_PromptReco_v1, SinglePhoton_Run2016H_PromptReco_v2, 
-    #                      MET_Run2016H_PromptReco_v1, MET_Run2016H_PromptReco_v2 
-    #                     ] 
-
-    #selectedComponents = [SingleElectron_Run2016H_PromptReco_v1] 
-    #selectedComponents = [SingleMuon_Run2016H_PromptReco_v3] 
-    #selectedComponents = [SingleMuon_Run2016G_PromptReco_v1] 
-    #selectedComponents = [SingleElectron_Run2016G_23Sep2016] 
-    selectedComponents = [SingleMuon_Run2016G_23Sep2016] 
-    #selectedComponents = [MET_Run2016G_PromptReco_v1] 
-    #selectedComponents = [SingleMuon_Run2016B_PromptReco_v2,SingleElectron_Run2016B_PromptReco_v2] 
-    #selectedComponents = [MuonEG_Run2015D_16Dec] #MuEG
-    #selectedComponents = [RSGravToZZToZZinv_narrow_800]
-    #selectedComponents = [DYJetsToLL_M50]
-    #selectedComponents = [DYJetsToLL_M50_MGMLM_Ext1]
-    #selectedComponents = [DY1JetsToLL_M50_MGMLM]
-    #selectedComponents = [DY1JetsToLL_M50_MGMLM, DY2JetsToLL_M50_MGMLM, DY3JetsToLL_M50_MGMLM, DY4JetsToLL_M50_MGMLM, DYBJetsToLL_M50_MGMLM]
-    #selectedComponents = [BulkGravToZZToZlepZinv_narrow_1600] 
-    #selectedComponents = signalSamples
-    #selectedComponents = SingleElectron23Sep2016+SingleMuon23Sep2016+MET23Sep2016+MuonEG23Sep2016
-    #selectedComponents =[SingleElectron_Run2016H_PromptReco_v2, SingleMuon_Run2016H_PromptReco_v2, MET_Run2016H_PromptReco_v2,MuonEG_Run2016H_PromptReco_v1,MuonEG_Run2016H_PromptReco_v2] 
-    #selectedComponents =[SingleElectron_Run2016H_PromptReco_v1, SingleMuon_Run2016H_PromptReco_v1, MET_Run2016H_PromptReco_v1] 
-    #selectedComponents = [SingleMuon_Run2016D_23Sep2016, SingleMuon_Run2016G_23Sep2016, SingleMuon_Run2016B_23Sep2016_v2, SingleElectron_Run2016B_23Sep2016_v2]
-    #selectedComponents = signalSamples+backgroundSamples
-    #selectedComponents = backgroundSamples
-    #selectedComponents = SingleMuon+SingleElectron
-    #selectedComponents = [TTTo2L2Nu]
-    #selectedComponents = [ZZTo2L2Nu]
-    #selectedComponents = [BulkGravToZZ_narrow_800]
-    #selectedComponents = [BulkGravToZZToZlepZhad_narrow_800]
 #    selectedComponents = SingleElectron23Sep2016
 #    selectedComponents = SingleMuon23Sep2016
+#    selectedComponents = [SingleMuon_Run2016B_23Sep2016, SingleMuon_Run2016B_23Sep2016_v2]
 #    selectedComponents = [SingleMuon_Run2016C_23Sep2016]
 #    selectedComponents = [SingleMuon_Run2016D_23Sep2016]
 #    selectedComponents = [SingleMuon_Run2016E_23Sep2016]
 #    selectedComponents = [SingleMuon_Run2016F_23Sep2016]
 #    selectedComponents = [SingleMuon_Run2016G_23Sep2016]
-#    selectedComponents = [SingleMuon_Run2016H_PromptReco_v1,
-#            SingleMuon_Run2016H_PromptReco_v2,
-#            SingleMuon_Run2016H_PromptReco_v3,
-#            ]
+#    selectedComponents = [SingleMuon_Run2016H_PromptReco_v1, SingleMuon_Run2016H_PromptReco_v2, SingleMuon_Run2016H_PromptReco_v3 ]
+#    selectedComponents = [SingleElectron_Run2016B_23Sep2016,SingleElectron_Run2016B_23Sep2016_v2]
+#    selectedComponents = [SingleElectron_Run2016C_23Sep2016]
+#    selectedComponents = [SingleElectron_Run2016D_23Sep2016]
+#    selectedComponents = [SingleElectron_Run2016E_23Sep2016]
+#    selectedComponents = [SingleElectron_Run2016F_23Sep2016]
+#    selectedComponents = [SingleElectron_Run2016G_23Sep2016]
+#    selectedComponents = [SingleElectron_Run2016H_PromptReco_v1,SingleElectron_Run2016H_PromptReco_v2,SingleElectron_Run2016H_PromptReco_v3]
     for c in selectedComponents:
-        c.files = c.files[:2]
+#        c.files = c.files[:2]
         #c.splitFactor = (len(c.files)/10 if len(c.files)>10 else 1)
         c.splitFactor = (len(c.files))
 #        c.splitFactor = 1

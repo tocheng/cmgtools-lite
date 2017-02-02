@@ -73,13 +73,14 @@ if usePrivateSQlite:
     from CondCore.DBCommon.CondDBSetup_cfi import *
     import os
     if runOnData:
-      era="Summer16_23Sep2016AllV3_DATA"
+      era="Summer16_23Sep2016AllV4_DATA"
     else:
-      era="Summer16_23Sep2016V3_MC"
+      era="Summer16_23Sep2016V4_MC"
 
     process.jec = cms.ESSource("PoolDBESSource",CondDBSetup,
+                               connect = cms.string( "frontier://FrontierProd/CMS_CONDITIONS"),
                                #connect = cms.string( "frontier://FrontierPrep/CMS_COND_PHYSICSTOOLS"),
-                               connect = cms.string('sqlite:'+era+'.db'),
+                               #connect = cms.string('sqlite:'+era+'.db'),
                                toGet =  cms.VPSet(
             cms.PSet(
                 record = cms.string("JetCorrectionsRecord"),

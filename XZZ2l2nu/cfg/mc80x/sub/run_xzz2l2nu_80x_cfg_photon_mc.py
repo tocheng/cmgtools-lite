@@ -184,7 +184,8 @@ if test==1:
     #selectedComponents = [BulkGravToZZToZlepZhad_narrow_800]
     #selectedComponents = GJetsMC= WJetsToLNuHT + ZJetsToNuNuHT + SingleTop + ZNuNuGJets + ttgjets + wgjets
     #selectedComponents = GJet_Pt_EMEnriched + GJetsHT
-    selectedComponents = QCDPtEMEnriched + QCDPt + QCDHT
+    #selectedComponents = QCDPtEMEnriched + QCDPt + QCDHT
+    selectedComponents = [DYJetsToLL_M50_MGMLM_Ext1]
     for c in selectedComponents:
 #        c.files = c.files[:2]
         #c.splitFactor = (len(c.files)/10 if len(.files)>10 else 1)
