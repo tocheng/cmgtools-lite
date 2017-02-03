@@ -1,6 +1,6 @@
 #!/bin/sh
 
-dds=" mc_phzjet  mc_zz mc_singletop "
+dds=" mc_zjet mc_wztt mc_phother "
 
 for nn in `seq 1 1 100`;
 do 

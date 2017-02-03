@@ -1561,6 +1561,13 @@ void prepareRecoil()
       _file_mc_sigma[1] = new TFile(_RecoilInputFileNameMCLO_mu.c_str());
       _file_mc_sigma[2] = new TFile(_RecoilInputFileNameMCLO_el.c_str());
     }
+
+    // zpt profile, mean zpt in each zpt bin
+    _p_dt_zpt[0] = (TProfile*)_file_dt_sigma[0]->Get("p_zpt");
+    _p_dt_zpt[1] = (TProfile*)_file_dt_sigma[1]->Get("p_zpt");
+    _p_dt_zpt[2] = (TProfile*)_file_dt_sigma[2]->Get("p_zpt");
+
+    //
     _h_dt_met_para_shift[0] = (TH1D*)_file_dt_sigma[0]->Get("h_met_para_vs_zpt_mean");
     _h_mc_met_para_shift[0] = (TH1D*)_file_mc_sigma[0]->Get("h_met_para_vs_zpt_mean");
     _h_met_para_shift_dtmc[0] = (TH1D*)_h_dt_met_para_shift[0]->Clone("h_met_para_shift_dtmc_all");
@@ -1665,6 +1672,38 @@ void prepareRecoil()
     _gr_ratio_met_perp_sigma_dtmc[4] = new TGraphErrors(_h_ratio_met_perp_sigma_dtmc[4]);
     _gr_ratio_met_perp_sigma_dtmc[5] = new TGraphErrors(_h_ratio_met_perp_sigma_dtmc[5]);
 
+
+    // reset the x-axis bin centers to the mean zpt in each zpt bin
+    for (int ihist=0; ihist<3; ihist++){
+      double xx,yy;
+      for (int ibin=0; ibin<_p_dt_zpt[ihist]->GetNbinsX(); ibin++){
+
+        // _gr_dt_met_para_shift
+        _gr_dt_met_para_shift[3+ihist]->GetPoint(ibin, xx, yy);
+        xx = _p_dt_zpt[ihist]->GetBinContent(ibin+1);
+        _gr_dt_met_para_shift[3+ihist]->SetPoint(ibin, xx, yy);
+
+        // _gr_mc_met_para_shift
+        _gr_mc_met_para_shift[3+ihist]->GetPoint(ibin, xx, yy);
+        xx = _p_dt_zpt[ihist]->GetBinContent(ibin+1);
+        _gr_mc_met_para_shift[3+ihist]->SetPoint(ibin, xx, yy);
+
+        // _gr_met_para_shift_dtmc
+        _gr_met_para_shift_dtmc[3+ihist]->GetPoint(ibin, xx, yy);
+        xx = _p_dt_zpt[ihist]->GetBinContent(ibin+1);
+        _gr_met_para_shift_dtmc[3+ihist]->SetPoint(ibin, xx, yy);
+
+        // _gr_ratio_met_para_sigma_dtmc
+        _gr_ratio_met_para_sigma_dtmc[3+ihist]->GetPoint(ibin, xx, yy);
+        xx = _p_dt_zpt[ihist]->GetBinContent(ibin+1);
+        _gr_ratio_met_para_sigma_dtmc[3+ihist]->SetPoint(ibin, xx, yy);
+
+        // _gr_ratio_met_perp_sigma_dtmc
+        _gr_ratio_met_perp_sigma_dtmc[3+ihist]->GetPoint(ibin, xx, yy);
+        xx = _p_dt_zpt[ihist]->GetBinContent(ibin+1);
+        _gr_ratio_met_perp_sigma_dtmc[3+ihist]->SetPoint(ibin, xx, yy);
+      }
+    }
 
   }
   
