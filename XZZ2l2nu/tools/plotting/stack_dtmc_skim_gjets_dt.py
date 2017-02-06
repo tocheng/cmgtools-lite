@@ -93,7 +93,7 @@ nonreso_alpha_mu=0.629043099213
 #
 if doRhoScale:
     tag+="RhoWt_"
-    rho_scale = "*(0.32+0.42*TMath::Erf((rho-4.16)/4.58)+0.31*TMath::Erf((rho+115.00)/29.58))" # b2h rereco 36.1 fb-1
+    rho_scale = "*(0.366*TMath::Gaus(rho,8.280,5.427)+0.939*TMath::Gaus(rho,18.641,10.001)+0.644*TMath::Gaus(rho,40.041,10.050))" # 2016 rereco/summer16 81.81 fb-1
     lepsf += rho_scale
     g_scale += rho_scale
 
@@ -107,8 +107,8 @@ if doGMCPhPtScale:
 
 outdir='plots'
 
-indir='/home/heli/XZZ/80X_20170124_light_Skim/'
-lumi=36.814
+indir='/home/heli/XZZ/80X_20170202_light_Skim/'
+lumi=36.81
 sepSig=True
 doRatio=True
 Blind=options.Blind
@@ -165,6 +165,7 @@ cuts_loose_z="("+cuts_lepaccept+"&&"+cuts_zmass+")"
 cuts_loose_zpt20="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>20)"
 cuts_loose_zpt50="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>50)"
 cuts_loose_zptgt50lt200="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>50&&llnunu_l1_pt<200)"
+cuts_loose_zptgt100lt400="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>100&&llnunu_l1_pt<400)"
 cuts_loose_zll="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt100+")"
 cuts_loose_zpt150="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt150+")"
 cuts_loose_zpt200="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt200+")"
@@ -191,6 +192,7 @@ elif cutChain=='tight': cuts=cuts_loose_z
 elif cutChain=='tightzpt20': cuts=cuts_loose_zpt20
 elif cutChain=='tightzpt50': cuts=cuts_loose_zpt50
 elif cutChain=='tightzptgt50lt200': cuts=cuts_loose_zptgt50lt200
+elif cutChain=='tightzptgt100lt400': cuts=cuts_loose_zptgt100lt400
 elif cutChain=='tightzpt100': cuts=cuts_loose_zll
 elif cutChain=='tightzpt150': cuts=cuts_loose_zpt150
 elif cutChain=='tightzpt200': cuts=cuts_loose_zpt200
@@ -277,7 +279,8 @@ if muoneg:
 
     nonresSamples = [
     #'muonegtrgsf'
-    'muonegtree_light_skim'
+    #'muonegtree_light_skim'
+    'muonegtree_light_skim_38_skim'
     ]
     nonresPlotters=[]
     for sample in nonresSamples:
@@ -294,7 +297,7 @@ if muoneg:
     NONRES.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
     NONRES.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
     NONRES.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
-    NONRES.setAlias('nbadmuon', '(!nllnunu)')
+    #NONRES.setAlias('nbadmuon', '(!nllnunu)')
 
 # if use mc
 else:
@@ -316,7 +319,7 @@ else:
     WW = MergedPlotter(wwPlotters)
     WW.setFillProperties(1001,ROOT.kOrange)
 
-    ttSamples = ['TTTo2L2Nu_noSC','TTWJetsToLNu_BIG']
+    ttSamples = ['TTTo2L2Nu_noSC','TTWJetsToLNu_BIG', 'T_tWch', 'T_tch_powheg', 'TBar_tWch', 'TBar_tch_powheg']
     ttPlotters=[]
     for sample in ttSamples:
         ttPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
@@ -374,7 +377,7 @@ if dyGJets :
     # for GJets photon bkg subtraction
 
     phymetSamples = [
-    #'G_DYJetsToLL_M50_reHLT',
+    'G_DYJetsToLL_M50_MGMLM_Ext1',
     'G_TBar_tWch',
     'G_TBar_tch_powheg',
     'G_TGJets_BIG', 
@@ -430,7 +433,7 @@ if dyGJets :
 
     ### the GJets data
     gdataSamples = [
-    'SinglePhoton_Run2016Full_ReReco_v1', 
+    'SinglePhoton_Run2016Full_ReReco_v2', 
     ]
 
     gdataPlotters=[]
@@ -483,7 +486,7 @@ else:
     ### MC ZJets
     mczjetsSamples = [
     'DYJetsToLL_M50_MGMLM_BIG',
-    #'DY0JetsToLL_M50_MGMLM_Ext1', 'DY1JetsToLL_M50_MGMLM', 'DY2JetsToLL_M50_MGMLM', 'DY3JetsToLL_M50_MGMLM', 'DY4JetsToLL_M50_MGMLM', 
+#    'DYJetsToLL_M50_MGMLM_BIG_NoRecoil',
     ]
 
     mczjetsPlotters=[]
@@ -626,7 +629,7 @@ for sample in sigSamples:
 ##########################
 
 dataSamples = [
-'SingleEMU_Run2016Full_ReReco_v1_DtReCalib'
+'SingleEMU_Run2016Full_ReReco_v2'
 ]
 
 dataPlotters=[]

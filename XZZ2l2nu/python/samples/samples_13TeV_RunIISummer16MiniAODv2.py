@@ -50,8 +50,8 @@ DYJetsToLL_M50 = kreator.makeMCComponent("DYJetsToLL_M50",
 "CMS", ".*root", 1921.8*3, useAAA=False) 
 
 DYJetsToLL_M50_Ext = kreator.makeMCComponent("DYJetsToLL_M50_Ext", 
-"/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12_ext4-v1/MINIAODSIM", 
-"CMS", ".*root", 1921.8*3)  #the "ext4" set with 129M evts 
+"/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext2-v1/MINIAODSIM", 
+"CMS", ".*root", 1921.8*3, useAAA=True)  #the "ext4" set with 129M evts 
 
 
  

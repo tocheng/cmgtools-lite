@@ -29,7 +29,7 @@ do
       echo " submit $dd";
       cd $dd ;
       echo "  bsub -q $queue -J $dd  < batchScript.sh" ;
-      bsub -q $queue -J $dd  < batchScript.sh ;
+      bsub -q $queue -J $dd  < batchScript.sh &
       cd ../ ;
     fi;
   fi;
