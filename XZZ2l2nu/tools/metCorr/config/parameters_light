@@ -111,6 +111,10 @@ doElecPtRecalibSimpleData: true
 ElecPtRecalibSimpleDataScale: 1.00341
 #ElecPtRecalibSimpleDataScale: 1.00971
 
+doElecPtRecalibSimpleDataPogRecipe: true
+# if above pog recipe is true, will correct electron energy according to seeding xtal energies
+
+
 doMuonPtRecalibSimpleData: false
 MuonPtRecalibSimpleDataScale: 0.999744
 
@@ -199,9 +203,9 @@ doRecoilUseSmooth: true
 doRecoilUseSmoothGraph: true
 
 # Input files
-RecoilInputFileNameData_all: data/recoil/SingleEMU_Run2016Full_ReReco_v2_met_para_study_ZSelecLowLPt.root
-RecoilInputFileNameData_mu:  data/recoil/SingleEMU_Run2016Full_ReReco_v2_met_para_study_ZSelecLowLPt_mu.root
-RecoilInputFileNameData_el:  data/recoil/SingleEMU_Run2016Full_ReReco_v2_met_para_study_ZSelecLowLPt_el.root
+RecoilInputFileNameData_all: data/recoil/SingleEMU_Run2016Full_ReReco_v2_DtReCalib_met_para_study_ZSelecLowLPt.root
+RecoilInputFileNameData_mu:  data/recoil/SingleEMU_Run2016Full_ReReco_v2_DtReCalib_met_para_study_ZSelecLowLPt_mu.root
+RecoilInputFileNameData_el:  data/recoil/SingleEMU_Run2016Full_ReReco_v2_DtReCalib_met_para_study_ZSelecLowLPt_el.root
 
 
 # NLO mc

@@ -121,7 +121,7 @@ WZTo2L2Q = kreator.makeMCComponent("WZTo2L2Q",
 "CMS", ".*root", 5.595) # 25M
 WZTo3LNu = kreator.makeMCComponent("WZTo3LNu", 
 "/WZTo3LNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM", 
-"CMS",  ".*root", 5.26,useAAA=False ) # 12.5M NLO up to 1 jet in ME
+"CMS",  ".*root", 5.26,useAAA=False ) # 12.5M NLO up to 1 jet in ME #4.4297 from HZZ2l2nu note
 ### top
 
 # previous: 104M: gen seg: https://cms-pdmv.cern.ch/mcm/public/restapi/requests/get_fragment/HIG-RunIIWinter15wmLHE-00518/0 

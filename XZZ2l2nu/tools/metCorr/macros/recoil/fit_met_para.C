@@ -2,7 +2,7 @@
 
 std::string channel = "all";
 bool doMC = false;
-bool doGJets = true;
+bool doGJets = false;
 bool useZSelecLowLPt = true;
 bool useEffSf = false;
 bool mcTrgSf = false;
@@ -26,7 +26,7 @@ std::vector< std::string > mcfiles = {
  };
 
 std::vector< std::string > dtfiles = {
-    "SingleEMU_Run2016Full_ReReco_v2"
+    "SingleEMU_Run2016Full_ReReco_v2_DtReCalib"
  };
 
 std::vector< std::string > gjfiles = {

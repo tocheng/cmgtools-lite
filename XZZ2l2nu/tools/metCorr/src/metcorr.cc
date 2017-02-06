@@ -288,6 +288,7 @@ void readConfigFile()
   }
 
   _doElecPtRecalibSimpleData = parm.GetBool("doElecPtRecalibSimpleData", kFALSE);
+  _doElecPtRecalibSimpleDataPogRecipe = parm.GetBool("doElecPtRecalibSimpleDataPogRecipe", kFALSE);
   _ElecPtRecalibSimpleDataScale = parm.GetDouble("ElecPtRecalibSimpleDataScale", 1.0);
   _doMuonPtRecalibSimpleData = parm.GetBool("doMuonPtRecalibSimpleData", kFALSE);
   _MuonPtRecalibSimpleDataScale = parm.GetDouble("MuonPtRecalibSimpleDataScale", 1.0);
@@ -513,6 +514,7 @@ bool  prepareTrees()
     _tree_in->SetBranchAddress("llnunu_l1_l1_charge", &_llnunu_l1_l1_charge);
     _tree_in->SetBranchAddress("llnunu_l1_l1_ptErr", &_llnunu_l1_l1_ptErr);
     _tree_in->SetBranchAddress("llnunu_l1_l1_eSCeta", &_llnunu_l1_l1_eSCeta);
+    _tree_in->SetBranchAddress("llnunu_l1_l1_eSeedXtal", &_llnunu_l1_l1_eSeedXtal);
     _tree_in->SetBranchAddress("llnunu_l1_l1_trigerob_HLTbit", &_llnunu_l1_l1_trigerob_HLTbit);
 
     _tree_in->SetBranchAddress("llnunu_l1_l2_pt", &_llnunu_l1_l2_pt);
@@ -524,6 +526,7 @@ bool  prepareTrees()
     _tree_in->SetBranchAddress("llnunu_l1_l2_charge", &_llnunu_l1_l2_charge);
     _tree_in->SetBranchAddress("llnunu_l1_l2_ptErr", &_llnunu_l1_l2_ptErr);
     _tree_in->SetBranchAddress("llnunu_l1_l2_eSCeta", &_llnunu_l1_l2_eSCeta);
+    _tree_in->SetBranchAddress("llnunu_l1_l2_eSeedXtal", &_llnunu_l1_l2_eSeedXtal);
     _tree_in->SetBranchAddress("llnunu_l1_l2_trigerob_HLTbit", &_llnunu_l1_l2_trigerob_HLTbit);
 
   }
@@ -1252,10 +1255,27 @@ void doMTUncMu(){
 void doElecPtRecalibSimpleData()
 {
   if ((abs(_llnunu_l1_l1_pdgId)==11||abs(_llnunu_l1_l2_pdgId)==11) && _isData ) {
+   
     
-    if (abs(_llnunu_l1_l1_pdgId)==11) _llnunu_l1_l1_pt = Float_t(_llnunu_l1_l1_pt*_ElecPtRecalibSimpleDataScale);
-    if (abs(_llnunu_l1_l2_pdgId)==11) _llnunu_l1_l2_pt = Float_t(_llnunu_l1_l2_pt*_ElecPtRecalibSimpleDataScale);
-
+    if (_doElecPtRecalibSimpleDataPogRecipe) { 
+      // pog recipe will correct energy according to seeding xtal energies.
+      if (abs(_llnunu_l1_l1_pdgId)==11) {
+        _ElecPtRecalibSimpleDataScale = 1.0; // reset to be 1.0
+        if (_llnunu_l1_l1_eSeedXtal>200 && _llnunu_l1_l1_eSeedXtal<=300) _ElecPtRecalibSimpleDataScale = 1.0199;
+        else if (_llnunu_l1_l1_eSeedXtal>300 && _llnunu_l1_l1_eSeedXtal<=400) _ElecPtRecalibSimpleDataScale = 1.052;
+        else if (_llnunu_l1_l1_eSeedXtal>400 && _llnunu_l1_l1_eSeedXtal<=500) _ElecPtRecalibSimpleDataScale = 1.015;
+        _llnunu_l1_l1_pt = Float_t(_llnunu_l1_l1_pt*_ElecPtRecalibSimpleDataScale);
+      }
+      if (abs(_llnunu_l1_l2_pdgId)==11) {
+        _ElecPtRecalibSimpleDataScale = 1.0; // reset to be 1.0
+        if (_llnunu_l1_l2_eSeedXtal>200 && _llnunu_l1_l2_eSeedXtal<=300) _ElecPtRecalibSimpleDataScale = 1.0199;
+        else if (_llnunu_l1_l2_eSeedXtal>300 && _llnunu_l1_l2_eSeedXtal<=400) _ElecPtRecalibSimpleDataScale = 1.052;
+        else if (_llnunu_l1_l2_eSeedXtal>400 && _llnunu_l1_l2_eSeedXtal<=500) _ElecPtRecalibSimpleDataScale = 1.015;
+        _llnunu_l1_l2_pt = Float_t(_llnunu_l1_l2_pt*_ElecPtRecalibSimpleDataScale);
+      }
+    }
+    else {
+    }
     TLorentzVector l1v, l2v;
     l1v.SetPtEtaPhiM(_llnunu_l1_l1_pt, _llnunu_l1_l1_eta, _llnunu_l1_l1_phi, _llnunu_l1_l1_mass);
     l2v.SetPtEtaPhiM(_llnunu_l1_l2_pt, _llnunu_l1_l2_eta, _llnunu_l1_l2_phi, _llnunu_l1_l2_mass);
