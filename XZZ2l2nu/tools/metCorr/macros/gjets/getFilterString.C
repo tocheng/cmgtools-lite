@@ -1,6 +1,6 @@
 {
 
-  std::string option="eep";
+  std::string option="eb";
   std::string tag="_more1";
   std::string foutname="getFileterString_"+option+tag;
 
@@ -61,7 +61,7 @@
   else std::cout << "wrong option do nothing" << std::endl;
 
   float utcut=0.5;
-  Int_t n_loop=50;
+  Int_t n_loop=100;
 
   Int_t cx;   Int_t cy;   Int_t bc;
   Int_t bx;   Int_t by; Int_t bz;
