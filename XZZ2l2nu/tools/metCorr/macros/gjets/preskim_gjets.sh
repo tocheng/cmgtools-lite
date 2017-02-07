@@ -26,9 +26,12 @@ samples="SinglePhoton_*"
 #samples="WJetsToLNu_HT*_BIG"
 indir=/data2/XZZ2/80X_20170202_GJets
 #outdir=/home/heli/XZZ/80X_20170202_GJets_light
-outdir=/home/heli/XZZ/80X_20170202_GJets_light_big
+#outdir=/home/heli/XZZ/80X_20170202_GJets_light_big
+outdir=/home/heli/XZZ/80X_20170202_GJets_light_halo15
 
 mkdir -p $outdir
+
+njob="0"
 
 #for dd in ${indir}/*/vvTreeProducer;
 #for dd in ${indir}/SinglePhoton_Run2016BCD_PromptReco/vvTreeProducer;
@@ -44,6 +47,13 @@ do
   mkdir -p $oo ;
   echo "./preskim_gjets.exe $infile $outfile &> ${outfile}.log & "
   ./preskim_gjets.exe $infile $outfile &> ${outfile}.log &
+
+  njob=$(( njob + 1 ))
+  if [ "$njob" -eq "10" ]; then
+    wait
+    njob="0"
+  fi
+
 done
 
 

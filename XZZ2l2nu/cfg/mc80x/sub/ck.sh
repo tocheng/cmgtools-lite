@@ -1,6 +1,6 @@
 #!/bin/sh
 
-dds=" mc_ggh mc_zjnlo"
+dds="mc_zjnlo"
 
 for nn in `seq 1 1 100`;
 do 

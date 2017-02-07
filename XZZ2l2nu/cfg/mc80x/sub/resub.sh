@@ -3,7 +3,7 @@
 dir=$1
 #dir="mc_zz"
 #dir="othermc1"
-queue="8nh"
+queue="1nd"
 
 # need to check your jobs with the expected n root files and n pck files
 # to verify if the job is finished sucessfully.

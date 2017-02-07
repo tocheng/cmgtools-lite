@@ -88,8 +88,8 @@ nonreso_alpha_mu=1.0
 #nonreso_alpha_el=0.332060243754
 #nonreso_alpha_mu=0.629043099213 
 
-nonreso_alpha_el=0.355340419554
-nonreso_alpha_mu=0.672679894023 
+nonreso_alpha_el=0.346341188158
+nonreso_alpha_mu=0.687122143356 
 
 #
 
@@ -360,8 +360,8 @@ else:
 # if use GJets to describe ZJets
 if dyGJets : 
     # parameters for GJets
-    el_gjet_scale=1.0584191186*1.00689512302
-    mu_gjet_scale=1.0805700724*1.00459456817
+    el_gjet_scale=1.10003
+    mu_gjet_scale=1.13122 
     gdataLumi=36.46*1000
     gdataYield=3451449849.011390686 
     gdataFidXsec=gdataYield/gdataLumi
@@ -693,7 +693,7 @@ if test:
 #    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 30, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 60, 60, 120, titlex = "M(Z)", units = "GeV",output=tag+'zmass',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 50, 100.0, 1600.0, titlex = "M_{T}", units = "GeV",output=tag+'mt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
-    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 30, 0, 1500, titlex = "MET", units = "GeV",output=tag+'met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
+#    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 30, 0, 1500, titlex = "MET", units = "GeV",output=tag+'met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
     Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 50, -500, 500.0, titlex = "MET_{#parallel}", units = "GeV",output=tag+'met_para',outDir=outdir,separateSignal=sepSig)
 
 
