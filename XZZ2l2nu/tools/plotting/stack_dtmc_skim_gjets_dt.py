@@ -61,13 +61,13 @@ zjets_scale='(1)'
 
 if channel=='mu': 
 #    mc_scale='(1.02942)'
-    zjets_scale='(1.02509)'
+    zjets_scale='(1.02638)'
 elif channel=='el': 
 #    mc_scale='(1.02139)'
-    zjets_scale='(0.981151)'
+    zjets_scale='(0.977505)'
 else: 
 #    mc_scale='(1.02942)'
-    zjets_scale='(1.02509)'
+    zjets_scale='(1.025)'
 
 # temp turn off mc_scale
 #mc_scale="(1)"
