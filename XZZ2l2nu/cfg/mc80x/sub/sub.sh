@@ -1,6 +1,6 @@
 #!/bin/sh
 
-outdir=mc_zjnlo
+outdir=mc_sigother
 #config=run_xzz2l2nu_80x_cfg_photon_mc.py
 config=run_xzz2l2nu_80x_cfg_loose_mc.py
 otherfiles=" pogRecipes.py "

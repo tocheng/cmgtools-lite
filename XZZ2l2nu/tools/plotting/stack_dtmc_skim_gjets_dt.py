@@ -61,16 +61,19 @@ zjets_scale='(1)'
 
 if channel=='mu': 
 #    mc_scale='(1.02942)'
-    zjets_scale='(1.02638)'
+#    mc_scale='(0.8*1.00539823551)'
+    zjets_scale='(1.01509659071)'
 elif channel=='el': 
 #    mc_scale='(1.02139)'
-    zjets_scale='(0.977505)'
+#    mc_scale='(1.00448813901)'
+    zjets_scale='(0.955502587803)'
 else: 
 #    mc_scale='(1.02942)'
     zjets_scale='(1.025)'
 
 # temp turn off mc_scale
-#mc_scale="(1)"
+mc_scale="(1)"
+#zjets_scale="(1)"
 
 # non reso alpha
 nonreso_alpha_el=1.0
@@ -89,7 +92,13 @@ nonreso_alpha_mu=1.0
 #nonreso_alpha_mu=0.629043099213 
 
 nonreso_alpha_el=0.346341188158
-nonreso_alpha_mu=0.687122143356 
+#nonreso_alpha_mu=0.687122143356*0.8 
+#nonreso_alpha_mu=0.687122143356*0.75 
+#nonreso_alpha_mu=0.687122143356*0.6 
+#nonreso_alpha_mu=0.687122143356*0.9 
+#nonreso_alpha_mu=0.687122143356*0.95 
+#nonreso_alpha_mu=0.687122143356*0.85 
+nonreso_alpha_mu=0.696656700696
 
 #
 
@@ -185,6 +194,7 @@ cuts_nonreso_zptgt50_metlt20="("+cuts_lepaccept+"&&!"+cuts_zmass+"&&"+cuts_zmass
 cuts_nonreso_zptgt50_metlt30="("+cuts_lepaccept+"&&!"+cuts_zmass+"&&"+cuts_zmass_50_180+"&&llnunu_l1_pt>50&&llnunu_l2_pt_to_plot<30)"
 cuts_nonreso_zptgt50_metlt50="("+cuts_lepaccept+"&&!"+cuts_zmass+"&&"+cuts_zmass_50_180+"&&llnunu_l1_pt>50&&llnunu_l2_pt_to_plot<50)"
 cuts_nonreso_zptgt50_metlt100="("+cuts_lepaccept+"&&!"+cuts_zmass+"&&"+cuts_zmass_50_180+"&&llnunu_l1_pt>50&&llnunu_l2_pt_to_plot<100)"
+cuts_zptgt55_metgt125="("+cuts_lepaccept+"&&!"+cuts_zmass+"&&"+cuts_zmass_50_180+"&&llnunu_l1_pt>55&&llnunu_l2_pt_to_plot>125)"
 cuts_CR="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>50&&!(llnunu_l1_pt>100&&llnunu_l2_pt_to_plot>50))"
 cuts_CR1="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>100&&llnunu_l2_pt_to_plot<50)"
 cuts_CR2="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>50&&llnunu_l1_pt<100&&llnunu_l2_pt_to_plot>50)"
@@ -212,6 +222,7 @@ elif cutChain=='nonreso_zptgt50_metlt20': cuts=cuts_nonreso_zptgt50_metlt20
 elif cutChain=='nonreso_zptgt50_metlt30': cuts=cuts_nonreso_zptgt50_metlt30
 elif cutChain=='nonreso_zptgt50_metlt50': cuts=cuts_nonreso_zptgt50_metlt50
 elif cutChain=='nonreso_zptgt50_metlt100': cuts=cuts_nonreso_zptgt50_metlt100
+elif cutChain=='tightzptgt55metgt125': cuts=cuts_zptgt55_metgt125
 elif cutChain=='SR': cuts=cuts_loose_zll_met50
 elif cutChain=='CR': cuts=cuts_CR
 elif cutChain=='CR1': cuts=cuts_CR1
@@ -438,6 +449,7 @@ if dyGJets :
     ### the GJets data
     gdataSamples = [
     'SinglePhoton_Run2016Full_ReReco_v2', 
+    #'SinglePhoton_Run2016Full_ReReco_v2_test', 
     ]
 
     gdataPlotters=[]
@@ -446,7 +458,7 @@ if dyGJets :
         gdataPlotters[-1].addCorrectionFactor('GJetsPreScaleWeight','GJetsPreScaleWeight')
         gdataPlotters[-1].addCorrectionFactor('GJetsRhoWeight','GJetsRhoWeight')
         gdataPlotters[-1].addCorrectionFactor(str(1/gdataYield),'GJetsNorm0')
-        gdataPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
+#        gdataPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
         gdataPlotters[-1].addCorrectionFactor(zjets_scale,'zjets_scale')
         if channel=='el' :
             gdataPlotters[-1].addCorrectionFactor('GJetsZPtWeightEl','GJetsZPtWeight')
@@ -489,7 +501,8 @@ else:
 
     ### MC ZJets
     mczjetsSamples = [
-    'DYJetsToLL_M50_MGMLM_BIG',
+    'DYJetsToLL_M50_Ext',
+#    'DYJetsToLL_M50_MGMLM_BIG',
 #    'DYJetsToLL_M50_MGMLM_BIG_NoRecoil',
     ]
 
@@ -666,9 +679,9 @@ Stack.addPlotter(Data, "data_obs", "Data", "data")
 if muoneg: 
     Stack.addPlotter(NONRES, "NonReso","Non-reson. (e#mu data)", "background")
 else:
-    Stack.addPlotter(WW, "NonReso","WW/WZ/WJets non-reson.", "background")
-    Stack.addPlotter(TT, "TT","TT", "background")
-Stack.addPlotter(VV, "VVZReso","ZZ WZ reson.", "background")
+    Stack.addPlotter(WW, "NonReso","WW/WJets non-reson.", "background")
+    Stack.addPlotter(TT, "TT","Top non-reson.", "background")
+Stack.addPlotter(VV, "VVZReso","Z reson.", "background")
 if dyGJets: 
     Stack.addPlotter(ZJets, "ZJets","ZJets(#gamma+Jets data)", "background")
 else: 
@@ -690,11 +703,11 @@ tag+='_'
 if test: 
 #    Stack.drawStack('nVert', cuts, str(lumi*1000), 80, 0.0, 80.0, titlex = "N vertices", units = "",output=tag+'nVert',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('rho', cuts, str(lumi*1000), 55, 0.0, 55.0, titlex = "#rho", units = "",output=tag+'rho',outDir=outdir,separateSignal=sepSig)
-#    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 30, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 30, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 60, 60, 120, titlex = "M(Z)", units = "GeV",output=tag+'zmass',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 50, 100.0, 1600.0, titlex = "M_{T}", units = "GeV",output=tag+'mt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 #    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 30, 0, 1500, titlex = "MET", units = "GeV",output=tag+'met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
-    Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 50, -500, 500.0, titlex = "MET_{#parallel}", units = "GeV",output=tag+'met_para',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 50, -500, 500.0, titlex = "MET_{#parallel}", units = "GeV",output=tag+'met_para',outDir=outdir,separateSignal=sepSig)
 
 
 #    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 50, 0.0, 500.0, titlex = "P_{T}(Z)", units = "GeV",output=tag+'zpt_low',outDir=outdir,separateSignal=sepSig)
