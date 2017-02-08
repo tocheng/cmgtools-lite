@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import optparse
 import ROOT
 import os,sys, string, math, pickle
@@ -23,6 +25,7 @@ parser.add_option("-l",action="callback",callback=callback_rootargs)
 parser.add_option("-q",action="callback",callback=callback_rootargs)
 parser.add_option("-b",action="callback",callback=callback_rootargs)
 
+
 (options,args) = parser.parse_args()
 
 tag=options.tag
@@ -32,8 +35,8 @@ cutChain=options.cutChain
 channel=options.channel
 LogY=options.LogY
 test=options.test
-DrawLeptons=False
-doRhoScale=True
+DrawLeptons=True
+doRhoScale=False
 doGMCEtaScale=True
 doGMCPhPtScale=False
 dyGJets=options.dyGJets
@@ -42,69 +45,52 @@ doSys=options.doSys
 
 if test: DrawLeptons = False
 
-#idisotrksf
-lepsf="trgsf*idisotrksf"
+lepsf="trgsf*isosf*idsf*trksf"
 
 g_scale='(1)'
 mc_scale='(1)'
 zjets_scale='(1)'
 
 if channel=='mu': 
-   mc_scale='(1.14905419293)'
-   zjets_scale='(1.0)'#'(0.984186528847)'
+    zjets_scale='(1.02509)'
 elif channel=='el': 
-   mc_scale='(1.13338415211)'
-   zjets_scale='(1.0)'
+    zjets_scale='(0.981151)'
 else: 
-   mc_scale='(1.1484406619)'
-   zjets_scale='(1.0)'
+    zjets_scale='(1.02509)'
 
-# non reso alpha
-# zpt>70
-#nonreso_alpha_el=0.368708
-#nonreso_alpha_mu=0.607408
-# zpt>50
-#nonreso_alpha_el=0.353808
-#nonreso_alpha_mu=0.613999
-# zpt>50 met<100
-nonreso_alpha_el=0.332060243754
-nonreso_alpha_mu=0.629043099213 
+nonreso_alpha_el=1.0
+nonreso_alpha_mu=1.0
 
-#
-rho_scale="*(1)"
+nonreso_alpha_el=0.346341188158
+nonreso_alpha_mu=0.687122143356 
+
 if doRhoScale:
     tag+="RhoWt_"
-    rho_scale = "*(0.32+0.42*TMath::Erf((rho-4.16)/4.58)+0.31*TMath::Erf((rho+115.00)/29.58))" # b2h rereco 36.1 fb-1
-lepsf += rho_scale
-g_scale += rho_scale
+    rho_scale = "*(0.366*TMath::Gaus(rho,8.280,5.427)+0.939*TMath::Gaus(rho,18.641,10.001)+0.644*TMath::Gaus(rho,40.041,10.050))" # 2016 rereco/summer16 81.81 fb-1
+    lepsf += rho_scale
+    g_scale += rho_scale
 
-# data-to-mc weight to include fakeMET filter effect in data
 if doGMCEtaScale:
     tag+="GMCEtaWt_"
     g_scale=g_scale+"*(0.87*TMath::Gaus(llnunu_l1_eta,0.65,0.56)+0.87*TMath::Gaus(llnunu_l1_eta,-0.65,0.56)+0.65*TMath::Gaus(llnunu_l1_eta,1.90,0.25)+0.65*TMath::Gaus(llnunu_l1_eta,-1.90,0.25))"
+
 if doGMCPhPtScale:
     tag+="GMCPhPtWt_"
     g_scale=g_scale+"*((-1.06624+0.0580113*pow(llnunu_l1_pt,1)-5.09328e-4*pow(llnunu_l1_pt,2)+2.28513e-6*pow(llnunu_l1_pt,3)-6.03131e-9*pow(llnunu_l1_pt,4)+9.84946e-12*pow(llnunu_l1_pt,5)-1.00558e-14*pow(llnunu_l1_pt,6)+6.244e-18*pow(llnunu_l1_pt,7)-2.15543e-21*pow(llnunu_l1_pt,8)+3.17021e-25*pow(llnunu_l1_pt,9))*(llnunu_l1_pt<=1000)+(0.688060)*(llnunu_l1_pt>1000))"
 
 outdir='plots'
 
-indir='/home/heli/XZZ/80X_20161029_light_Skim/'
-indirGJets='/home/heli/XZZ/80X_20161029_light_Skim/'
-
-lumi=36.4592
-
+indir='/home/heli/XZZ/80X_20170202_light_Skim/'
+lumi=36.81
 sepSig=True
 doRatio=True
 Blind=options.Blind
 FakeData=False
 UseMETFilter=True
 SignalAll1pb=True
-puWeight='puWeightmoriondMC'
-DataHLT=True
+puWeight='puWeightsummer16'
 k=1 # signal scale
 ZPtWeight="ZPtWeight"
-#ZPtWeight="ZPtWeight_up"
-#ZPtWeight="ZPtWeight_dn"
 
 elChannel='((abs(llnunu_l1_l1_pdgId)==11||abs(llnunu_l1_l2_pdgId)==11)&&llnunu_l1_l1_pt>115&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5)'
 muChannel='((abs(llnunu_l1_l1_pdgId)==13||abs(llnunu_l1_l2_pdgId)==13)&&llnunu_l1_l1_pt>50&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID>0.99||llnunu_l1_l2_highPtID>0.99))'
@@ -115,10 +101,9 @@ if not os.path.exists(outdir): os.system('mkdir -p '+outdir)
 tag = tag+cutChain+'_'
 tag = tag+puWeight+'_'
 
-if doSys: tag = tag+"sys_"
 if muoneg: tag = tag+"muoneg_"
 if dyGJets: tag = tag+"gjet_"
-else : tag = tag+"mczjet_"
+
 if UseMETFilter: tag = tag+'metfilter_'
 if not Blind: tag = tag+'unblind_'
 
@@ -141,110 +126,84 @@ cuts_zmass="(llnunu_l1_mass_to_plot>70&&llnunu_l1_mass_to_plot<110)"
 cuts_zmass_50_180="(llnunu_l1_mass_to_plot>50&&llnunu_l1_mass_to_plot<180)"
 cuts_zpt100="(llnunu_l1_pt>100)"
 cuts_zpt150="(llnunu_l1_pt>150)"
+cuts_zpt200="(llnunu_l1_pt>200)"
 cuts_met50="(llnunu_l2_pt_to_plot>50)"
 cuts_met100="(llnunu_l2_pt_to_plot>100)"
 cuts_met200="(llnunu_l2_pt_to_plot>200)"
-
 cuts_loose_z="("+cuts_lepaccept+"&&"+cuts_zmass+")"
 cuts_loose_zpt20="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>20)"
 cuts_loose_zpt50="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>50)"
 cuts_loose_zptgt50lt200="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>50&&llnunu_l1_pt<200)"
+cuts_loose_zptgt100lt400="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>100&&llnunu_l1_pt<400)"
 cuts_loose_zll="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt100+")"
 cuts_loose_zpt150="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt150+")"
-#####
-
+cuts_loose_zpt200="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt200+")"
 cuts_loose_zll_met50="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt100+"&&"+cuts_met50+")"
-#####
-cuts_zpt100="(llnunu_l1_pt>100)"
-cuts_met50="(llnunu_l2_pt_to_plot>50)"
-anticuts_zpt100="(llnunu_l1_pt>50 && llnunu_l1_pt<=100)"
-anticuts_met50="(llnunu_l2_pt_to_plot<=50)"
-controlRegion1 = "("+anticuts_met50+" && "+cuts_zpt100+")"
-controlRegion2 = "("+cuts_met50+" && "+anticuts_zpt100+")"
-controlRegion3 = "("+anticuts_met50+" && "+anticuts_zpt100+")"
-
-###
-anticuts_loose_zll_met50="( "+cuts_lepaccept+"&&"+cuts_zmass+"&& ("+controlRegion1+" || "+controlRegion2+" || "+controlRegion3+") )"
-
-anticuts_loose_zll_met50_CR1="( "+cuts_lepaccept+"&&"+cuts_zmass+"&& ("+controlRegion1+") )"
-anticuts_loose_zll_met50_CR2="( "+cuts_lepaccept+"&&"+cuts_zmass+"&& ("+controlRegion2+") )"
-anticuts_loose_zll_met50_CR3="( "+cuts_lepaccept+"&&"+cuts_zmass+"&& ("+controlRegion3+") )"
-
 cuts_loose_zll_met100="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt100+"&&"+cuts_met100+")"
 cuts_loose_zll_met200="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt100+"&&"+cuts_met200+")"
-cuts_nonreso_zptgt70="("+cuts_lepaccept+"&&!"+cuts_zmass+"&&"+cuts_zmass_50_180+"&&llnunu_l1_pt>70)"
+cuts_nonreso_zptgt0="("+cuts_lepaccept+"&&!"+cuts_zmass+"&&"+cuts_zmass_50_180+")"
+cuts_nonreso_zptgt10="("+cuts_lepaccept+"&&!"+cuts_zmass+"&&"+cuts_zmass_50_180+"&&llnunu_l1_pt>10)"
+cuts_nonreso_zptgt20="("+cuts_lepaccept+"&&!"+cuts_zmass+"&&"+cuts_zmass_50_180+"&&llnunu_l1_pt>20)"
+cuts_nonreso_zptgt30="("+cuts_lepaccept+"&&!"+cuts_zmass+"&&"+cuts_zmass_50_180+"&&llnunu_l1_pt>30)"
+cuts_nonreso_zptgt40="("+cuts_lepaccept+"&&!"+cuts_zmass+"&&"+cuts_zmass_50_180+"&&llnunu_l1_pt>40)"
 cuts_nonreso_zptgt50="("+cuts_lepaccept+"&&!"+cuts_zmass+"&&"+cuts_zmass_50_180+"&&llnunu_l1_pt>50)"
+cuts_nonreso_zptgt50_metlt20="("+cuts_lepaccept+"&&!"+cuts_zmass+"&&"+cuts_zmass_50_180+"&&llnunu_l1_pt>50&&llnunu_l2_pt_to_plot<20)"
+cuts_nonreso_zptgt50_metlt30="("+cuts_lepaccept+"&&!"+cuts_zmass+"&&"+cuts_zmass_50_180+"&&llnunu_l1_pt>50&&llnunu_l2_pt_to_plot<30)"
+cuts_nonreso_zptgt50_metlt50="("+cuts_lepaccept+"&&!"+cuts_zmass+"&&"+cuts_zmass_50_180+"&&llnunu_l1_pt>50&&llnunu_l2_pt_to_plot<50)"
 cuts_nonreso_zptgt50_metlt100="("+cuts_lepaccept+"&&!"+cuts_zmass+"&&"+cuts_zmass_50_180+"&&llnunu_l1_pt>50&&llnunu_l2_pt_to_plot<100)"
-
+cuts_CR="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>50&&!(llnunu_l1_pt>100&&llnunu_l2_pt_to_plot>50))"
+cuts_CR1="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>100&&llnunu_l2_pt_to_plot<50)"
+cuts_CR2="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>50&&llnunu_l1_pt<100&&llnunu_l2_pt_to_plot>50)"
+cuts_CR3="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>50&&llnunu_l1_pt<100&&llnunu_l2_pt_to_plot<50)"
 
 if cutChain=='loosecut': cuts=cuts_loose
 elif cutChain=='tight': cuts=cuts_loose_z
+elif cutChain=='tightzpt20': cuts=cuts_loose_zpt20
+elif cutChain=='tightzpt50': cuts=cuts_loose_zpt50
+elif cutChain=='tightzptgt50lt200': cuts=cuts_loose_zptgt50lt200
+elif cutChain=='tightzptgt100lt400': cuts=cuts_loose_zptgt100lt400
 elif cutChain=='tightzpt100': cuts=cuts_loose_zll
-
+elif cutChain=='tightzpt150': cuts=cuts_loose_zpt150
+elif cutChain=='tightzpt200': cuts=cuts_loose_zpt200
 elif cutChain=='tightzpt100met50': cuts=cuts_loose_zll_met50
-elif cutChain=='antitightzpt100met50': cuts=anticuts_loose_zll_met50
-elif cutChain=='antitightzpt100met50_CR1': cuts=anticuts_loose_zll_met50_CR1
-elif cutChain=='antitightzpt100met50_CR2': cuts=anticuts_loose_zll_met50_CR2
-elif cutChain=='antitightzpt100met50_CR3': cuts=anticuts_loose_zll_met50_CR3
-
 elif cutChain=='tightzpt100met100': cuts=cuts_loose_zll_met100
-elif cutChain=='nonreso_zptgt70': cuts=cuts_nonreso_zptgt70
+elif cutChain=='tightzpt100met200': cuts=cuts_loose_zll_met200
+elif cutChain=='nonreso_zptgt0': cuts=cuts_nonreso_zptgt0
+elif cutChain=='nonreso_zptgt10': cuts=cuts_nonreso_zptgt10
+elif cutChain=='nonreso_zptgt20': cuts=cuts_nonreso_zptgt20
+elif cutChain=='nonreso_zptgt30': cuts=cuts_nonreso_zptgt30
+elif cutChain=='nonreso_zptgt40': cuts=cuts_nonreso_zptgt40
 elif cutChain=='nonreso_zptgt50': cuts=cuts_nonreso_zptgt50
+elif cutChain=='nonreso_zptgt50_metlt20': cuts=cuts_nonreso_zptgt50_metlt20
+elif cutChain=='nonreso_zptgt50_metlt30': cuts=cuts_nonreso_zptgt50_metlt30
+elif cutChain=='nonreso_zptgt50_metlt50': cuts=cuts_nonreso_zptgt50_metlt50
 elif cutChain=='nonreso_zptgt50_metlt100': cuts=cuts_nonreso_zptgt50_metlt100
+elif cutChain=='SR': cuts=cuts_loose_zll_met50
+elif cutChain=='CR': cuts=cuts_CR
+elif cutChain=='CR1': cuts=cuts_CR1
+elif cutChain=='CR2': cuts=cuts_CR2
+elif cutChain=='CR3': cuts=cuts_CR3
 else : cuts=cuts_loose
 
 
 if UseMETFilter:
-    #cuts = '('+cuts+'&&'+metfilter+')'
     cuts = '('+cuts+')' # metfilter pre-applied in preskim
+
+# badmuon filter
+cuts += '&&(nbadmuon==0)' 
 
 cuts = '('+cuts+')'
 
 ROOT.gROOT.ProcessLine('.x tdrstyle.C') 
 
-#################
-
-if channel=="el": 
-    emuscale="(etrgsf*"+str(nonreso_alpha_el)+")"
-elif channel=="mu": 
-    emuscale="(mtrgsf*"+str(nonreso_alpha_mu)+")"
-else: 
-    emuscale="(etrgsf*"+str(nonreso_alpha_el)+"+mtrgsf*"+str(nonreso_alpha_mu)+")"
-
-nonresSamples = [
-'muonegtree_light_skim'
-]
-nonresCRPlotters=[]
-nonresPlotters=[]
-for sample in nonresSamples:
-    nonresCRPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
-    nonresCRPlotters[-1].addCorrectionFactor(str(0.001/lumi), 'norm')
-
-    nonresPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
-    nonresPlotters[-1].addCorrectionFactor(str(0.001/lumi), 'norm')
-    nonresPlotters[-1].addCorrectionFactor(emuscale, 'emuscale')
-
-NONRES = MergedPlotter(nonresPlotters)
-NONRES.setFillProperties(1001,ROOT.kOrange)
-
-wwSamples = ['WWTo2L2Nu','WWToLNuQQ_BIG','WZTo1L1Nu2Q']
-wwPlotters=[]
-for sample in wwSamples:
-    wwPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
-    wwPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
-    wwPlotters[-1].addCorrectionFactor('xsec','xsec')
-    wwPlotters[-1].addCorrectionFactor('genWeight','genWeight')
-    wwPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
-    wwPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
-    wwPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
-
-WW = MergedPlotter(wwPlotters)
-WW.setFillProperties(1001,ROOT.kOrange)
-
-vvSamples = ['WZTo2L2Q','WZTo3LNu_AMCNLO',
+#######################
+#  VV Reso backgrounds
+#######################
+vvSamples = ['WZTo2L2Q','WZTo3LNu',
 'ZZTo2L2Nu',
 'ZZTo2L2Q','ZZTo4L',
-'ggZZTo2e2nu','ggZZTo2mu2nu']
+'ggZZTo2e2nu','ggZZTo2mu2nu',
+'TTZToLLNuNu']
 
 vvPlotters=[]
 for sample in vvSamples:
@@ -254,204 +213,339 @@ for sample in vvSamples:
     vvPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
     vvPlotters[-1].addCorrectionFactor(lepsf, 'lepsf')
     vvPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
-    if sample == 'ZZTo2L2Nu' : vvPlotters[-1].addCorrectionFactor("(ZZEwkCorrWeight*ZZQcdCorrWeight)*xsec", 'nnlo')
-    if 'ggZZTo2' in sample: vvPlotters[-1].addCorrectionFactor('0.01898','xsec')
+    if sample == 'WZTo3LNu': vvPlotters[-1].addCorrectionFactor('4.4297','xsec') 
     else: vvPlotters[-1].addCorrectionFactor('xsec','xsec')
+    if sample == 'ZZTo2L2Nu' : vvPlotters[-1].addCorrectionFactor("(ZZEwkCorrWeight*ZZQcdCorrWeight)", 'nnlo')
+    vvPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
+    vvPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
+    vvPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
 
 VV = MergedPlotter(vvPlotters)
 VV.setFillProperties(1001,ROOT.kMagenta)
 
+# some plotting definition
+VV.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
+VV.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
+VV.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
+VV.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
+VV.setAlias('llnunu_mT', 'llnunu_mt')
+for syst in ['JetEn','JetRes','MuonEn','ElectronEn','TauEn','PhotonEn','Uncluster'] :
+    VV.setAlias('llnunu_mT_'+syst+'Up', 'llnunu_mt_'+syst+'Up')
+    VV.setAlias('llnunu_mT_'+syst+'Dn', 'llnunu_mt_'+syst+'Dn')
+VV.setAlias('llnunu_mT_RecoilUp', 'llnunu_mt')
+VV.setAlias('llnunu_mT_RecoilDn', 'llnunu_mt')
 
-wjetsPlotters=[]
-wjetsSamples = ['WJetsToLNu']
+#######################
+#  NonReso backgrounds
+#######################
 
-for sample in wjetsSamples:
-    wjetsPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
-    wjetsPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
-    wjetsPlotters[-1].addCorrectionFactor('xsec','xsec')
-    wjetsPlotters[-1].addCorrectionFactor('genWeight','genWeight')
-    wjetsPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
-    wjetsPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
-    wjetsPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
+# if use emu data driven method
+if muoneg: 
 
-WJets = MergedPlotter(wjetsPlotters)
-WJets.setFillProperties(1001,ROOT.kBlue-6)
+    if channel=="el": 
+        emuscale="(etrgsf*"+str(nonreso_alpha_el)+")"
+    elif channel=="mu": 
+        emuscale="(mtrgsf*"+str(nonreso_alpha_mu)+")"
+    else: 
+        emuscale="(etrgsf*"+str(nonreso_alpha_el)+"+mtrgsf*"+str(nonreso_alpha_mu)+")"
+
+    nonresSamples = [
+    'muonegtree_light_skim_38_skim'
+    ]
+    nonresPlotters=[]
+    for sample in nonresSamples:
+        nonresPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
+        nonresPlotters[-1].addCorrectionFactor(str(0.001/lumi), 'norm')
+        nonresPlotters[-1].addCorrectionFactor(emuscale, 'emuscale')
+        nonresPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
+
+    NONRES = MergedPlotter(nonresPlotters)
+    NONRES.setFillProperties(1001,ROOT.kOrange)
+
+    # some plotting definition
+    NONRES.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
+    NONRES.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
+    NONRES.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
+    NONRES.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
+    NONRES.setAlias('llnunu_mT', 'llnunu_mt')
+    #NONRES.setAlias('nbadmuon', '(!nllnunu)')
+    for syst in ['JetEn','JetRes','MuonEn','ElectronEn','TauEn','PhotonEn','Uncluster','Recoil'] :
+        NONRES.setAlias('llnunu_mT_'+syst+'Up', 'llnunu_mt')
+        NONRES.setAlias('llnunu_mT_'+syst+'Dn', 'llnunu_mt')
+
+# if use mc
+else:
+
+    wwSamples = ['WWTo2L2Nu','WWToLNuQQ_BIG','WZTo1L1Nu2Q']
+    wwPlotters=[]
+    for sample in wwSamples:
+        wwPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
+        wwPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
+        wwPlotters[-1].addCorrectionFactor('xsec','xsec')
+        wwPlotters[-1].addCorrectionFactor('genWeight','genWeight')
+        wwPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
+        wwPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
+        wwPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
+        wwPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
+        wwPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
+        wwPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
+    
+    WW = MergedPlotter(wwPlotters)
+    WW.setFillProperties(1001,ROOT.kOrange)
+
+    ttSamples = ['TTTo2L2Nu_noSC','TTWJetsToLNu_BIG', 'T_tWch', 'T_tch_powheg', 'TBar_tWch', 'TBar_tch_powheg']
+    ttPlotters=[]
+    for sample in ttSamples:
+        ttPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
+        ttPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
+        ttPlotters[-1].addCorrectionFactor('xsec','xsec')
+        ttPlotters[-1].addCorrectionFactor('genWeight','genWeight')
+        ttPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
+        ttPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
+        ttPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
+        ttPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
+        ttPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
+        ttPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
+    
+    TT = MergedPlotter(ttPlotters)
+    TT.setFillProperties(1001,ROOT.kAzure-9)
+
+    # some plotting definition
+    WW.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
+    WW.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
+    WW.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
+    WW.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
+    WW.setAlias('llnunu_mT', 'llnunu_mt')
+
+    for syst in ['JetEn','JetRes','MuonEn','ElectronEn','TauEn','PhotonEn','Uncluster'] :
+        WW.setAlias('llnunu_mT_'+syst+'Up', 'llnunu_mt_'+syst+'Up')
+        WW.setAlias('llnunu_mT_'+syst+'Dn', 'llnunu_mt_'+syst+'Dn')
+        WW.setAlias('llnunu_mT_RecoilUp', 'llnunu_mt')
+        WW.setAlias('llnunu_mT_RecoilDn', 'llnunu_mt')
+
+    TT.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
+    TT.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
+    TT.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
+    TT.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
+    TT.setAlias('llnunu_mT', 'llnunu_mt')
+    for syst in ['JetEn','JetRes','MuonEn','ElectronEn','TauEn','PhotonEn','Uncluster','Recoil'] :
+        TT.setAlias('llnunu_mT_'+syst+'Up', 'llnunu_mt')
+        TT.setAlias('llnunu_mT_'+syst+'Dn', 'llnunu_mt')
 
 
 ################################
-# ZJets
+# ZJets backgrounds
+######################
 
-# parameters for GJets
+# if use GJets to describe ZJets
+if dyGJets : 
+    # parameters for GJets
+    el_gjet_scale=1.10003
+    mu_gjet_scale=1.13122 
+    gdataLumi=36.46*1000
+    gdataYield=3451449849.011390686 
+    gdataFidXsec=gdataYield/gdataLumi
+    zjetsFidXsecAll = 151.06068438939382759
+    zjetsFidXsecEl =  1.8318217140038339785*el_gjet_scale
+    zjetsFidXsecMu =  149.22886267539001892*mu_gjet_scale
+    zjetsFidXsecAll_up = 151.85715853322426483
+    zjetsFidXsecAll_dn = 150.26421019455997907
+    zjetsFidXsecEl_up = 1.8728979304188486665*el_gjet_scale
+    zjetsFidXsecEl_dn = 1.7907454975888201787*el_gjet_scale
+    zjetsFidXsecMu_up = 149.98426060280544903*mu_gjet_scale
+    zjetsFidXsecMu_dn = 148.47346469697114912*mu_gjet_scale
+    zjetsFidXsecLowLptAll = 807.42655018368884612
+    zjetsFidXsecLowLptEl = 229.77648821257676559
+    zjetsFidXsecLowLptMu = 577.65006197098625762
 
-gdataLumi=36.46*1000
-gdataYield=3451449849.011390686 
-gdataFidXsec=gdataYield/gdataLumi
+    # for GJets photon bkg subtraction
 
-zjetsFidXsecAll = 151.06068438939382759
-zjetsFidXsecEl =  1.8318217140038339785
-zjetsFidXsecMu =  149.22886267539001892
-zjetsFidXsecAll_up = 151.85715853322426483
-zjetsFidXsecAll_dn = 150.26421019455997907
-zjetsFidXsecEl_up = 1.8728979304188486665
-zjetsFidXsecEl_dn = 1.7907454975888201787
-zjetsFidXsecMu_up = 149.98426060280544903
-zjetsFidXsecMu_dn = 148.47346469697114912
+    phymetSamples = [
+    'G_DYJetsToLL_M50_MGMLM_Ext1',
+    'G_TBar_tWch',
+    'G_TBar_tch_powheg',
+    'G_TGJets_BIG', 
+    'G_TTGJets_BIG', 
+    'G_T_tWch',  
+    'G_T_tch_powheg', 
+    'G_WGToLNuG', 
+    'G_ZNuNuGJetsGt130', 
+    'G_ZNuNuGJetsGt40Lt130',
+    'G_WJetsToLNu_HT100to200_BIG',
+    'G_WJetsToLNu_HT1200to2500_BIG',
+    'G_WJetsToLNu_HT200to400_BIG',
+    'G_WJetsToLNu_HT2500toInf_BIG',
+    'G_WJetsToLNu_HT400to600_BIG',
+    'G_WJetsToLNu_HT600to800_BIG',
+    'G_WJetsToLNu_HT800to1200_BIG',
+    'G_ZJetsToNuNu_HT100to200_BIG',
+    'G_ZJetsToNuNu_HT1200to2500_BIG',
+    'G_ZJetsToNuNu_HT200to400_BIG',
+    'G_ZJetsToNuNu_HT2500toInf_BIG',
+    'G_ZJetsToNuNu_HT400to600_BIG',
+    'G_ZJetsToNuNu_HT600to800_BIG',
+    'G_ZJetsToNuNu_HT800t1200_BIG',
+    ]
 
-#zjetsFidXsecLowLptAll = 807.42655018368884612
-#zjetsFidXsecLowLptEl = 229.77648821257676559
-#zjetsFidXsecLowLptMu = 577.65006197098625762
+    # all the factors below together normalized each process to the fraction of the process in the gjets data
+    #   fidxsec_i / fidxsec_total
+    # together with the gdata, we have:
+    #  [ fidxsec_total-Sum(fidxsec_i) ]/fidxsec_total * fidxsec_zjets * lumi = zjets_yields
+    # an additional scale factor GJetsNorm to absorbe the small difference.
 
-
-# for GJets photon bkg subtraction
-
-phymetPlotters=[]
-phymetSamples = [
-'G_DYJetsToLL_M50_reHLT',
-'G_ZJetsToNuNu_HT100to200_BIG',
-'G_ZJetsToNuNu_HT200to400_BIG',
-'G_ZJetsToNuNu_HT400to600_BIG',
-'G_ZJetsToNuNu_HT600to800_BIG',
-'G_ZJetsToNuNu_HT800t1200_BIG',
-'G_ZJetsToNuNu_HT1200to2500_BIG',
-'G_ZJetsToNuNu_HT2500toInf_BIG',
-'G_ZNuNuGJetsGt40Lt130',
-'G_ZNuNuGJetsGt130',
-'G_WGToLNuG',
-#'G_WJetsToLNu_HT100to200_BIG',
-#'G_WJetsToLNu_HT1200to2500_BIG',
-#'G_WJetsToLNu_HT200to400_BIG',
-#'G_WJetsToLNu_HT2500toInf_BIG',
-#'G_WJetsToLNu_HT400to600_BIG',
-#'G_WJetsToLNu_HT600to800_BIG',
-#'G_WJetsToLNu_HT800to1200_BIG',
-'G_TToLeptons_tch_powheg',
-'G_TBarToLeptons_tch_powheg',
-'G_T_tWch',
-'G_TBar_tWch',
-'G_TGJets_BIG',
-'G_TTGJets',
-]
-
-# all the factors below together normalized each process to the fraction of the process in the gjets data
-#   fidxsec_i / fidxsec_total
-# together with the gdata, we have:
-#  [ fidxsec_total-Sum(fidxsec_i) ]/fidxsec_total * fidxsec_zjets * lumi = zjets_yields
-# an additional scale factor GJetsNorm to absorbe the small difference.
-
-for sample in phymetSamples:
-    phymetPlotters.append(TreePlotter(sample, indirGJets+'/'+sample+'.root','tree'))
-    phymetPlotters[-1].addCorrectionFactor('-1/SumWeights','norm') # negative weight for subtraction
-    phymetPlotters[-1].addCorrectionFactor('xsec','xsec')
-    phymetPlotters[-1].addCorrectionFactor('genWeight','genWeight')
-    phymetPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
-    phymetPlotters[-1].addCorrectionFactor(g_scale,'scale')
-    phymetPlotters[-1].addCorrectionFactor(str(1/gdataFidXsec),'frac') # divided by g data fid-xsec
-    phymetPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
-    phymetPlotters[-1].addCorrectionFactor(zjets_scale,'zjets_scale')
-
-    if channel=='el' :
-        phymetPlotters[-1].addCorrectionFactor('GJetsZPtWeightEl','GJetsZPtWeight')
-        phymetPlotters[-1].addCorrectionFactor(str(zjetsFidXsecEl),'zjetsFidXsecEl')
-    elif channel=='mu' :
-        phymetPlotters[-1].addCorrectionFactor('GJetsZPtWeightMu','GJetsZPtWeight')
-        phymetPlotters[-1].addCorrectionFactor(str(zjetsFidXsecMu),'zjetsFidXsecMu')
-    else :
-        phymetPlotters[-1].addCorrectionFactor('GJetsZPtWeight','GJetsZPtWeight')
-        phymetPlotters[-1].addCorrectionFactor(str(zjetsFidXsecAll),'zjetsFidXsecAll')
+    phymetPlotters=[]
+    for sample in phymetSamples:
+        phymetPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
+        phymetPlotters[-1].addCorrectionFactor('-1/SumWeights','norm') # negative weight for subtraction
+        phymetPlotters[-1].addCorrectionFactor('xsec','xsec')
+        phymetPlotters[-1].addCorrectionFactor('genWeight','genWeight')
+        phymetPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
+        phymetPlotters[-1].addCorrectionFactor(g_scale,'scale')
+        phymetPlotters[-1].addCorrectionFactor(str(1/gdataFidXsec),'frac') # divided by g data fid-xsec
+        phymetPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
+        phymetPlotters[-1].addCorrectionFactor(zjets_scale,'zjets_scale')
+        if channel=='el' :
+            phymetPlotters[-1].addCorrectionFactor('GJetsZPtWeightEl','GJetsZPtWeight')
+            phymetPlotters[-1].addCorrectionFactor(str(zjetsFidXsecEl),'zjetsFidXsecEl')
+        elif channel=='mu' :
+            phymetPlotters[-1].addCorrectionFactor('GJetsZPtWeightMu','GJetsZPtWeight')
+            phymetPlotters[-1].addCorrectionFactor(str(zjetsFidXsecMu),'zjetsFidXsecMu')
+        else :
+            phymetPlotters[-1].addCorrectionFactor('GJetsZPtWeight','GJetsZPtWeight')
+            phymetPlotters[-1].addCorrectionFactor(str(zjetsFidXsecAll),'zjetsFidXsecAll')
 
 
-### the GJets data
+    ### the GJets data
+    gdataSamples = [
+    'SinglePhoton_Run2016Full_ReReco_v2', 
+    ]
 
-gdataPlotters=[]
-gdataSamples = [
-'SinglePhoton_Run2016B2H_ReReco_36p46_Rc36p46ReCalib',
-]
+    gdataPlotters=[]
+    for sample in gdataSamples:
+        gdataPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
+        gdataPlotters[-1].addCorrectionFactor('GJetsPreScaleWeight','GJetsPreScaleWeight')
+        gdataPlotters[-1].addCorrectionFactor('GJetsRhoWeight','GJetsRhoWeight')
+        gdataPlotters[-1].addCorrectionFactor(str(1/gdataYield),'GJetsNorm0')
+        gdataPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
+        gdataPlotters[-1].addCorrectionFactor(zjets_scale,'zjets_scale')
+        if channel=='el' :
+            gdataPlotters[-1].addCorrectionFactor('GJetsZPtWeightEl','GJetsZPtWeight')
+            gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecEl),'zjetsFidXsecEl')
+        elif channel=='mu' :
+            gdataPlotters[-1].addCorrectionFactor('GJetsZPtWeightMu','GJetsZPtWeight')
+            gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecMu),'zjetsFidXsecMu')
+        else :
+            gdataPlotters[-1].addCorrectionFactor('GJetsZPtWeight','GJetsZPtWeight')
+            gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecAll),'zjetsFidXsecAll')
 
-for sample in gdataSamples:
-    gdataPlotters.append(TreePlotter(sample, indirGJets+'/'+sample+'.root','tree'))
-    gdataPlotters[-1].addCorrectionFactor('GJetsPreScaleWeight','GJetsPreScaleWeight')
-    gdataPlotters[-1].addCorrectionFactor('GJetsRhoWeight','GJetsRhoWeight')
-    gdataPlotters[-1].addCorrectionFactor(str(1/gdataYield),'GJetsNorm0')
-    gdataPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
-    gdataPlotters[-1].addCorrectionFactor(zjets_scale,'zjets_scale')
-    
-    if channel=='el' :
-        gdataPlotters[-1].addCorrectionFactor('GJetsZPtWeightEl','GJetsZPtWeight')
-        gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecEl),'zjetsFidXsecEl')
-    elif channel=='mu' :
-        gdataPlotters[-1].addCorrectionFactor('GJetsZPtWeightMu','GJetsZPtWeight')
-        gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecMu),'zjetsFidXsecMu')
-    else :
-        gdataPlotters[-1].addCorrectionFactor('GJetsZPtWeight','GJetsZPtWeight')
-        gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecAll),'zjetsFidXsecAll')
+    # the GJets plotter
+    #gjetsPlotters = gdataPlotters
+    gjetsPlotters = gdataPlotters+phymetPlotters
 
-# the GJets plotter
-#gjetsPlotters = gdataPlotters
-gjetsPlotters = gdataPlotters+phymetPlotters
 
-ZJets = MergedPlotter(gjetsPlotters)
-ZJets.setFillProperties(1001,ROOT.kGreen+2)
+    GJets = MergedPlotter(gjetsPlotters)
+    GJets.setFillProperties(1001,ROOT.kGreen+2)
 
-### MC ZJets
-mczjetsPlotters=[]
-mczjetsSamples = [
-'DYJetsToLL_M50_BIG_Rc36p46DtReCalib',
-]
+    # some plotting definition
+    GJets.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
 
-for sample in mczjetsSamples:
-    mczjetsPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
-    mczjetsPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
-    mczjetsPlotters[-1].addCorrectionFactor(ZPtWeight,'ZPtWeight')
-    mczjetsPlotters[-1].addCorrectionFactor('(1921.8*3)','xsec') # FEWZ NNLO.results_z_m50_nnlo_inclusive_NNPDF30_nlo_as_0118
-    mczjetsPlotters[-1].addCorrectionFactor('genWeight','genWeight')
-    mczjetsPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
-    mczjetsPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
-    mczjetsPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
-    mczjetsPlotters[-1].addCorrectionFactor(zjets_scale,'zjets_scale')
-    if channel=='el' :
-#        mczjetsPlotters[-1].addCorrectionFactor('(1.12777)','scale') #el ResBos for DtReCalib
-#        mczjetsPlotters[-1].addCorrectionFactor('(0.985054)','scale') #el ResBos
-#        mczjetsPlotters[-1].addCorrectionFactor('(1.13748)','scale') #el
-        mczjetsPlotters[-1].addCorrectionFactor('(1)','scale') #el
-    elif channel=='mu' :
-#        mczjetsPlotters[-1].addCorrectionFactor('(1.16187)','scale') #mu ResBos for DtReCalib
-#        mczjetsPlotters[-1].addCorrectionFactor('(1.11546)','scale') #mu ResBos
-#        mczjetsPlotters[-1].addCorrectionFactor('(1.16246)','scale') #mu
-        mczjetsPlotters[-1].addCorrectionFactor('(1)','scale') #mu
-    else :
-#        mczjetsPlotters[-1].addCorrectionFactor('(1.11376)','scale') #all ResBos
-#        mczjetsPlotters[-1].addCorrectionFactor('(1.16187)','scale') #all
-        mczjetsPlotters[-1].addCorrectionFactor('(1)','scale') #all
+    if channel=='el':
+        GJets.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass_el')
+        GJets.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt_el')
+        GJets.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi_el')
+        GJets.setAlias('llnunu_mt_to_plot', 'llnunu_mt_el')
+    elif channel=='mu':
+        GJets.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass_mu')
+        GJets.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt_mu')
+        GJets.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi_mu')
+        GJets.setAlias('llnunu_mt_to_plot', 'llnunu_mt_mu')
+    else:
+        GJets.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
+        GJets.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
+        GJets.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
+        GJets.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
 
-MCZJets = MergedPlotter(mczjetsPlotters)
-MCZJets.setFillProperties(1001,ROOT.kGreen+2)
+
+#if not dyGJets
+else: 
+    ### MC ZJets
+    mczjetsSamples = [
+    'DYJetsToLL_M50_MGMLM_BIG',
+#    'DYJetsToLL_M50_MGMLM_BIG_NoRecoil',
+    ]
+
+    mczjetsPlotters=[]
+    for sample in mczjetsSamples:
+        mczjetsPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
+        mczjetsPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
+        mczjetsPlotters[-1].addCorrectionFactor(ZPtWeight,'ZPtWeight')
+        if 'DY1JetsToLL' in sample: mczjetsPlotters[-1].addCorrectionFactor('(1177.7274)', 'xsec')
+        elif 'DY2JetsToLL' in sample: mczjetsPlotters[-1].addCorrectionFactor('(389.1267)', 'xsec')
+        elif 'DY3JetsToLL' in sample: mczjetsPlotters[-1].addCorrectionFactor('(119.0516)', 'xsec')
+        elif 'DY4JetsToLL' in sample: mczjetsPlotters[-1].addCorrectionFactor('(63.3043)', 'xsec')
+        else: mczjetsPlotters[-1].addCorrectionFactor('xsec','xsec') 
+        mczjetsPlotters[-1].addCorrectionFactor('genWeight','genWeight')
+        mczjetsPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
+        mczjetsPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
+        mczjetsPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
+        mczjetsPlotters[-1].addCorrectionFactor(zjets_scale,'zjets_scale')
+        mczjetsPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
+        mczjetsPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
+        mczjetsPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT') 
+
+    MCZJets = MergedPlotter(mczjetsPlotters)
+    MCZJets.setFillProperties(1001,ROOT.kGreen+2)
+
+    # some plotting definition
+    MCZJets.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
+    MCZJets.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
+    MCZJets.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
+    MCZJets.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
+
+# end if dyGJets:..., else: ...
 
 ##
 # choose GJets or ZJets MC
-if (not dyGJets):
+if dyGJets:
+  ZJets = GJets
+else: 
   ZJets = MCZJets
 
-####
+if dyGJets and channel=='el':
+    ZJets.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass_el')
+    ZJets.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt_el')
+    ZJets.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi_el')
+    ZJets.setAlias('llnunu_mt_to_plot', 'llnunu_mt_el')
+    ZJets.setAlias('llnunu_mT', 'llnunu_mt_el')
+    for syst in ['JetEn','JetRes','MuonEn','ElectronEn','TauEn','PhotonEn','Uncluster','Recoil'] :
+        ZJets.setAlias('llnunu_mT_'+syst+'Up', 'llnunu_mt_el_'+syst+'Up')
+        ZJets.setAlias('llnunu_mT_'+syst+'Dn', 'llnunu_mt_el_'+syst+'Dn')
 
-ttPlotters=[]
-ttSamples = ['TTTo2L2Nu','TTZToLLNuNu','TTWJetsToLNu']
+elif dyGJets and channel=='mu':
+    ZJets.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass_mu')
+    ZJets.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt_mu')
+    ZJets.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi_mu')
+    ZJets.setAlias('llnunu_mt_to_plot', 'llnunu_mt_mu')
+    ZJets.setAlias('llnunu_mT', 'llnunu_mt_mu')
+    for syst in ['JetEn','JetRes','MuonEn','ElectronEn','TauEn','PhotonEn','Uncluster','Recoil'] :
+        ZJets.setAlias('llnunu_mT_'+syst+'Up', 'llnunu_mt_mu_'+syst+'Up')
+        ZJets.setAlias('llnunu_mT_'+syst+'Dn', 'llnunu_mt_mu_'+syst+'Dn')
 
-for sample in ttSamples:
-    ttPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
-    ttPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
-    ttPlotters[-1].addCorrectionFactor('xsec','xsec')
-    ttPlotters[-1].addCorrectionFactor('genWeight','genWeight')
-    ttPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
-    ttPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
-    ttPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
-
-if muoneg:
-   TT = MergedPlotter(nonresCRPlotters)
 else:
-   TT = MergedPlotter(ttPlotters)
-TT.setFillProperties(1001,ROOT.kAzure-9)
+    ZJets.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
+    ZJets.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
+    ZJets.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
+    ZJets.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
+    ZJets.setAlias('llnunu_mT', 'llnunu_mt')
+    for syst in ['JetEn','JetRes','MuonEn','ElectronEn','TauEn','PhotonEn','Uncluster','Recoil'] :
+        ZJets.setAlias('llnunu_mT_'+syst+'Up', 'llnunu_mt')
+        ZJets.setAlias('llnunu_mT_'+syst+'Dn', 'llnunu_mt')
 
-sigPlotters=[]
+
+######################
+# Signal samples
+#####################
+
 sigSamples = [
 'BulkGravToZZToZlepZinv_narrow_600',
 'BulkGravToZZToZlepZinv_narrow_800',
@@ -469,6 +563,7 @@ sigSamples = [
 ]
 
 
+sigPlotters=[]
 sigSampleNames = {
 'BulkGravToZZToZlepZinv_narrow_600':str(k)+' x BulkG-600',
 'BulkGravToZZToZlepZinv_narrow_800':str(k)+' x BulkG-800',
@@ -517,20 +612,6 @@ sigXsec = {
 'BulkGravToZZToZlepZinv_narrow_4500' : BulkGZZ2l2nuXsec[4500]*k,
 }
 
-if(not doSys) :
-  sigSamples = [
-   'BulkGravToZZToZlepZinv_narrow_600',
-   'BulkGravToZZToZlepZinv_narrow_1000',
-   'BulkGravToZZToZlepZinv_narrow_2000',
-  ]
-  sigSampleNames = {
-   'BulkGravToZZToZlepZinv_narrow_600':str(k)+' x BulkG-600',
-   'BulkGravToZZToZlepZinv_narrow_1000':str(k)+' x BulkG-1000',
-   'BulkGravToZZToZlepZinv_narrow_2000':str(k)+' x BulkG-2000',
-  }
-
-
-SignalAll1pb=True
 if SignalAll1pb:
     for sig in sigSamples:
         sigXsec[sig] = 1.0
@@ -545,6 +626,13 @@ for sample in sigSamples:
     sigPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
     sigPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
     sigPlotters[-1].setFillProperties(0,ROOT.kWhite)
+    sigPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
+    sigPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
+    sigPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
+    sigPlotters[-1].setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
+    sigPlotters[-1].setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
+    sigPlotters[-1].setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
+    sigPlotters[-1].setAlias('llnunu_mt_to_plot', 'llnunu_mt')
     # some plotting definition
     sigPlotters[-1].setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
     sigPlotters[-1].setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
@@ -557,16 +645,24 @@ for sample in sigSamples:
     sigPlotters[-1].setAlias('llnunu_mT_RecoilUp', 'llnunu_mt')
     sigPlotters[-1].setAlias('llnunu_mT_RecoilDn', 'llnunu_mt')
 
-dataPlotters=[]
+
+
+##########################
+# Data Observed
+##########################
+
 dataSamples = [
-'SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib',
+'SingleEMU_Run2016Full_ReReco_v2_DtReCalib',
 ]
 
+dataPlotters=[]
 for sample in dataSamples:
     dataPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
+    dataPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
+    dataPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
+    dataPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
 
-if DataHLT:
-    dataPlotters[0].addCorrectionFactor('(HLT_MUv2||HLT_ELEv2)','HLT')
+
 Data = MergedPlotter(dataPlotters)
 
 # some plotting definition
@@ -580,91 +676,24 @@ for syst in ['JetEn','JetRes','MuonEn','ElectronEn','TauEn','PhotonEn','Uncluste
     Data.setAlias('llnunu_mT_'+syst+'Up', 'llnunu_mt')
     Data.setAlias('llnunu_mT_'+syst+'Dn', 'llnunu_mt')
 
-# some plotting definition
-WW.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
-WW.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
-WW.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
-WW.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
-WW.setAlias('llnunu_mT', 'llnunu_mt')
-for syst in ['JetEn','JetRes','MuonEn','ElectronEn','TauEn','PhotonEn','Uncluster'] : 
-    WW.setAlias('llnunu_mT_'+syst+'Up', 'llnunu_mt_'+syst+'Up')
-    WW.setAlias('llnunu_mT_'+syst+'Dn', 'llnunu_mt_'+syst+'Dn')
-WW.setAlias('llnunu_mT_RecoilUp', 'llnunu_mt')
-WW.setAlias('llnunu_mT_RecoilDn', 'llnunu_mt')
 
-TT.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
-TT.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
-TT.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
-TT.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
-TT.setAlias('llnunu_mT', 'llnunu_mt')
-for syst in ['JetEn','JetRes','MuonEn','ElectronEn','TauEn','PhotonEn','Uncluster','Recoil'] : 
-    TT.setAlias('llnunu_mT_'+syst+'Up', 'llnunu_mt')
-    TT.setAlias('llnunu_mT_'+syst+'Dn', 'llnunu_mt')
-
-VV.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
-VV.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
-VV.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
-VV.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
-VV.setAlias('llnunu_mT', 'llnunu_mt')
-for syst in ['JetEn','JetRes','MuonEn','ElectronEn','TauEn','PhotonEn','Uncluster'] :
-    VV.setAlias('llnunu_mT_'+syst+'Up', 'llnunu_mt_'+syst+'Up')
-    VV.setAlias('llnunu_mT_'+syst+'Dn', 'llnunu_mt_'+syst+'Dn')
-VV.setAlias('llnunu_mT_RecoilUp', 'llnunu_mt')
-VV.setAlias('llnunu_mT_RecoilDn', 'llnunu_mt')
-
-NONRES.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
-NONRES.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
-NONRES.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
-NONRES.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
-NONRES.setAlias('llnunu_mT', 'llnunu_mt')
-for syst in ['JetEn','JetRes','MuonEn','ElectronEn','TauEn','PhotonEn','Uncluster','Recoil'] : 
-    NONRES.setAlias('llnunu_mT_'+syst+'Up', 'llnunu_mt')
-    NONRES.setAlias('llnunu_mT_'+syst+'Dn', 'llnunu_mt')
-
-if dyGJets and channel=='el':
-    ZJets.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass_el')
-    ZJets.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt_el')
-    ZJets.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi_el')
-    ZJets.setAlias('llnunu_mt_to_plot', 'llnunu_mt_el')
-    ZJets.setAlias('llnunu_mT', 'llnunu_mt_el')
-    for syst in ['JetEn','JetRes','MuonEn','ElectronEn','TauEn','PhotonEn','Uncluster','Recoil'] :
-        ZJets.setAlias('llnunu_mT_'+syst+'Up', 'llnunu_mt_el_'+syst+'Up')
-        ZJets.setAlias('llnunu_mT_'+syst+'Dn', 'llnunu_mt_el_'+syst+'Dn')
-
-elif dyGJets and channel=='mu':
-    ZJets.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass_mu')
-    ZJets.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt_mu')
-    ZJets.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi_mu')
-    ZJets.setAlias('llnunu_mt_to_plot', 'llnunu_mt_mu')
-    ZJets.setAlias('llnunu_mT', 'llnunu_mt_mu')
-    for syst in ['JetEn','JetRes','MuonEn','ElectronEn','TauEn','PhotonEn','Uncluster','Recoil'] :
-        ZJets.setAlias('llnunu_mT_'+syst+'Up', 'llnunu_mt_mu_'+syst+'Up')
-        ZJets.setAlias('llnunu_mT_'+syst+'Dn', 'llnunu_mt_mu_'+syst+'Dn')
-
-else:
-    ZJets.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
-    ZJets.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
-    ZJets.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
-    ZJets.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
-    ZJets.setAlias('llnunu_mT', 'llnunu_mt')
-    for syst in ['JetEn','JetRes','MuonEn','ElectronEn','TauEn','PhotonEn','Uncluster','Recoil'] :
-        ZJets.setAlias('llnunu_mT_'+syst+'Up', 'llnunu_mt')
-        ZJets.setAlias('llnunu_mT_'+syst+'Dn', 'llnunu_mt')
+############################
+# Stack Plotter to draw all
+############################
 
 Stack = StackPlotter(outTag=tag, outDir=outdir)
 Stack.setPaveText(paveText)
 Stack.addPlotter(Data, "data_obs", "Data", "data")
 if muoneg: 
-    Stack.addPlotter(NONRES, "NonReso","Non-reson.", "background")
-    if doSys :
-      Stack.addPlotter(TT, "NonResoCR","Non-reson. (e#mu data)", "background")
+    Stack.addPlotter(NONRES, "NonReso","Non-reson. (e#mu data)", "background")
 else:
     Stack.addPlotter(WW, "NonReso","WW/WZ/WJets non-reson.", "background")
     Stack.addPlotter(TT, "TT","TT", "background")
-
 Stack.addPlotter(VV, "VVZReso","ZZ WZ reson.", "background")
-if dyGJets: Stack.addPlotter(ZJets, "ZJets","ZJets(#gamma+Jets data)", "background")
-else: Stack.addPlotter(ZJets, "ZJets","ZJets(MC)", "background")
+if dyGJets: 
+    Stack.addPlotter(ZJets, "ZJets","ZJets(#gamma+Jets data)", "background")
+else: 
+    Stack.addPlotter(ZJets, "ZJets","ZJets(MC)", "background")
 
 for i in range(len(sigSamples)):
   sigPlotters[i].setLineProperties(2,ROOT.kRed+i,2)
@@ -675,9 +704,7 @@ Stack.doRatio(doRatio)
 
 tag+='_'
 
-#########
-
-nBins=300
+nBins=60
 mtMin=0
 mtMax=3000
 
@@ -687,7 +714,7 @@ if(not doSys) :
   Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output=tag+'met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
   Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 50, 0, 500, titlex = "PT_{Z}", units = "GeV",output=tag+'zpt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
 
-else:
+else :
 
    ## zjetsFidXsec
    postfix = 'El'
@@ -702,30 +729,30 @@ else:
 
    ## trg
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
-       if ( typeP != "data" and  name != "NonReso" and name!="ZJets"): 
-          plotter.changeCorrectionFactor("trgsf_up*idisotrksf"+rho_scale,"lepsf")
+       if ( typeP != "data" and  name != "NonReso" and name!="ZJets"):
+          plotter.changeCorrectionFactor("trgsf_up*idisotrksf","lepsf")
    Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output=tag+'mT_trgUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
-       if ( typeP != "data" and  name != "NonReso" and name!="ZJets"): 
-          plotter.changeCorrectionFactor("trgsf_dn*idisotrksf"+rho_scale,"lepsf")
+       if ( typeP != "data" and  name != "NonReso" and name!="ZJets"):
+          plotter.changeCorrectionFactor("trgsf_dn*idisotrksf","lepsf")
    Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output=tag+'mT_trgDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    ## id
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
        if ( typeP != "data" and  name != "NonReso" and name!="ZJets"):
-          plotter.changeCorrectionFactor("trgsf*idisotrksf_up"+rho_scale,"lepsf")
+          plotter.changeCorrectionFactor("trgsf*idisotrksf_up","lepsf")
    Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output=tag+'mT_idUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
        if ( typeP != "data" and name != "NonReso" and name!="ZJets"):
-          plotter.changeCorrectionFactor("trgsf*idisotrksf_dn"+rho_scale,"lepsf")
+          plotter.changeCorrectionFactor("trgsf*idisotrksf_dn","lepsf")
    Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output=tag+'mT_idDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    ## EWK and QCD
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
        if ( typeP != "data" and name != "NonReso" and name!="ZJets"):
-          plotter.changeCorrectionFactor("trgsf*idisotrksf"+rho_scale,"lepsf")
+          plotter.changeCorrectionFactor("trgsf*idisotrksf","lepsf")
 
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
        if ( typeP != "data" and  name == "VVZReso"):
@@ -737,15 +764,14 @@ else:
           plotter.changeCorrectionFactor("(ZZEwkCorrWeight_dn*ZZQcdCorrWeight)*xsec","nnlo")
    Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output=tag+'mT_ewkDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
-   #######
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
        if ( typeP != "data" and  name == "VVZReso"):
           plotter.changeCorrectionFactor("(ZZEwkCorrWeight*ZZQcdCorrWeight_up)*xsec","nnlo")
    Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output=tag+'mT_qcdUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
-   
+
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
        if ( typeP != "data" and  name == "VVZReso"):
-          plotter.changeCorrectionFactor("(ZZEwkCorrWeight*ZZQcdCorrWeight_dn)*xsec","nnlo")   
+          plotter.changeCorrectionFactor("(ZZEwkCorrWeight*ZZQcdCorrWeight_dn)*xsec","nnlo")
    Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output=tag+'mT_qcdDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    ## GJetsZPtWeight
