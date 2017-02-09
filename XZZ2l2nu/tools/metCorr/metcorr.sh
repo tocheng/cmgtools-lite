@@ -38,8 +38,10 @@ njob="0"
 #for infile in $inputdir/*/vvTreeProducer/tree.root ;
 #for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep Single ); 
 #for infile in $inputdir/DY?JetsToLL_M50_*/vvTreeProducer/tree.root ;
+#for infile in $inputdir/DYJetsToLL_M50_Ext/vvTreeProducer/tree.root ;
 #for infile in $inputdir/GluGluHTo*/vvTreeProducer/tree.root ;
-for infile in $inputdir/DYJetsToLL_M50_Ext/vvTreeProducer/tree.root ;
+#for infile in $inputdir/VBF_HToZ*/vvTreeProducer/tree.root ;
+for infile in $inputdir/Graviton*/vvTreeProducer/tree.root ;
 do
   echo "+++ skimming $infile +++"
   outfile="${outputdir}/${infile/$inputdir\//}"
