@@ -29,7 +29,7 @@ njob="0"
 #for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep  SinglePhoton_Run2016Full ); 
 #for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v  SinglePhoton_Run2016Full ); 
 #for infile in $(ls $inputdir/*/vvTreeProducer/tree.root  ); 
-for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep   Single ); 
+for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v  Single | grep -v halo15 | grep -v "/GJets_HT" | grep -v "/QCD_Pt" ); 
 do
   echo "+++ skimming $infile +++"
   outfile="${outputdir}/${infile/$inputdir\//}"

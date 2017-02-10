@@ -113,8 +113,8 @@ int main(int argc, char** argv) {
   tree->SetAlias("phi", "gjet_l1_phi");
   tree->SetAlias("pt", "gjet_l1_pt");
   //if (isData) 
-  //tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter&&Flag_BadPFMuonFilter&&Flag_BadChargedCandidateFilter)");
-  tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter&&Flag_BadPFMuonFilter&&Flag_BadChargedCandidateFilter&&Flag_CSCTightHalo2015Filter)");
+  tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter&&Flag_BadPFMuonFilter&&Flag_BadChargedCandidateFilter)");
+  //tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter&&Flag_BadPFMuonFilter&&Flag_BadChargedCandidateFilter&&Flag_CSCTightHalo2015Filter)");
   //else tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_CSCTightHalo2015Filter)");
 
   tree->SetAlias("ieta", "gjet_l1_ieta");
@@ -173,6 +173,7 @@ int main(int argc, char** argv) {
   tree_tmp1->SetBranchStatus("Flag_*",0);
   tree_tmp1->SetBranchStatus("Flag_hasBadMuon", 1);
   tree_tmp1->SetBranchStatus("Flag_CSCTightHalo2015Filter", 1);
+  tree_tmp1->SetBranchStatus("Flag_CSCTightHaloFilter", 1);
   tree_tmp1->SetBranchStatus("HLT_*",0);
   tree_tmp1->SetBranchStatus("jet_*",0);
   tree_tmp1->SetBranchStatus("photon_*",0);
