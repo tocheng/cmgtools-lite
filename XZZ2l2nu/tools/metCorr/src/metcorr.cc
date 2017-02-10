@@ -88,6 +88,7 @@ int main(int argc, char** argv) {
   // read config file
   readConfigFile();
 
+
   // make sure to turn off not needed options if _doGJetsSkim is true
   if (_doGJetsSkim) {
     _isDyJets = false;
@@ -95,13 +96,14 @@ int main(int argc, char** argv) {
     _isZZ = false;
   }
 
+  // prepare the trees
+  prepareTrees();
+
   // make sure _doMTUncDummy is on if DyJets and doGJets/is data
   if (_isDyJets||(_doGJetsSkim&&_isData)) {
     _doMTUncDummy = true;
   }
 
-  // prepare the trees
-  prepareTrees();
 
   // prepare inputs for pu weights
   if (_addPUWeights && !_isData) preparePUWeights();
