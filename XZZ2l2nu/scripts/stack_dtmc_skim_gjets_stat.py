@@ -92,8 +92,8 @@ puWeight='puWeightsummer16'
 k=1 # signal scale
 ZPtWeight="ZPtWeight"
 
-elChannel='((abs(llnunu_l1_l1_pdgId)==11||abs(llnunu_l1_l2_pdgId)==11)&&llnunu_l1_l1_pt>115&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5)'
-muChannel='((abs(llnunu_l1_l1_pdgId)==13||abs(llnunu_l1_l2_pdgId)==13)&&llnunu_l1_l1_pt>50&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID>0.99||llnunu_l1_l2_highPtID>0.99))'
+elChannel='((abs(llnunu_l1_l1_pdgId)==11||abs(llnunu_l1_l2_pdgId)==11)&&llnunu_l1_l1_pt>120&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5)'
+muChannel='((abs(llnunu_l1_l1_pdgId)==13||abs(llnunu_l1_l2_pdgId)==13)&&llnunu_l1_l1_pt>55&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID>0.99||llnunu_l1_l2_highPtID>0.99))'
 photonFakeID='(llnunu_l1_l1_pdgId==19801117)'
 
 if not os.path.exists(outdir): os.system('mkdir -p '+outdir)
@@ -414,7 +414,6 @@ if dyGJets :
             phymetPlotters[-1].addCorrectionFactor('GJetsZPtWeight','GJetsZPtWeight')
             phymetPlotters[-1].addCorrectionFactor(str(zjetsFidXsecAll),'zjetsFidXsecAll')
 
-
     ### the GJets data
     gdataSamples = [
     'SinglePhoton_Run2016Full_ReReco_v2', 
@@ -442,7 +441,6 @@ if dyGJets :
     #gjetsPlotters = gdataPlotters
     gjetsPlotters = gdataPlotters+phymetPlotters
 
-
     GJets = MergedPlotter(gjetsPlotters)
     GJets.setFillProperties(1001,ROOT.kGreen+2)
 
@@ -464,7 +462,6 @@ if dyGJets :
         GJets.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
         GJets.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
         GJets.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
-
 
 #if not dyGJets
 else: 
@@ -502,9 +499,6 @@ else:
     MCZJets.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
     MCZJets.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
 
-# end if dyGJets:..., else: ...
-
-##
 # choose GJets or ZJets MC
 if dyGJets:
   ZJets = GJets
@@ -530,7 +524,6 @@ elif dyGJets and channel=='mu':
     for syst in ['JetEn','JetRes','MuonEn','ElectronEn','TauEn','PhotonEn','Uncluster','Recoil'] :
         ZJets.setAlias('llnunu_mT_'+syst+'Up', 'llnunu_mt_mu_'+syst+'Up')
         ZJets.setAlias('llnunu_mT_'+syst+'Dn', 'llnunu_mt_mu_'+syst+'Dn')
-
 else:
     ZJets.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
     ZJets.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
@@ -561,7 +554,6 @@ sigSamples = [
 'BulkGravToZZToZlepZinv_narrow_4000', 
 'BulkGravToZZToZlepZinv_narrow_4500', 
 ]
-
 
 sigPlotters=[]
 sigSampleNames = {
@@ -645,6 +637,53 @@ for sample in sigSamples:
     sigPlotters[-1].setAlias('llnunu_mT_RecoilUp', 'llnunu_mt')
     sigPlotters[-1].setAlias('llnunu_mT_RecoilDn', 'llnunu_mt')
 
+### ggH
+
+ggHPlotters=[]
+
+ggHSamples = [
+'GluGluHToZZTo2L2Nu_M200',
+'GluGluHToZZTo2L2Nu_M300',
+'GluGluHToZZTo2L2Nu_M400',
+'GluGluHToZZTo2L2Nu_M500',
+'GluGluHToZZTo2L2Nu_M600',
+'GluGluHToZZTo2L2Nu_M700',
+'GluGluHToZZTo2L2Nu_M800',
+'GluGluHToZZTo2L2Nu_M900',
+'GluGluHToZZTo2L2Nu_M1000',
+'GluGluHToZZTo2L2Nu_M1500',
+'GluGluHToZZTo2L2Nu_M2000',
+'GluGluHToZZTo2L2Nu_M2500',
+'GluGluHToZZTo2L2Nu_M3000'
+]
+
+for sample in ggHSamples:
+    ggHPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
+    ggHPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
+    ggHPlotters[-1].addCorrectionFactor(str(1),'xsec')
+    ggHPlotters[-1].addCorrectionFactor('genWeight','genWeight')
+    ggHPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
+    ggHPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
+    ggHPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
+    ggHPlotters[-1].setFillProperties(0,ROOT.kWhite)
+    ggHPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
+    ggHPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
+    ggHPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
+    ggHPlotters[-1].setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
+    ggHPlotters[-1].setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
+    ggHPlotters[-1].setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
+    ggHPlotters[-1].setAlias('llnunu_mt_to_plot', 'llnunu_mt')
+    # some plotting definition
+    ggHPlotters[-1].setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
+    ggHPlotters[-1].setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
+    ggHPlotters[-1].setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
+    ggHPlotters[-1].setAlias('llnunu_mt_to_plot', 'llnunu_mt')
+    ggHPlotters[-1].setAlias('llnunu_mT', 'llnunu_mt')
+    for syst in ['JetEn','JetRes','MuonEn','ElectronEn','TauEn','PhotonEn','Uncluster'] :
+        ggHPlotters[-1].setAlias('llnunu_mT_'+syst+'Up', 'llnunu_mt_'+syst+'Up')
+        ggHPlotters[-1].setAlias('llnunu_mT_'+syst+'Dn', 'llnunu_mt_'+syst+'Dn')
+    ggHPlotters[-1].setAlias('llnunu_mT_RecoilUp', 'llnunu_mt')
+    ggHPlotters[-1].setAlias('llnunu_mT_RecoilDn', 'llnunu_mt')
 
 
 ##########################
@@ -699,6 +738,10 @@ for i in range(len(sigSamples)):
   sigPlotters[i].setLineProperties(2,ROOT.kRed+i,2)
   Stack.addPlotter(sigPlotters[i],sigSamples[i],sigSampleNames[sigSamples[i]],'signal')  
  
+for i in range(len(ggHSamples)):
+  ggHPlotters[i].setLineProperties(2,ROOT.kBlue+i,2)
+  Stack.addPlotter(ggHPlotters[i],ggHSamples[i],ggHSamples[i],'signal')
+
 Stack.setLog(LogY)
 Stack.doRatio(doRatio)
 
