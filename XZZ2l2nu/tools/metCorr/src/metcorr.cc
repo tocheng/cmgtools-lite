@@ -95,8 +95,8 @@ int main(int argc, char** argv) {
     _isZZ = false;
   }
 
-  // make sure _doMTUncDummy is on if DyJets
-  if (_isDyJets) {
+  // make sure _doMTUncDummy is on if DyJets and doGJets/is data
+  if (_isDyJets||(_doGJetsSkim&&_isData)) {
     _doMTUncDummy = true;
   }
 
@@ -464,20 +464,40 @@ bool  prepareTrees()
       _tree_in->SetBranchAddress("gjet_l2_genPhi", &_gjet_l2_genPhi);
       _tree_in->SetBranchAddress("gjet_l2_genEta", &_gjet_l2_genEta);
 
-      _tree_in->SetBranchAddress("gjet_l2_t1Pt_JetEnUp", &_gjet_l2_t1Pt_JECUp);
-      _tree_in->SetBranchAddress("gjet_l2_t1Pt_JetEnDn", &_gjet_l2_t1Pt_JECDn);
-      _tree_in->SetBranchAddress("gjet_l2_t1Phi_JetEnUp", &_gjet_l2_t1Phi_JECUp);
-      _tree_in->SetBranchAddress("gjet_l2_t1Phi_JetEnDn", &_gjet_l2_t1Phi_JECDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_JetEnUp", &_gjet_l2_t1Pt_JetEnUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_JetEnDn", &_gjet_l2_t1Pt_JetEnDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_JetEnUp", &_gjet_l2_t1Phi_JetEnUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_JetEnDn", &_gjet_l2_t1Phi_JetEnDn);
 
-      _tree_in->SetBranchAddress("gjet_l2_t1Pt_JetResUp", &_gjet_l2_t1Pt_JERUp);
-      _tree_in->SetBranchAddress("gjet_l2_t1Pt_JetResDn", &_gjet_l2_t1Pt_JERDn);
-      _tree_in->SetBranchAddress("gjet_l2_t1Phi_JetResUp", &_gjet_l2_t1Phi_JERUp);
-      _tree_in->SetBranchAddress("gjet_l2_t1Phi_JetResDn", &_gjet_l2_t1Phi_JERDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_JetResUp", &_gjet_l2_t1Pt_JetResUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_JetResDn", &_gjet_l2_t1Pt_JetResDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_JetResUp", &_gjet_l2_t1Phi_JetResUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_JetResDn", &_gjet_l2_t1Phi_JetResDn);
 
       _tree_in->SetBranchAddress("gjet_l2_t1Pt_UnclusterUp", &_gjet_l2_t1Pt_UnclusterUp);
       _tree_in->SetBranchAddress("gjet_l2_t1Pt_UnclusterDn", &_gjet_l2_t1Pt_UnclusterDn);
       _tree_in->SetBranchAddress("gjet_l2_t1Phi_UnclusterUp", &_gjet_l2_t1Phi_UnclusterUp);
       _tree_in->SetBranchAddress("gjet_l2_t1Phi_UnclusterDn", &_gjet_l2_t1Phi_UnclusterDn);
+
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_MuonEnUp", &_gjet_l2_t1Pt_MuonEnUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_MuonEnDn", &_gjet_l2_t1Pt_MuonEnDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_MuonEnUp", &_gjet_l2_t1Phi_MuonEnUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_MuonEnDn", &_gjet_l2_t1Phi_MuonEnDn);
+
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_TauEnUp", &_gjet_l2_t1Pt_TauEnUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_TauEnDn", &_gjet_l2_t1Pt_TauEnDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_TauEnUp", &_gjet_l2_t1Phi_TauEnUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_TauEnDn", &_gjet_l2_t1Phi_TauEnDn);
+
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_ElectronEnUp", &_gjet_l2_t1Pt_ElectronEnUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_ElectronEnDn", &_gjet_l2_t1Pt_ElectronEnDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_ElectronEnUp", &_gjet_l2_t1Phi_ElectronEnUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_ElectronEnDn", &_gjet_l2_t1Phi_ElectronEnDn);
+
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_PhotonEnUp", &_gjet_l2_t1Pt_PhotonEnUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_PhotonEnDn", &_gjet_l2_t1Pt_PhotonEnDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_PhotonEnUp", &_gjet_l2_t1Phi_PhotonEnUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_PhotonEnDn", &_gjet_l2_t1Phi_PhotonEnDn);
 
     }
     if (_isData){
@@ -1028,10 +1048,10 @@ void doMTUncEl(){
 
         _llnunu_mt_el = MTCalcEl(_llnunu_l2_pt_el,_llnunu_l2_phi_el);
 
-        float Up_pt = _gjet_l2_t1Pt_JECUp/_gjet_l2_pt;
-        float Up_phi = _gjet_l2_t1Phi_JECUp/_gjet_l2_phi; 
-        float Dn_pt = _gjet_l2_t1Pt_JECDn/_gjet_l2_pt;
-        float Dn_phi = _gjet_l2_t1Phi_JECDn/_gjet_l2_phi;
+        float Up_pt = _gjet_l2_t1Pt_JetEnUp/_gjet_l2_pt;
+        float Up_phi = _gjet_l2_t1Phi_JetEnUp/_gjet_l2_phi; 
+        float Dn_pt = _gjet_l2_t1Pt_JetEnDn/_gjet_l2_pt;
+        float Dn_phi = _gjet_l2_t1Phi_JetEnDn/_gjet_l2_phi;
 
         float mt_col[5];
         
@@ -1044,10 +1064,10 @@ void doMTUncEl(){
         _llnunu_mt_el_JetEnUp = TMath::MaxElement(5, mt_col);
         _llnunu_mt_el_JetEnDn = TMath::MinElement(5, mt_col);
 
-        Up_pt = _gjet_l2_t1Pt_JERUp/_gjet_l2_pt;
-        Up_phi = _gjet_l2_t1Phi_JERUp/_gjet_l2_phi;    
-        Dn_pt = _gjet_l2_t1Pt_JERDn/_gjet_l2_pt;
-        Dn_phi = _gjet_l2_t1Phi_JERDn/_gjet_l2_phi;
+        Up_pt = _gjet_l2_t1Pt_JetResUp/_gjet_l2_pt;
+        Up_phi = _gjet_l2_t1Phi_JetResUp/_gjet_l2_phi;    
+        Dn_pt = _gjet_l2_t1Pt_JetResDn/_gjet_l2_pt;
+        Dn_phi = _gjet_l2_t1Phi_JetResDn/_gjet_l2_phi;
 
         mt_col[0] = _llnunu_mt_el;
         mt_col[1] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
@@ -1058,10 +1078,10 @@ void doMTUncEl(){
         _llnunu_mt_el_JetResUp = TMath::MaxElement(5, mt_col);
         _llnunu_mt_el_JetResDn = TMath::MinElement(5, mt_col);
 
-        Up_pt = 1.0;
-        Up_phi = 1.0;
-        Dn_pt = 1.0;
-        Dn_phi = 1.0;
+        Up_pt = _gjet_l2_t1Pt_MuonEnUp/_gjet_l2_pt;
+        Up_phi = _gjet_l2_t1Phi_MuonEnUp/_gjet_l2_phi;
+        Dn_pt = _gjet_l2_t1Pt_MuonEnDn/_gjet_l2_pt;
+        Dn_phi = _gjet_l2_t1Phi_MuonEnDn/_gjet_l2_phi;
 
         mt_col[0] = _llnunu_mt_el;
         mt_col[1] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
@@ -1072,6 +1092,11 @@ void doMTUncEl(){
         _llnunu_mt_el_MuonEnUp = TMath::MaxElement(5, mt_col);
         _llnunu_mt_el_MuonEnDn = TMath::MinElement(5, mt_col);
 
+        Up_pt = _gjet_l2_t1Pt_ElectronEnUp/_gjet_l2_pt;
+        Up_phi = _gjet_l2_t1Phi_ElectronEnUp/_gjet_l2_phi;
+        Dn_pt = _gjet_l2_t1Pt_ElectronEnDn/_gjet_l2_pt;
+        Dn_phi = _gjet_l2_t1Phi_ElectronEnDn/_gjet_l2_phi;
+
         mt_col[0] = _llnunu_mt_el;
         mt_col[1] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
         mt_col[2] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
@@ -1081,6 +1106,11 @@ void doMTUncEl(){
         _llnunu_mt_el_ElectronEnUp = TMath::MaxElement(5, mt_col);
         _llnunu_mt_el_ElectronEnDn = TMath::MinElement(5, mt_col);
 
+        Up_pt = _gjet_l2_t1Pt_PhotonEnUp/_gjet_l2_pt;
+        Up_phi = _gjet_l2_t1Phi_PhotonEnUp/_gjet_l2_phi;
+        Dn_pt = _gjet_l2_t1Pt_PhotonEnDn/_gjet_l2_pt;
+        Dn_phi = _gjet_l2_t1Phi_PhotonEnDn/_gjet_l2_phi;
+
         mt_col[0] = _llnunu_mt_el;
         mt_col[1] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
         mt_col[2] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
@@ -1089,6 +1119,11 @@ void doMTUncEl(){
 
         _llnunu_mt_el_PhotonEnUp = TMath::MaxElement(5, mt_col);
         _llnunu_mt_el_PhotonEnDn = TMath::MinElement(5, mt_col);
+
+        Up_pt = _gjet_l2_t1Pt_TauEnUp/_gjet_l2_pt;
+        Up_phi = _gjet_l2_t1Phi_TauEnUp/_gjet_l2_phi;
+        Dn_pt = _gjet_l2_t1Pt_TauEnDn/_gjet_l2_pt;
+        Dn_phi = _gjet_l2_t1Phi_TauEnDn/_gjet_l2_phi;
 
         mt_col[0] = _llnunu_mt_el;
         mt_col[1] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
@@ -1142,10 +1177,10 @@ void doMTUncMu(){
 
         _llnunu_mt_mu = MTCalcMu(_llnunu_l2_pt_mu,_llnunu_l2_phi_mu);
 
-        float Up_pt = _gjet_l2_t1Pt_JECUp/_gjet_l2_pt;
-        float Up_phi = _gjet_l2_t1Phi_JECUp/_gjet_l2_phi;
-        float Dn_pt = _gjet_l2_t1Pt_JECDn/_gjet_l2_pt;
-        float Dn_phi = _gjet_l2_t1Phi_JECDn/_gjet_l2_phi;
+        float Up_pt = _gjet_l2_t1Pt_JetEnUp/_gjet_l2_pt;
+        float Up_phi = _gjet_l2_t1Phi_JetEnUp/_gjet_l2_phi;
+        float Dn_pt = _gjet_l2_t1Pt_JetEnDn/_gjet_l2_pt;
+        float Dn_phi = _gjet_l2_t1Phi_JetEnDn/_gjet_l2_phi;
 
         float mt_col[5];
 
@@ -1158,10 +1193,10 @@ void doMTUncMu(){
         _llnunu_mt_mu_JetEnUp = TMath::MaxElement(5, mt_col);
         _llnunu_mt_mu_JetEnDn = TMath::MinElement(5, mt_col);
 
-        Up_pt = _gjet_l2_t1Pt_JERUp/_gjet_l2_pt;
-        Up_phi = _gjet_l2_t1Phi_JERUp/_gjet_l2_phi;
-        Dn_pt = _gjet_l2_t1Pt_JERDn/_gjet_l2_pt;
-        Dn_phi = _gjet_l2_t1Phi_JERDn/_gjet_l2_phi;
+        Up_pt = _gjet_l2_t1Pt_JetResUp/_gjet_l2_pt;
+        Up_phi = _gjet_l2_t1Phi_JetResUp/_gjet_l2_phi;
+        Dn_pt = _gjet_l2_t1Pt_JetResDn/_gjet_l2_pt;
+        Dn_phi = _gjet_l2_t1Phi_JetResDn/_gjet_l2_phi;
 
         mt_col[0] = _llnunu_mt_mu;
         mt_col[1] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
@@ -1172,10 +1207,10 @@ void doMTUncMu(){
         _llnunu_mt_mu_JetResUp = TMath::MaxElement(5, mt_col);
         _llnunu_mt_mu_JetResDn = TMath::MinElement(5, mt_col);
 
-        Up_pt = 1.0;
-        Up_phi = 1.0;
-        Dn_pt = 1.0;
-        Dn_phi = 1.0;
+        Up_pt = _gjet_l2_t1Pt_MuonEnUp/_gjet_l2_pt;
+        Up_phi = _gjet_l2_t1Phi_MuonEnUp/_gjet_l2_phi;
+        Dn_pt = _gjet_l2_t1Pt_MuonEnDn/_gjet_l2_pt;
+        Dn_phi = _gjet_l2_t1Phi_MuonEnDn/_gjet_l2_phi;
 
         mt_col[0] = _llnunu_mt_mu;
         mt_col[1] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
@@ -1186,6 +1221,11 @@ void doMTUncMu(){
         _llnunu_mt_mu_MuonEnUp = TMath::MaxElement(5, mt_col);
         _llnunu_mt_mu_MuonEnDn = TMath::MinElement(5, mt_col);
 
+        Up_pt = _gjet_l2_t1Pt_ElectronEnUp/_gjet_l2_pt;
+        Up_phi = _gjet_l2_t1Phi_ElectronEnUp/_gjet_l2_phi;
+        Dn_pt = _gjet_l2_t1Pt_ElectronEnDn/_gjet_l2_pt;
+        Dn_phi = _gjet_l2_t1Phi_ElectronEnDn/_gjet_l2_phi;
+
         mt_col[0] = _llnunu_mt_mu;
         mt_col[1] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
         mt_col[2] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
@@ -1195,6 +1235,10 @@ void doMTUncMu(){
         _llnunu_mt_mu_ElectronEnUp = TMath::MaxElement(5, mt_col);
         _llnunu_mt_mu_ElectronEnDn = TMath::MinElement(5, mt_col);
 
+        Up_pt = _gjet_l2_t1Pt_PhotonEnUp/_gjet_l2_pt;
+        Up_phi = _gjet_l2_t1Phi_PhotonEnUp/_gjet_l2_phi;
+        Dn_pt = _gjet_l2_t1Pt_PhotonEnDn/_gjet_l2_pt;
+        Dn_phi = _gjet_l2_t1Phi_PhotonEnDn/_gjet_l2_phi;
 
         mt_col[0] = _llnunu_mt_mu;
         mt_col[1] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
@@ -1204,6 +1248,11 @@ void doMTUncMu(){
 
         _llnunu_mt_mu_PhotonEnUp = TMath::MaxElement(5, mt_col);
         _llnunu_mt_mu_PhotonEnDn = TMath::MinElement(5, mt_col);
+
+        Up_pt = _gjet_l2_t1Pt_TauEnUp/_gjet_l2_pt;
+        Up_phi = _gjet_l2_t1Phi_TauEnUp/_gjet_l2_phi;
+        Dn_pt = _gjet_l2_t1Pt_TauEnDn/_gjet_l2_pt;
+        Dn_phi = _gjet_l2_t1Phi_TauEnDn/_gjet_l2_phi;
 
         mt_col[0] = _llnunu_mt_mu;
         mt_col[1] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
