@@ -25,8 +25,8 @@ samples="SinglePhoton_*"
 #samples="ZNuNuGJets*"
 #samples="WJetsToLNu_HT*_BIG"
 indir=/data2/XZZ2/80X_20170202_GJets
-#outdir=/home/heli/XZZ/80X_20170202_GJets_light
-outdir=/home/heli/XZZ/80X_20170202_GJets_light_big
+outdir=/home/heli/XZZ/80X_20170202_GJets_light
+#outdir=/home/heli/XZZ/80X_20170202_GJets_light_big
 #outdir=/home/heli/XZZ/80X_20170202_GJets_light_halo15
 
 mkdir -p $outdir
@@ -49,7 +49,7 @@ do
   ./preskim_gjets.exe $infile $outfile &> ${outfile}.log &
 
   njob=$(( njob + 1 ))
-  if [ "$njob" -eq "2" ]; then
+  if [ "$njob" -eq "10" ]; then
     wait
     njob="0"
   fi

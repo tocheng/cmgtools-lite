@@ -27,8 +27,8 @@
 int main(int argc, char** argv) {
 
 
-  TFile* file1 = TFile::Open("/home/heli/XZZ/80X_20161029_light_Skim/DYJetsToLL_M50_BIG_NoRecoil.root");
-  TFile* file2 = TFile::Open("/home/heli/XZZ/80X_20161029_GJets_light_Skim/SinglePhoton_Run2016B2H_ReReco_36p46_Rc36p46ReCalib.root");
+  TFile* file1 = TFile::Open("/home/heli/XZZ/80X_20170202_light_Skim/DYJetsToLL_M50_Ext.root");
+  TFile* file2 = TFile::Open("/home/heli/XZZ/80X_20170202_GJets_light_Skim/SinglePhoton_Run2016B2H_ReReco_36p46_Rc36p46ReCalib.root");
 
   //std::string outtag="study_gjets_data_36p46_resbos_norm_npucut";
   //std::string outtag="study_gjets_data_36p46_resbosrefit_norm_npucut";
