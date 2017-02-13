@@ -11,7 +11,7 @@
 
   lumiTag = "CMS 13 TeV 2016 L=35.87 fb^{-1}";
 
-  lumipt = new TPaveText(0.2,0.9,0.8,0.98,"brNDC");
+  lumipt = new TPaveText(0.2,0.8,0.8,0.88,"brNDC");
   lumipt->SetBorderSize(0);
   lumipt->SetTextAlign(12);
   lumipt->SetFillStyle(0);
