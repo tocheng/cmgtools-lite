@@ -62,18 +62,18 @@ zjets_scale='(1)'
 if channel=='mu': 
 #    mc_scale='(1.02942)'
 #    mc_scale='(0.8*1.00539823551)'
-    zjets_scale='(1.01509659071)'
+    zjets_scale='(0.992695303163)'
 elif channel=='el': 
 #    mc_scale='(1.02139)'
 #    mc_scale='(1.00448813901)'
-    zjets_scale='(0.955502587803)'
+    zjets_scale='(0.950365865264)'
 else: 
 #    mc_scale='(1.02942)'
     zjets_scale='(1.025)'
 
 # temp turn off mc_scale
 mc_scale="(1)"
-#zjets_scale="(1)"
+zjets_scale="(1)"
 
 # non reso alpha
 nonreso_alpha_el=1.0
@@ -134,7 +134,7 @@ ZPtWeight="ZPtWeight"
 #elChannel='((abs(llnunu_l1_l1_pdgId)==11||abs(llnunu_l1_l2_pdgId)==11)&&llnunu_l1_l1_pt>115&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5)'
 #muChannel='((abs(llnunu_l1_l1_pdgId)==13||abs(llnunu_l1_l2_pdgId)==13)&&llnunu_l1_l1_pt>50&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID>0.99||llnunu_l1_l2_highPtID>0.99))'
 elChannel='((abs(llnunu_l1_l1_pdgId)==11||abs(llnunu_l1_l2_pdgId)==11)&&llnunu_l1_l1_pt>120&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5)'
-muChannel='((abs(llnunu_l1_l1_pdgId)==13||abs(llnunu_l1_l2_pdgId)==13)&&llnunu_l1_l1_pt>55&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID>0.99||llnunu_l1_l2_highPtID>0.99))'
+muChannel='((abs(llnunu_l1_l1_pdgId)==13||abs(llnunu_l1_l2_pdgId)==13)&&llnunu_l1_l1_pt>60&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID>0.99||llnunu_l1_l2_highPtID>0.99))'
 photonFakeID='(llnunu_l1_l1_pdgId==19801117)'
 
 if not os.path.exists(outdir): os.system('mkdir -p '+outdir)
@@ -503,8 +503,8 @@ else:
 
     ### MC ZJets
     mczjetsSamples = [
-    'DYJetsToLL_M50_Ext',
-#    'DYJetsToLL_M50_MGMLM_BIG',
+#    'DYJetsToLL_M50_Ext',
+    'DYJetsToLL_M50_MGMLM_BIG',
 #    'DYJetsToLL_M50_MGMLM_BIG_NoRecoil',
     ]
 

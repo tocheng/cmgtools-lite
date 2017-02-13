@@ -93,6 +93,8 @@ BulkGravToZZToZlepZhad_narrow_4500,
 
 # MC samples
 otherMcSamples = BulkGravToZZToZlepZhad + ggHZZ2L2Nu + Graviton2PBToZZTo2L2Nu+Graviton2PBqqbarToZZTo2L2Nu+VBF_HToZZTo2L2Nu 
+otherMcSamples += QCDPtMuEnriched
+
 mcSamples = signalSamples + backgroundSamples + extraBackgroundMC + GJetsMC
 #mcSamples = backgroundSamples
 

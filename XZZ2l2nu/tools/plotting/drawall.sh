@@ -2,6 +2,7 @@
 
 #tag="GJetsSumm16JEC_badMuonFilter_"
 #tag="MCSummer16JECNLOZJETHighLepPtCutAllSig_"
+#tag="MCSummer16JECHighLepPt_"
 #tag="test_RhoWt_NoRc_"
 #tag="test29_DtRecalib_"
 tag="trigStudyHighLepPt_"

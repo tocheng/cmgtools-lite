@@ -41,7 +41,10 @@ njob="0"
 #for infile in $inputdir/DYJetsToLL_M50_Ext/vvTreeProducer/tree.root ;
 #for infile in $inputdir/GluGluHTo*/vvTreeProducer/tree.root ;
 #for infile in $inputdir/VBF_HToZ*/vvTreeProducer/tree.root ;
-for infile in $inputdir/Graviton*/vvTreeProducer/tree.root ;
+#for infile in $inputdir/Graviton*/vvTreeProducer/tree.root ;
+#for infile in $inputdir/QCD_Pt*_BIG/vvTreeProducer/tree.root ;
+#for infile in $inputdir/QCD_Pt*Enriched*/vvTreeProducer/tree.root ;
+for infile in $inputdir/WJetsToLNu_HT*_BIG/vvTreeProducer/tree.root ;
 do
   echo "+++ skimming $infile +++"
   outfile="${outputdir}/${infile/$inputdir\//}"

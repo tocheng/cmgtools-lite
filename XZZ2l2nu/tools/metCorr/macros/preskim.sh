@@ -8,9 +8,13 @@ g++ preskim.cc -o preskim.exe `root-config --cflags` `root-config --libs`
 #inputs
 indir=/data2/XZZ2/80X_20170202
 outdir=/home/heli/XZZ/80X_20170202_light
+samples="QCD_Pt*_MuEnriched*"
+#samples="QCD_Pt*_EMEnriched"
+#samples="WJetsToLNu_HT*"
 #samples="DYJetsToLL*"
 #samples="DY?JetsToLL*"
-samples="Graviton*"
+#samples="Graviton*"
+#samples="QCD_Pt*"
 #samples="VBF_HToZ*"
 #samples="DYJetsToLL_M50_Ext"
 #samples="GluGluHTo*"
