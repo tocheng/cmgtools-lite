@@ -91,7 +91,7 @@ doGJetsSkimAddPhiWeight: false
 GJetsSkimInputFileName: data/gjets/study_gjets_data_36p46_norm_npucut_modify.root
 
 GJetsSkimPhiWeightInputFileName: data/gjets/gjet_photon_phi_weight.root
-GJetsSkimRhoWeightInputFileName: data/gjets/get_rho_weight_36p22_psWt.root
+GJetsSkimRhoWeightInputFileName: data/gjets/get_rho_weight_fullv2.root
 
 
 

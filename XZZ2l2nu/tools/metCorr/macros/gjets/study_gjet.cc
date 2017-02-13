@@ -20,6 +20,7 @@
 #include <set>
 #include <utility>
 #include "TLegend.h"
+#include "TPaveText.h"
 #include "TROOT.h"
 
 // Hengne Li @ CERN, 2016
@@ -27,12 +28,12 @@
 int main(int argc, char** argv) {
 
 
-  TFile* file1 = TFile::Open("/home/heli/XZZ/80X_20170202_light_Skim/DYJetsToLL_M50_Ext.root");
-  TFile* file2 = TFile::Open("/home/heli/XZZ/80X_20170202_GJets_light_Skim/SinglePhoton_Run2016B2H_ReReco_36p46_Rc36p46ReCalib.root");
+  TFile* file1 = TFile::Open("/home/heli/XZZ/80X_20170202_light_Skim/DYJetsToLL_M50_Ext_NoRecoil.root");
+  TFile* file2 = TFile::Open("/home/heli/XZZ/80X_20170202_GJets_light_Skim/SinglePhoton_Run2016Full_ReReco_v2_NoRecoil.root");
 
-  //std::string outtag="study_gjets_data_36p46_resbos_norm_npucut";
-  //std::string outtag="study_gjets_data_36p46_resbosrefit_norm_npucut";
-  std::string outtag="study_gjets_data_36p46_norm_npucut";
+  std::string outtag="study_gjets_data_fullv2";
+
+
 
   // yields:
 
@@ -71,6 +72,19 @@ int main(int argc, char** argv) {
 
   char name[1000];
 
+
+  std::string lumiTag;
+  TPaveText* lumipt;
+
+  lumiTag = "CMS 13 TeV 2016 L=35.87 fb^{-1}";
+  lumipt = new TPaveText(0.2,0.8,0.8,0.88,"brNDC");
+  lumipt->SetBorderSize(0);
+  lumipt->SetTextAlign(12);
+  lumipt->SetFillStyle(0);
+  lumipt->SetTextFont(42);
+  lumipt->SetTextSize(0.03);
+  lumipt->AddText(0.15,0.3, lumiTag.c_str());
+
   TCanvas* plots = new TCanvas("plots", "plots");
 
   sprintf(name, "%s.pdf[", outtag.c_str());
@@ -88,48 +102,38 @@ int main(int argc, char** argv) {
   tree2->SetAlias("l2_pt", "llnunu_l2_pt");
   tree2->SetAlias("l2_phi", "llnunu_l2_phi");
 
+  // hlt alias
+  tree1->SetAlias("passMuHLT", "((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))");
+  tree1->SetAlias("passElHLT", "((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))");
   //
-  std::string metfilter="(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter)";
-  std::string cuts_lepaccept="((abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13&&llnunu_l1_l1_pt>50&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID==1||llnunu_l1_l2_highPtID==1))";
-  cuts_lepaccept+="||(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11&&llnunu_l1_l1_pt>115&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5))";
+  std::string cuts_lepaccept="((abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13&&llnunu_l1_l1_pt>60&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID==1||llnunu_l1_l2_highPtID==1))";
+  cuts_lepaccept+="||(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11&&llnunu_l1_l1_pt>120&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5))";
   std::string cuts_lepaccept_lowlpt="((abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13&&llnunu_l1_l1_pt>20&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID==1||llnunu_l1_l2_highPtID==1))";
   cuts_lepaccept_lowlpt+="||(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11&&llnunu_l1_l1_pt>20&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.5))";
   std::string cuts_zmass="(llnunu_l1_mass>70&&llnunu_l1_mass<110)";
-  std::string cuts_npu="(nTrueInt<36)";
-  // metfilter applied in preskim already
-  //std::string cuts_loose_z="("+metfilter+"&&"+cuts_lepaccept+"&&"+cuts_zmass+")";
-  //std::string cuts_loose_z_lowlpt="("+metfilter+"&&"+cuts_lepaccept_lowlpt+"&&"+cuts_zmass+")";
-  //std::string cuts_loose_z="("+cuts_lepaccept+"&&"+cuts_zmass+")";
-  //std::string cuts_loose_z_lowlpt="("+cuts_lepaccept_lowlpt+"&&"+cuts_zmass+")";
-  std::string cuts_loose_z="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_npu+")";
-  std::string cuts_loose_z_lowlpt="("+cuts_lepaccept_lowlpt+"&&"+cuts_zmass+"&&"+cuts_npu+")";
+  std::string cuts_loose_z="("+cuts_lepaccept+"&&"+cuts_zmass+")";
+  std::string cuts_loose_z_lowlpt="("+cuts_lepaccept_lowlpt+"&&"+cuts_zmass+")";
 
 
   std::string base_selec =  cuts_loose_z;
   std::string base_selec_lowlpt =  cuts_loose_z_lowlpt;
 
-  std::string base_selec_el = "(" + cuts_loose_z + "&&(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11))";
-  std::string base_selec_mu = "(" + cuts_loose_z + "&&(abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13))";
-  std::string base_selec_lowlpt_el = "(" + cuts_loose_z_lowlpt + "&&(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11))";
-  std::string base_selec_lowlpt_mu = "(" + cuts_loose_z_lowlpt + "&&(abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13))";
+  std::string base_selec_el = "(" + cuts_loose_z + "&&(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11)&&passElHLT)";
+  std::string base_selec_mu = "(" + cuts_loose_z + "&&(abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13)&&passMuHLT)";
+  std::string base_selec_lowlpt_el = "(" + cuts_loose_z_lowlpt + "&&(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11)&&passElHLT)";
+  std::string base_selec_lowlpt_mu = "(" + cuts_loose_z_lowlpt + "&&(abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13)&&passMuHLT)";
 
   // add weight
-  std::string weight_selec = std::string("*(genWeight/SumWeights*ZPtWeight*puWeightmoriondMC*1921.8*3)");
-  std::string weight_selec_up = std::string("*(genWeight/SumWeights*ZPtWeight_up*puWeightmoriondMC*1921.8*3)");
-  std::string weight_selec_dn = std::string("*(genWeight/SumWeights*ZPtWeight_dn*puWeightmoriondMC*1921.8*3)");
+  std::string weight_selec = std::string("*(genWeight/SumWeights*ZPtWeight*puWeightsummer16*xsec)");
+  std::string weight_selec_up = std::string("*(genWeight/SumWeights*ZPtWeight_up*puWeightsummer16*xsec)");
+  std::string weight_selec_dn = std::string("*(genWeight/SumWeights*ZPtWeight_dn*puWeightsummer16*xsec)");
   // rho weight
-  //std::string rhoweight_selec = std::string("*(0.602*exp(-0.5*pow((rho-8.890)/6.187,2))+0.829*exp(-0.5*pow((rho-21.404)/10.866,2)))");
-  //std::string rhoweight_selec = "*(0.232+0.064*rho)";  // for b-g 27.22fb-l
-  //std::string rhoweight_selec = "*(0.038+0.118*rho-4.329e-03*rho*rho+1.011e-04*rho*rho*rho)"; // for b-h 29.53 fb-1
-  //std::string rhoweight_selec = "*(0.019+0.114*rho+-4.705e-03*rho*rho+1.491e-04*rho*rho*rho)"; // for b-h 33.59 fb-1
-  std::string rhoweight_selec = "*(0.32+0.42*TMath::Erf((rho-4.16)/4.58)+0.31*TMath::Erf((rho+115.00)/29.58))"; // for b-h 36.22 fb-1
-  //std::string rhoweight_selec = "*(1)";
+  //std::string rhoweight_selec = "*(0.32+0.42*TMath::Erf((rho-4.16)/4.58)+0.31*TMath::Erf((rho+115.00)/29.58))"; // for b-h 36.22 fb-1
+  std::string rhoweight_selec = "*(1)";
   // scale factors
   // temporary remove tracking eff scale factors
-  //std::string effsf_selec = std::string("*(trgsf*isosf*idsf*trksf)");
-  //std::string effsf_selec_lowlpt = std::string("*(isosf*idsf*trksf)");
-  std::string effsf_selec = std::string("*(trgsf*isosf*idsf)");
-  std::string effsf_selec_lowlpt = std::string("*(isosf*idsf)");
+  std::string effsf_selec = std::string("*(trgsf*isosf*idsf*trksf)");
+  std::string effsf_selec_lowlpt = std::string("*(isosf*idsf*trksf)");
 
   // selec, cuts + weights
   std::string zjet_selec = base_selec + weight_selec + rhoweight_selec + effsf_selec;
@@ -226,6 +230,7 @@ int main(int argc, char** argv) {
   hzptbb1->Draw();
   hzptbb2->Draw("same");
   lgzptbb->Draw();
+  lumipt->Draw();
   sprintf(name, "%s.pdf", outtag.c_str());
   plots->Print(name);
   plots->Clear();
@@ -236,6 +241,7 @@ int main(int argc, char** argv) {
 
   plots->Clear();
   hzptbbr12->Draw();
+  lumipt->Draw();
   sprintf(name, "%s.pdf", outtag.c_str());
   plots->Print(name);
   plots->Clear();
@@ -265,6 +271,7 @@ int main(int argc, char** argv) {
   hzptbb1_el->Draw();
   hzptbb2->Draw("same");
   lgzptbb_el->Draw();
+  lumipt->Draw();
   sprintf(name, "%s.pdf", outtag.c_str());
   plots->Print(name);
   plots->Clear();
@@ -275,6 +282,7 @@ int main(int argc, char** argv) {
 
   plots->Clear();
   hzptbbr12_el->Draw();
+  lumipt->Draw();
   sprintf(name, "%s.pdf", outtag.c_str());
   plots->Print(name);
   plots->Clear();
@@ -306,6 +314,7 @@ int main(int argc, char** argv) {
   hzptbb1_mu->Draw();
   hzptbb2->Draw("same");
   lgzptbb_mu->Draw();
+  lumipt->Draw();
   sprintf(name, "%s.pdf", outtag.c_str());
   plots->Print(name);
   plots->Clear();
@@ -316,6 +325,7 @@ int main(int argc, char** argv) {
 
   plots->Clear();
   hzptbbr12_mu->Draw();
+  lumipt->Draw();
   sprintf(name, "%s.pdf", outtag.c_str());
   plots->Print(name);
   plots->Clear();
@@ -431,6 +441,7 @@ int main(int argc, char** argv) {
   hzptbb1_lowlpt->Draw();
   hzptbb2->Draw("same");
   lgzptbb_lowlpt->Draw();
+  lumipt->Draw();
   sprintf(name, "%s.pdf", outtag.c_str());
   plots->Print(name);
   plots->Clear();
@@ -441,6 +452,7 @@ int main(int argc, char** argv) {
 
   plots->Clear();
   hzptbbr12_lowlpt->Draw();
+  lumipt->Draw();
   sprintf(name, "%s.pdf", outtag.c_str());
   plots->Print(name);
   plots->Clear();
@@ -469,6 +481,7 @@ int main(int argc, char** argv) {
   hzptbb1_lowlpt_el->Draw();
   hzptbb2->Draw("same");
   lgzptbb_lowlpt_el->Draw();
+  lumipt->Draw();
   sprintf(name, "%s.pdf", outtag.c_str());
   plots->Print(name);
   plots->Clear();
@@ -479,6 +492,7 @@ int main(int argc, char** argv) {
 
   plots->Clear();
   hzptbbr12_lowlpt_el->Draw();
+  lumipt->Draw();
   sprintf(name, "%s.pdf", outtag.c_str());
   plots->Print(name);
   plots->Clear();
@@ -508,6 +522,7 @@ int main(int argc, char** argv) {
   hzptbb1_lowlpt_mu->Draw();
   hzptbb2->Draw("same");
   lgzptbb_lowlpt_mu->Draw();
+  lumipt->Draw();
   sprintf(name, "%s.pdf", outtag.c_str());
   plots->Print(name);
   plots->Clear();
@@ -518,6 +533,7 @@ int main(int argc, char** argv) {
 
   plots->Clear();
   hzptbbr12_lowlpt_mu->Draw();
+  lumipt->Draw();
   sprintf(name, "%s.pdf", outtag.c_str());
   plots->Print(name);
   plots->Clear();
