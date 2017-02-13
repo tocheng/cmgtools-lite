@@ -197,7 +197,7 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
 
 
   // lumiTag for plotting
-  lumiTag = "CMS 13 TeV 2016 L=36.81 fb^{-1}";
+  lumiTag = "CMS 13 TeV 2016 L=35.87 fb^{-1}";
   if (doMC) lumiTag = "CMS 13 TeV Simulation for 2016 Data";
 
   lumipt = new TPaveText(0.2,0.9,0.8,0.98,"brNDC");
