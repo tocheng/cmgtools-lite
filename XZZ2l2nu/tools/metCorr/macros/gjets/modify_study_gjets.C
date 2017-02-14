@@ -47,19 +47,35 @@
 
   // h_zpt_ratio_el
 
-  b=57; s=0.99;
+  b=49; s=0.0;
   h_zpt_ratio_el->SetBinContent(b,h_zpt_ratio_el->GetBinContent(b)*s);
   h_zpt_ratio_el_up->SetBinContent(b,h_zpt_ratio_el_up->GetBinContent(b)*s);
   h_zpt_ratio_el_dn->SetBinContent(b,h_zpt_ratio_el_dn->GetBinContent(b)*s);
-  b=58; s=1.14;
+  b=50; s=0.0;
   h_zpt_ratio_el->SetBinContent(b,h_zpt_ratio_el->GetBinContent(b)*s);
   h_zpt_ratio_el_up->SetBinContent(b,h_zpt_ratio_el_up->GetBinContent(b)*s);
   h_zpt_ratio_el_dn->SetBinContent(b,h_zpt_ratio_el_dn->GetBinContent(b)*s);
-  b=59; s=1.02;
+  b=51; s=0.0;
   h_zpt_ratio_el->SetBinContent(b,h_zpt_ratio_el->GetBinContent(b)*s);
   h_zpt_ratio_el_up->SetBinContent(b,h_zpt_ratio_el_up->GetBinContent(b)*s);
   h_zpt_ratio_el_dn->SetBinContent(b,h_zpt_ratio_el_dn->GetBinContent(b)*s);
-  b=61; s=0.95;
+  b=55; s=1.05;
+  h_zpt_ratio_el->SetBinContent(b,h_zpt_ratio_el->GetBinContent(b)*s);
+  h_zpt_ratio_el_up->SetBinContent(b,h_zpt_ratio_el_up->GetBinContent(b)*s);
+  h_zpt_ratio_el_dn->SetBinContent(b,h_zpt_ratio_el_dn->GetBinContent(b)*s);
+  b=58; s=1.10;
+  h_zpt_ratio_el->SetBinContent(b,h_zpt_ratio_el->GetBinContent(b)*s);
+  h_zpt_ratio_el_up->SetBinContent(b,h_zpt_ratio_el_up->GetBinContent(b)*s);
+  h_zpt_ratio_el_dn->SetBinContent(b,h_zpt_ratio_el_dn->GetBinContent(b)*s);
+  b=59; s=1.00;
+  h_zpt_ratio_el->SetBinContent(b,h_zpt_ratio_el->GetBinContent(b)*s);
+  h_zpt_ratio_el_up->SetBinContent(b,h_zpt_ratio_el_up->GetBinContent(b)*s);
+  h_zpt_ratio_el_dn->SetBinContent(b,h_zpt_ratio_el_dn->GetBinContent(b)*s);
+  b=69; s=1.8;
+  h_zpt_ratio_el->SetBinContent(b,h_zpt_ratio_el->GetBinContent(b)*s);
+  h_zpt_ratio_el_up->SetBinContent(b,h_zpt_ratio_el_up->GetBinContent(b)*s);
+  h_zpt_ratio_el_dn->SetBinContent(b,h_zpt_ratio_el_dn->GetBinContent(b)*s);
+  b=61; s=1.0;
   h_zpt_ratio_el->SetBinContent(b,h_zpt_ratio_el->GetBinContent(b)*s);
   h_zpt_ratio_el_up->SetBinContent(b,h_zpt_ratio_el_up->GetBinContent(b)*s);
   h_zpt_ratio_el_dn->SetBinContent(b,h_zpt_ratio_el_dn->GetBinContent(b)*s);
@@ -82,19 +98,19 @@
   h_zpt_ratio_mu->SetBinContent(b,h_zpt_ratio_mu->GetBinContent(b)*s);
   h_zpt_ratio_mu_up->SetBinContent(b,h_zpt_ratio_mu_up->GetBinContent(b)*s);
   h_zpt_ratio_mu_dn->SetBinContent(b,h_zpt_ratio_mu_dn->GetBinContent(b)*s);
-  b=58; s=1.04;
+  b=58; s=1.07;
   h_zpt_ratio_mu->SetBinContent(b,h_zpt_ratio_mu->GetBinContent(b)*s);
   h_zpt_ratio_mu_up->SetBinContent(b,h_zpt_ratio_mu_up->GetBinContent(b)*s);
   h_zpt_ratio_mu_dn->SetBinContent(b,h_zpt_ratio_mu_dn->GetBinContent(b)*s);
-  b=59; s=0.96;
+  b=59; s=1.01;
   h_zpt_ratio_mu->SetBinContent(b,h_zpt_ratio_mu->GetBinContent(b)*s);
   h_zpt_ratio_mu_up->SetBinContent(b,h_zpt_ratio_mu_up->GetBinContent(b)*s);
   h_zpt_ratio_mu_dn->SetBinContent(b,h_zpt_ratio_mu_dn->GetBinContent(b)*s);
-  b=60; s=0.94;
+  b=60; s=1.0;
   h_zpt_ratio_mu->SetBinContent(b,h_zpt_ratio_mu->GetBinContent(b)*s);
   h_zpt_ratio_mu_up->SetBinContent(b,h_zpt_ratio_mu_up->GetBinContent(b)*s);
   h_zpt_ratio_mu_dn->SetBinContent(b,h_zpt_ratio_mu_dn->GetBinContent(b)*s);
-  b=61; s=1.05;
+  b=61; s=1.12;
   h_zpt_ratio_mu->SetBinContent(b,h_zpt_ratio_mu->GetBinContent(b)*s);
   h_zpt_ratio_mu_up->SetBinContent(b,h_zpt_ratio_mu_up->GetBinContent(b)*s);
   h_zpt_ratio_mu_dn->SetBinContent(b,h_zpt_ratio_mu_dn->GetBinContent(b)*s);
@@ -129,10 +145,12 @@
   gr_zpt_ratio_el->Draw("apl");
   gr_zpt_ratio_el_up->Draw("pl same");
   gr_zpt_ratio_el_dn->Draw("pl same");
+  h_zpt_ratio_el_old->Draw("same");
 
 //  gr_zpt_ratio_mu->Draw("apl");
 //  gr_zpt_ratio_mu_up->Draw("pl same");
 //  gr_zpt_ratio_mu_dn->Draw("pl same");
+//  h_zpt_ratio_mu_old->Draw("same");
 
 
   file->cd();
