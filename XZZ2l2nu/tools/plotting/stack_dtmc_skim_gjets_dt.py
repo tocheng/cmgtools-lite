@@ -314,55 +314,36 @@ if muoneg:
     NONRES.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
     NONRES.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
     NONRES.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
-    #NONRES.setAlias('nbadmuon', '(!nllnunu)')
 
 # if use mc
 else:
 
-    wwSamples = ['WWTo2L2Nu','WWToLNuQQ_BIG','WZTo1L1Nu2Q']
-    wwPlotters=[]
-    for sample in wwSamples:
-        wwPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
-        wwPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
-        wwPlotters[-1].addCorrectionFactor('xsec','xsec')
-        wwPlotters[-1].addCorrectionFactor('genWeight','genWeight')
-        wwPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
-        wwPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
-        wwPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
-        wwPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
-        wwPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
-        wwPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
-    
-    WW = MergedPlotter(wwPlotters)
-    WW.setFillProperties(1001,ROOT.kOrange)
+    mcnonresSamples = ['WWTo2L2Nu','WWToLNuQQ_BIG','WZTo1L1Nu2Q','WJetsToLNuHTBinBIG',
+                       'TTTo2L2Nu_forTTH','TTWJetsToLNu_BIG', 
+                       'T_tWch', 'T_tch_powheg', 'TBar_tWch', 'TBar_tch_powheg']
 
-    ttSamples = ['TTTo2L2Nu_noSC','TTWJetsToLNu_BIG', 'T_tWch', 'T_tch_powheg', 'TBar_tWch', 'TBar_tch_powheg']
-    ttPlotters=[]
-    for sample in ttSamples:
-        ttPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
-        ttPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
-        ttPlotters[-1].addCorrectionFactor('xsec','xsec')
-        ttPlotters[-1].addCorrectionFactor('genWeight','genWeight')
-        ttPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
-        ttPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
-        ttPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
-        ttPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
-        ttPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
-        ttPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
+    mcnonresPlotters=[]
+    for sample in mcnonresoSamples:
+        mcnonresoPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
+        mcnonresoPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
+        mcnonresoPlotters[-1].addCorrectionFactor('xsec','xsec')
+        mcnonresoPlotters[-1].addCorrectionFactor('genWeight','genWeight')
+        mcnonresoPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
+        mcnonresoPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
+        mcnonresoPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
+        mcnonresoPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
+        mcnonresoPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
+        mcnonresoPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
     
-    TT = MergedPlotter(ttPlotters)
-    TT.setFillProperties(1001,ROOT.kAzure-9)
+    MCNONRES = MergedPlotter(mcnonresoPlotters)
+    MCNONRES.setFillProperties(1001,ROOT.kAzure-9)
+
 
     # some plotting definition
-    WW.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
-    WW.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
-    WW.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
-    WW.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
-
-    TT.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
-    TT.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
-    TT.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
-    TT.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
+    MCNONRES.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
+    MCNONRES.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
+    MCNONRES.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
+    MCNONRES.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
 
 
 
@@ -681,9 +662,8 @@ Stack.addPlotter(Data, "data_obs", "Data", "data")
 if muoneg: 
     Stack.addPlotter(NONRES, "NonReso","Non-reson. (e#mu data)", "background")
 else:
-    Stack.addPlotter(WW, "NonReso","WW/WJets non-reson.", "background")
-    Stack.addPlotter(TT, "TT","Top non-reson.", "background")
-Stack.addPlotter(VV, "VVZReso","Z reson.", "background")
+    Stack.addPlotter(MCNONRESO, "NonReso","Non-reson. (MC WW/Top/W/QCD)", "background")
+Stack.addPlotter(VV, "VVZReso","Z reson. (MC ZZ/WZ/TTZ)", "background")
 if dyGJets: 
     Stack.addPlotter(ZJets, "ZJets","ZJets(#gamma+Jets data)", "background")
 else: 
