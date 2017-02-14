@@ -3,20 +3,20 @@
 #tag="GJetsSumm16JEC_badMuonFilter_"
 #tag="MCSummer16JECNLOZJETHighLepPtCutAllSig_"
 #tag="MCSummer16JECHighLepPt_"
-#tag="test_RhoWt_NoRc_"
+tag="test_NewDJ_"
 #tag="test29_DtRecalib_"
-tag="trigStudyHighLepPt_"
+#tag="trigStudyHighLepPt_"
 #tag="test_"
 
 channels="mu el"
 #channels="el"
 #channels="mu"
 #cutChains="tight"
-#cutChains="tightzpt50"
+cutChains="tightzpt50"
 #cutChains="tightzptgt100lt400"
 #cutChains="tightzptgt50lt200"
 #cutChains="tightzptgt55metgt125"
-cutChains="SR"
+#cutChains="SR"
 #cutChains="SR tightzpt50"
 #cutChains="CR1 CR2 CR3"
 #cutChains="CR1"
@@ -65,9 +65,9 @@ do
 #      ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --dyGJets --muoneg --test &> ${logdir}/${tag}${cutChain}_${channel}.log &
 #      ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --dyGJets --muoneg --LogY  --test &> ${logdir}/${tag}${cutChain}_log_${channel}.log &
 
-      ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel"  --LogY --test &> ${logdir}/${tag}${cutChain}_log_${channel}.log &
+#      ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel"  --LogY --test &> ${logdir}/${tag}${cutChain}_log_${channel}.log &
 #       ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --muoneg  --LogY --test &> ${logdir}/${tag}${cutChain}_emu_log_${channel}.log &
-#       ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --dyGJets  --muoneg --LogY --test &> ${logdir}/${tag}${cutChain}_emu_gjet_log_${channel}.log &
+       ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --dyGJets  --muoneg --LogY --test &> ${logdir}/${tag}${cutChain}_emu_gjet_log_${channel}.log &
 #       ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --Blind --dyGJets  --muoneg --LogY --test &> ${logdir}/${tag}${cutChain}_emu_gjet_bld_log_${channel}.log &
 
    done

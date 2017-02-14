@@ -125,7 +125,7 @@ int main(int argc, char** argv) {
   if (_doJEC )  prepareJECJER();
 
   // prepare inputs for simple met recoil tune.
-  if (_doRecoil && ((!_isData && _isDyJets) || ( _doGJetsSkim)) ) prepareRecoil();
+  if (_doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_isData && _doGJetsSkim)) ) prepareRecoil();
 
 
   // prepare eff scale factors
@@ -187,7 +187,7 @@ int main(int argc, char** argv) {
     if (_doJEC )  doJECJER();
     
     // simple met recoil tune.
-    if (_doRecoil && ((!_isData && _isDyJets) || (_doGJetsSkim))) doRecoil();
+    if (_doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_isData && _doGJetsSkim)) ) doRecoil();
 
     // add eff scale factors
     if (_addEffScale && (!_isData || _addEffScaleOnData) && !_doGJetsSkim ) addEffScale();
@@ -1612,7 +1612,7 @@ void doJECJER()
 // prepare inputs for simple met recoil tune.
 void prepareRecoil()
 {
-  if (_doRecoil && (_isDyJets||_doGJetsSkim)) {
+  if (_doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_isData && _doGJetsSkim)) ) {
     // met shift  sigma
     _file_dt_sigma[0] = new TFile(_RecoilInputFileNameData_all.c_str());
     _file_dt_sigma[1] = new TFile(_RecoilInputFileNameData_mu.c_str());
