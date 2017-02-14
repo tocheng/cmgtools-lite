@@ -356,8 +356,6 @@ if dyGJets :
     # parameters for GJets
     el_gjet_scale=1.0
     mu_gjet_scale=1.0 
-    #el_gjet_scale=1.10003
-    #mu_gjet_scale=1.13122 
     gdataLumi=35.867*1000
     gdataYield = 3402037584.2277574539
     gdataFidXsec=gdataYield/gdataLumi
@@ -373,19 +371,6 @@ if dyGJets :
     zjetsFidXsecLowLptAll = 1119.9216265291902346
     zjetsFidXsecLowLptEl = 459.14012486577632899
     zjetsFidXsecLowLptMu = 660.78150166340503802
-
-#    zjetsFidXsecAll = 151.06068438939382759
-#    zjetsFidXsecEl =  1.8318217140038339785*el_gjet_scale
-#    zjetsFidXsecMu =  149.22886267539001892*mu_gjet_scale
-#    zjetsFidXsecAll_up = 151.85715853322426483
-#    zjetsFidXsecAll_dn = 150.26421019455997907
-#    zjetsFidXsecEl_up = 1.8728979304188486665*el_gjet_scale
-#    zjetsFidXsecEl_dn = 1.7907454975888201787*el_gjet_scale
-#    zjetsFidXsecMu_up = 149.98426060280544903*mu_gjet_scale
-#    zjetsFidXsecMu_dn = 148.47346469697114912*mu_gjet_scale
-#    zjetsFidXsecLowLptAll = 807.42655018368884612
-#    zjetsFidXsecLowLptEl = 229.77648821257676559
-#    zjetsFidXsecLowLptMu = 577.65006197098625762
 
     # for GJets photon bkg subtraction
 
@@ -468,8 +453,8 @@ if dyGJets :
             gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecAll),'zjetsFidXsecAll')
 
     # the GJets plotter
-    #gjetsPlotters = gdataPlotters
-    gjetsPlotters = gdataPlotters+phymetPlotters
+    gjetsPlotters = gdataPlotters
+    #gjetsPlotters = gdataPlotters+phymetPlotters
 
 
     GJets = MergedPlotter(gjetsPlotters)
