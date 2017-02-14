@@ -35,8 +35,8 @@ std::vector< std::string > dtfiles = {
  };
 
 std::vector< std::string > gjfiles = {
-//    "SinglePhoton_Run2016Full_ReReco_v2_NoRecoil"
-    "SinglePhoton_Run2016Full_ReReco_v2_halo15_NoRecoil"
+    "SinglePhoton_Run2016Full_ReReco_v2_NoRecoil"
+//    "SinglePhoton_Run2016Full_ReReco_v2_halo15_NoRecoil"
  };
 
 
@@ -154,7 +154,7 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
 
 
   // add weight
-  std::string weight_selec = std::string("*(genWeight*ZPtWeight*puWeightsummer16/SumWeights*xsec*36814)");
+  std::string weight_selec = std::string("*(genWeight*ZPtWeight*puWeightsummer16/SumWeights*xsec*35867)");
   // rho weight
   std::string rhoweight_selec = std::string("*(0.366*TMath::Gaus(rho,8.280,5.427)+0.939*TMath::Gaus(rho,18.641,10.001)+0.644*TMath::Gaus(rho,40.041,10.050))"); // rereco/summer16 38.81fb-1
 
