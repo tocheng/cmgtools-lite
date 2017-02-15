@@ -53,7 +53,7 @@ do
   tt=`echo $tt | sed "s/-/_/g"`
   tt=`echo $tt | sed "s/\///g"`
 
-  echo "$tt = kreator.makeDataComponent(\"$tt\", \"$dd\", \"CMS\", \".*root\", json, useAAA=False,jsonFilter=False)"
-#  echo "$tt,"
+#  echo "$tt = kreator.makeDataComponent(\"$tt\", \"$dd\", \"CMS\", \".*root\", json, useAAA=False,jsonFilter=False)"
+  echo "$tt,"
 done
 

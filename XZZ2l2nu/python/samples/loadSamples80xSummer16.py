@@ -99,160 +99,22 @@ mcSamples = signalSamples + backgroundSamples + extraBackgroundMC + GJetsMC
 #mcSamples = backgroundSamples
 
 # data
-SingleMuon=[SingleMuon_Run2016B_PromptReco,
-            SingleMuon_Run2016B_PromptReco_v2,
-            SingleMuon_Run2016C_PromptReco_v2,
-            SingleMuon_Run2016D_PromptReco_v2,
-            SingleMuon_Run2016E_PromptReco_v2,
-            SingleMuon_Run2016F_PromptReco_v1,
-            SingleMuon_Run2016G_PromptReco_v1,
-            SingleMuon_Run2016H_PromptReco_v1,
-            SingleMuon_Run2016H_PromptReco_v2,
-            SingleMuon_Run2016H_PromptReco_v3,
-            ]
-SingleElectron=[SingleElectron_Run2016B_PromptReco,
-                SingleElectron_Run2016B_PromptReco_v2,
-                SingleElectron_Run2016C_PromptReco_v2,
-                SingleElectron_Run2016D_PromptReco_v2,
-                SingleElectron_Run2016E_PromptReco_v2,
-                SingleElectron_Run2016F_PromptReco_v1,
-                SingleElectron_Run2016G_PromptReco_v1,
-                SingleElectron_Run2016H_PromptReco_v1,
-                SingleElectron_Run2016H_PromptReco_v2,
-                SingleElectron_Run2016H_PromptReco_v3,
-               ]
-SinglePhoton=[SinglePhoton_Run2016B_PromptReco,
-              SinglePhoton_Run2016B_PromptReco_v2,
-              SinglePhoton_Run2016C_PromptReco_v2,
-              SinglePhoton_Run2016D_PromptReco_v2,
-              SinglePhoton_Run2016E_PromptReco_v2,
-              SinglePhoton_Run2016F_PromptReco_v1,
-              SinglePhoton_Run2016G_PromptReco_v1,
-              SinglePhoton_Run2016H_PromptReco_v1,
-              SinglePhoton_Run2016H_PromptReco_v2,
-              SinglePhoton_Run2016H_PromptReco_v3,
-             ]
-MuonEG=[MuonEG_Run2016B_PromptReco,
-      MuonEG_Run2016B_PromptReco_v2,
-      MuonEG_Run2016C_PromptReco_v2,
-      MuonEG_Run2016D_PromptReco_v2,
-      MuonEG_Run2016E_PromptReco_v2,
-      MuonEG_Run2016F_PromptReco_v1,
-      MuonEG_Run2016G_PromptReco_v1,
-      MuonEG_Run2016H_PromptReco_v1,
-      MuonEG_Run2016H_PromptReco_v2,
-      MuonEG_Run2016H_PromptReco_v3,
-      ]
-
-MET= [MET_Run2016B_PromptReco,
-      MET_Run2016B_PromptReco_v2,
-      MET_Run2016C_PromptReco_v2,
-      MET_Run2016D_PromptReco_v2,
-      MET_Run2016E_PromptReco_v2,
-      MET_Run2016F_PromptReco_v1,
-      MET_Run2016G_PromptReco_v1,
-      MET_Run2016H_PromptReco_v1,
-      MET_Run2016H_PromptReco_v2,
-      MET_Run2016H_PromptReco_v3,
-      ]
-
-SingleMuon23Sep2016=[
-            SingleMuon_Run2016B_23Sep2016,
-            SingleMuon_Run2016B_23Sep2016_v2,
-            SingleMuon_Run2016C_23Sep2016,
-            SingleMuon_Run2016D_23Sep2016,
-            SingleMuon_Run2016E_23Sep2016,
-            SingleMuon_Run2016F_23Sep2016,
-            SingleMuon_Run2016G_23Sep2016,
-            SingleMuon_Run2016H_PromptReco_v1,
-            SingleMuon_Run2016H_PromptReco_v2,
-            SingleMuon_Run2016H_PromptReco_v3,
-            ]
-SingleElectron23Sep2016=[
-                SingleElectron_Run2016B_23Sep2016,
-                SingleElectron_Run2016B_23Sep2016_v2,
-                SingleElectron_Run2016C_23Sep2016,
-                SingleElectron_Run2016D_23Sep2016,
-                SingleElectron_Run2016E_23Sep2016,
-                SingleElectron_Run2016F_23Sep2016,
-                SingleElectron_Run2016G_23Sep2016,
-                SingleElectron_Run2016H_PromptReco_v1,
-                SingleElectron_Run2016H_PromptReco_v2,
-                SingleElectron_Run2016H_PromptReco_v3,
-               ]
-SinglePhoton23Sep2016=[
-              SinglePhoton_Run2016B_23Sep2016,
-              SinglePhoton_Run2016B_23Sep2016_v2,
-              SinglePhoton_Run2016C_23Sep2016,
-              SinglePhoton_Run2016D_23Sep2016,
-              SinglePhoton_Run2016E_23Sep2016,
-              SinglePhoton_Run2016F_23Sep2016,
-              SinglePhoton_Run2016G_23Sep2016,
-              SinglePhoton_Run2016H_PromptReco_v1,
-              SinglePhoton_Run2016H_PromptReco_v2,
-              SinglePhoton_Run2016H_PromptReco_v3,
-             ]
-MuonEG23Sep2016=[
-      MuonEG_Run2016B_23Sep2016,
-      MuonEG_Run2016B_23Sep2016_v2,
-      MuonEG_Run2016C_23Sep2016,
-      MuonEG_Run2016D_23Sep2016,
-      MuonEG_Run2016E_23Sep2016,
-      MuonEG_Run2016F_23Sep2016,
-      MuonEG_Run2016G_23Sep2016,
-      MuonEG_Run2016H_PromptReco_v1,
-      MuonEG_Run2016H_PromptReco_v2,
-      MuonEG_Run2016H_PromptReco_v3,
-      ]
-
-MET23Sep2016=[
-      MET_Run2016B_23Sep2016,
-      MET_Run2016B_23Sep2016_v2,
-      MET_Run2016C_23Sep2016,
-      MET_Run2016D_23Sep2016,
-      MET_Run2016E_23Sep2016,
-      MET_Run2016F_23Sep2016,
-      MET_Run2016G_23Sep2016,
-      MET_Run2016H_PromptReco_v1,
-      MET_Run2016H_PromptReco_v2,
-      MET_Run2016H_PromptReco_v3,
-      ]
 
 Data23Sep2016 = SingleMuon23Sep2016+SingleElectron23Sep2016+SinglePhoton23Sep2016+MuonEG23Sep2016+MET23Sep2016
 
+Data03Feb2017 = SingleElectron_03Feb2017+SingleMuon_03Feb2017+SinglePhoton_03Feb2017+MuonEG_03Feb2017
 
 
-for s in SingleMuon:
-    #s.triggers = triggers_1mu_noniso
-    s.triggers = [] 
-    s.vetoTriggers = []
-for s in SingleElectron:
-    #s.triggers = triggers_1e_noniso
-    s.triggers = [] 
-    #s.vetoTriggers = triggers_1mu_noniso
-    s.vetoTriggers = []
-for s in SinglePhoton:
-    #s.trigers = triggers_all_photons
-    s.trigers = []
-    s.vetoTriggers = []
-
-for s in MuonEG:
-    s.trigers = []
-    s.vetoTriggers = []
-
-for s in MET:
-    s.trigers = []
-    s.vetoTriggers = []
-
-for s in Data23Sep2016:
-    s.triggers = []
-    s.vetoTriggers = []
-
-dataSamples=SingleMuon+SingleElectron+Data23Sep2016
+dataSamples=SingleMuon+SingleElectron+Data23Sep2016+Data03Feb2017
 
 otherDataSamples=MuonEG+MET 
 
 allDataSamples=dataSamples+otherDataSamples
+
+for s in allDataSamples:
+    s.triggers = []
+    s.vetoTriggers = []
+
 
 # JSON
 silverJson = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Reprocessing/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_Silver.txt'
