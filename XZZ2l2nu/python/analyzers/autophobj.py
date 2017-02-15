@@ -107,6 +107,7 @@ leptonType = NTupleObjectType("lepton", baseObjectTypes = [ particleType ], vari
     #NTupleVariable("pf1_phi",  lambda x : x.sourceCandidatePtr(1).phi() if x.numberOfSourceCandidatePtrs()>1 else -999 , help="lepton pf1 phi"),
     NTupleVariable("trigerob_HLTbit", lambda x : x.triggerbit if hasattr(x,'triggerbit')  else -100, int, help="Electron matched HLT object path bit"),
     NTupleVariable("isBadMuon", lambda x : x.isBadMuon if hasattr(x,'isBadMuon')  else 0, int, help="flag of bad muon"),
+    NTupleVariable("isPFMuon",   lambda x : x.isPFMuon() if (abs(x.pdgId())==13) else -999, float, help="if not pf muon, that is a bad more on duplicated muon"),
 ])
 
 ### EXTENDED VERSION WITH INDIVIUAL DISCRIMINATING VARIABLES

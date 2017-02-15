@@ -417,8 +417,8 @@ SingleElectron_Run2016H_03Feb2017_ver3 = kreator.makeDataComponent("SingleElectr
 
 
 ### ----------------------------- SingleMuon 03Feb2017 ----------------------------------------
-SingleMuon_Run2016B_03Feb2017_ver2 = kreator.makeDataComponent("SingleMuon_Run2016B_03Feb2017_ver2", "/SingleMuon/Run2016B-03Feb2017_ver2-v2/MINIAOD", "CMS", ".*root", json, useAAA=False,jsonFilter=False)
 SingleMuon_Run2016B_03Feb2017_ver1 = kreator.makeDataComponent("SingleMuon_Run2016B_03Feb2017_ver1", "/SingleMuon/Run2016B-03Feb2017_ver1-v1/MINIAOD", "CMS", ".*root", json, useAAA=False,jsonFilter=False)
+SingleMuon_Run2016B_03Feb2017_ver2 = kreator.makeDataComponent("SingleMuon_Run2016B_03Feb2017_ver2", "/SingleMuon/Run2016B-03Feb2017_ver2-v2/MINIAOD", "CMS", ".*root", json, useAAA=False,jsonFilter=True)
 SingleMuon_Run2016C_03Feb2017 = kreator.makeDataComponent("SingleMuon_Run2016C_03Feb2017", "/SingleMuon/Run2016C-03Feb2017-v1/MINIAOD", "CMS", ".*root", json, useAAA=False,jsonFilter=False)
 SingleMuon_Run2016D_03Feb2017 = kreator.makeDataComponent("SingleMuon_Run2016D_03Feb2017", "/SingleMuon/Run2016D-03Feb2017-v1/MINIAOD", "CMS", ".*root", json, useAAA=False,jsonFilter=False)
 SingleMuon_Run2016E_03Feb2017 = kreator.makeDataComponent("SingleMuon_Run2016E_03Feb2017", "/SingleMuon/Run2016E-03Feb2017-v1/MINIAOD", "CMS", ".*root", json, useAAA=False,jsonFilter=False)
@@ -454,8 +454,7 @@ MuonEG_Run2016H_03Feb2017_ver3 = kreator.makeDataComponent("MuonEG_Run2016H_03Fe
 
 
 ### ----------------------------- summary 03Feb2017 ----------------------------------------
-SingleElectron_03Feb2017= [SingleElectron_Run2016B_03Feb2017_ver1,
-SingleElectron_Run2016B_03Feb2017_ver2,
+SingleElectron_03Feb2017= [ SingleElectron_Run2016B_03Feb2017_ver2,
 SingleElectron_Run2016C_03Feb2017,
 SingleElectron_Run2016D_03Feb2017,
 SingleElectron_Run2016E_03Feb2017,
@@ -465,9 +464,8 @@ SingleElectron_Run2016H_03Feb2017_ver2,
 SingleElectron_Run2016H_03Feb2017_ver3,
 ]
 
-SingleMuon_03Feb2017= [SingleMuon_Run2016B_03Feb2017_ver2,
-SingleMuon_Run2016B_03Feb2017_ver1,
-SingleMuon_Run2016C_03Feb2017,
+SingleMuon_03Feb2017= [ SingleMuon_Run2016C_03Feb2017,
+SingleMuon_Run2016B_03Feb2017_ver2,
 SingleMuon_Run2016D_03Feb2017,
 SingleMuon_Run2016E_03Feb2017,
 SingleMuon_Run2016F_03Feb2017,
@@ -476,8 +474,7 @@ SingleMuon_Run2016H_03Feb2017_ver2,
 SingleMuon_Run2016H_03Feb2017_ver3,
 ]
 
-SinglePhoton_03Feb2017= [SinglePhoton_Run2016B_03Feb2017_ver1,
-SinglePhoton_Run2016B_03Feb2017_ver2,
+SinglePhoton_03Feb2017= [SinglePhoton_Run2016B_03Feb2017_ver2,
 SinglePhoton_Run2016C_03Feb2017,
 SinglePhoton_Run2016D_03Feb2017,
 SinglePhoton_Run2016E_03Feb2017,
@@ -487,8 +484,7 @@ SinglePhoton_Run2016H_03Feb2017_ver2,
 SinglePhoton_Run2016H_03Feb2017_ver3,
 ]
 
-MuonEG_03Feb2017= [MuonEG_Run2016B_03Feb2017_ver1,
-MuonEG_Run2016B_03Feb2017_ver2,
+MuonEG_03Feb2017= [MuonEG_Run2016B_03Feb2017_ver2,
 MuonEG_Run2016C_03Feb2017,
 MuonEG_Run2016D_03Feb2017,
 MuonEG_Run2016E_03Feb2017,
