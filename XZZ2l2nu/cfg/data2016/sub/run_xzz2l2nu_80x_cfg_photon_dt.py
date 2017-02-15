@@ -136,22 +136,19 @@ sequence = cfg.Sequence(coreSequence+[vvSkimmer,multtrg,vvTreeProducer])
 test = 1
 if test==1:
     # test a single component, using a single thread.
-    #selectedComponents = dataSamples
-    #selectedComponents = mcSamples
-    #selectedComponents = [SinglePhoton_Run2016B_23Sep2016, SinglePhoton_Run2016B_23Sep2016_v2,]
-    #selectedComponents = [SinglePhoton_Run2016C_23Sep2016,]
-    #selectedComponents = [SinglePhoton_Run2016D_23Sep2016,]
-    #selectedComponents = [SinglePhoton_Run2016E_23Sep2016,]
-    #selectedComponents = [SinglePhoton_Run2016F_23Sep2016,]
-    #selectedComponents = [SinglePhoton_Run2016G_23Sep2016,]
-    #selectedComponents = [SinglePhoton_Run2016H_PromptReco_v1, SinglePhoton_Run2016H_PromptReco_v2, SinglePhoton_Run2016H_PromptReco_v3]
-
-    #selectedComponents = SinglePhoton23Sep2016
+#    selectedComponents = SinglePhoton_03Feb2017
+    selectedComponents = [SinglePhoton_Run2016B_03Feb2017_ver2,]
+#    selectedComponents = [SinglePhoton_Run2016C_03Feb2017,]
+#    selectedComponents = [SinglePhoton_Run2016D_03Feb2017,]
+#    selectedComponents = [SinglePhoton_Run2016E_03Feb2017,]
+#    selectedComponents = [SinglePhoton_Run2016F_03Feb2017,]
+#    selectedComponents = [SinglePhoton_Run2016G_03Feb2017,]
+#    selectedComponents = [SinglePhoton_Run2016H_03Feb2017_ver2,SinglePhoton_Run2016H_03Feb2017_ver3]
     for c in selectedComponents:
-#        c.files = c.files[10:20]
+        c.files = c.files[10:20]
         #c.splitFactor = (len(c.files)/10 if len(c.files)>10 else 1)
         c.splitFactor = len(c.files)
-#        c.splitFactor = 1
+        c.splitFactor = 1
         #c.triggers=triggers_1mu_noniso
         #c.triggers=triggers_1e_noniso
 
