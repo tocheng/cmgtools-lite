@@ -42,10 +42,10 @@ LogY=options.LogY
 test=options.test
 SeparateProcess=options.SeparateProcess
 WtQCDToGJets=options.WtQCDToGJets
-doRhoScale=True
+doRhoScale=False
 doVtxScale=False
 doEtaScale=True
-doPhPtScale=False
+doPhPtScale=True
 
 
 
@@ -68,7 +68,7 @@ if doEtaScale:
 
 if doPhPtScale:
     tag+="PhPtWt_"
-    scale=scale+"*((-1.06624+0.0580113*pow(llnunu_l1_pt,1)-5.09328e-4*pow(llnunu_l1_pt,2)+2.28513e-6*pow(llnunu_l1_pt,3)-6.03131e-9*pow(llnunu_l1_pt,4)+9.84946e-12*pow(llnunu_l1_pt,5)-1.00558e-14*pow(llnunu_l1_pt,6)+6.244e-18*pow(llnunu_l1_pt,7)-2.15543e-21*pow(llnunu_l1_pt,8)+3.17021e-25*pow(llnunu_l1_pt,9))*(llnunu_l1_pt<=1000)+(0.688060)*(llnunu_l1_pt>1000))"
+    scale=scale+"*((-0.105507+0.00821057*pow(llnunu_l1_pt,1)-2.70772e-05*pow(llnunu_l1_pt,2)+4.66026e-08*pow(llnunu_l1_pt,3)-4.51688e-11*pow(llnunu_l1_pt,4)+2.44653e-14*pow(llnunu_l1_pt,5)-6.89362e-18*pow(llnunu_l1_pt,6)+7.87089e-22*pow(llnunu_l1_pt,7))*(llnunu_l1_pt<=1300)+(0.689695)*(llnunu_l1_pt>1300))"
 
 
 wt_qcd_to_gjets = "((1/(1.525e-01*exp(-6.201e-02*llnunu_l1_pt+5.999e+00)+-5.024e-04*llnunu_l1_pt+1.646e-01))*(llnunu_l1_pt<200)+(1/(8.801e-02*exp(-4.075e-02*llnunu_l1_pt+5.228e+00)-8.291e-05*llnunu_l1_pt+7.234e-02))*(llnunu_l1_pt>=200&&llnunu_l1_pt<600)+(44.2595)*(llnunu_l1_pt>=600))"
@@ -78,8 +78,8 @@ if WtQCDToGJets:
 
 outdir='plots_ph'
 
-indir='/home/heli/XZZ/80X_20170124_GJets_light_Skim'
-lumi=36.814
+indir='/home/heli/XZZ/80X_20170202_GJets_light_Skim'
+lumi=35.87
 sepSig=True
 doRatio=True
 Blind=options.Blind
@@ -131,22 +131,23 @@ ROOT.gROOT.ProcessLine('.x tdrstyle.C')
 
 
 # parameters for GJets
-gdataLumi=36.46*1000
-gdataYield=3451449849.011390686
+gdataLumi=35.867*1000
+gdataYield = 3402037584.2277574539
 gdataFidXsec=gdataYield/gdataLumi
+zjetsFidXsecAll = 72.31330890818101409
+zjetsFidXsecEl =  1.8368830484768923217
+zjetsFidXsecMu =  70.413868731825942859
+zjetsFidXsecAll_up = 73.317313237038433726
+zjetsFidXsecAll_dn = 71.318806854104892068
+zjetsFidXsecEl_up = 1.9004022884222013801
+zjetsFidXsecEl_dn = 1.7743842806529528389
+zjetsFidXsecMu_up = 71.35227312468455807
+zjetsFidXsecMu_dn = 69.483913323296292219
+zjetsFidXsecLowLptAll = 1119.9216265291902346
+zjetsFidXsecLowLptEl = 459.14012486577632899
+zjetsFidXsecLowLptMu = 660.78150166340503802
 
-zjetsFidXsecAll = 151.06068438939382759
-zjetsFidXsecEl =  1.8318217140038339785
-zjetsFidXsecMu =  149.22886267539001892
-zjetsFidXsecAll_up = 151.85715853322426483
-zjetsFidXsecAll_dn = 150.26421019455997907
-zjetsFidXsecEl_up = 1.8728979304188486665
-zjetsFidXsecEl_dn = 1.7907454975888201787
-zjetsFidXsecMu_up = 149.98426060280544903
-zjetsFidXsecMu_dn = 148.47346469697114912
-zjetsFidXsecLowLptAll = 807.42655018368884612
-zjetsFidXsecLowLptEl = 229.77648821257676559
-zjetsFidXsecLowLptMu = 577.65006197098625762
+
 
 ############################################
 #
@@ -157,17 +158,17 @@ zjetsFidXsecLowLptMu = 577.65006197098625762
 ################
 # DYJets->LL
 ################
-#zllSamples = ['DYJetsToLL_M50_reHLT']
+zllSamples = ['DYJetsToLL_M50_Ext']
 
-#zllPlotters=[]
-#for sample in zllSamples:
-#    zllPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
-#    zllPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
-#    zllPlotters[-1].addCorrectionFactor('xsec','xsec')
-#    zllPlotters[-1].addCorrectionFactor('genWeight','genWeight')
-#    zllPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
-#    zllPlotters[-1].addCorrectionFactor(scale,'scale')
-#    zllPlotters[-1].setAlias('nbadmuon', '(!nllnunu)')
+zllPlotters=[]
+for sample in zllSamples:
+    zllPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
+    zllPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
+    zllPlotters[-1].addCorrectionFactor('xsec','xsec')
+    zllPlotters[-1].addCorrectionFactor('genWeight','genWeight')
+    zllPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
+    zllPlotters[-1].addCorrectionFactor(scale,'scale')
+    zllPlotters[-1].setAlias('nbadmuon', '(!nllnunu)')
 
 
 ##################
@@ -237,14 +238,13 @@ for sample in wlngSamples:
 ###############################
 
 wlnSamples = [
-#'WJetsToLNu',
 'WJetsToLNu_HT100to200_BIG',
-'WJetsToLNu_HT1200to2500_BIG',
 'WJetsToLNu_HT200to400_BIG',
-'WJetsToLNu_HT2500toInf_BIG',
 'WJetsToLNu_HT400to600_BIG',
 'WJetsToLNu_HT600to800_BIG',
 'WJetsToLNu_HT800to1200_BIG',
+'WJetsToLNu_HT1200to2500_BIG',
+'WJetsToLNu_HT2500toInf_BIG',
 ]
 
 wlnPlotters=[]
@@ -285,8 +285,8 @@ for sample in tSamples:
 # all above  physical met adding together
 ##########################################
 
-#phymetPlotters = zllPlotters+znnPlotters+znngPlotters+wlngPlotters+wlnPlotters+tPlotters
-phymetPlotters = znnPlotters+znngPlotters+wlngPlotters+wlnPlotters+tPlotters
+phymetPlotters = zllPlotters+znnPlotters+znngPlotters+wlngPlotters+wlnPlotters+tPlotters
+#phymetPlotters = znnPlotters+znngPlotters+wlngPlotters+wlnPlotters+tPlotters
 
 
 
@@ -302,7 +302,7 @@ phymetPlotters = znnPlotters+znngPlotters+wlngPlotters+wlnPlotters+tPlotters
 ##########################
 
 gjetsSamples = [
-#'GJets_HT40to100_BIG',
+'GJets_HT40to100_BIG',
 'GJets_HT100to200_BIG',
 'GJets_HT200to400_BIG',
 'GJets_HT400to600_BIG',
@@ -334,18 +334,6 @@ QCD_EMEnriched_samples = [
 'QCD_Pt300toInf_EMEnriched_BIG',
 ]
 
-#QCD_HT_samples = [
-#"QCD_HT1000to1500_BIG",
-#"QCD_HT100to200_BIG",
-#"QCD_HT1500to2000_BIG",
-#"QCD_HT2000toInf_BIG",
-#"QCD_HT200to300_BIG",
-#"QCD_HT300to500_BIG",
-#"QCD_HT500to700_BIG",
-#"QCD_HT700to1000_BIG"
-#]
-
-#qcdSamples=QCD_HT_samples
 qcdSamples=QCD_EMEnriched_samples
  
 qcdPlotters=[]
@@ -406,10 +394,8 @@ for i in range(len(allmcPlotters)) :
 ############################################
 
 gdataSamples = [
-#'SinglePhoton_Run2016B2H_ReReco_36p46_ResBos_Rc36p46ReCalib',
-#'SinglePhoton_Run2016B2H_ReReco_36p46_ResBosRefit_Rc36p46ReCalib',
-#'SinglePhoton_Run2016B2H_ReReco_36p46_Rc36p46ReCalib',
-'SinglePhoton_Run2016Full_ReReco_v1',
+#'SinglePhoton_Run2016Full_ReReco_v2',
+'SinglePhoton_Run2016Full_03Feb2017_v0',
 ]
 
 gdataPlotters=[]
@@ -455,8 +441,8 @@ for sample in gdataSamples:
 # Physical MET
 #########################
 
-#ZLL = MergedPlotter(zllPlotters)
-#ZLL.setFillProperties(1001,ROOT.kOrange)
+ZLL = MergedPlotter(zllPlotters)
+ZLL.setFillProperties(1001,ROOT.kOrange)
 ZNN = MergedPlotter(znnPlotters)
 ZNN.setFillProperties(1001,ROOT.kMagenta)
 ZNNG = MergedPlotter(znngPlotters)
@@ -515,7 +501,7 @@ else:
     Stack.addPlotter(ZNN, "ZNN","Z->#nu#nu", "background")
     Stack.addPlotter(ZNNG, "ZNNG","Z#gamma->#nu#nu#gamma", "background")
     Stack.addPlotter(T, "T","Top", "background")
-#    Stack.addPlotter(ZLL, "ZLL","Z->ll", "background")
+    Stack.addPlotter(ZLL, "ZLL","Z->ll", "background")
     Stack.addPlotter(WLNG, "WGToLNuG","W#gamma->l#nu#gamma", "background")
     Stack.addPlotter(WLN, "WLN","W->l#nu", "background")
     Stack.addPlotter(GJETS, "GJETS","#gamma+jets", "background")

@@ -44,16 +44,17 @@ njob="0"
 #for infile in $inputdir/QCD_Pt*_BIG/vvTreeProducer/tree.root ;
 #for infile in $inputdir/QCD_Pt*Enriched*/vvTreeProducer/tree.root ;
 #for infile in $inputdir/WJetsToLNu_HT*_BIG/vvTreeProducer/tree.root ;
+#for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v Single | grep DY | grep -v MGMLM ); 
 #for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v Single | grep -v DY); 
-for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v Single | grep DY | grep -v MGMLM ); 
+for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep  SingleEMU ); 
 do
   echo "+++ skimming $infile +++"
   outfile="${outputdir}/${infile/$inputdir\//}"
 
   # options for outputs
-  outfile="${outfile/\/vvTreeProducer\/tree/_NoRecoil}"
+  #outfile="${outfile/\/vvTreeProducer\/tree/_NoRecoil}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_DtReCalib}"
-  #outfile="${outfile/\/vvTreeProducer\/tree/}"
+  outfile="${outfile/\/vvTreeProducer\/tree/}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_RcRhoWt}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_test}"
 

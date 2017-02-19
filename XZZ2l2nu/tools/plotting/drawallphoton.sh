@@ -3,9 +3,10 @@
 
 tag="PhSummer16_"
 #cutChains="loosecut"
-cutChains="tight"
+#cutChains="tight"
 #cutChains="SR CR CR1 CR2 CR3"
 #cutChains="tightzptgt50lt100 tightzptgt100"
+cutChains="tight tightzptgt50lt100 tightzptgt100"
 logdir="log_ph"
 
 mkdir -p $logdir

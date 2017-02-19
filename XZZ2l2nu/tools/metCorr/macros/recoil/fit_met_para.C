@@ -36,7 +36,7 @@ std::vector< std::string > dtfiles = {
 
 std::vector< std::string > gjfiles = {
     "SinglePhoton_Run2016Full_ReReco_v2_NoRecoil"
-//    "SinglePhoton_Run2016Full_ReReco_v2_halo15_NoRecoil"
+//    "SinglePhoton_Run2016Full_ReReco_v2"
  };
 
 
@@ -148,7 +148,7 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   if (channel=="el") base_selec = base_selec+"&&(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11)";
   else if (channel=="mu") base_selec = base_selec+"&&(abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13)";
 
-  if (!doMC && dtHLT) base_selec = "(HLT_MUv2||HLT_ELEv2)&&"+base_selec;
+  if (!doMC && dtHLT) base_selec = "(HLT_MU50||HLT_TkMU50||HLT_ELE115)&&"+base_selec;
 
   base_selec = "("+base_selec+")";
 

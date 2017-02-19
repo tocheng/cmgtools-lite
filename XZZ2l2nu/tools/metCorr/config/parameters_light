@@ -107,11 +107,11 @@ doMuonPtRecalib: false
 MuonPtRecalibInputForData: data/kalman/DATA_80X_13TeV.root
 MuonPtRecalibInputForMC: data/kalman/MC_80X_13TeV.root
 
-doElecPtRecalibSimpleData: true 
+doElecPtRecalibSimpleData: false
 ElecPtRecalibSimpleDataScale: 1.00341
 #ElecPtRecalibSimpleDataScale: 1.00971
 
-doElecPtRecalibSimpleDataPogRecipe: true
+doElecPtRecalibSimpleDataPogRecipe: false
 # if above pog recipe is true, will correct electron energy according to seeding xtal energies
 
 

@@ -61,11 +61,9 @@ zjets_scale='(1)'
 
 if channel=='mu': 
 #    mc_scale='(1.02942)'
-#    mc_scale='(0.8*1.00539823551)'
     zjets_scale='(1.04186344742)'
 elif channel=='el': 
 #    mc_scale='(1.02139)'
-#    mc_scale='(1.00448813901)'
     zjets_scale='(1.01817588601)'
 else: 
 #    mc_scale='(1.02942)'
@@ -78,26 +76,8 @@ else:
 # non reso alpha
 nonreso_alpha_el=1.0
 nonreso_alpha_mu=1.0
-#zpt>10
-#nonreso_alpha_el=0.35360488202
-#nonreso_alpha_mu=0.682444330736
-# zpt>70
-#nonreso_alpha_el=0.368708
-#nonreso_alpha_mu=0.607408
-# zpt>50
-#nonreso_alpha_el=0.353651462281
-#nonreso_alpha_mu=0.614219922129
-# zpt>50 met<100
-#nonreso_alpha_el=0.332060243754
-#nonreso_alpha_mu=0.629043099213 
 
 nonreso_alpha_el=0.346341188158
-#nonreso_alpha_mu=0.687122143356*0.8 
-#nonreso_alpha_mu=0.687122143356*0.75 
-#nonreso_alpha_mu=0.687122143356*0.6 
-#nonreso_alpha_mu=0.687122143356*0.9 
-#nonreso_alpha_mu=0.687122143356*0.95 
-#nonreso_alpha_mu=0.687122143356*0.85 
 nonreso_alpha_mu=0.696656700696
 
 #
@@ -131,8 +111,6 @@ puWeight='puWeightsummer16'
 k=1 # signal scale
 ZPtWeight="ZPtWeight"
 
-#elChannel='((abs(llnunu_l1_l1_pdgId)==11||abs(llnunu_l1_l2_pdgId)==11)&&llnunu_l1_l1_pt>115&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5)'
-#muChannel='((abs(llnunu_l1_l1_pdgId)==13||abs(llnunu_l1_l2_pdgId)==13)&&llnunu_l1_l1_pt>50&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID>0.99||llnunu_l1_l2_highPtID>0.99))'
 elChannel='((abs(llnunu_l1_l1_pdgId)==11||abs(llnunu_l1_l2_pdgId)==11)&&llnunu_l1_l1_pt>120&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5)'
 muChannel='((abs(llnunu_l1_l1_pdgId)==13||abs(llnunu_l1_l2_pdgId)==13)&&llnunu_l1_l1_pt>60&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID>0.99||llnunu_l1_l2_highPtID>0.99))'
 photonFakeID='(llnunu_l1_l1_pdgId==19801117)'
@@ -234,7 +212,6 @@ else : cuts=cuts_loose
 
 
 if UseMETFilter:
-    #cuts = '('+cuts+'&&'+metfilter+')'
     cuts = '('+cuts+')' # metfilter pre-applied in preskim
 
 # badmuon filter
@@ -248,11 +225,15 @@ ROOT.gROOT.ProcessLine('.x tdrstyle.C')
 #######################
 #  VV Reso backgrounds
 #######################
-vvSamples = ['WZTo2L2Q','WZTo3LNu',
+vvSamples = [
+'WZTo2L2Q',
+'WZTo3LNu',
 'ZZTo2L2Nu',
-'ZZTo2L2Q','ZZTo4L',
+'ZZTo2L2Q',
+'ZZTo4L',
 'ggZZTo2e2nu','ggZZTo2mu2nu',
-'TTZToLLNuNu']
+'TTZToLLNuNu'
+]
 
 vvPlotters=[]
 for sample in vvSamples:
@@ -375,7 +356,8 @@ if dyGJets :
     # for GJets photon bkg subtraction
 
     phymetSamples = [
-    'G_DYJetsToLL_M50_MGMLM_Ext1',
+    #'G_DYJetsToLL_M50_MGMLM_Ext1',
+    'G_DYJetsToLL_M50_Ext',
     'G_TBar_tWch',
     'G_TBar_tch_powheg',
     'G_TGJets_BIG', 
@@ -432,6 +414,7 @@ if dyGJets :
     ### the GJets data
     gdataSamples = [
     'SinglePhoton_Run2016Full_ReReco_v2', 
+    #'SinglePhoton_Run2016Full_ReReco_v2_NoRecoil', 
     ]
 
     gdataPlotters=[]
@@ -453,8 +436,8 @@ if dyGJets :
             gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecAll),'zjetsFidXsecAll')
 
     # the GJets plotter
-    gjetsPlotters = gdataPlotters
-    #gjetsPlotters = gdataPlotters+phymetPlotters
+    #gjetsPlotters = gdataPlotters
+    gjetsPlotters = gdataPlotters+phymetPlotters
 
 
     GJets = MergedPlotter(gjetsPlotters)
@@ -484,8 +467,6 @@ else:
     ### MC ZJets
     mczjetsSamples = [
     'DYJetsToLL_M50_Ext',
-#    'DYJetsToLL_M50_MGMLM_BIG',
-#    'DYJetsToLL_M50_MGMLM_BIG_NoRecoil',
     ]
 
     mczjetsPlotters=[]
@@ -684,11 +665,11 @@ tag+='_'
 if test: 
 #    Stack.drawStack('nVert', cuts, str(lumi*1000), 80, 0.0, 80.0, titlex = "N vertices", units = "",output='nVert',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('rho', cuts, str(lumi*1000), 55, 0.0, 55.0, titlex = "#rho", units = "",output='rho',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 30, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output='zpt',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 30, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output='zpt',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 60, 60, 120, titlex = "M(Z)", units = "GeV",output='zmass',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 50, 100.0, 1600.0, titlex = "M_{T}", units = "GeV",output='mt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 #    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 30, 0, 1500, titlex = "MET", units = "GeV",output='met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
-#    Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 50, -500, 500.0, titlex = "MET_{#parallel}", units = "GeV",output='met_para',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 50, -500, 500.0, titlex = "MET_{#parallel}", units = "GeV",output='met_para',outDir=outdir,separateSignal=sepSig)
 
 #    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 200, 0.0, 2000.0, titlex = "P_{T}(Z)", units = "GeV",output='zpt_high2k',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 300, 0.0, 3000.0, titlex = "M_{T}", units = "GeV",output='mt_high3k',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
