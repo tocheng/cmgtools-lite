@@ -88,14 +88,13 @@ PUWeightHistName: puweight_dtmc
 #  ╚═╝╚╝╚═╝ ╩ ╚═╝  ╚═╝╩ ╩╩╩ ╩
 #====================================================================
 doGJetsSkim: false
-doGJetsSkimAddPhiWeight: true
-#GJetsSkimInputFileName: data/gjets/study_gjets_data_b2h36p22fbinv.root
-#GJetsSkimInputFileName: data/gjets/study_gjets_data_b2h36p22fbinv_v5resbos_norm.root
-GJetsSkimInputFileName: data/gjets/study_gjets_data_b2h36p22fbinv_v5resbos_norm_modify.root
+doGJetsSkimAddPhiWeight: false
+doGJetsSkimAddTrigEff: false
+GJetsSkimInputFileName: data/gjets/study_gjets_data_fullv2_modify.root
 
 GJetsSkimPhiWeightInputFileName: data/gjets/gjet_photon_phi_weight.root
 GJetsSkimRhoWeightInputFileName: data/gjets/get_rho_weight_fullv2.root
-
+GJetsSkimTrigEffInputFileName: data/gjets/get_ph_trig_eff_fullv2.root
 
 
 #====================================================================
@@ -107,11 +106,11 @@ doMuonPtRecalib: false
 MuonPtRecalibInputForData: data/kalman/DATA_80X_13TeV.root
 MuonPtRecalibInputForMC: data/kalman/MC_80X_13TeV.root
 
-doElecPtRecalibSimpleData: true 
+doElecPtRecalibSimpleData: false
 ElecPtRecalibSimpleDataScale: 1.00341
 #ElecPtRecalibSimpleDataScale: 1.00971
 
-doElecPtRecalibSimpleDataPogRecipe: true
+doElecPtRecalibSimpleDataPogRecipe: false
 # if above pog recipe is true, will correct electron energy according to seeding xtal energies
 
 
@@ -194,7 +193,7 @@ DyZPtWeightInputFileName: data/zptweight/dyjets_zpt_weight_lo_nlo_genAccV2.root
 #====================================================================
 
 # default use histogram
-doRecoil: false
+doRecoil: true
 
 # use smoothed hist
 doRecoilUseSmooth: true
@@ -203,9 +202,9 @@ doRecoilUseSmooth: true
 doRecoilUseSmoothGraph: true
 
 # Input files
-RecoilInputFileNameData_all: data/recoil/SingleEMU_Run2016Full_ReReco_v2_DtReCalib_met_para_study_ZSelecLowLPt.root
-RecoilInputFileNameData_mu:  data/recoil/SingleEMU_Run2016Full_ReReco_v2_DtReCalib_met_para_study_ZSelecLowLPt_mu.root
-RecoilInputFileNameData_el:  data/recoil/SingleEMU_Run2016Full_ReReco_v2_DtReCalib_met_para_study_ZSelecLowLPt_el.root
+RecoilInputFileNameData_all: data/recoil/SingleEMU_Run2016Full_03Feb2017_v0_met_para_study_ZSelecLowLPt.root
+RecoilInputFileNameData_mu:  data/recoil/SingleEMU_Run2016Full_03Feb2017_v0_met_para_study_ZSelecLowLPt_mu.root
+RecoilInputFileNameData_el:  data/recoil/SingleEMU_Run2016Full_03Feb2017_v0_met_para_study_ZSelecLowLPt_el.root
 
 
 # NLO mc
@@ -224,9 +223,9 @@ RecoilInputFileNameMCLO_el:  data/recoil/DYJetsToLL_M50_MGMLM_BIG_NoRecoil_met_p
 #RecoilInputFileNameMCLO_el:  data/recoil/DYJetsToLL_M50_MGMLM_BIG_NoRecoil_met_para_study_ZSelecLowLPt_RhoWt_el.root
 
 # photon data
-RecoilInputFileNameGJets_all: data/recoil/SinglePhoton_Run2016Full_ReReco_v2_NoRecoil_met_para_study_ZSelecLowLPt.root 
-RecoilInputFileNameGJets_mu:  data/recoil/SinglePhoton_Run2016Full_ReReco_v2_NoRecoil_met_para_study_ZSelecLowLPt_mu.root
-RecoilInputFileNameGJets_el:  data/recoil/SinglePhoton_Run2016Full_ReReco_v2_NoRecoil_met_para_study_ZSelecLowLPt_el.root
+RecoilInputFileNameGJets_all: data/recoil/SinglePhoton_Run2016Full_03Feb2017_v0_NoRecoil_met_para_study_ZSelecLowLPt.root 
+RecoilInputFileNameGJets_mu:  data/recoil/SinglePhoton_Run2016Full_03Feb2017_v0_NoRecoil_met_para_study_ZSelecLowLPt_mu.root
+RecoilInputFileNameGJets_el:  data/recoil/SinglePhoton_Run2016Full_03Feb2017_v0_NoRecoil_met_para_study_ZSelecLowLPt_el.root
 
 
 

@@ -475,9 +475,11 @@ TH2* _h_eff_trg_mu50tkmu50_dt_4;
 //==================================================
 bool _doGJetsSkim = false;
 bool _doGJetsSkimAddPhiWeight = false;
+bool _doGJetsSkimAddTrigEff = false;
 std::string _GJetsSkimInputFileName;
 std::string _GJetsSkimPhiWeightInputFileName;
 std::string _GJetsSkimRhoWeightInputFileName;
+std::string _GJetsSkimTrigEffInputFileName;
 
 
 TFile* _gjets_input_file;
@@ -517,6 +519,9 @@ TH1D* _gjets_h_photon_phi_weight;
 
 TFile* _gjet_rho_weight_input_file;
 TH2D* _gjet_h_rho_weight;
+
+TFile* _gjets_trig_eff_input_file;
+TH2D* _gjets_h_trig_eff_weight;
 
 
 //======================================================
@@ -657,6 +662,7 @@ Float_t _trgsf_up, _trgsf_dn, _idisotrksf_up, _idisotrksf_dn,_etrgsf_up, _etrgsf
 
 // for GJets samples
 Float_t _GJetsPhiWeight;
+Float_t _GJetsTrigEff;
 Float_t _GJetsRhoWeight;
 Float_t _GJetsZPtWeight, _GJetsZPtWeightEl, _GJetsZPtWeightMu;
 Float_t _GJetsZPtWeightLowLPt, _GJetsZPtWeightLowLPtEl, _GJetsZPtWeightLowLPtMu;
