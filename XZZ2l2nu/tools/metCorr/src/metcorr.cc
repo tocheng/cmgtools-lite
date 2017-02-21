@@ -397,13 +397,17 @@ void readConfigFile()
   //==============================================  
   _doGJetsSkim = parm.GetBool("doGJetsSkim", kFALSE);
   _doGJetsSkimAddPhiWeight = parm.GetBool("doGJetsSkimAddPhiWeight", kFALSE);
+  _doGJetsSkimAddTrigEff = parm.GetBool("doGJetsSkimAddTrigEff", kFALSE);
 
   if (_doGJetsSkim) {
     _GJetsSkimInputFileName = parm.GetString("GJetsSkimInputFileName", "data/gjets/study_gjets.root");
+    _GJetsSkimRhoWeightInputFileName = parm.GetString("GJetsSkimRhoWeightInputFileName", "data/gjets/get_rho_weight.root");
     if (_doGJetsSkimAddPhiWeight) {
       _GJetsSkimPhiWeightInputFileName = parm.GetString("GJetsSkimPhiWeightInputFileName", "data/gjets/gjet_photon_phi_weight.root");
     }
-    _GJetsSkimRhoWeightInputFileName = parm.GetString("GJetsSkimRhoWeightInputFileName", "data/gjets/get_rho_weight.root");
+    if (_doGJetsSkimAddTrigEff) {
+      _GJetsSkimTrigEffInputFileName = parm.GetString("GJetsSkimTrigEffInputFileName", "data/gjets/get_ph_trig_eff_fullv2.root");
+    }
   }
 
 }
@@ -723,6 +727,9 @@ bool  prepareTrees()
     }
     if (_doGJetsSkimAddPhiWeight) {
       _tree_out->Branch("GJetsPhiWeight", &_GJetsPhiWeight, "GJetsPhiWeight/F");
+    }
+    if (_doGJetsSkimAddTrigEff) {
+      _tree_out->Branch("GJetsTrigEff", &_GJetsTrigEff, "GJetsTrigEff/F");
     }
     if (!_storeOldBranches) {
       _tree_out->SetBranchStatus("gjet_*", 0);
@@ -3174,6 +3181,12 @@ void prepareGJetsSkim()
       _gjets_h_photon_phi_weight = (TH1D*)_gjets_phi_weight_input_file->Get("h_gjet_phi_weight");
     }   
 
+    // photon trig eff
+    if (_doGJetsSkimAddTrigEff) {
+      _gjets_trig_eff_input_file = TFile::Open(_GJetsSkimTrigEffInputFileName.c_str());
+      _gjets_h_trig_eff_weight = (TH2D*)_gjets_trig_eff_input_file->Get("h_eta_pt_weight");
+    }
+
     // rho weight
     _gjet_rho_weight_input_file = TFile::Open(_GJetsSkimRhoWeightInputFileName.c_str());
     _gjet_h_rho_weight = (TH2D*)_gjet_rho_weight_input_file->Get("h_rho_zpt_weight");
@@ -3345,8 +3358,14 @@ void doGJetsSkim()
     _GJetsPhiWeight = _gjets_h_photon_phi_weight->GetBinContent(_gjets_h_photon_phi_weight->FindBin(_llnunu_l1_phi));
   }
 
+  // get photon trig eff
+  if (_doGJetsSkimAddTrigEff) {
+    _GJetsTrigEff = _gjets_h_trig_eff_weight->GetBinContent(_gjets_h_trig_eff_weight->FindBin(_llnunu_l1_pt,fabs(_llnunu_l1_eta)));
+  }
+
   // gjet rho weight
   _GJetsRhoWeight = _gjet_h_rho_weight->GetBinContent(_gjet_h_rho_weight->FindBin(_llnunu_l1_pt, _rho));
+
 
 }
 

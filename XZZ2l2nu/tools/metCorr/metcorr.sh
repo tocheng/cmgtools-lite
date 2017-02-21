@@ -46,7 +46,8 @@ njob="0"
 #for infile in $inputdir/WJetsToLNu_HT*_BIG/vvTreeProducer/tree.root ;
 #for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v Single | grep DY | grep -v MGMLM ); 
 #for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v Single | grep -v DY); 
-for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep  SingleEMU ); 
+#for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep  SingleEMU ); 
+for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep  DYJetsToLL_M50_Ext ); 
 do
   echo "+++ skimming $infile +++"
   outfile="${outputdir}/${infile/$inputdir\//}"

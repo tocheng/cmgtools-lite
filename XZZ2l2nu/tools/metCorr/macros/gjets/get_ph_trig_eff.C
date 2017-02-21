@@ -23,6 +23,22 @@
   TFile* fout = TFile::Open(name, "recreate");
   TTree* tree1 = (TTree*)file1->Get("tree");
 
+  // alias
+  tree1->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter&&Flag_BadPFMuonFilter&&Flag_BadChargedCandidateFilter&&Flag_noBadMuons)");
+  tree1->SetAlias("ieta", "gjet_l1_ieta");
+  tree1->SetAlias("iphi", "gjet_l1_iphi"); 
+  tree1->SetAlias("flag3", "(((gjet_l1_iphi>75||gjet_l1_iphi<25)&&fabs(gjet_l1_eta)>1.5)||(fabs(gjet_l1_eta)<1.5))");
+  tree1->SetAlias("filter1", "(gjet_l1_sigmaIetaIeta>0.001&&gjet_l1_sigmaIphiIphi>0.001&&gjet_l1_SwissCross<0.95&&gjet_l1_mipTotE<4.9&&gjet_l1_time>-2.58&&gjet_l1_time<1.42)");
+  tree1->SetAlias("flg1eb", "(fabs(eta)<1.47&&!((ieta==56&&iphi==67)||(ieta==-51&&iphi==196)||(ieta==79&&iphi==67)||(ieta==72&&iphi==67)||(ieta==58&&iphi==74)||(ieta==-24&&iphi==119)||(ieta==49&&iphi==6)||(ieta==-21&&iphi==308)||(ieta==1&&iphi==81)||(ieta==-31&&iphi==163)||(ieta==5&&iphi==180)||(ieta==14&&iphi==321)||(ieta==5&&iphi==305)||(ieta==6&&iphi==140)||(ieta==-18&&iphi==189)||(ieta==-2&&iphi==244)||(ieta==-12&&iphi==196)||(ieta==-7&&iphi==39)||(ieta==-10&&iphi==163)||(ieta==-4&&iphi==229)||(ieta==-27&&iphi==41)||(ieta==-11&&iphi==163)||(ieta==-16&&iphi==170)||(ieta==-5&&iphi==183)||(ieta==13&&iphi==218)||(ieta==-4&&iphi==125)||(ieta==-4&&iphi==183)||(ieta==-84&&iphi==168)||(ieta==5&&iphi==307)||(ieta==-10&&iphi==245)||(ieta==26&&iphi==262)||(ieta==8&&iphi==329)||(ieta==4&&iphi==245)||(ieta==-25&&iphi==109)||(ieta==-11&&iphi==28)||(ieta==2&&iphi==237)||(ieta==-3&&iphi==187)||(ieta==-4&&iphi==144)||(ieta==3&&iphi==186)||(ieta==-3&&iphi==229)||(ieta==2&&iphi==246)||(ieta==-4&&iphi==57)||(ieta==-32&&iphi==146)||(ieta==-11&&iphi==182)||(ieta==5&&iphi==24)||(ieta==-19&&iphi==185)||(ieta==7&&iphi==214)||(ieta==-4&&iphi==53)||(ieta==2&&iphi==66)||(ieta==23&&iphi==147)))");
+  tree1->SetAlias("flg1eep", "(eta>1.566)");  
+  tree1->SetAlias("flg1eem", "(eta<-1.566)");
+
+  tree1->SetAlias("hltfilter", "((gjet_l1_trigerob_HLTbit>>0&1&&gjet_l1_trigerob_pt<=30)||(gjet_l1_trigerob_HLTbit>>1&1&&gjet_l1_trigerob_pt<=36)||(gjet_l1_trigerob_HLTbit>>2&1&&gjet_l1_trigerob_pt<=50)||(gjet_l1_trigerob_HLTbit>>3&1&&gjet_l1_trigerob_pt<=75)||(gjet_l1_trigerob_HLTbit>>4&1&&gjet_l1_trigerob_pt<=90)||(gjet_l1_trigerob_HLTbit>>5&1&&gjet_l1_trigerob_pt<=120)||(gjet_l1_trigerob_HLTbit>>6&1&&gjet_l1_trigerob_pt<=165)||(gjet_l1_trigerob_HLTbit>>7&1&&gjet_l1_trigerob_pt<=10000000))");
+
+  //tree1->SetAlias("selec1", "(ngjet==1&&Max$(jet_pt[]*jet_chargedEmEnergyFraction[])<10&&Max$(jet_pt[]*jet_muonEnergyFraction[])<10&&flag3&&nlep==0)");
+  //tree1->SetAlias("selec2", "(metfilter&&ngjet==1&&Max$(jet_pt[]*jet_chargedEmEnergyFraction[])<10&&Max$(jet_pt[]*jet_muonEnergyFraction[])<10&&flag3&&filter1&&nlep==0)&&hltfilter");
+  tree1->SetAlias("selec1", "(metfilter&&ngjet==1&&Max$(jet_pt[]*jet_chargedEmEnergyFraction[])<10&&Max$(jet_pt[]*jet_muonEnergyFraction[])<10&&flag3&&nlep==0)");
+  tree1->SetAlias("selec2", "(metfilter&&ngjet==1&&Max$(jet_pt[]*jet_chargedEmEnergyFraction[])<10&&Max$(jet_pt[]*jet_muonEnergyFraction[])<10&&flag3&&filter1&&nlep==0)&&HLT_PHOTONIDISO");
 
 
   TCanvas* plots = new TCanvas("plots", "plots");
@@ -43,8 +59,8 @@
   h_eta_pt_1->Sumw2();
   h_eta_pt_2->Sumw2();
 
-  tree1->Draw("fabs(gjet_l1_eta):gjet_l1_pt>>h_eta_pt_1");
-  tree1->Draw("fabs(gjet_l1_eta):gjet_l1_pt>>h_eta_pt_2", "(gjet_l1_trigerob_HLTbit>>0&1&&gjet_l1_trigerob_pt<=30)||(gjet_l1_trigerob_HLTbit>>1&1&&gjet_l1_trigerob_pt<=36)||(gjet_l1_trigerob_HLTbit>>2&1&&gjet_l1_trigerob_pt<=50)||(gjet_l1_trigerob_HLTbit>>3&1&&gjet_l1_trigerob_pt<=75)||(gjet_l1_trigerob_HLTbit>>4&1&&gjet_l1_trigerob_pt<=90)||(gjet_l1_trigerob_HLTbit>>5&1&&gjet_l1_trigerob_pt<=120)||(gjet_l1_trigerob_HLTbit>>6&1&&gjet_l1_trigerob_pt<=165)||(gjet_l1_trigerob_HLTbit>>7&1&&gjet_l1_trigerob_pt<=10000000)");
+  tree1->Draw("fabs(gjet_l1_eta):gjet_l1_pt>>h_eta_pt_1", "selec1");
+  tree1->Draw("fabs(gjet_l1_eta):gjet_l1_pt>>h_eta_pt_2", "selec2");
 
   TH2D* h_eta_pt_r21 = (TH2D*)h_eta_pt_2->Clone("h_eta_pt_r21");
   h_eta_pt_r21->Divide(h_eta_pt_1);
@@ -52,16 +68,25 @@
   sprintf(name, "%s.pdf", outtag.c_str());
   plots->Clear();
   
+  plots->SetLogx(1);
   h_eta_pt_1->Draw("colz text");
+  lumipt->Draw();
   plots->Print(name);
+  plots->SetLogx(0);
   plots->Clear();
 
+  plots->SetLogx(1);
   h_eta_pt_2->Draw("colz text");
+  lumipt->Draw();
   plots->Print(name);
+  plots->SetLogx(0);
   plots->Clear();
 
+  plots->SetLogx(1);
   h_eta_pt_r21->Draw("colz text");
+  lumipt->Draw();
   plots->Print(name);
+  plots->SetLogx(0);
   plots->Clear();
 
   //
@@ -70,8 +95,8 @@
   h_pt_1_sb->Sumw2();
   h_pt_2_sb->Sumw2();
 
-  tree1->Draw("gjet_l1_pt>>h_pt_1_sb");
-  tree1->Draw("gjet_l1_pt>>h_pt_2_sb","(gjet_l1_trigerob_HLTbit>>0&1&&gjet_l1_trigerob_pt<=30)||(gjet_l1_trigerob_HLTbit>>1&1&&gjet_l1_trigerob_pt<=36)||(gjet_l1_trigerob_HLTbit>>2&1&&gjet_l1_trigerob_pt<=50)||(gjet_l1_trigerob_HLTbit>>3&1&&gjet_l1_trigerob_pt<=75)||(gjet_l1_trigerob_HLTbit>>4&1&&gjet_l1_trigerob_pt<=90)||(gjet_l1_trigerob_HLTbit>>5&1&&gjet_l1_trigerob_pt<=120)||(gjet_l1_trigerob_HLTbit>>6&1&&gjet_l1_trigerob_pt<=165)||(gjet_l1_trigerob_HLTbit>>7&1&&gjet_l1_trigerob_pt<=10000000)");
+  tree1->Draw("gjet_l1_pt>>h_pt_1_sb", "selec1");
+  tree1->Draw("gjet_l1_pt>>h_pt_2_sb", "selec2");
 
   TH1D* h_pt_r21_sb = (TH1D*)h_pt_2_sb->Clone("h_pt_r21_sb");
   h_pt_r21_sb->Divide(h_pt_1_sb);
@@ -89,10 +114,12 @@
   plots->Clear();
   h_pt_1_sb->Draw();
   h_pt_2_sb->Draw("same");
+  lumipt->Draw();
   plots->Print(name);
 
   plots->Clear();
   h_pt_r21_sb->Draw();
+  lumipt->Draw();
   plots->Print(name);
 
 
@@ -123,10 +150,12 @@
   plots->Clear();
   h_pt_1->Draw();
   h_pt_2->Draw("same");
+  lumipt->Draw();
   plots->Print(name);
 
   plots->Clear();
   h_pt_r21->Draw();
+  lumipt->Draw();
   plots->Print(name);
 
 
@@ -149,23 +178,77 @@
 
   }
 
-  h_eta_pt_weight = (TH2D*)h_eta_pt_1_ptnorm->Clone("h_eta_pt_weight");
-  h_eta_pt_weight->Divide(h_eta_pt_2_ptnorm);
+  h_eta_pt_weight = (TH2D*)h_eta_pt_2_ptnorm->Clone("h_eta_pt_weight");
+  h_eta_pt_weight->Divide(h_eta_pt_1_ptnorm);
   h_eta_pt_weight->SetTitle("h_eta_pt_weight");
 
   
   plots->Clear();
+  plots->SetLogx(1);
   h_eta_pt_1_ptnorm->Draw("colz text");
+  lumipt->Draw();
   plots->Print(name);
+  plots->SetLogx(0);
 
   plots->Clear();
+  plots->SetLogx(1);
   h_eta_pt_2_ptnorm->Draw("colz text");
+  lumipt->Draw();
   plots->Print(name);
+  plots->SetLogx(0);
  
   plots->Clear();
+  plots->SetLogx(1);
   h_eta_pt_weight->Draw("colz text");
+  lumipt->Draw();
   plots->Print(name);
+  plots->SetLogx(0);
 
+//
+  std::vector<std::string> hlt_lab={"HLT 22", "HLT 30", "HLT 36", "HLT 50", "HLT 75", "HLT 90", "HLT 120", "HLT 165"};
+
+  for (int i=0; i<h_eta_pt_1_ptnorm->GetNbinsX(); i++){
+    sprintf(name, "tmp_h1_%i", i);
+    TH1D* h1 = (TH1D*)h_eta_pt_1_ptnorm->ProjectionY(name, i+1,i+1);
+    sprintf(name, "tmp_h2_%i", i);
+    TH1D* h2 = (TH1D*)h_eta_pt_2_ptnorm->ProjectionY(name, i+1,i+1);
+    h1->SetLineColor(2);
+    h1->SetMarkerColor(2);
+    h2->SetLineColor(4);
+    h2->SetMarkerColor(4);
+    h1->SetMarkerStyle(20);
+    h2->SetMarkerStyle(20);
+    h1->GetXaxis()->SetTitle("Photon P_{T} (GeV)");
+    h2->GetXaxis()->SetTitle("Photon P_{T} (GeV)");
+    TLegend* lg1 = new TLegend(0.6,0.7, 0.8,0.8);
+    sprintf(name, "tmp_lg1_%i", i);
+    lg1->AddEntry(h1, "pass trigger", "apl");
+    lg1->AddEntry(h2, "all data" , "apl");
+    lg1->AddEntry(h2, hlt_lab.at(i).c_str() , "");
+
+    sprintf(name, "tmp_h3_%i", i);
+    TH1D* h3 = (TH1D*)h2->Clone(name);
+    h3->Divide(h1);
+    h3->SetMarkerColor(1);
+    h3->SetLineColor(1);
+    h3->GetYaxis()->SetTitle("Trigger Eff.");
+
+    plots->Clear();
+    plots->SetLogy(1);
+    h2->Draw();
+    h1->Draw("same");
+    lumipt->Draw();
+    sprintf(name, "%s.pdf", outtag.c_str());
+    plots->Print(name);
+    plots->SetLogy(0);
+    plots->Print(name);
+    plots->Clear();
+    
+    h3->Draw();
+    plots->Print(name);
+    plots->Clear();    
+
+  }
 
   sprintf(name, "%s.pdf]", outtag.c_str());
   plots->Print(name);

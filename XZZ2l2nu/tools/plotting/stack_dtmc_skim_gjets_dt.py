@@ -40,7 +40,7 @@ test=options.test
 DrawLeptons=True
 doRhoScale=False
 doGMCEtaScale=True
-doGMCPhPtScale=False
+doGMCPhPtScale=True
 dyGJets=options.dyGJets
 muoneg=options.muoneg
 
@@ -61,13 +61,13 @@ zjets_scale='(1)'
 
 if channel=='mu': 
 #    mc_scale='(1.02942)'
-    zjets_scale='(1.04186344742)'
+    zjets_scale='(1.03741)'
 elif channel=='el': 
 #    mc_scale='(1.02139)'
-    zjets_scale='(1.01817588601)'
+    zjets_scale='(1.03737)'
 else: 
 #    mc_scale='(1.02942)'
-    zjets_scale='(1.025)'
+    zjets_scale='(1.03741)'
 
 # temp turn off mc_scale
 #mc_scale="(1)"
@@ -91,11 +91,12 @@ if doRhoScale:
 
 if doGMCEtaScale:
     tag+="GMCEtaWt_"
-    g_scale=g_scale+"*(0.87*TMath::Gaus(llnunu_l1_eta,0.65,0.56)+0.87*TMath::Gaus(llnunu_l1_eta,-0.65,0.56)+0.65*TMath::Gaus(llnunu_l1_eta,1.90,0.25)+0.65*TMath::Gaus(llnunu_l1_eta,-1.90,0.25))"
+    g_scale=g_scale+"*(1.05*TMath::Gaus(llnunu_l1_eta,0.7,0.63)+1.05*TMath::Gaus(llnunu_l1_eta,-0.7,0.63)+0.94*TMath::Gaus(llnunu_l1_eta,2.02,0.34)+0.94*TMath::Gaus(llnunu_l1_eta,-2.02,0.34))"
 
 if doGMCPhPtScale:
     tag+="GMCPhPtWt_"
-    g_scale=g_scale+"*((-1.06624+0.0580113*pow(llnunu_l1_pt,1)-5.09328e-4*pow(llnunu_l1_pt,2)+2.28513e-6*pow(llnunu_l1_pt,3)-6.03131e-9*pow(llnunu_l1_pt,4)+9.84946e-12*pow(llnunu_l1_pt,5)-1.00558e-14*pow(llnunu_l1_pt,6)+6.244e-18*pow(llnunu_l1_pt,7)-2.15543e-21*pow(llnunu_l1_pt,8)+3.17021e-25*pow(llnunu_l1_pt,9))*(llnunu_l1_pt<=1000)+(0.688060)*(llnunu_l1_pt>1000))"
+    g_scale=g_scale+"*((-0.371771+0.0193019*pow(llnunu_l1_pt,1)-0.000119102*pow(llnunu_l1_pt,2)+3.90785e-07*pow(llnunu_l1_pt,3)-7.29192e-10*pow(llnunu_l1_pt,4)+7.7063e-13*pow(llnunu_l1_pt,5)-4.27744e-16*pow(llnunu_l1_pt,6)+9.61926e-20*pow(llnunu_l1_pt,7))*(llnunu_l1_pt<=900)+(0.723945)*(llnunu_l1_pt>900))"
+
 
 outdir='plots'
 
@@ -299,11 +300,11 @@ if muoneg:
 # if use mc
 else:
 
-    mcnonresSamples = ['WWTo2L2Nu','WWToLNuQQ_BIG','WZTo1L1Nu2Q','WJetsToLNuHTBinBIG',
-                       'TTTo2L2Nu_forTTH','TTWJetsToLNu_BIG', 
+    mcnonresoSamples = ['WWTo2L2Nu','WWToLNuQQ_BIG','WZTo1L1Nu2Q','WJetsToLNuHTBinBIG',
+                       'TTTo2L2Nu_forTTH','TTWJetsToLNu_BIG', 'TGJets_BIG', 'QCDPtBinMuEMEnriched', 
                        'T_tWch', 'T_tch_powheg', 'TBar_tWch', 'TBar_tch_powheg']
 
-    mcnonresPlotters=[]
+    mcnonresoPlotters=[]
     for sample in mcnonresoSamples:
         mcnonresoPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
         mcnonresoPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
@@ -316,15 +317,15 @@ else:
         mcnonresoPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
         mcnonresoPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
     
-    MCNONRES = MergedPlotter(mcnonresoPlotters)
-    MCNONRES.setFillProperties(1001,ROOT.kAzure-9)
+    MCNONRESO = MergedPlotter(mcnonresoPlotters)
+    MCNONRESO.setFillProperties(1001,ROOT.kAzure-9)
 
 
     # some plotting definition
-    MCNONRES.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
-    MCNONRES.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
-    MCNONRES.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
-    MCNONRES.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
+    MCNONRESO.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
+    MCNONRESO.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
+    MCNONRESO.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
+    MCNONRESO.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
 
 
 
@@ -413,7 +414,8 @@ if dyGJets :
 
     ### the GJets data
     gdataSamples = [
-    'SinglePhoton_Run2016Full_ReReco_v2', 
+    'SinglePhoton_Run2016Full_03Feb2017_v0', 
+    #'SinglePhoton_Run2016Full_ReReco_v2', 
     #'SinglePhoton_Run2016Full_ReReco_v2_NoRecoil', 
     ]
 
@@ -609,8 +611,9 @@ for sample in sigSamples:
 ##########################
 
 dataSamples = [
+'SingleEMU_Run2016Full_03Feb2017_v0',
+#'SingleEMU_Run2016Full_ReReco_v2_DtReCalib',
 #'SingleEMU_Run2016Full_ReReco_v2',
-'SingleEMU_Run2016Full_ReReco_v2_DtReCalib',
 ]
 
 dataPlotters=[]
@@ -667,7 +670,7 @@ if test:
 #    Stack.drawStack('rho', cuts, str(lumi*1000), 55, 0.0, 55.0, titlex = "#rho", units = "",output='rho',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 30, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output='zpt',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 60, 60, 120, titlex = "M(Z)", units = "GeV",output='zmass',outDir=outdir,separateSignal=sepSig)
-#    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 50, 100.0, 1600.0, titlex = "M_{T}", units = "GeV",output='mt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 50, 100.0, 1600.0, titlex = "M_{T}", units = "GeV",output='mt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 #    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 30, 0, 1500, titlex = "MET", units = "GeV",output='met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
     Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 50, -500, 500.0, titlex = "MET_{#parallel}", units = "GeV",output='met_para',outDir=outdir,separateSignal=sepSig)
 

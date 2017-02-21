@@ -17,6 +17,7 @@
 #include "TROOT.h"
 
 bool biggerTree=false;
+bool triggerTree=false;
 
 int main(int argc, char** argv) {
 
@@ -112,9 +113,12 @@ int main(int argc, char** argv) {
   tree->SetAlias("eta", "gjet_l1_eta");
   tree->SetAlias("phi", "gjet_l1_phi");
   tree->SetAlias("pt", "gjet_l1_pt");
-  //if (isData) 
-  tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter&&Flag_BadPFMuonFilter&&Flag_BadChargedCandidateFilter&&Flag_noBadMuons)");
-  //tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter&&Flag_BadPFMuonFilter&&Flag_BadChargedCandidateFilter)");
+  if (isData) { 
+    tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter&&Flag_BadPFMuonFilter&&Flag_BadChargedCandidateFilter&&Flag_noBadMuons)");
+  }
+  else {
+    tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter&&Flag_BadPFMuonFilter&&Flag_BadChargedCandidateFilter)");
+  }
   //tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter&&Flag_BadPFMuonFilter&&Flag_BadChargedCandidateFilter&&Flag_CSCTightHalo2015Filter)");
   //else tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_CSCTightHalo2015Filter)");
   
@@ -161,11 +165,14 @@ int main(int argc, char** argv) {
 
   if (biggerTree) {
     selec = "HLT_PHOTONIDISO&&ngjet==1&&Max$(jet_pt[]*jet_chargedEmEnergyFraction[])<10&&Max$(jet_pt[]*jet_muonEnergyFraction[])<10&&flag3&&nlep==0";
-    if (!isData) selec = "ngjet==1&&Max$(jet_pt[]*jet_chargedEmEnergyFraction[])<10&&Max$(jet_pt[]*jet_muonEnergyFraction[])<10&&flag3&&nlep==0";
+    if (triggerTree) selec = "ngjet==1&&Max$(jet_pt[]*jet_chargedEmEnergyFraction[])<10&&Max$(jet_pt[]*jet_muonEnergyFraction[])<10&&flag3&&nlep==0";
+    //selec = "metfilter&&ngjet==1&&Max$(jet_pt[]*jet_chargedEmEnergyFraction[])<10&&Max$(jet_pt[]*jet_muonEnergyFraction[])<10&&flag3&&filter1&&nlep==0";
+//    if (!isData) selec = "ngjet==1&&Max$(jet_pt[]*jet_chargedEmEnergyFraction[])<10&&Max$(jet_pt[]*jet_muonEnergyFraction[])<10&&flag3&&nlep==0";
   }
   else {
     selec = "HLT_PHOTONIDISO&&metfilter&&ngjet==1&&Max$(jet_pt[]*jet_chargedEmEnergyFraction[])<10&&Max$(jet_pt[]*jet_muonEnergyFraction[])<10&&flag3&&filter1&&nlep==0";
-    if (!isData) selec = "metfilter&&ngjet==1&&Max$(jet_pt[]*jet_chargedEmEnergyFraction[])<10&&Max$(jet_pt[]*jet_muonEnergyFraction[])<10&&flag3&&filter1&&nlep==0"; 
+    if (triggerTree) selec = "metfilter&&ngjet==1&&Max$(jet_pt[]*jet_chargedEmEnergyFraction[])<10&&Max$(jet_pt[]*jet_muonEnergyFraction[])<10&&flag3&&filter1&&nlep==0";
+//    if (!isData) selec = "metfilter&&ngjet==1&&Max$(jet_pt[]*jet_chargedEmEnergyFraction[])<10&&Max$(jet_pt[]*jet_muonEnergyFraction[])<10&&flag3&&filter1&&nlep==0"; 
   }
   
 
@@ -182,6 +189,7 @@ int main(int argc, char** argv) {
     tree_tmp1->SetBranchStatus("Flag_CSCTightHaloFilter", 1);
   }
   tree_tmp1->SetBranchStatus("HLT_*",0);
+  tree_tmp1->SetBranchStatus("HLT_PHOTONIDISO", 1);
   tree_tmp1->SetBranchStatus("jet_*",0);
   tree_tmp1->SetBranchStatus("photon_*",0);
   tree_tmp1->SetBranchStatus("nphoton",1);
@@ -206,7 +214,7 @@ int main(int argc, char** argv) {
 
   TTree* tree_out;
 
-  if (isData) tree_out = tree_tmp3->CopyTree("(gjet_l1_trigerob_HLTbit>>0&1&&gjet_l1_trigerob_pt<=30)||(gjet_l1_trigerob_HLTbit>>1&1&&gjet_l1_trigerob_pt<=36)||(gjet_l1_trigerob_HLTbit>>2&1&&gjet_l1_trigerob_pt<=50)||(gjet_l1_trigerob_HLTbit>>3&1&&gjet_l1_trigerob_pt<=75)||(gjet_l1_trigerob_HLTbit>>4&1&&gjet_l1_trigerob_pt<=90)||(gjet_l1_trigerob_HLTbit>>5&1&&gjet_l1_trigerob_pt<=120)||(gjet_l1_trigerob_HLTbit>>6&1&&gjet_l1_trigerob_pt<=165)||(gjet_l1_trigerob_HLTbit>>7&1&&gjet_l1_trigerob_pt<=10000000)");
+  if (isData && !triggerTree) tree_out = tree_tmp3->CopyTree("(gjet_l1_trigerob_HLTbit>>0&1&&gjet_l1_trigerob_pt<=30)||(gjet_l1_trigerob_HLTbit>>1&1&&gjet_l1_trigerob_pt<=36)||(gjet_l1_trigerob_HLTbit>>2&1&&gjet_l1_trigerob_pt<=50)||(gjet_l1_trigerob_HLTbit>>3&1&&gjet_l1_trigerob_pt<=75)||(gjet_l1_trigerob_HLTbit>>4&1&&gjet_l1_trigerob_pt<=90)||(gjet_l1_trigerob_HLTbit>>5&1&&gjet_l1_trigerob_pt<=120)||(gjet_l1_trigerob_HLTbit>>6&1&&gjet_l1_trigerob_pt<=165)||(gjet_l1_trigerob_HLTbit>>7&1&&gjet_l1_trigerob_pt<=10000000)");
   else tree_out = tree_tmp3->CloneTree(-1);
 
   std::cout << "tree_out:  " << tree_out->GetEntries() << " Entries" <<  std::endl;
