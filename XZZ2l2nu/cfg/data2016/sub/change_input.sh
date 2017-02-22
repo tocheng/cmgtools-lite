@@ -1,6 +1,6 @@
 #!/bin/sh
 
-dir=dt_emu_rereco_resub
+dir=dt2_mu0
 #dir=dt3_truncated
 #dir=dt3
 
@@ -14,9 +14,9 @@ tag="*_*"
 #tag="SingleMuon_"
 #tag="MET_"
 #from="eoscms.cern.ch\/\/eos\/cms"
-#from="cms-xrd-global.cern.ch"
+from="cms-xrd-global.cern.ch"
 #from="xrootd-cms.infn.it"
-from="cmsxrootd.fnal.gov"
+#from="cmsxrootd.fnal.gov"
 to="eoscms.cern.ch\/\/eos\/cms"
 #to="cms-xrd-global.cern.ch\/"
 #to="cmsxrootd.fnal.gov"

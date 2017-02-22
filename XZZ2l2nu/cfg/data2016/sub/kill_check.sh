@@ -1,5 +1,6 @@
 #!/bin/sh
 
 
-kill `ps aux | grep check.sh | awk {'print $2'}`
+list=`ps aux | grep ck.sh | grep -v "grep" | awk {'print $2'}`
+kill -9 $list
 

@@ -135,8 +135,9 @@ photonAna = cfg.Analyzer(
     eshits=("reducedEgamma","reducedESRecHits"),
     ptMin = 15,
     etaMax = 2.5,
+#    doPhotonScaleCorrections= False,
     doPhotonScaleCorrections= {
-        'data' : 'EgammaAnalysis/ElectronTools/data/ScalesSmearings/80X_ichepV1_2016_pho',
+        'data' : 'EgammaAnalysis/ElectronTools/data/ScalesSmearings/Winter_2016_reReco_v1_ele',
         'isSync': False
     },
     gammaID = "POG_SPRING15_25ns_Loose",
@@ -268,6 +269,9 @@ eventFlagsAna = cfg.Analyzer(
         "globalSuperTightHalo2016Filter" : [ "Flag_globalSuperTightHalo2016Filter" ],
         "globalTightHalo2016Filter" : [ "Flag_globalTightHalo2016Filter" ],
         "METFilters" : [ "Flag_METFilters" ],
+        "badMuons" : [ "Flag_badMuons" ],
+        "duplicateMuons" : [ "Flag_duplicateMuons" ],
+        "noBadMuons" : [ "Flag_noBadMuons" ],
     }
     )
 

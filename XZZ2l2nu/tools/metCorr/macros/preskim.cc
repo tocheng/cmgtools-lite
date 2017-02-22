@@ -204,7 +204,12 @@ int main(int argc, char** argv) {
   tree->SetAlias("muselec", "(abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13&&abs(llnunu_l1_l1_eta)<2.4&&abs(llnunu_l1_l2_eta)<2.4&&llnunu_l1_l1_pt>20&&llnunu_l1_l2_pt>20&&(llnunu_l1_l1_highPtID>0.99||llnunu_l1_l2_highPtID>0.99))");
   tree->SetAlias("elselec", "(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11&&abs(llnunu_l1_l1_eta)<2.5&&abs(llnunu_l1_l2_eta)<2.5&&llnunu_l1_l1_pt>20&&llnunu_l1_l2_pt>20)");
 
-  tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter&&Flag_BadPFMuonFilter&&Flag_BadChargedCandidateFilter)");
+  if (isData){
+    tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter&&Flag_BadPFMuonFilter&&Flag_BadChargedCandidateFilter&&Flag_noBadMuons)");
+  }
+  else{
+    tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter&&Flag_BadPFMuonFilter&&Flag_BadChargedCandidateFilter)");
+  }
   tree->SetAlias("selecv0", "(metfilter&&(muselec||elselec))");
 
   char ftmp1_name[1000];

@@ -1,8 +1,9 @@
 
 
 std::string channel = "all";
-bool doMC = false;
-bool doGJets = true;
+bool doMC = true;
+bool doGJets = false;
+bool doGJetsMC = false;
 bool useZSelecLowLPt = true;
 bool useEffSf = false;
 bool mcTrgSf = false;
@@ -30,13 +31,16 @@ std::vector< std::string > mcfiles = {
  };
 
 std::vector< std::string > dtfiles = {
-    "SingleEMU_Run2016Full_ReReco_v2_DtReCalib"
+"SingleEMU_Run2016Full_03Feb2017_v0"
+//    "SingleEMU_Run2016Full_ReReco_v2_DtReCalib"
 //   "SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib"
  };
 
 std::vector< std::string > gjfiles = {
 //    "SinglePhoton_Run2016Full_ReReco_v2_NoRecoil"
-    "SinglePhoton_Run2016Full_ReReco_v2_halo15_NoRecoil"
+//    "SinglePhoton_Run2016Full_ReReco_v2"
+//    "GJets_HT_BIG"
+"SinglePhoton_Run2016Full_03Feb2017_v0_NoRecoil"
  };
 
 
@@ -148,13 +152,13 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   if (channel=="el") base_selec = base_selec+"&&(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11)";
   else if (channel=="mu") base_selec = base_selec+"&&(abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13)";
 
-  if (!doMC && dtHLT) base_selec = "(HLT_MUv2||HLT_ELEv2)&&"+base_selec;
+  if (!doMC && dtHLT) base_selec = "(HLT_MU50||HLT_TkMU50||HLT_ELE115)&&"+base_selec;
 
   base_selec = "("+base_selec+")";
 
 
   // add weight
-  std::string weight_selec = std::string("*(genWeight*ZPtWeight*puWeightsummer16/SumWeights*xsec*36814)");
+  std::string weight_selec = std::string("*(genWeight*ZPtWeight*puWeightsummer16/SumWeights*xsec*35867)");
   // rho weight
   std::string rhoweight_selec = std::string("*(0.366*TMath::Gaus(rho,8.280,5.427)+0.939*TMath::Gaus(rho,18.641,10.001)+0.644*TMath::Gaus(rho,40.041,10.050))"); // rereco/summer16 38.81fb-1
 
@@ -175,6 +179,7 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   
   if (doGJets) {
     base_selec = "(1)";
+    if (doGJetsMC) base_selec = "(1)*(genWeight*puWeightsummer16/SumWeights*xsec*35867)";
     if (useZSelecLowLPt) {
       if (channel=="el")  selec = base_selec+"*(GJetsZPtWeightLowLPtEl)";
       else if (channel=="mu") selec = base_selec+"*(GJetsZPtWeightLowLPtMu)";
@@ -186,7 +191,8 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
       else  selec = base_selec+"*(GJetsZPtWeight)";
     }
 
-    selec = selec + "*(GJetsRhoWeight*GJetsPreScaleWeight)";
+    if (!doGJetsMC) selec = selec + "*(GJetsRhoWeight*GJetsPreScaleWeight)";
+    else selec = selec +"*(GJetsRhoWeight)";
   }
   // style
   gROOT->ProcessLine(".x tdrstyle.C");
@@ -197,7 +203,7 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
 
 
   // lumiTag for plotting
-  lumiTag = "CMS 13 TeV 2016 L=36.81 fb^{-1}";
+  lumiTag = "CMS 13 TeV 2016 L=35.87 fb^{-1}";
   if (doMC) lumiTag = "CMS 13 TeV Simulation for 2016 Data";
 
   lumipt = new TPaveText(0.2,0.9,0.8,0.98,"brNDC");
