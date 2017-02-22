@@ -25,7 +25,6 @@ parser.add_option("-l",action="callback",callback=callback_rootargs)
 parser.add_option("-q",action="callback",callback=callback_rootargs)
 parser.add_option("-b",action="callback",callback=callback_rootargs)
 
-
 (options,args) = parser.parse_args()
 
 tag=options.tag
@@ -93,7 +92,7 @@ k=1 # signal scale
 ZPtWeight="ZPtWeight"
 
 elChannel='((abs(llnunu_l1_l1_pdgId)==11||abs(llnunu_l1_l2_pdgId)==11)&&llnunu_l1_l1_pt>120&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5)'
-muChannel='((abs(llnunu_l1_l1_pdgId)==13||abs(llnunu_l1_l2_pdgId)==13)&&llnunu_l1_l1_pt>55&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID>0.99||llnunu_l1_l2_highPtID>0.99))'
+muChannel='((abs(llnunu_l1_l1_pdgId)==13||abs(llnunu_l1_l2_pdgId)==13)&&llnunu_l1_l1_pt>60&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID>0.99||llnunu_l1_l2_highPtID>0.99))'
 photonFakeID='(llnunu_l1_l1_pdgId==19801117)'
 
 if not os.path.exists(outdir): os.system('mkdir -p '+outdir)
@@ -654,7 +653,21 @@ ggHSamples = [
 'GluGluHToZZTo2L2Nu_M1500',
 'GluGluHToZZTo2L2Nu_M2000',
 'GluGluHToZZTo2L2Nu_M2500',
-'GluGluHToZZTo2L2Nu_M3000'
+'GluGluHToZZTo2L2Nu_M3000',
+
+'VBF_HToZZTo2L2Nu_200',
+'VBF_HToZZTo2L2Nu_300',
+'VBF_HToZZTo2L2Nu_400',
+'VBF_HToZZTo2L2Nu_500',
+'VBF_HToZZTo2L2Nu_600',
+'VBF_HToZZTo2L2Nu_700',
+'VBF_HToZZTo2L2Nu_800',
+'VBF_HToZZTo2L2Nu_900',
+'VBF_HToZZTo2L2Nu_1000',
+'VBF_HToZZTo2L2Nu_1500',
+'VBF_HToZZTo2L2Nu_2000',
+'VBF_HToZZTo2L2Nu_2500',
+'VBF_HToZZTo2L2Nu_3000'
 ]
 
 for sample in ggHSamples:
@@ -685,6 +698,90 @@ for sample in ggHSamples:
     ggHPlotters[-1].setAlias('llnunu_mT_RecoilUp', 'llnunu_mt')
     ggHPlotters[-1].setAlias('llnunu_mT_RecoilDn', 'llnunu_mt')
 
+
+### Graviton2PBqqbar
+Graviton2PBPlotters=[]
+
+Graviton2PBSamples = [
+'Graviton2PBqqbarToZZTo2L2Nu_width0_1200',    
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_1200',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_2000',    
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_2000',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_3000',   
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_3000',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_4000',    
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_4000',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_750',    
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_750',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_800',     
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_800',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_1200',  
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_1200',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_2000',  
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_2000',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_3000',  
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_3000',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_4000',  
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_4000',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_750',   
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_750',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_800',   
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_800',
+
+'Graviton2PBToZZTo2L2Nu_width0_1200',   
+'Graviton2PBToZZTo2L2Nu_width0p1_3000',  
+'Graviton2PBToZZTo2L2Nu_width0p2_750',
+'Graviton2PBToZZTo2L2Nu_width0_2000',    
+'Graviton2PBToZZTo2L2Nu_width0p1_4000',  
+'Graviton2PBToZZTo2L2Nu_width0p2_800',
+'Graviton2PBToZZTo2L2Nu_width0_3000',    
+'Graviton2PBToZZTo2L2Nu_width0p1_750',   
+'Graviton2PBToZZTo2L2Nu_width0p3_1200',
+'Graviton2PBToZZTo2L2Nu_width0_4000',    
+'Graviton2PBToZZTo2L2Nu_width0p1_800',   
+'Graviton2PBToZZTo2L2Nu_width0p3_2000',
+'Graviton2PBToZZTo2L2Nu_width0_750',     
+'Graviton2PBToZZTo2L2Nu_width0p2_1200',  
+'Graviton2PBToZZTo2L2Nu_width0p3_3000',
+'Graviton2PBToZZTo2L2Nu_width0_800',     
+'Graviton2PBToZZTo2L2Nu_width0p2_2000',  
+'Graviton2PBToZZTo2L2Nu_width0p3_4000',
+'Graviton2PBToZZTo2L2Nu_width0p1_1200',  
+'Graviton2PBToZZTo2L2Nu_width0p2_3000',  
+'Graviton2PBToZZTo2L2Nu_width0p3_750',
+'Graviton2PBToZZTo2L2Nu_width0p1_2000', 
+'Graviton2PBToZZTo2L2Nu_width0p2_4000',  
+'Graviton2PBToZZTo2L2Nu_width0p3_800'
+]
+
+for sample in Graviton2PBSamples:
+
+    Graviton2PBPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
+    Graviton2PBPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
+    Graviton2PBPlotters[-1].addCorrectionFactor(str(1),'xsec')
+    Graviton2PBPlotters[-1].addCorrectionFactor('genWeight','genWeight')
+    Graviton2PBPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
+    Graviton2PBPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
+    Graviton2PBPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
+    Graviton2PBPlotters[-1].setFillProperties(0,ROOT.kWhite)
+    Graviton2PBPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
+    Graviton2PBPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
+    Graviton2PBPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
+    Graviton2PBPlotters[-1].setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
+    Graviton2PBPlotters[-1].setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
+    Graviton2PBPlotters[-1].setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
+    Graviton2PBPlotters[-1].setAlias('llnunu_mt_to_plot', 'llnunu_mt')
+    # some plotting definition
+    Graviton2PBPlotters[-1].setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
+    Graviton2PBPlotters[-1].setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
+    Graviton2PBPlotters[-1].setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
+    Graviton2PBPlotters[-1].setAlias('llnunu_mt_to_plot', 'llnunu_mt')
+    Graviton2PBPlotters[-1].setAlias('llnunu_mT', 'llnunu_mt')
+    for syst in ['JetEn','JetRes','MuonEn','ElectronEn','TauEn','PhotonEn','Uncluster'] :
+        Graviton2PBPlotters[-1].setAlias('llnunu_mT_'+syst+'Up', 'llnunu_mt_'+syst+'Up')
+        Graviton2PBPlotters[-1].setAlias('llnunu_mT_'+syst+'Dn', 'llnunu_mt_'+syst+'Dn')
+    Graviton2PBPlotters[-1].setAlias('llnunu_mT_RecoilUp', 'llnunu_mt')
+    Graviton2PBPlotters[-1].setAlias('llnunu_mT_RecoilDn', 'llnunu_mt')
 
 ##########################
 # Data Observed
@@ -742,6 +839,10 @@ for i in range(len(ggHSamples)):
   ggHPlotters[i].setLineProperties(2,ROOT.kBlue+i,2)
   Stack.addPlotter(ggHPlotters[i],ggHSamples[i],ggHSamples[i],'signal')
 
+for i in range(len(Graviton2PBSamples)):
+  Graviton2PBPlotters[i].setLineProperties(2,ROOT.kGreen+i,2)
+  Stack.addPlotter(Graviton2PBPlotters[i],Graviton2PBSamples[i],Graviton2PBSamples[i],'signal')
+
 Stack.setLog(LogY)
 Stack.doRatio(doRatio)
 
@@ -751,11 +852,11 @@ nBins=60
 mtMin=0
 mtMax=3000
 
-Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output=tag+'mT',outDir=outdir,separateSignal=sepSig, blinding=Blind,blindingCut=300)
+Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT',outDir=outdir,separateSignal=sepSig, blinding=Blind,blindingCut=300)
 
 if(not doSys) :
-  Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output=tag+'met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
-  Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 50, 0, 500, titlex = "PT_{Z}", units = "GeV",output=tag+'zpt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
+  Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output='met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
+  Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 50, 0, 500, titlex = "PT_{Z}", units = "GeV",output='zpt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
 
 else :
 
@@ -774,23 +875,23 @@ else :
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
        if ( typeP != "data" and  name != "NonReso" and name!="ZJets"):
           plotter.changeCorrectionFactor("trgsf_up*idisotrksf","lepsf")
-   Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output=tag+'mT_trgUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+   Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_trgUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
        if ( typeP != "data" and  name != "NonReso" and name!="ZJets"):
           plotter.changeCorrectionFactor("trgsf_dn*idisotrksf","lepsf")
-   Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output=tag+'mT_trgDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+   Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_trgDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    ## id
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
        if ( typeP != "data" and  name != "NonReso" and name!="ZJets"):
           plotter.changeCorrectionFactor("trgsf*idisotrksf_up","lepsf")
-   Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output=tag+'mT_idUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+   Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_idUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
        if ( typeP != "data" and name != "NonReso" and name!="ZJets"):
           plotter.changeCorrectionFactor("trgsf*idisotrksf_dn","lepsf")
-   Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output=tag+'mT_idDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+   Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_idDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    ## EWK and QCD
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
@@ -800,22 +901,22 @@ else :
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
        if ( typeP != "data" and  name == "VVZReso"):
           plotter.changeCorrectionFactor("(ZZEwkCorrWeight_up*ZZQcdCorrWeight)*xsec","nnlo")
-   Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output=tag+'mT_ewkUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+   Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_ewkUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
        if ( typeP != "data" and  name == "VVZReso"):
           plotter.changeCorrectionFactor("(ZZEwkCorrWeight_dn*ZZQcdCorrWeight)*xsec","nnlo")
-   Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output=tag+'mT_ewkDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+   Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_ewkDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
        if ( typeP != "data" and  name == "VVZReso"):
           plotter.changeCorrectionFactor("(ZZEwkCorrWeight*ZZQcdCorrWeight_up)*xsec","nnlo")
-   Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output=tag+'mT_qcdUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+   Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_qcdUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
        if ( typeP != "data" and  name == "VVZReso"):
           plotter.changeCorrectionFactor("(ZZEwkCorrWeight*ZZQcdCorrWeight_dn)*xsec","nnlo")
-   Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output=tag+'mT_qcdDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+   Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_qcdDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    ## GJetsZPtWeight
    if ( channel=='el' and dyGJets ) :
@@ -823,26 +924,26 @@ else :
            if ( typeP != "data" and name == "ZJets" ):
               plotter.changeCorrectionFactor(str(zjetsFidXsecEl_up),"zjetsFidXsecEl")
               plotter.changeCorrectionFactor("GJetsZPtWeightEl_up","GJetsZPtWeight")
-       Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output=tag+'mT_fidxsecUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+       Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_fidxsecUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
        for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
            if ( typeP != "data" and name == "ZJets"  ):
               plotter.changeCorrectionFactor(str(zjetsFidXsecEl_dn),"zjetsFidXsecEl")
               plotter.changeCorrectionFactor("GJetsZPtWeightEl_dn","GJetsZPtWeight")
-       Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output=tag+'mT_fidxsecDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+       Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_fidxsecDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    if ( channel=='mu' and dyGJets ) :
        for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
            if ( typeP != "data" and name == "ZJets" ):
               plotter.changeCorrectionFactor(str(zjetsFidXsecMu_up),"zjetsFidXsecMu")
               plotter.changeCorrectionFactor("GJetsZPtWeightMu_up","GJetsZPtWeight")
-       Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output=tag+'mT_fidxsecUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+       Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_fidxsecUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
        for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
            if ( typeP != "data" and name == "ZJets"  ):
               plotter.changeCorrectionFactor(str(zjetsFidXsecMu_dn),"zjetsFidXsecMu")
               plotter.changeCorrectionFactor("GJetsZPtWeightMu_dn","GJetsZPtWeight")
-       Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output=tag+'mT_fidxsecDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+       Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_fidxsecDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    ######## MT Unc
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
@@ -857,8 +958,8 @@ else :
    for systs in ['Recoil','JetEn','JetRes','MuonEn','ElectronEn','TauEn','PhotonEn','Uncluster'] :
 
       print systs
-      Stack.drawStack('llnunu_mT_'+systs+'Up', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output=tag+'mT_'+systs+'Up',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
-      Stack.drawStack('llnunu_mT_'+systs+'Dn', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output=tag+'mT_'+systs+'Dn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+      Stack.drawStack('llnunu_mT_'+systs+'Up', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_'+systs+'Up',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+      Stack.drawStack('llnunu_mT_'+systs+'Dn', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_'+systs+'Dn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
 
 Stack.closePSFile()
