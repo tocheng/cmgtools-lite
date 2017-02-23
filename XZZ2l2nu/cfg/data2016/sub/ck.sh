@@ -1,6 +1,6 @@
 #!/bin/sh
 
-dds="dt2_[pme]?? "
+dds="dt2ph???? "
 
 #for nn in `seq 1 1 1000`;
 #do 

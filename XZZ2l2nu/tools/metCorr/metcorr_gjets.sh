@@ -1,6 +1,7 @@
 #!/bin/sh
 
 #inputs
+#inputdir=/data2/XZZ2/80X_20170202_GJets_light
 inputdir=/home/heli/XZZ/80X_20170202_GJets_light
 outputdir=/home/heli/XZZ/80X_20170202_GJets_light_Skim
 config=config/parameters_light_gjets
@@ -34,7 +35,11 @@ njob="0"
 #for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v  Single  ); 
 #for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep DYJetsToLL_M50_Ext  ); 
 #for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v SinglePhoton_Run2016Full_03Feb2017  ); 
-for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep  SinglePhoton_Run2016Full_03Feb2017  ); 
+#for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep  SinglePhoton_Run2016Full_03Feb2017  ); 
+#for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep  SinglePhoton_Run2016Full_03Feb2017_uncorr  ); 
+#for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep  SinglePhoton_Run2016Full_03Feb2017_allcor  ); 
+#for infile in $inputdir/SinglePhoton_Run2016Full_ReReco_v2/vvTreeProducer/tree.root ;
+for infile in $inputdir/SinglePhoton_Run2016Full_ReReco_v2_RePreSkim/vvTreeProducer/tree.root ;
 do
   echo "+++ skimming $infile +++"
   outfile="${outputdir}/${infile/$inputdir\//}"
@@ -43,6 +48,8 @@ do
   outfile="${outfile/\/vvTreeProducer\/tree/}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_NoRecoil}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_test}"
+  #outfile="${outfile/\/vvTreeProducer\/tree/_ReSkim}"
+  #outfile="${outfile/\/vvTreeProducer\/tree/_RePreSkim}"
 
   inSkimFile=${infile/vvTreeProducer\/tree.root/skimAnalyzerCount\/SkimReport.txt}
 
