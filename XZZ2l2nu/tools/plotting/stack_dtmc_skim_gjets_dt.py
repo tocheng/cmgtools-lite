@@ -77,8 +77,8 @@ else:
 nonreso_alpha_el=1.0
 nonreso_alpha_mu=1.0
 
-nonreso_alpha_el=0.346341188158
-nonreso_alpha_mu=0.696656700696
+nonreso_alpha_el=0.397075177316
+nonreso_alpha_mu=0.704939528419
 
 #
 
@@ -216,6 +216,7 @@ if UseMETFilter:
     cuts = '('+cuts+')' # metfilter pre-applied in preskim
 
 # badmuon filter
+#cuts += '&&(nbadmuon==0&&nlep<=2)'  # veto 3+ leptons
 cuts += '&&(nbadmuon==0)' 
 
 cuts = '('+cuts+')'
@@ -276,17 +277,21 @@ if muoneg:
     else: 
         emuscale="(etrgsf*"+str(nonreso_alpha_el)+"+mtrgsf*"+str(nonreso_alpha_mu)+")"
 
-    nonresSamples = [
-    #'muonegtrgsf'
-    #'muonegtree_light_skim'
-    'muonegtree_light_skim_38_skim'
-    ]
+    nonresSamples = ['muoneg_light_skim','DYJetsToLL_emupair']
+
     nonresPlotters=[]
     for sample in nonresSamples:
         nonresPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
-        nonresPlotters[-1].addCorrectionFactor(str(0.001/lumi), 'norm')
         nonresPlotters[-1].addCorrectionFactor(emuscale, 'emuscale')
         nonresPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
+        if 'muoneg_' in sample:
+            nonresPlotters[-1].addCorrectionFactor(str(0.001/lumi), 'norm')
+        else:
+            nonresPlotters[-1].addCorrectionFactor('(-1./SumWeights)','norm')
+            nonresPlotters[-1].addCorrectionFactor('xsec','xsec')
+            nonresPlotters[-1].addCorrectionFactor('genWeight','genWeight')
+            nonresPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
+            if 'DYJetsToLL' in sample: nonresPlotters[-1].addCorrectionFactor('ZPtWeight','ZPtWeight')
 
     NONRES = MergedPlotter(nonresPlotters)
     NONRES.setFillProperties(1001,ROOT.kOrange)
@@ -429,11 +434,12 @@ if dyGJets :
     gdataSamples = [
     #'SinglePhoton_Run2016Full_03Feb2017_uncorr', 
     #'SinglePhoton_Run2016Full_03Feb2017_allcor', 
+    'SinglePhoton_Run2016Full_03Feb2017_allcorV2', 
     #'SinglePhoton_Run2016Full_03Feb2017_v0', 
     #'SinglePhoton_Run2016Full_ReReco_v2', 
     #'SinglePhoton_Run2016Full_ReReco_v2_oldSkim', 
     #'SinglePhoton_Run2016Full_ReReco_v2_ReSkim', 
-    'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim', 
+    #'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim', 
     #'SinglePhoton_Run2016Full_ReReco_v2_NoRecoil', 
     ]
 

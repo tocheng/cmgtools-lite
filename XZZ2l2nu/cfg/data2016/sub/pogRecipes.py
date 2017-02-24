@@ -48,7 +48,8 @@ process.source = cms.Source("PoolSource",
 process.OUT = cms.OutputModule("PoolOutputModule",
     fileName = cms.untracked.string('test.root'),
     outputCommands = cms.untracked.vstring(['drop *', 
-#                'keep *_slimmedMETs_*_NEW',
+                'keep *_slimmedMETs_*_NEW',
+                'keep *_slimmedMETsMuEGClean_*_NEW',
 #                'keep *_TriggerResults_*_NEW',
 #                'keep *_slimmedElectrons_*_NEW',
 #                'keep *_slimmedPhotons_*_NEW',
@@ -106,12 +107,12 @@ if usePrivateSQlite:
 
 
 # met 
-if not runOnData:
-    from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-    # If you only want to re-correct and get the proper uncertainties
-    runMetCorAndUncFromMiniAOD(process,
-                           isData=runOnData,
-                           )
+#if not runOnData:
+from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+# If you only want to re-correct and get the proper uncertainties
+runMetCorAndUncFromMiniAOD(process,
+                          isData=runOnData,
+                          )
 
     # If you would like to re-cluster and get the proper uncertainties
     #runMetCorAndUncFromMiniAOD(process,
@@ -123,6 +124,26 @@ if not runOnData:
 
 #process.p = cms.Path(process.fullPatMetSequence)
 
+# Now you are creating the e/g corrected MET on top of the bad muon corrected MET (on re-miniaod)
+from PhysicsTools.PatUtils.tools.corMETFromMuonAndEG import corMETFromMuonAndEG
+corMETFromMuonAndEG(process,
+                  pfCandCollection="", #not needed
+                  electronCollection="slimmedElectronsBeforeGSFix",
+                  photonCollection="slimmedPhotonsBeforeGSFix",
+                  corElectronCollection="slimmedElectrons",
+                  corPhotonCollection="slimmedPhotons",
+                  allMETEGCorrected=True,
+                  muCorrection=False,
+                  eGCorrection=True,
+                  runOnMiniAOD=True,
+                  postfix="MuEGClean"
+                  )
+process.slimmedMETsMuEGClean = process.slimmedMETs.clone()
+process.slimmedMETsMuEGClean.src = cms.InputTag("patPFMetT1MuEGClean")
+process.slimmedMETsMuEGClean.rawVariation =  cms.InputTag("patPFMetRawMuEGClean")
+process.slimmedMETsMuEGClean.t1Uncertainties = cms.InputTag("patPFMetT1%sMuEGClean")
+del process.slimmedMETsMuEGClean.caloMET
+ 
 
 # met filters
 process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')

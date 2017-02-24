@@ -42,7 +42,8 @@ std::vector< std::string > gjfiles = {
 //    "GJets_HT_BIG"
 //"SinglePhoton_Run2016Full_03Feb2017_v0_NoRecoil"
 //"SinglePhoton_Run2016Full_03Feb2017_uncorr_NoRecoil"
-"SinglePhoton_Run2016Full_03Feb2017_allcor_NoRecoil"
+//"SinglePhoton_Run2016Full_03Feb2017_allcor_NoRecoil"
+"SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil"
  };
 
 

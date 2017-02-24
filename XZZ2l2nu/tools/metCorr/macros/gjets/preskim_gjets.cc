@@ -114,8 +114,8 @@ int main(int argc, char** argv) {
   tree->SetAlias("phi", "gjet_l1_phi");
   tree->SetAlias("pt", "gjet_l1_pt");
   if (isData) { 
-    //tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter&&Flag_BadPFMuonFilter&&Flag_BadChargedCandidateFilter&&Flag_noBadMuons)"); // for reminiaod
-    tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter&&Flag_BadPFMuonFilter&&Flag_BadChargedCandidateFilter)"); // for rereco
+    tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter&&Flag_BadPFMuonFilter&&Flag_BadChargedCandidateFilter&&Flag_noBadMuons)"); // for reminiaod
+    //tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter&&Flag_BadPFMuonFilter&&Flag_BadChargedCandidateFilter)"); // for rereco
   }
   else {
     tree->SetAlias("metfilter", "(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter&&Flag_BadPFMuonFilter&&Flag_BadChargedCandidateFilter)");

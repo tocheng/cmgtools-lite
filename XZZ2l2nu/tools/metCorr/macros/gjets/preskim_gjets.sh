@@ -8,9 +8,9 @@ g++ preskim_gjets.cc -o preskim_gjets.exe `root-config --cflags` `root-config --
 
 #samples="T*"
 #samples="SinglePhoton_Run2016Full_ReReco_v2"
-samples="SinglePhoton_Run2016Full_03Feb2017_v0"
+#samples="SinglePhoton_Run2016Full_03Feb2017_v0"
 #samples="SinglePhoton_Run2016Full_03Feb2017_uncorr"
-#samples="SinglePhoton_Run2016Full_03Feb2017_allcor"
+samples="SinglePhoton_Run2016Full_03Feb2017_allcorV2"
 #samples="DYJetsToLL_M50_Ext"
 indir=/data2/XZZ2/80X_20170202_GJets
 outdir=/home/heli/XZZ/80X_20170202_GJets_light

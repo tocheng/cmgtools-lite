@@ -39,14 +39,15 @@ njob="0"
 #for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep  SinglePhoton_Run2016Full_03Feb2017_uncorr  ); 
 #for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep  SinglePhoton_Run2016Full_03Feb2017_allcor  ); 
 #for infile in $inputdir/SinglePhoton_Run2016Full_ReReco_v2/vvTreeProducer/tree.root ;
-for infile in $inputdir/SinglePhoton_Run2016Full_ReReco_v2_RePreSkim/vvTreeProducer/tree.root ;
+#for infile in $inputdir/SinglePhoton_Run2016Full_ReReco_v2_RePreSkim/vvTreeProducer/tree.root ;
+for infile in $inputdir/SinglePhoton_Run2016Full_03Feb2017_allcorV2/vvTreeProducer/tree.root ;
 do
   echo "+++ skimming $infile +++"
   outfile="${outputdir}/${infile/$inputdir\//}"
 
   # options for outputs
-  outfile="${outfile/\/vvTreeProducer\/tree/}"
-  #outfile="${outfile/\/vvTreeProducer\/tree/_NoRecoil}"
+  #outfile="${outfile/\/vvTreeProducer\/tree/}"
+  outfile="${outfile/\/vvTreeProducer\/tree/_NoRecoil}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_test}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_ReSkim}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_RePreSkim}"

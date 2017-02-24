@@ -1,6 +1,6 @@
 #!/bin/sh
 
-dds="dt2ph???? "
+dds="dt3phalc? "
 
 #for nn in `seq 1 1 1000`;
 #do 
