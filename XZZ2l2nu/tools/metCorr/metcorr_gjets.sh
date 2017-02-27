@@ -47,8 +47,8 @@ do
   outfile="${outputdir}/${infile/$inputdir\//}"
 
   # options for outputs
-  #outfile="${outfile/\/vvTreeProducer\/tree/}"
-  outfile="${outfile/\/vvTreeProducer\/tree/_RcNoSmooth}"
+  outfile="${outfile/\/vvTreeProducer\/tree/}"
+  #outfile="${outfile/\/vvTreeProducer\/tree/_RcNoSmooth}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_NoRecoil}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_test}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_ReSkim}"
