@@ -51,12 +51,20 @@ mc_scale='(1)'
 zjets_scale='(1)'
 
 if channel=='mu': 
-    zjets_scale='(1.03741)'
+#    mc_scale='(1.02942)'
+    zjets_scale='(1.03410)'
 elif channel=='el': 
-    zjets_scale='(1.03741)'
+#    mc_scale='(1.02139)'
+    zjets_scale='(1.03737)'
 else: 
+#    mc_scale='(1.02942)'
     zjets_scale='(1.03741)'
 
+# temp turn off mc_scale
+#mc_scale="(1)"
+#zjets_scale="(1)"
+
+# non reso alpha
 nonreso_alpha_el=1.0
 nonreso_alpha_mu=1.0
 
@@ -247,29 +255,27 @@ VV.setAlias('llnunu_mT_RecoilDn', 'llnunu_mt')
 # if use emu data driven method
 if muoneg: 
 
+    if channel=="el": 
+        emuscale="(etrgsf*"+str(nonreso_alpha_el)+")"
+    elif channel=="mu": 
+        emuscale="(mtrgsf*"+str(nonreso_alpha_mu)+")"
+    else: 
+        emuscale="(etrgsf*"+str(nonreso_alpha_el)+"+mtrgsf*"+str(nonreso_alpha_mu)+")"
+
     nonresPlotters=[]
     nonresSamples = ['muoneg_light_skim','DYJetsToLL_emupair']
-    enonresscale='0.397075177316'
-    mnonresscale='0.704939528419'
-
     for sample in nonresSamples:
         nonresPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
-        if channel=='el':
-           nonresPlotters[-1].addCorrectionFactor('etrgsf', 'etrgsf')
-           nonresPlotters[-1].addCorrectionFactor(enonresscale, 'norm')
-           nonresPlotters[-1].addCorrectionFactor('escale', 'escale')
-        if channel=='mu':
-           nonresPlotters[-1].addCorrectionFactor('mtrgsf', 'mtrgsf')
-           nonresPlotters[-1].addCorrectionFactor(mnonresscale, 'norm')
-           nonresPlotters[-1].addCorrectionFactor('mscale', 'mscale')
-        if sample is not nonresSamples[0]:
-           nonresPlotters[-1].addCorrectionFactor('(-1./SumWeights)','norm')
-           nonresPlotters[-1].addCorrectionFactor('xsec','xsec')
-           nonresPlotters[-1].addCorrectionFactor('genWeight','genWeight')
-           nonresPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
-           if 'DYJetsToLL' in sample:nonresPlotters[-1].addCorrectionFactor('ZPtWeight','ZPtWeight')
+        nonresPlotters[-1].addCorrectionFactor(emuscale, 'emuscale')
+        nonresPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
+        if 'muoneg_' in sample:
+            nonresPlotters[-1].addCorrectionFactor(str(0.001/lumi), 'norm')
         else:
-           nonresPlotters[-1].addCorrectionFactor('1./({0}*1000)'.format(lumi), 'lumi')
+            nonresPlotters[-1].addCorrectionFactor('(-1./SumWeights)','norm')
+            nonresPlotters[-1].addCorrectionFactor('xsec','xsec')
+            nonresPlotters[-1].addCorrectionFactor('genWeight','genWeight')
+            nonresPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
+            if 'DYJetsToLL' in sample: nonresPlotters[-1].addCorrectionFactor('ZPtWeight','ZPtWeight')
 
     NONRES = MergedPlotter(nonresPlotters)
     NONRES.setFillProperties(1001,ROOT.kOrange)
@@ -323,24 +329,37 @@ else:
 
 # if use GJets to describe ZJets
 if dyGJets : 
+
     # parameters for GJets
-    el_gjet_scale=1.0
-    mu_gjet_scale=1.0
-    gdataLumi=35.867*1000
+    el_gjet_scale=1.00
+    mu_gjet_scale=1.00 
+    #el_gjet_scale=1.02811 #pt50 
+    #mu_gjet_scale=1.00061 #pt50 
+    #el_gjet_scale=1.00379 #SR 
+    #mu_gjet_scale=0.982627 #SR
+
     gdataYield = 3402037584.2277574539
-    gdataFidXsec=gdataYield/gdataLumi
-    zjetsFidXsecAll = 72.31330890818101409
+    zjetsFidXsecAll = 72.39368615170057808
     zjetsFidXsecEl =  1.8368830484768923217
-    zjetsFidXsecMu =  70.413868731825942859
-    zjetsFidXsecAll_up = 73.317313237038433726
-    zjetsFidXsecAll_dn = 71.318806854104892068
+    zjetsFidXsecMu =  70.494245975345435795
+    zjetsFidXsecAll_up = 73.340989238570472253
+    zjetsFidXsecAll_dn = 71.45465868226966677
     zjetsFidXsecEl_up = 1.9004022884222013801
     zjetsFidXsecEl_dn = 1.7743842806529528389
-    zjetsFidXsecMu_up = 71.35227312468455807
-    zjetsFidXsecMu_dn = 69.483913323296292219
+    zjetsFidXsecMu_up = 71.375949126216639229
+    zjetsFidXsecMu_dn = 69.619765151461066921
     zjetsFidXsecLowLptAll = 1119.9216265291902346
     zjetsFidXsecLowLptEl = 459.14012486577632899
     zjetsFidXsecLowLptMu = 660.78150166340503802
+
+    gdataLumi=35.867*1000
+    gdataFidXsec=gdataYield/gdataLumi
+    zjetsFidXsecEl*=el_gjet_scale
+    zjetsFidXsecMu*=mu_gjet_scale
+    zjetsFidXsecEl_up*=el_gjet_scale
+    zjetsFidXsecEl_dn*=el_gjet_scale
+    zjetsFidXsecMu_up*=mu_gjet_scale
+    zjetsFidXsecMu_dn*=mu_gjet_scale
 
     # for GJets photon bkg subtraction
 
@@ -773,7 +792,10 @@ for sample in Graviton2PBSamples:
 ##########################
 
 dataSamples = [
-'SingleEMU_Run2016Full_03Feb2017_v0',
+'SingleEMU_Run2016Full_03Feb2017_allcorV2',
+#'SingleEMU_Run2016Full_03Feb2017_v0',
+#'SingleEMU_Run2016Full_ReReco_v2_DtReCalib',
+#'SingleEMU_Run2016Full_ReReco_v2',
 ]
 
 dataPlotters=[]
