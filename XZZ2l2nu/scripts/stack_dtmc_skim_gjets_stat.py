@@ -199,11 +199,16 @@ ROOT.gROOT.ProcessLine('.x tdrstyle.C')
 #######################
 #  VV Reso backgrounds
 #######################
-vvSamples = ['WZTo2L2Q','WZTo3LNu',
+vvPlotters=[]
+vvSamples = [
+'WZTo2L2Q',
+'WZTo3LNu',
 'ZZTo2L2Nu',
-'ZZTo2L2Q','ZZTo4L',
+'ZZTo2L2Q',
+'ZZTo4L',
 'ggZZTo2e2nu','ggZZTo2mu2nu',
-'TTZToLLNuNu']
+'TTZToLLNuNu'
+]
 
 vvPlotters=[]
 for sample in vvSamples:
@@ -242,22 +247,29 @@ VV.setAlias('llnunu_mT_RecoilDn', 'llnunu_mt')
 # if use emu data driven method
 if muoneg: 
 
-    if channel=="el": 
-        emuscale="(etrgsf*"+str(nonreso_alpha_el)+")"
-    elif channel=="mu": 
-        emuscale="(mtrgsf*"+str(nonreso_alpha_mu)+")"
-    else: 
-        emuscale="(etrgsf*"+str(nonreso_alpha_el)+"+mtrgsf*"+str(nonreso_alpha_mu)+")"
-
-    nonresSamples = [
-    'muonegtree_light_skim_38_skim'
-    ]
     nonresPlotters=[]
+    nonresSamples = ['muoneg_light_skim','DYJetsToLL_emupair']
+    enonresscale='0.397075177316'
+    mnonresscale='0.704939528419'
+
     for sample in nonresSamples:
         nonresPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
-        nonresPlotters[-1].addCorrectionFactor(str(0.001/lumi), 'norm')
-        nonresPlotters[-1].addCorrectionFactor(emuscale, 'emuscale')
-        nonresPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
+        if channel=='el':
+           nonresPlotters[-1].addCorrectionFactor('etrgsf', 'etrgsf')
+           nonresPlotters[-1].addCorrectionFactor(enonresscale, 'norm')
+           nonresPlotters[-1].addCorrectionFactor('escale', 'escale')
+        if channel=='mu':
+           nonresPlotters[-1].addCorrectionFactor('mtrgsf', 'mtrgsf')
+           nonresPlotters[-1].addCorrectionFactor(mnonresscale, 'norm')
+           nonresPlotters[-1].addCorrectionFactor('mscale', 'mscale')
+        if sample is not nonresSamples[0]:
+           nonresPlotters[-1].addCorrectionFactor('(-1./SumWeights)','norm')
+           nonresPlotters[-1].addCorrectionFactor('xsec','xsec')
+           nonresPlotters[-1].addCorrectionFactor('genWeight','genWeight')
+           nonresPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
+           if 'DYJetsToLL' in sample:nonresPlotters[-1].addCorrectionFactor('ZPtWeight','ZPtWeight')
+        else:
+           nonresPlotters[-1].addCorrectionFactor('1./({0}*1000)'.format(lumi), 'lumi')
 
     NONRES = MergedPlotter(nonresPlotters)
     NONRES.setFillProperties(1001,ROOT.kOrange)
@@ -276,61 +288,33 @@ if muoneg:
 # if use mc
 else:
 
-    wwSamples = ['WWTo2L2Nu','WWToLNuQQ_BIG','WZTo1L1Nu2Q']
-    wwPlotters=[]
-    for sample in wwSamples:
-        wwPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
-        wwPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
-        wwPlotters[-1].addCorrectionFactor('xsec','xsec')
-        wwPlotters[-1].addCorrectionFactor('genWeight','genWeight')
-        wwPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
-        wwPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
-        wwPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
-        wwPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
-        wwPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
-        wwPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
-    
-    WW = MergedPlotter(wwPlotters)
-    WW.setFillProperties(1001,ROOT.kOrange)
+    mcnonresoSamples = ['WWTo2L2Nu','WWToLNuQQ_BIG','WZTo1L1Nu2Q','WJetsToLNuHTBinBIG',
+                       'TTTo2L2Nu_forTTH','TTWJetsToLNu_BIG', 'TGJets_BIG',
+                       # 'QCDPtBinMuEMEnriched', 
+                       'T_tWch', 'T_tch_powheg', 'TBar_tWch', 'TBar_tch_powheg']
 
-    ttSamples = ['TTTo2L2Nu_noSC','TTWJetsToLNu_BIG', 'T_tWch', 'T_tch_powheg', 'TBar_tWch', 'TBar_tch_powheg']
-    ttPlotters=[]
-    for sample in ttSamples:
-        ttPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
-        ttPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
-        ttPlotters[-1].addCorrectionFactor('xsec','xsec')
-        ttPlotters[-1].addCorrectionFactor('genWeight','genWeight')
-        ttPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
-        ttPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
-        ttPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
-        ttPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
-        ttPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
-        ttPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
+    mcnonresoPlotters=[]
+    for sample in mcnonresoSamples:
+        mcnonresoPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
+        mcnonresoPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
+        mcnonresoPlotters[-1].addCorrectionFactor('xsec','xsec')
+        mcnonresoPlotters[-1].addCorrectionFactor('genWeight','genWeight')
+        mcnonresoPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
+        mcnonresoPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
+        mcnonresoPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
+        mcnonresoPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
+        mcnonresoPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
+        mcnonresoPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
     
-    TT = MergedPlotter(ttPlotters)
-    TT.setFillProperties(1001,ROOT.kAzure-9)
+    MCNONRESO = MergedPlotter(mcnonresoPlotters)
+    MCNONRESO.setFillProperties(1001,ROOT.kAzure-9)
+
 
     # some plotting definition
-    WW.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
-    WW.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
-    WW.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
-    WW.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
-    WW.setAlias('llnunu_mT', 'llnunu_mt')
-
-    for syst in ['JetEn','JetRes','MuonEn','ElectronEn','TauEn','PhotonEn','Uncluster'] :
-        WW.setAlias('llnunu_mT_'+syst+'Up', 'llnunu_mt_'+syst+'Up')
-        WW.setAlias('llnunu_mT_'+syst+'Dn', 'llnunu_mt_'+syst+'Dn')
-        WW.setAlias('llnunu_mT_RecoilUp', 'llnunu_mt')
-        WW.setAlias('llnunu_mT_RecoilDn', 'llnunu_mt')
-
-    TT.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
-    TT.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
-    TT.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
-    TT.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
-    TT.setAlias('llnunu_mT', 'llnunu_mt')
-    for syst in ['JetEn','JetRes','MuonEn','ElectronEn','TauEn','PhotonEn','Uncluster','Recoil'] :
-        TT.setAlias('llnunu_mT_'+syst+'Up', 'llnunu_mt')
-        TT.setAlias('llnunu_mT_'+syst+'Dn', 'llnunu_mt')
+    MCNONRESO.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
+    MCNONRESO.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
+    MCNONRESO.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
+    MCNONRESO.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
 
 
 ################################
@@ -416,7 +400,8 @@ if dyGJets :
 
     ### the GJets data
     gdataSamples = [
-    'SinglePhoton_Run2016Full_ReReco_v2', 
+    'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim', 
+     #'SinglePhoton_Run2016Full_ReReco_v2_ReSkim'
     ]
 
     gdataPlotters=[]
@@ -438,7 +423,6 @@ if dyGJets :
             gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecAll),'zjetsFidXsecAll')
 
     # the GJets plotter
-    #gjetsPlotters = gdataPlotters
     gjetsPlotters = gdataPlotters+phymetPlotters
 
     GJets = MergedPlotter(gjetsPlotters)
@@ -789,7 +773,7 @@ for sample in Graviton2PBSamples:
 ##########################
 
 dataSamples = [
-'SingleEMU_Run2016Full_ReReco_v2_DtReCalib',
+'SingleEMU_Run2016Full_03Feb2017_v0',
 ]
 
 dataPlotters=[]
