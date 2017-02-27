@@ -32,22 +32,24 @@ njob="0"
 #for infile in $(ls $inputdir/*/vvTreeProducer/tree.root  ); 
 #for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v  Single | grep -v halo15 | grep -v "/GJets_HT" | grep -v "/QCD_Pt" ); 
 #for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep "SinglePhoton_Run2016Full" | grep -v halo15 ); 
-#for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v  Single  ); 
 #for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep DYJetsToLL_M50_Ext  ); 
 #for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v SinglePhoton_Run2016Full_03Feb2017  ); 
 #for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep  SinglePhoton_Run2016Full_03Feb2017  ); 
 #for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep  SinglePhoton_Run2016Full_03Feb2017_uncorr  ); 
 #for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep  SinglePhoton_Run2016Full_03Feb2017_allcor  ); 
 #for infile in $inputdir/SinglePhoton_Run2016Full_ReReco_v2/vvTreeProducer/tree.root ;
-#for infile in $inputdir/SinglePhoton_Run2016Full_ReReco_v2_RePreSkim/vvTreeProducer/tree.root ;
-for infile in $inputdir/SinglePhoton_Run2016Full_03Feb2017_allcorV2/vvTreeProducer/tree.root ;
+#for infile in $inputdir/T_tWch/vvTreeProducer/tree.root ;
+#for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v  Single  ); 
+#for infile in $inputdir/SinglePhoton_Run2016Full_03Feb2017_allcorV2/vvTreeProducer/tree.root ;
+for infile in $inputdir/SinglePhoton_Run2016Full_ReReco_v2_RePreSkim/vvTreeProducer/tree.root ;
 do
   echo "+++ skimming $infile +++"
   outfile="${outputdir}/${infile/$inputdir\//}"
 
   # options for outputs
   #outfile="${outfile/\/vvTreeProducer\/tree/}"
-  outfile="${outfile/\/vvTreeProducer\/tree/_NoRecoil}"
+  outfile="${outfile/\/vvTreeProducer\/tree/_RcNoSmooth}"
+  #outfile="${outfile/\/vvTreeProducer\/tree/_NoRecoil}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_test}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_ReSkim}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_RePreSkim}"

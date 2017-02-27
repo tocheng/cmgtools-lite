@@ -1,6 +1,8 @@
 {
 
   gROOT->ProcessLine(".x tdrstyle.C");
+  tdrStyle->SetPadRightMargin(0.2);
+  tdrStyle->SetTitleSize(0.03, "Z");
   TFile* file1 = TFile::Open("muon_trg_summer16.root");
   TH2D* h_dt_1 = (TH2D*)file1->Get("h_eff_trg_mu50tkmu50_dt_1");
   TH2D* h_dt_2 = (TH2D*)file1->Get("h_eff_trg_mu50tkmu50_dt_2");

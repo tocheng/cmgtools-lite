@@ -43,21 +43,21 @@ list=`ls -1`
 for job in $list;
 do
   echo "## check $job "
-  n1=`rootls ${job}/*/*.root | grep root | wc -l`;
-  n2=`ls -l ${job}/* | grep pck |wc -l`;
+  if [ -e ${job}/vvTreeProducer/tree.root ]; then 
+    n1=`rootls ${job}/*/*.root | grep root | wc -l`;
+    n2=`ls -l ${job}/* | grep pck |wc -l`;
 
-  if [ "$n1" -eq "$n_root_files" -a  "$n2" -eq "$n_pck_files" ];
-  then
-    echo "- job is done correctly with ${n1} root files and ${n2} pck files."
-    echo "  - copy out and delete .. "
-    echo " > rsync -var $job $out/$dir/"
-    rsync -var $job $out/$dir/ && rm -rf $job &
-    #echo " > rm -rf $job"
-    #rm -rf $job
+    if [ "$n1" -eq "$n_root_files" -a  "$n2" -eq "$n_pck_files" ]; then
+      echo "- job is done correctly with ${n1} root files and ${n2} pck files."
+      echo "  - copy out and delete .. "
+      echo " > rsync -var $job $out/$dir/"
+      rsync -var $job $out/$dir/ && rm -rf $job &
+      #echo " > rm -rf $job"
+      #rm -rf $job
+    fi
   else
     echo "- job is not finished or has problem to be resubmitted .. with ${n1} root files and ${n2} pck files. "
   fi
-
 done
 
 cd ../
