@@ -1,8 +1,8 @@
 
 
 std::string channel = "all";
-bool doMC = true;
-bool doGJets = false;
+bool doMC = false;
+bool doGJets = true;
 bool doGJetsMC = false;
 bool useZSelecLowLPt = true;
 bool useEffSf = false;
@@ -31,7 +31,8 @@ std::vector< std::string > mcfiles = {
  };
 
 std::vector< std::string > dtfiles = {
-"SingleEMU_Run2016Full_03Feb2017_v0"
+"SingleEMU_Run2016Full_03Feb2017_allcorV2"
+//"SingleEMU_Run2016Full_03Feb2017_v0"
 //    "SingleEMU_Run2016Full_ReReco_v2_DtReCalib"
 //   "SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib"
  };
@@ -40,7 +41,13 @@ std::vector< std::string > gjfiles = {
 //    "SinglePhoton_Run2016Full_ReReco_v2_NoRecoil"
 //    "SinglePhoton_Run2016Full_ReReco_v2"
 //    "GJets_HT_BIG"
-"SinglePhoton_Run2016Full_03Feb2017_v0_NoRecoil"
+//"SinglePhoton_Run2016Full_03Feb2017_v0_NoRecoil"
+//"SinglePhoton_Run2016Full_03Feb2017_uncorr_NoRecoil"
+//"SinglePhoton_Run2016Full_03Feb2017_allcor_NoRecoil"
+//"SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil"
+//"SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_NoRecoil"
+//"SinglePhoton_Run2016Full_ReReco_v2_RePreSkim"
+"SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_RcNoSmooth"
  };
 
 

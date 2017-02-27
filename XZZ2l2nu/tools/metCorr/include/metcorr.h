@@ -751,6 +751,9 @@ void prepareRecoil();
 // do simple met recoil fine tuning
 void doRecoil();
 
+// fill dummy recoil uncert
+void fillDummyRecoilUncert();
+
 // prepare eff scale factors
 void prepareEffScale();
     

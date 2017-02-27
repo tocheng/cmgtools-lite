@@ -28,10 +28,12 @@
 int main(int argc, char** argv) {
 
 
-  TFile* file1 = TFile::Open("/home/heli/XZZ/80X_20170202_light_Skim/DYJetsToLL_M50_Ext_NoRecoil.root");
-  TFile* file2 = TFile::Open("/home/heli/XZZ/80X_20170202_GJets_light_Skim/SinglePhoton_Run2016Full_ReReco_v2_NoRecoil.root");
+  TFile* file1 = TFile::Open("/home/heli/XZZ/80X_20170202_light_Skim/DYJetsToLL_M50_Ext.root");
+  //TFile* file2 = TFile::Open("/home/heli/XZZ/80X_20170202_GJets_light_Skim/SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil.root");
+  TFile* file2 = TFile::Open("/home/heli/XZZ/80X_20170202_GJets_light_Skim/SinglePhoton_Run2016Full_ReReco_v2_RePreSkim.root");
 
-  std::string outtag="study_gjets_data_fullv2";
+  //std::string outtag="study_gjets_data_allcorV2";
+  std::string outtag="study_gjets_data_ReRecoRePreSkim";
 
 
   gROOT->ProcessLine(".x tdrstyle.C");

@@ -188,6 +188,8 @@ int main(int argc, char** argv) {
     
     // simple met recoil tune.
     if (_doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_isData && _doGJetsSkim)) ) doRecoil();
+    else fillDummyRecoilUncert();
+    
 
     // add eff scale factors
     if (_addEffScale && (!_isData || _addEffScaleOnData) && !_doGJetsSkim ) addEffScale();
@@ -2200,15 +2202,20 @@ void doRecoil()
 
 
   }
-  else if (_doGJetsSkim) {
-    // if doGJets but not gjets data, create dummy branches.  
-    _llnunu_l2_pt_RecoilUp = _llnunu_l2_pt;
-    _llnunu_l2_pt_RecoilDn = _llnunu_l2_pt;
-    _llnunu_l2_phi_RecoilUp = _llnunu_l2_phi;
-    _llnunu_l2_phi_RecoilDn = _llnunu_l2_phi;
-    _llnunu_mt_RecoilUp = _llnunu_mt;
-    _llnunu_mt_RecoilDn = _llnunu_mt;
 
+}
+
+// fill dummy recoil uncertainties
+void fillDummyRecoilUncert()
+{
+  _llnunu_l2_pt_RecoilUp = _llnunu_l2_pt;
+  _llnunu_l2_pt_RecoilDn = _llnunu_l2_pt;
+  _llnunu_l2_phi_RecoilUp = _llnunu_l2_phi;
+  _llnunu_l2_phi_RecoilDn = _llnunu_l2_phi;
+  _llnunu_mt_RecoilUp = _llnunu_mt;
+  _llnunu_mt_RecoilDn = _llnunu_mt;
+
+  if (doGJetsSkim) {
     _llnunu_l2_pt_mu_RecoilUp = _llnunu_l2_pt_mu;
     _llnunu_l2_pt_mu_RecoilDn = _llnunu_l2_pt_mu;
     _llnunu_l2_phi_mu_RecoilUp = _llnunu_l2_phi_mu;
@@ -2222,13 +2229,9 @@ void doRecoil()
     _llnunu_l2_phi_el_RecoilDn = _llnunu_l2_phi_el;
     _llnunu_mt_el_RecoilUp = _llnunu_mt_el;
     _llnunu_mt_el_RecoilDn = _llnunu_mt_el;
-
-
   }
 
 }
-
-
 
 // prepareEffScale
 void prepareEffScale()
@@ -3096,9 +3099,12 @@ void prepareGJetsSkim()
     _gjets_input_file = TFile::Open(_GJetsSkimInputFileName.c_str());
 
     // for mass generation
-    _gjets_h_zmass_zpt = (TH2D*)_gjets_input_file->Get("h_zmass_zpt_lowlpt");
-    _gjets_h_zmass_zpt_el = (TH2D*)_gjets_input_file->Get("h_zmass_zpt_lowlpt_el");
-    _gjets_h_zmass_zpt_mu = (TH2D*)_gjets_input_file->Get("h_zmass_zpt_lowlpt_mu");
+    //_gjets_h_zmass_zpt = (TH2D*)_gjets_input_file->Get("h_zmass_zpt_lowlpt");
+    //_gjets_h_zmass_zpt_el = (TH2D*)_gjets_input_file->Get("h_zmass_zpt_lowlpt_el");
+    //_gjets_h_zmass_zpt_mu = (TH2D*)_gjets_input_file->Get("h_zmass_zpt_lowlpt_mu");
+    _gjets_h_zmass_zpt = (TH2D*)_gjets_input_file->Get("h_zmass_zpt");
+    _gjets_h_zmass_zpt_el = (TH2D*)_gjets_input_file->Get("h_zmass_zpt_el");
+    _gjets_h_zmass_zpt_mu = (TH2D*)_gjets_input_file->Get("h_zmass_zpt_mu");
 
     // for zpt reweighting
     // zpt 1d

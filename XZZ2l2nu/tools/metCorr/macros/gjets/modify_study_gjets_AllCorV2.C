@@ -1,10 +1,10 @@
 {
 
-  gROOT->ProcessLine(".! cp study_gjets_data_ReRecoRePreSkim.root study_gjets_data_ReRecoRePreSkim_modify.root");
-  TFile* file = TFile::Open("study_gjets_data_ReRecoRePreSkim_modify.root", "update");
+  //gROOT->ProcessLine(".! cp study_gjets_data_ReRecoRePreSkim.root study_gjets_data_ReRecoRePreSkim_modify.root");
+  //TFile* file = TFile::Open("study_gjets_data_ReRecoRePreSkim_modify.root", "update");
 
-  //gROOT->ProcessLine(".! cp study_gjets_data_allcorV2.root study_gjets_data_allcorV2_modify.root");
-  //TFile* file = TFile::Open("study_gjets_data_allcorV2_modify.root", "update");
+  gROOT->ProcessLine(".! cp study_gjets_data_allcorV2.root study_gjets_data_allcorV2_modify.root");
+  TFile* file = TFile::Open("study_gjets_data_allcorV2_modify.root", "update");
 
   TH1D* h_zpt_ratio = (TH1D*)file->Get("h_zpt_ratio");
   TH1D* h_zpt_ratio_el = (TH1D*)file->Get("h_zpt_ratio_el");
@@ -94,11 +94,11 @@
   h_zpt_ratio_el->SetBinContent(b,h_zpt_ratio_el->GetBinContent(b)*s);
   h_zpt_ratio_el_up->SetBinContent(b,h_zpt_ratio_el_up->GetBinContent(b)*s);
   h_zpt_ratio_el_dn->SetBinContent(b,h_zpt_ratio_el_dn->GetBinContent(b)*s);
-  b=60; s=1.0;
+  b=60; s=1.00;
   h_zpt_ratio_el->SetBinContent(b,h_zpt_ratio_el->GetBinContent(b)*s);
   h_zpt_ratio_el_up->SetBinContent(b,h_zpt_ratio_el_up->GetBinContent(b)*s);
   h_zpt_ratio_el_dn->SetBinContent(b,h_zpt_ratio_el_dn->GetBinContent(b)*s);
-  b=61; s=1.2;
+  b=61; s=1.1;
   h_zpt_ratio_el->SetBinContent(b,h_zpt_ratio_el->GetBinContent(b)*s);
   h_zpt_ratio_el_up->SetBinContent(b,h_zpt_ratio_el_up->GetBinContent(b)*s);
   h_zpt_ratio_el_dn->SetBinContent(b,h_zpt_ratio_el_dn->GetBinContent(b)*s);
@@ -170,10 +170,10 @@
   gr_zpt_ratio_el_dn->Draw("lx same");
   h_zpt_ratio_el_old->Draw("same");
 
-//  gr_zpt_ratio_mu->Draw("apl");
-//  gr_zpt_ratio_mu_up->Draw("lx same");
-//  gr_zpt_ratio_mu_dn->Draw("lx same");
-//  h_zpt_ratio_mu_old->Draw("same");
+  gr_zpt_ratio_mu->Draw("apl");
+  gr_zpt_ratio_mu_up->Draw("lx same");
+  gr_zpt_ratio_mu_dn->Draw("lx same");
+  h_zpt_ratio_mu_old->Draw("same");
 
 
   file->cd();

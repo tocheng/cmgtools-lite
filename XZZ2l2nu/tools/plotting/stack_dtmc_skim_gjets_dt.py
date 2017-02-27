@@ -61,7 +61,7 @@ zjets_scale='(1)'
 
 if channel=='mu': 
 #    mc_scale='(1.02942)'
-    zjets_scale='(1.03741)'
+    zjets_scale='(1.03410)'
 elif channel=='el': 
 #    mc_scale='(1.02139)'
     zjets_scale='(1.03737)'
@@ -77,8 +77,8 @@ else:
 nonreso_alpha_el=1.0
 nonreso_alpha_mu=1.0
 
-nonreso_alpha_el=0.346341188158
-nonreso_alpha_mu=0.696656700696
+nonreso_alpha_el=0.397075177316
+nonreso_alpha_mu=0.704939528419
 
 #
 
@@ -209,6 +209,7 @@ elif cutChain=='CR': cuts=cuts_CR
 elif cutChain=='CR1': cuts=cuts_CR1
 elif cutChain=='CR2': cuts=cuts_CR2
 elif cutChain=='CR3': cuts=cuts_CR3
+elif cutChain=='SRmetParaLTm80': cuts=cuts_loose_zll_met50+"&&llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)<-80"
 else : cuts=cuts_loose
 
 
@@ -216,6 +217,7 @@ if UseMETFilter:
     cuts = '('+cuts+')' # metfilter pre-applied in preskim
 
 # badmuon filter
+#cuts += '&&(nbadmuon==0&&nlep<=2)'  # veto 3+ leptons
 cuts += '&&(nbadmuon==0)' 
 
 cuts = '('+cuts+')'
@@ -276,17 +278,21 @@ if muoneg:
     else: 
         emuscale="(etrgsf*"+str(nonreso_alpha_el)+"+mtrgsf*"+str(nonreso_alpha_mu)+")"
 
-    nonresSamples = [
-    #'muonegtrgsf'
-    #'muonegtree_light_skim'
-    'muonegtree_light_skim_38_skim'
-    ]
+    nonresSamples = ['muoneg_light_skim','DYJetsToLL_emupair']
+
     nonresPlotters=[]
     for sample in nonresSamples:
         nonresPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
-        nonresPlotters[-1].addCorrectionFactor(str(0.001/lumi), 'norm')
         nonresPlotters[-1].addCorrectionFactor(emuscale, 'emuscale')
         nonresPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
+        if 'muoneg_' in sample:
+            nonresPlotters[-1].addCorrectionFactor(str(0.001/lumi), 'norm')
+        else:
+            nonresPlotters[-1].addCorrectionFactor('(-1./SumWeights)','norm')
+            nonresPlotters[-1].addCorrectionFactor('xsec','xsec')
+            nonresPlotters[-1].addCorrectionFactor('genWeight','genWeight')
+            nonresPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
+            if 'DYJetsToLL' in sample: nonresPlotters[-1].addCorrectionFactor('ZPtWeight','ZPtWeight')
 
     NONRES = MergedPlotter(nonresPlotters)
     NONRES.setFillProperties(1001,ROOT.kOrange)
@@ -301,7 +307,8 @@ if muoneg:
 else:
 
     mcnonresoSamples = ['WWTo2L2Nu','WWToLNuQQ_BIG','WZTo1L1Nu2Q','WJetsToLNuHTBinBIG',
-                       'TTTo2L2Nu_forTTH','TTWJetsToLNu_BIG', 'TGJets_BIG', 'QCDPtBinMuEMEnriched', 
+                       'TTTo2L2Nu_forTTH','TTWJetsToLNu_BIG', 'TGJets_BIG',
+                       # 'QCDPtBinMuEMEnriched', 
                        'T_tWch', 'T_tch_powheg', 'TBar_tWch', 'TBar_tch_powheg']
 
     mcnonresoPlotters=[]
@@ -336,23 +343,37 @@ else:
 # if use GJets to describe ZJets
 if dyGJets : 
     # parameters for GJets
-    el_gjet_scale=1.0
-    mu_gjet_scale=1.0 
-    gdataLumi=35.867*1000
+    el_gjet_scale=1.00
+    mu_gjet_scale=1.00 
+    #el_gjet_scale=1.02811 #pt50 
+    #mu_gjet_scale=1.00061 #pt50 
+    #el_gjet_scale=1.00379 #SR 
+    #mu_gjet_scale=0.982627 #SR
+
     gdataYield = 3402037584.2277574539
-    gdataFidXsec=gdataYield/gdataLumi
-    zjetsFidXsecAll = 72.31330890818101409
+    zjetsFidXsecAll = 72.39368615170057808
     zjetsFidXsecEl =  1.8368830484768923217
-    zjetsFidXsecMu =  70.413868731825942859
-    zjetsFidXsecAll_up = 73.317313237038433726
-    zjetsFidXsecAll_dn = 71.318806854104892068
+    zjetsFidXsecMu =  70.494245975345435795
+    zjetsFidXsecAll_up = 73.340989238570472253
+    zjetsFidXsecAll_dn = 71.45465868226966677
     zjetsFidXsecEl_up = 1.9004022884222013801
     zjetsFidXsecEl_dn = 1.7743842806529528389
-    zjetsFidXsecMu_up = 71.35227312468455807
-    zjetsFidXsecMu_dn = 69.483913323296292219
+    zjetsFidXsecMu_up = 71.375949126216639229
+    zjetsFidXsecMu_dn = 69.619765151461066921
     zjetsFidXsecLowLptAll = 1119.9216265291902346
     zjetsFidXsecLowLptEl = 459.14012486577632899
     zjetsFidXsecLowLptMu = 660.78150166340503802
+
+    gdataLumi=35.867*1000
+    gdataFidXsec=gdataYield/gdataLumi
+    zjetsFidXsecEl*=el_gjet_scale
+    zjetsFidXsecMu*=mu_gjet_scale
+    zjetsFidXsecEl_up*=el_gjet_scale
+    zjetsFidXsecEl_dn*=el_gjet_scale
+    zjetsFidXsecMu_up*=mu_gjet_scale
+    zjetsFidXsecMu_dn*=mu_gjet_scale
+
+
 
     # for GJets photon bkg subtraction
 
@@ -414,8 +435,15 @@ if dyGJets :
 
     ### the GJets data
     gdataSamples = [
-    'SinglePhoton_Run2016Full_03Feb2017_v0', 
+    #'SinglePhoton_Run2016Full_03Feb2017_uncorr', 
+    #'SinglePhoton_Run2016Full_03Feb2017_allcor', 
+    #'SinglePhoton_Run2016Full_03Feb2017_allcorV2', 
+    #'SinglePhoton_Run2016Full_03Feb2017_v0', 
     #'SinglePhoton_Run2016Full_ReReco_v2', 
+    #'SinglePhoton_Run2016Full_ReReco_v2_oldSkim', 
+    #'SinglePhoton_Run2016Full_ReReco_v2_ReSkim', 
+    'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim', 
+    #'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_RcNoSmooth', 
     #'SinglePhoton_Run2016Full_ReReco_v2_NoRecoil', 
     ]
 
@@ -611,7 +639,8 @@ for sample in sigSamples:
 ##########################
 
 dataSamples = [
-'SingleEMU_Run2016Full_03Feb2017_v0',
+'SingleEMU_Run2016Full_03Feb2017_allcorV2',
+#'SingleEMU_Run2016Full_03Feb2017_v0',
 #'SingleEMU_Run2016Full_ReReco_v2_DtReCalib',
 #'SingleEMU_Run2016Full_ReReco_v2',
 ]

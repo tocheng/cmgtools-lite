@@ -32,11 +32,21 @@ parser.add_option("-b",action="callback",callback=callback_rootargs)
 
 tag=options.tag
 cutChain=options.cutChain
+#cutChain='loosecut'
+#cutChain='tight'
+#cutChain='tightzpt100'
+#cutChain='tightzptlt200'
+#cutChain='tightzpt100met50'
+#cutChain='tightzpt100met100'
+#cutChain='tightzpt100met200'
 
 # can be el or mu or both
 channel=options.channel
+#channel='mu' 
 LogY=options.LogY
 test=options.test
+#LogY=True
+#test=False
 DrawLeptons=True
 
 sepSig=True
@@ -44,13 +54,17 @@ sepSig=True
 if test: DrawLeptons = False
 
 
-outdir='plots_cmp_data'
+outdir='plots_cmp_data_27p1'
+#outdir='plots_cmp_data_36p46'
 
-indir='/home/heli/XZZ/80X_20170202_light_Skim'
-lumi=35.87
+indir='/home/heli/XZZ/80X_20161029_light_Skim'
+#indir='/data2/XZZ2/80X_20161029_light_Skim'
+#lumi=36.46
+lumi=27.1
 doRatio=True
 Blind=options.Blind
 UseMETFilter=True
+DataHLT=True
 ThreeLepVeto=options.ThreeLepVeto
 
 elChannel='(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11)'
@@ -76,10 +90,9 @@ paveText="#sqrt{s} = 13 TeV 2016 L = "+"{:.3}".format(float(lumi))+" fb^{-1}"
 metfilter='(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter)'
 
 cuts_loose='(nllnunu)'
-cuts_lepaccept="((abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13&&llnunu_l1_l1_pt>60&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID>0.99||llnunu_l1_l2_highPtID>0.99))"
-cuts_lepaccept+="||(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11&&llnunu_l1_l1_pt>120&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5))"
+cuts_lepaccept="((abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13&&llnunu_l1_l1_pt>50&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID>0.99||llnunu_l1_l2_highPtID>0.99))"
+cuts_lepaccept+="||(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11&&llnunu_l1_l1_pt>115&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5))"
 cuts_zmass="(llnunu_l1_mass>70&&llnunu_l1_mass<110)"
-cuts_zpt50="(llnunu_l1_pt>50)"
 cuts_zpt100="(llnunu_l1_pt>100)"
 cuts_zptlt200="(llnunu_l1_pt<200)"
 cuts_met50="(llnunu_l2_pt>50)"
@@ -87,7 +100,6 @@ cuts_met100="(llnunu_l2_pt>100)"
 cuts_met200="(llnunu_l2_pt>200)"
 cuts_loose_z="("+cuts_lepaccept+"&&"+cuts_zmass+")"
 cuts_loose_zll="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt100+")"
-cuts_loose_zll_zpt50="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt50+")"
 cuts_loose_zll_zptlt200="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zptlt200+")"
 cuts_loose_zll_met50="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt100+"&&"+cuts_met50+")"
 cuts_loose_zll_met100="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt100+"&&"+cuts_met100+")"
@@ -96,7 +108,6 @@ cuts_loose_zll_met200="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt100+"&&"+c
 
 if cutChain=='loosecut': cuts=cuts_loose
 elif cutChain=='tight': cuts=cuts_loose_z
-elif cutChain=='tightzpt50': cuts=cuts_loose_zll_zpt50
 elif cutChain=='tightzpt100': cuts=cuts_loose_zll
 elif cutChain=='tightzpt100met50': cuts=cuts_loose_zll_met50
 elif cutChain=='tightzpt100met100': cuts=cuts_loose_zll_met100
@@ -114,9 +125,6 @@ elif channel=='mu': cuts = cuts+'&&'+muChannel
 if ThreeLepVeto:
     cuts+='&&'+"nlep<=2"
 
-# bad muon filter
-cuts+='&&nbadmuon==0'
-
 cuts = '('+cuts+')'
 
 ROOT.gROOT.ProcessLine('.x tdrstyle.C') 
@@ -126,14 +134,13 @@ allPlotters = {}
 dataPlotters=[]
 dataSamples = [
 #'SingleEMU_Run2016B2H_ReReco_36p46',
-#'SingleEMU_Run2016B2G_ReReco_27fbinv',
-"SingleEMU_Run2016Full_ReReco_v2_DtReCalib"
+'SingleEMU_Run2016B2G_ReReco_27fbinv',
 ]
 for sample in dataSamples:
     dataPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
-    dataPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
-    dataPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
-    dataPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
+
+if DataHLT:
+    dataPlotters[0].addCorrectionFactor('(HLT_MUv2||HLT_ELEv2)','HLT')
 
 
 Data = MergedPlotter(dataPlotters)
@@ -141,16 +148,14 @@ Data = MergedPlotter(dataPlotters)
 data2Plotters=[]
 data2Samples = [
 #'SingleEMU_Run2016B2H_ReReco_36p46_DtReCalib', 
-#'SingleEMU_Run2016B2G_PromptReco'
-"SingleEMU_Run2016Full_03Feb2017_v0"
+'SingleEMU_Run2016B2G_PromptReco'
 ]
 for sample in data2Samples:
     data2Plotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
-    data2Plotters[0].addCorrectionFactor(str(0.001/lumi),'xsec')
-    data2Plotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
-    data2Plotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
-    data2Plotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
 
+if DataHLT:
+    data2Plotters[0].addCorrectionFactor('(HLT_MUv2||HLT_ELEv2)','HLT')
+    data2Plotters[0].addCorrectionFactor(str(0.001/lumi),'xsec')
 
 
 Data2 = MergedPlotter(data2Plotters)
@@ -169,7 +174,7 @@ Data2.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
 Stack = StackPlotter(outTag=tag, outDir=outdir)
 Stack.setPaveText(paveText)
 Stack.addPlotter(Data, "data_obs", "Data ReReco", "data")
-Stack.addPlotter(Data2, "data2_obs", "Data ReMiniAOD", "background")
+Stack.addPlotter(Data2, "data2_obs", "Data PromptReco", "background")
 
 
 Stack.setLog(LogY)
