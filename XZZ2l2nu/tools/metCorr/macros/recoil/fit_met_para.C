@@ -4,7 +4,7 @@ std::string channel = "all";
 bool doMC = false;
 bool doGJets = true;
 bool doGJetsMC = false;
-bool useZSelecLowLPt = true;
+bool useZSelecLowLPt = false;
 bool useEffSf = false;
 bool mcTrgSf = false;
 bool dtTrgSf = false;
@@ -45,6 +45,7 @@ std::vector< std::string > gjfiles = {
 //"SinglePhoton_Run2016Full_03Feb2017_uncorr_NoRecoil"
 //"SinglePhoton_Run2016Full_03Feb2017_allcor_NoRecoil"
 //"SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil"
+//"SinglePhoton_Run2016Full_03Feb2017_allcorV2"
 //"SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_NoRecoil"
 //"SinglePhoton_Run2016Full_ReReco_v2_RePreSkim"
 "SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_RcNoSmooth"
@@ -138,8 +139,8 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
 
   // define cuts
   std::string metfilter="(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter)";
-  std::string cuts_lepaccept="((abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13&&llnunu_l1_l1_pt>50&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID==1||llnunu_l1_l2_highPtID==1))";
-  cuts_lepaccept+="||(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11&&llnunu_l1_l1_pt>115&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5))";
+  std::string cuts_lepaccept="((abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13&&llnunu_l1_l1_pt>60&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID==1||llnunu_l1_l2_highPtID==1))";
+  cuts_lepaccept+="||(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11&&llnunu_l1_l1_pt>120&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5))";
   std::string cuts_lepaccept_lowlpt="((abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13&&llnunu_l1_l1_pt>20&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID==1||llnunu_l1_l2_highPtID==1))";
   cuts_lepaccept_lowlpt+="||(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11&&llnunu_l1_l1_pt>20&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.5))";
   //std::string cuts_zmass="(llnunu_l1_mass>70&&llnunu_l1_mass<110)";

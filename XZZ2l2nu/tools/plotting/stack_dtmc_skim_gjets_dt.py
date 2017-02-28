@@ -61,10 +61,12 @@ zjets_scale='(1)'
 
 if channel=='mu': 
 #    mc_scale='(1.02942)'
-    zjets_scale='(1.03410)'
+    if cutChain=='SR': zjets_scale='(0.960865)' # mc SR
+    else: zjets_scale='(1.03410)' # mc zpt50
 elif channel=='el': 
 #    mc_scale='(1.02139)'
-    zjets_scale='(1.03737)'
+    if cutChain=='SR': zjets_scale='(1.01822)' # mc SR
+    else: zjets_scale='(1.03737)' # mc zpt50
 else: 
 #    mc_scale='(1.02942)'
     zjets_scale='(1.03741)'
@@ -151,6 +153,7 @@ cuts_zmass_50_180="(llnunu_l1_mass_to_plot>50&&llnunu_l1_mass_to_plot<180)"
 cuts_zpt100="(llnunu_l1_pt>100)"
 cuts_zpt150="(llnunu_l1_pt>150)"
 cuts_zpt200="(llnunu_l1_pt>200)"
+cuts_zpt300="(llnunu_l1_pt>300)"
 cuts_met50="(llnunu_l2_pt_to_plot>50)"
 cuts_met100="(llnunu_l2_pt_to_plot>100)"
 cuts_met200="(llnunu_l2_pt_to_plot>200)"
@@ -162,6 +165,7 @@ cuts_loose_zptgt100lt400="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>100&
 cuts_loose_zll="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt100+")"
 cuts_loose_zpt150="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt150+")"
 cuts_loose_zpt200="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt200+")"
+cuts_loose_zpt300="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt300+")"
 cuts_loose_zll_met50="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt100+"&&"+cuts_met50+")"
 cuts_loose_zll_met100="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt100+"&&"+cuts_met100+")"
 cuts_loose_zll_met200="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt100+"&&"+cuts_met200+")"
@@ -190,6 +194,7 @@ elif cutChain=='tightzptgt100lt400': cuts=cuts_loose_zptgt100lt400
 elif cutChain=='tightzpt100': cuts=cuts_loose_zll
 elif cutChain=='tightzpt150': cuts=cuts_loose_zpt150
 elif cutChain=='tightzpt200': cuts=cuts_loose_zpt200
+elif cutChain=='tightzpt300': cuts=cuts_loose_zpt300
 elif cutChain=='tightzpt100met50': cuts=cuts_loose_zll_met50
 elif cutChain=='tightzpt100met100': cuts=cuts_loose_zll_met100
 elif cutChain=='tightzpt100met200': cuts=cuts_loose_zll_met200
@@ -345,11 +350,14 @@ if dyGJets :
     # parameters for GJets
     el_gjet_scale=1.00
     mu_gjet_scale=1.00 
-    #el_gjet_scale=1.02811 #pt50 
-    #mu_gjet_scale=1.00061 #pt50 
-    #el_gjet_scale=1.00379 #SR 
-    #mu_gjet_scale=0.982627 #SR
 
+    if cutChain=='SR': 
+        el_gjet_scale=1.01720174117
+        mu_gjet_scale=1.0452050458
+    else:
+        el_gjet_scale=1.02810944619 
+        mu_gjet_scale=1.00061373085
+        
     gdataYield = 3402037584.2277574539
     zjetsFidXsecAll = 72.39368615170057808
     zjetsFidXsecEl =  1.8368830484768923217
@@ -442,8 +450,8 @@ if dyGJets :
     #'SinglePhoton_Run2016Full_ReReco_v2', 
     #'SinglePhoton_Run2016Full_ReReco_v2_oldSkim', 
     #'SinglePhoton_Run2016Full_ReReco_v2_ReSkim', 
-    'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim', 
-    #'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_RcNoSmooth', 
+    #'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim', 
+    'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_RcNoSmooth', 
     #'SinglePhoton_Run2016Full_ReReco_v2_NoRecoil', 
     ]
 
@@ -699,7 +707,7 @@ if test:
 #    Stack.drawStack('rho', cuts, str(lumi*1000), 55, 0.0, 55.0, titlex = "#rho", units = "",output='rho',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 30, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output='zpt',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 60, 60, 120, titlex = "M(Z)", units = "GeV",output='zmass',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 50, 100.0, 1600.0, titlex = "M_{T}", units = "GeV",output='mt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+#    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 50, 100.0, 1600.0, titlex = "M_{T}", units = "GeV",output='mt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 #    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 30, 0, 1500, titlex = "MET", units = "GeV",output='met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
     Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 50, -500, 500.0, titlex = "MET_{#parallel}", units = "GeV",output='met_para',outDir=outdir,separateSignal=sepSig)
 

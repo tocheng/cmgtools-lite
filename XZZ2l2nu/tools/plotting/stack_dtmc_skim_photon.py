@@ -140,22 +140,31 @@ ROOT.gROOT.ProcessLine('.x tdrstyle.C')
 
 # parameters for GJets
 gdataLumi=35.867*1000
+
+el_gjet_scale=1.0
+mu_gjet_scale=1.0
+
 gdataYield = 3402037584.2277574539
-gdataFidXsec=gdataYield/gdataLumi
-zjetsFidXsecAll = 72.31330890818101409
+zjetsFidXsecAll = 72.39368615170057808
 zjetsFidXsecEl =  1.8368830484768923217
-zjetsFidXsecMu =  70.413868731825942859
-zjetsFidXsecAll_up = 73.317313237038433726
-zjetsFidXsecAll_dn = 71.318806854104892068
+zjetsFidXsecMu =  70.494245975345435795
+zjetsFidXsecAll_up = 73.340989238570472253
+zjetsFidXsecAll_dn = 71.45465868226966677
 zjetsFidXsecEl_up = 1.9004022884222013801
 zjetsFidXsecEl_dn = 1.7743842806529528389
-zjetsFidXsecMu_up = 71.35227312468455807
-zjetsFidXsecMu_dn = 69.483913323296292219
+zjetsFidXsecMu_up = 71.375949126216639229
+zjetsFidXsecMu_dn = 69.619765151461066921
 zjetsFidXsecLowLptAll = 1119.9216265291902346
 zjetsFidXsecLowLptEl = 459.14012486577632899
 zjetsFidXsecLowLptMu = 660.78150166340503802
 
-
+gdataFidXsec=gdataYield/gdataLumi
+zjetsFidXsecEl*=el_gjet_scale
+zjetsFidXsecMu*=mu_gjet_scale
+zjetsFidXsecEl_up*=el_gjet_scale
+zjetsFidXsecEl_dn*=el_gjet_scale
+zjetsFidXsecMu_up*=mu_gjet_scale
+zjetsFidXsecMu_dn*=mu_gjet_scale
 
 ############################################
 #
@@ -380,15 +389,12 @@ for i in range(len(allmcPlotters)) :
         if channel=='el' :
             allmcPlotters[i].addCorrectionFactor('GJetsZPtWeightEl','GJetsZPtWeight')
             allmcPlotters[i].addCorrectionFactor(str(zjetsFidXsecEl),'zjetsFidXsecEl')
-            allmcPlotters[i].addCorrectionFactor('(1.16725)','GJetsNorm')
         elif channel=='mu' :
             allmcPlotters[i].addCorrectionFactor('GJetsZPtWeightMu','GJetsZPtWeight')
             allmcPlotters[i].addCorrectionFactor(str(zjetsFidXsecMu),'zjetsFidXsecMu')
-            allmcPlotters[i].addCorrectionFactor('(1.15559)','GJetsNorm')
         else :
             allmcPlotters[i].addCorrectionFactor('GJetsZPtWeight','GJetsZPtWeight')
             allmcPlotters[i].addCorrectionFactor(str(zjetsFidXsecAll),'zjetsFidXsecAll')
-            allmcPlotters[i].addCorrectionFactor('(1.15559)','GJetsNorm')
 
 
 
@@ -402,8 +408,9 @@ for i in range(len(allmcPlotters)) :
 ############################################
 
 gdataSamples = [
+#'SinglePhoton_Run2016Full_03Feb2017_v0',
 #'SinglePhoton_Run2016Full_ReReco_v2',
-'SinglePhoton_Run2016Full_03Feb2017_v0',
+'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim',
 ]
 
 gdataPlotters=[]
@@ -417,15 +424,12 @@ for sample in gdataSamples:
         if channel=='el' :
             gdataPlotters[-1].addCorrectionFactor('GJetsZPtWeightEl','GJetsZPtWeight')
             gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecEl),'zjetsFidXsecEl')
-            gdataPlotters[-1].addCorrectionFactor('(1.16725)','GJetsNorm')
         elif channel=='mu' :
             gdataPlotters[-1].addCorrectionFactor('GJetsZPtWeightMu','GJetsZPtWeight')
             gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecMu),'zjetsFidXsecMu')
-            gdataPlotters[-1].addCorrectionFactor('(1.15559)','GJetsNorm')
         else :
             gdataPlotters[-1].addCorrectionFactor('GJetsZPtWeight','GJetsZPtWeight')
             gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecAll),'zjetsFidXsecAll')
-            gdataPlotters[-1].addCorrectionFactor('(1.15559)','GJetsNorm')
 
 
 

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 
-tag="test_wj2_PhSummer16_"
+tag="test_"
 #tag="PhSummer16_"
 #cutChains="loosecut"
 #cutChains="tight"
