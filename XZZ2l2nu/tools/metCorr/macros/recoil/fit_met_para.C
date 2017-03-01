@@ -3,7 +3,7 @@
 std::string channel = "all";
 bool doMC = false;
 bool doGJets = true;
-bool doGJetsMC = false;
+bool doGJetsMC = true;
 bool useZSelecLowLPt = false;
 bool useEffSf = false;
 bool mcTrgSf = false;
@@ -40,7 +40,7 @@ std::vector< std::string > dtfiles = {
 std::vector< std::string > gjfiles = {
 //    "SinglePhoton_Run2016Full_ReReco_v2_NoRecoil"
 //    "SinglePhoton_Run2016Full_ReReco_v2"
-//    "GJets_HT_BIG"
+"GJetsHTBinBIG"
 //"SinglePhoton_Run2016Full_03Feb2017_v0_NoRecoil"
 //"SinglePhoton_Run2016Full_03Feb2017_uncorr_NoRecoil"
 //"SinglePhoton_Run2016Full_03Feb2017_allcor_NoRecoil"
@@ -187,7 +187,10 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   
   if (doGJets) {
     base_selec = "(1)";
-    if (doGJetsMC) base_selec = "(1)*(genWeight*puWeightsummer16/SumWeights*xsec*35867)";
+    if (doGJetsMC) {
+      base_selec += "*(genWeight*puWeightsummer16/SumWeights*xsec*35867)";
+      base_selec += "*((0.295668+0.0127154*llnunu_l1_pt-7.71163e-05*pow(llnunu_l1_pt,2)+2.2603e-07*pow(llnunu_l1_pt,3)-3.50496e-10*pow(llnunu_l1_pt,4)+2.7572e-13*pow(llnunu_l1_pt,5)-8.66455e-17*pow(llnunu_l1_pt,6))*(llnunu_l1_pt<=800)+(0.912086)*(llnunu_l1_pt>800))"  // trig eff sf for reminiaod allcorV2 mc hlt
+    }
     if (useZSelecLowLPt) {
       if (channel=="el")  selec = base_selec+"*(GJetsZPtWeightLowLPtEl)";
       else if (channel=="mu") selec = base_selec+"*(GJetsZPtWeightLowLPtMu)";

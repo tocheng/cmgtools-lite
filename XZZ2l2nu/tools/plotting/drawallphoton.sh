@@ -2,8 +2,8 @@
 
 
 #tag="ReRecoSummer16HLT_"
-tag="ReMiniAODSummer16HLT_"
-#tag="testhlt_"
+tag="ReMiniAODSummer16HLT_Rc_"
+#tag="testhlt2_Rc_"
 #tag="ptscale_reminiaod_"
 #tag="ptscale_rereco_"
 #cutChains="loosecut"
@@ -11,7 +11,8 @@ tag="ReMiniAODSummer16HLT_"
 #cutChains="SR CR CR1 CR2 CR3"
 #cutChains="tightzptgt50lt100 tightzptgt100"
 #cutChains="tight tightzptgt50lt100 tightzptgt100"
-cutChains="tight tightzptgt100"
+#cutChains="tight tightzptgt100"
+cutChains="SR"
 logdir="log_ph"
 
 mkdir -p $logdir
@@ -29,7 +30,7 @@ do
 #   ./stack_dtmc_skim_photon.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --ZWeight --channel="el"  &> ${logdir}/${tag}${cutChain}_ZWt_el.log &
 
 
-   ./stack_dtmc_skim_photon.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --SeparateProcess --LogY  &> ${logdir}/${tag}${cutChain}_SepProc_log.log &
+#   ./stack_dtmc_skim_photon.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --SeparateProcess --LogY  &> ${logdir}/${tag}${cutChain}_SepProc_log.log &
    ./stack_dtmc_skim_photon.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --SeparateProcess --ZWeight --channel="mu" --LogY   &> ${logdir}/${tag}${cutChain}_SepProc_ZWt_mu_log.log &
    ./stack_dtmc_skim_photon.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --SeparateProcess --ZWeight --channel="el" --LogY   &> ${logdir}/${tag}${cutChain}_SepProc_ZWt_el_log.log &
 
@@ -39,10 +40,10 @@ do
 
 # for test
 #   ./stack_dtmc_skim_photon.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --SeparateProcess --LogY  --test &> ${logdir}/${tag}${cutChain}_SepProc_log.log &
-#   ./stack_dtmc_skim_photon.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --SeparateProcess --test &> ${logdir}/${tag}${cutChain}_SepProc.log &
 #   ./stack_dtmc_skim_photon.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --SeparateProcess --ZWeight --channel="mu" --LogY  --test &> ${logdir}/${tag}${cutChain}_SepProc_ZWt_mu_log.log &
-#   ./stack_dtmc_skim_photon.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --SeparateProcess --ZWeight --channel="mu" --test &> ${logdir}/${tag}${cutChain}_SepProc_ZWt_mu.log &
 #   ./stack_dtmc_skim_photon.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --SeparateProcess --ZWeight --channel="el" --LogY  --test &> ${logdir}/${tag}${cutChain}_SepProc_ZWt_el_log.log &
+#   ./stack_dtmc_skim_photon.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --SeparateProcess --test &> ${logdir}/${tag}${cutChain}_SepProc.log &
+#   ./stack_dtmc_skim_photon.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --SeparateProcess --ZWeight --channel="mu" --test &> ${logdir}/${tag}${cutChain}_SepProc_ZWt_mu.log &
 #   ./stack_dtmc_skim_photon.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --SeparateProcess --ZWeight --channel="el" --test &> ${logdir}/${tag}${cutChain}_SepProc_ZWt_el.log &
 
 done
