@@ -125,7 +125,7 @@ int main(int argc, char** argv) {
     _doDummyMETUncert = true;
     _doDummyRecoilUncert = false;
   }
-  else if (_isData && !_doGJetsSkim) 
+  else if (_isData ) 
   {
     _doDummyMETUncert = true;
     _doDummyRecoilUncert = true;

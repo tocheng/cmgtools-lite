@@ -425,14 +425,20 @@ class StackPlotter(object):
         if self.doRatioPlot:
             hratio = GetRatioHist(dataH,stack,blinding, blindingCut)
             hratio.SetName(output+'_'+'hratio')
+            hratio_band = hratio.Clone(output+'_hratio_band')
             hline = hratio.Clone(output+'_'+"hline")
-            for ii in range(hline.GetNbinsX()+1): 
-                hline.SetBinContent(ii,1.0)
-                hline.SetBinError(ii,0.0)
+            for ii in range(hline.GetNbinsX()):
+                hratio_band.SetBinContent(ii+1,1.0) 
+                hline.SetBinContent(ii+1,1.0)
+                hline.SetBinError(ii+1,0.0)
+            hratio_band.SetFillColor(ROOT.kOrange+6)
+            hratio_band.SetFillStyle(1001)
+            hratio_band.SetMarkerStyle(0)
+            hratio_band.SetLineStyle(0)
             hline.SetLineColor(ROOT.kRed)
             hline.SetFillStyle(0)
             p2.cd()
-            hratio.Draw('AXIS')
+            hratio_band.Draw('E2')
             hline.Draw('HIST,SAME')
             hratio.Draw('P,SAME')
                 
@@ -493,7 +499,10 @@ class StackPlotter(object):
         legend.Write()
         p1.Write()
         p2.Write()
-        if self.doRatioPlot:   hratio.Write()
+        if self.doRatioPlot:
+            hratio.Write()
+            hratio_band.Write()
+            hline.Write()
         frame.Write()
         for hist in hists: hist.Write()  
         #fout.Close()

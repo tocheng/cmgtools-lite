@@ -92,9 +92,9 @@ doGJetsSkimAddTrigEff: true
 # for reminiaod all corr
 #GJetsSkimInputFileName: data/gjets/study_gjets_data_fullv2_modify.root 
 # for reminiaod all corr met
-#GJetsSkimInputFileName: data/gjets/study_gjets_data_allcorV2_modify.root 
+GJetsSkimInputFileName: data/gjets/study_gjets_data_allcorV2_modify.root 
 # for rereco-represkim
-GJetsSkimInputFileName: data/gjets/study_gjets_data_ReRecoRePreSkim_modify.root 
+#GJetsSkimInputFileName: data/gjets/study_gjets_data_ReRecoRePreSkim_modify.root 
 
 GJetsSkimPhiWeightInputFileName: data/gjets/gjet_photon_phi_weight.root
 GJetsSkimRhoWeightInputFileName: data/gjets/get_rho_weight_fullv2.root

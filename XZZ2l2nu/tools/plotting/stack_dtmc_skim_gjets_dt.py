@@ -450,8 +450,8 @@ if dyGJets :
     #'SinglePhoton_Run2016Full_ReReco_v2', 
     #'SinglePhoton_Run2016Full_ReReco_v2_oldSkim', 
     #'SinglePhoton_Run2016Full_ReReco_v2_ReSkim', 
-    #'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim', 
-    'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_RcNoSmooth', 
+    'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim', 
+    #'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_RcNoSmooth', 
     #'SinglePhoton_Run2016Full_ReReco_v2_NoRecoil', 
     ]
 

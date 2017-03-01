@@ -1,9 +1,11 @@
 #!/bin/sh
 
 #inputs
-#inputdir=/data2/XZZ2/80X_20170202_GJets_light
-inputdir=/home/heli/XZZ/80X_20170202_GJets_light
-outputdir=/home/heli/XZZ/80X_20170202_GJets_light_Skim
+inputdir=/data2/XZZ2/80X_20170202_GJets_light_hlt
+outputdir=/home/heli/XZZ/80X_20170202_GJets_light_hlt_allcorV2Skim
+#outputdir=/home/heli/XZZ/80X_20170202_GJets_light_hlt_Skim
+#inputdir=/home/heli/XZZ/80X_20170202_GJets_light
+#outputdir=/home/heli/XZZ/80X_20170202_GJets_light_Skim
 config=config/parameters_light_gjets
 
 mkdir -p ${outputdir}
@@ -39,9 +41,9 @@ njob="0"
 #for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep  SinglePhoton_Run2016Full_03Feb2017_allcor  ); 
 #for infile in $inputdir/SinglePhoton_Run2016Full_ReReco_v2/vvTreeProducer/tree.root ;
 #for infile in $inputdir/T_tWch/vvTreeProducer/tree.root ;
+#for infile in $inputdir/TBar_tWch/vvTreeProducer/tree.root ;
 #for infile in $inputdir/SinglePhoton_Run2016Full_03Feb2017_allcorV2/vvTreeProducer/tree.root ;
 #for infile in $inputdir/SinglePhoton_Run2016Full_ReReco_v2_RePreSkim/vvTreeProducer/tree.root ;
-#for infile in $inputdir/TBar_tWch/vvTreeProducer/tree.root ;
 for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v  Single  ); 
 do
   echo "+++ skimming $infile +++"
