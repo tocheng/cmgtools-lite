@@ -3,16 +3,23 @@
 std::string indir="recoil_out8";
 
 std::string  name1 =
+"SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil_met_para_study_ZSelecLowLPt_mu"
+//"GJetsHTBinBIG_met_para_study_ZSelecLowLPt_mu"
+//"SingleEMU_Run2016Full_03Feb2017_allcorV2_met_para_study_ZSelecLowLPt_mu"
 //"SingleEMU_Run2016Full_03Feb2017_allcorV2_met_para_study_dtHLT_el"
-"SingleEMU_Run2016Full_03Feb2017_allcorV2_met_para_study_dtHLT_mu"
+//"SingleEMU_Run2016Full_03Feb2017_allcorV2_met_para_study_dtHLT_mu"
 //"SingleEMU_Run2016Full_03Feb2017_v0_met_para_study_ZSelecLowLPt_mu"
 //"SingleEMU_Run2016Full_ReReco_v2_DtReCalib_met_para_study_ZSelecLowLPt_mu"
 //"SinglePhoton_Run2016Full_ReReco_v2_NoRecoil_met_para_study_ZSelecLowLPt_mu"
 //"SinglePhoton_Run2016Full_ReReco_v2_NoRecoil_met_para_study_ZSelecLowLPt"
 ;
 std::string  name2 =
+"SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil_met_para_study_PhEC_ZSelecLowLPt_mu"
+//"SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil_met_para_study_ZSelecLowLPt_mu"
 //"SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_RcNoSmooth_met_para_study_el"
-"SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_RcNoSmooth_met_para_study_mu"
+//"SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_RcNoSmooth_met_para_study_mu"
+//"QCDPtBinEMEnrichedBIG_met_para_study_ZSelecLowLPt_mu"
+//"GJetsHTBinBIG_met_para_study_ZSelecLowLPt_mu"
 //"SinglePhoton_Run2016Full_03Feb2017_allcorV2_met_para_study_mu"
 //"SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_met_para_study_el"
 //"SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_met_para_study_mu"
@@ -26,6 +33,20 @@ std::string  name2 =
 //"SingleEMU_Run2016Full_ReReco_v2_DtReCalib_met_para_study_ZSelecLowLPt_dtHLT_mu"
 //"SinglePhoton_Run2016Full_ReReco_v2_met_para_study_ZSelecLowLPt_mu"
 //"GJets_HT_BIG_met_para_study_ZSelecLowLPt"
+;
+
+std::string leg1 = 
+//"Di-Lepton Data"
+//"GJets Photon MC"
+//"Photon Data"
+"Photon Data EC+EE"
+;
+
+std::string leg2 = 
+"Photon Data EC"
+//"Photon Data"
+//"QCD Photon MC"
+//"GJets Photon MC"
 ;
 
 std::string name_file1 = indir+"/"+name1+".root";
@@ -61,6 +82,7 @@ TGraphErrors* _gr_met_para_shift_dtmc[10];
 TGraphErrors* _gr_ratio_met_para_sigma_dtmc[10];
 TGraphErrors* _gr_ratio_met_perp_sigma_dtmc[10];
 TLegend* lg[1000];
+TLegend* lg1[100];
 
 _file_dt_sigma[0] = new TFile(name_file1.c_str());
 _file_mc_sigma[0] = new TFile(name_file2.c_str());
@@ -86,10 +108,14 @@ ymax = _h_met_para_shift_dtmc[0]->GetBinContent(_h_met_para_shift_dtmc[0]->GetMa
 ymin = _h_met_para_shift_dtmc[0]->GetBinContent(_h_met_para_shift_dtmc[0]->GetMinimumBin());
 _h_met_para_shift_dtmc[0]->GetYaxis()->SetRangeUser(ymin, ymax);
 
+lg1[0] = new TLegend(0.6,0.6,0.85,0.85);
+lg1[0]->AddEntry(_h_dt_met_para_shift[0], leg1.c_str(), "pl");
+lg1[0]->AddEntry(_h_mc_met_para_shift[0], leg2.c_str(), "pl");
 
 plots->Clear();
 _h_dt_met_para_shift[0]->Draw();
 _h_mc_met_para_shift[0]->Draw("same");
+lg1[0]->Draw();
 plots->SetLogx(1);
 sprintf(name, "%s.pdf", plots_file.c_str());
 plots->Print(name);
@@ -129,6 +155,7 @@ _h_met_perp_shift_dtmc[0]->GetYaxis()->SetRangeUser(ymin, ymax);
 plots->Clear();
 _h_dt_met_perp_shift[0]->Draw();
 _h_mc_met_perp_shift[0]->Draw("same");
+lg1[0]->Draw();
 plots->SetLogx(1);
 sprintf(name, "%s.pdf", plots_file.c_str());
 plots->Print(name);
@@ -168,6 +195,7 @@ _h_mc_met_para_sigma[0]->GetXaxis()->SetRangeUser(2,3000);
 plots->Clear();
 _h_dt_met_para_sigma[0]->Draw();
 _h_mc_met_para_sigma[0]->Draw("same");
+lg1[0]->Draw();
 plots->SetLogx(1);
 sprintf(name, "%s.pdf", plots_file.c_str());
 plots->Print(name);
@@ -193,6 +221,7 @@ _h_mc_met_perp_sigma[0]->GetXaxis()->SetRangeUser(2,3000);
 plots->Clear();
 _h_dt_met_perp_sigma[0]->Draw();
 _h_mc_met_perp_sigma[0]->Draw("same");
+lg1[0]->Draw();
 plots->SetLogx(1);
 sprintf(name, "%s.pdf", plots_file.c_str());
 plots->Print(name);
@@ -233,6 +262,7 @@ h_zpt_dtmc->Divide(h_mc_zpt);
 plots->Clear();
 h_dt_zpt->Draw();
 h_mc_zpt->Draw("same");
+lg1[0]->Draw();
 plots->SetLogx(1);
 sprintf(name, "%s.pdf", plots_file.c_str());
 plots->Print(name);
@@ -250,12 +280,10 @@ plots->Clear();
 
 
 
-std::cout << "come here" << std::endl;
 
 TH1D* h_met_para_vs_zpt_bin_dt[100];
 TH1D* h_met_para_vs_zpt_bin_mc[100];
 
-std::cout << "come here" << std::endl;
 for (int i=0; i<h_dt_met_para_vs_zpt->GetNbinsX(); i++){
   sprintf(name, "h_met_para_vs_zpt_bin%d", i+1);
   h_met_para_vs_zpt_bin_dt[i] = (TH1D*)_file_dt_sigma[0]->Get(name);
@@ -264,10 +292,10 @@ for (int i=0; i<h_dt_met_para_vs_zpt->GetNbinsX(); i++){
   lg[i] = new TLegend(0.6,0.7,0.9,0.9);
   sprintf(name, "h_met_para_vs_zpt_bin%d_dt", i+1);
   h_met_para_vs_zpt_bin_dt[i]->SetName(name);
-  lg[i]->AddEntry(h_met_para_vs_zpt_bin_dt[i], name, "pl");
+  lg[i]->AddEntry(h_met_para_vs_zpt_bin_dt[i], leg1.c_str(), "pl");
   sprintf(name, "h_met_para_vs_zpt_bin%d_mc", i+1);
   h_met_para_vs_zpt_bin_mc[i]->SetName(name);
-  lg[i]->AddEntry(h_met_para_vs_zpt_bin_mc[i], name, "pl");
+  lg[i]->AddEntry(h_met_para_vs_zpt_bin_mc[i], leg2.c_str(), "pl");
 
   h_met_para_vs_zpt_bin_dt[i]->Scale(1.0/h_met_para_vs_zpt_bin_dt[i]->Integral());
   h_met_para_vs_zpt_bin_mc[i]->Scale(1.0/h_met_para_vs_zpt_bin_mc[i]->Integral());

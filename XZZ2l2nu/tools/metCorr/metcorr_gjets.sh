@@ -2,7 +2,8 @@
 
 #inputs
 inputdir=/data2/XZZ2/80X_20170202_GJets_light_hlt
-outputdir=/home/heli/XZZ/80X_20170202_GJets_light_hlt_allcorV2Skim
+outputdir=/home/heli/XZZ/80X_20170202_GJets_light_hlt_RcSkim
+#outputdir=/home/heli/XZZ/80X_20170202_GJets_light_hlt_allcorV2Skim
 #outputdir=/home/heli/XZZ/80X_20170202_GJets_light_hlt_Skim
 #inputdir=/home/heli/XZZ/80X_20170202_GJets_light
 #outputdir=/home/heli/XZZ/80X_20170202_GJets_light_Skim

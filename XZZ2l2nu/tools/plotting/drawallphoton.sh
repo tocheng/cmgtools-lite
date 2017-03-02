@@ -1,9 +1,12 @@
 #!/bin/sh
 
 
+#tag="ReRecoSummer16HLT_FixXsec_"
+#tag="ReRecoSummer16HLT_MCRcFixXsec_"
 #tag="ReRecoSummer16HLT_"
-tag="ReMiniAODSummer16HLT_Rc_"
-#tag="testhlt2_Rc_"
+tag="ReMiniAODSummer16HLT_FixXsec_"
+#tag="ReMiniAODSummer16HLT_MCRcFixXsec_"
+#tag="testhlt2_MCRc_"
 #tag="ptscale_reminiaod_"
 #tag="ptscale_rereco_"
 #cutChains="loosecut"
@@ -12,7 +15,8 @@ tag="ReMiniAODSummer16HLT_Rc_"
 #cutChains="tightzptgt50lt100 tightzptgt100"
 #cutChains="tight tightzptgt50lt100 tightzptgt100"
 #cutChains="tight tightzptgt100"
-cutChains="SR"
+#cutChains="SR"
+cutChains="tight tightzpt100 SR"
 logdir="log_ph"
 
 mkdir -p $logdir
@@ -30,9 +34,9 @@ do
 #   ./stack_dtmc_skim_photon.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --ZWeight --channel="el"  &> ${logdir}/${tag}${cutChain}_ZWt_el.log &
 
 
-#   ./stack_dtmc_skim_photon.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --SeparateProcess --LogY  &> ${logdir}/${tag}${cutChain}_SepProc_log.log &
-   ./stack_dtmc_skim_photon.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --SeparateProcess --ZWeight --channel="mu" --LogY   &> ${logdir}/${tag}${cutChain}_SepProc_ZWt_mu_log.log &
-   ./stack_dtmc_skim_photon.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --SeparateProcess --ZWeight --channel="el" --LogY   &> ${logdir}/${tag}${cutChain}_SepProc_ZWt_el_log.log &
+   ./stack_dtmc_skim_photon.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --SeparateProcess --LogY  &> ${logdir}/${tag}${cutChain}_SepProc_log.log &
+#   ./stack_dtmc_skim_photon.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --SeparateProcess --ZWeight --channel="mu" --LogY   &> ${logdir}/${tag}${cutChain}_SepProc_ZWt_mu_log.log &
+#   ./stack_dtmc_skim_photon.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --SeparateProcess --ZWeight --channel="el" --LogY   &> ${logdir}/${tag}${cutChain}_SepProc_ZWt_el_log.log &
 
 #   ./stack_dtmc_skim_photon.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --SeparateProcess  &> ${logdir}/${tag}${cutChain}_SepProc.log &
 #   ./stack_dtmc_skim_photon.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --SeparateProcess --ZWeight --channel="mu"  &> ${logdir}/${tag}${cutChain}_SepProc_ZWt_mu.log &

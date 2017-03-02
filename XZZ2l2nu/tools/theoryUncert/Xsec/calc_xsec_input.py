@@ -1,6 +1,15 @@
 
 import FWCore.ParameterSet.Config as cms
 
+inputZNuNuGJets = cms.untracked.vstring(
+'/store/mc/RunIISummer16MiniAODv2/ZNuNuGJets_MonoPhoton_PtG-130_TuneCUETP8M1_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/4058DE1B-70C9-E611-ACDF-0242AC130007.root',
+'/store/mc/RunIISummer16MiniAODv2/ZNuNuGJets_MonoPhoton_PtG-130_TuneCUETP8M1_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/8EB495A6-6AC9-E611-B7A9-0025905B8562.root',
+'/store/mc/RunIISummer16MiniAODv2/ZNuNuGJets_MonoPhoton_PtG-130_TuneCUETP8M1_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/928C7358-63C9-E611-9B6E-0CC47A4C8EC8.root',
+'/store/mc/RunIISummer16MiniAODv2/ZNuNuGJets_MonoPhoton_PtG-130_TuneCUETP8M1_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/969D5F83-64C9-E611-910F-0CC47A4D7662.root',
+'/store/mc/RunIISummer16MiniAODv2/ZNuNuGJets_MonoPhoton_PtG-130_TuneCUETP8M1_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/CE54B460-70C9-E611-80A1-0025905A60A0.root',
+'/store/mc/RunIISummer16MiniAODv2/ZNuNuGJets_MonoPhoton_PtG-130_TuneCUETP8M1_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/E84DBC18-70C9-E611-80CB-0025905A4964.root'
+)
+
 inputWZ3lnu = cms.untracked.vstring(
 '/store/mc/RunIISummer16MiniAODv2/WZTo3LNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/040B9D16-B5BD-E611-A70F-0CC47A78A3F8.root',
 '/store/mc/RunIISummer16MiniAODv2/WZTo3LNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/14CED05F-DFBB-E611-ACE6-00259029E922.root',

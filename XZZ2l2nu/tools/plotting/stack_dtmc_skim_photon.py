@@ -97,7 +97,9 @@ if WtQCDToGJets:
 
 outdir='plots_ph'
 
+#indir='/home/heli/XZZ/80X_20170202_GJets_light_hlt_allcorV2RcSkim'
 indir='/home/heli/XZZ/80X_20170202_GJets_light_hlt_allcorV2Skim'
+#indir='/home/heli/XZZ/80X_20170202_GJets_light_hlt_RcSkim'
 #indir='/home/heli/XZZ/80X_20170202_GJets_light_hlt_Skim'
 #indir='/home/heli/XZZ/80X_20170202_GJets_light_Skim'
 lumi=35.87
@@ -239,7 +241,9 @@ znngPlotters=[]
 for sample in znngSamples:
     znngPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
     znngPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
-    znngPlotters[-1].addCorrectionFactor('xsec','xsec')
+    if sample=='ZNuNuGJetsGt130': znngPlotters[-1].addCorrectionFactor('0.1832*1.43','xsec')  # NNLO/LO k-factor from JHEP02 (2016) 057, Table 2
+    elif sample=='ZNuNuGJetsGt40Lt130': znngPlotters[-1].addCorrectionFactor('xsec*1.43','xsec')
+    else: znngPlotters[-1].addCorrectionFactor('xsec','xsec')
     znngPlotters[-1].addCorrectionFactor('genWeight','genWeight')
     znngPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
     znngPlotters[-1].addCorrectionFactor(scale,'scale')
@@ -251,13 +255,15 @@ for sample in znngSamples:
 ###########################
 wlngSamples = [
 'WGToLNuG',
+'WGJetsPt130'
 ]
 
 wlngPlotters=[]
 for sample in wlngSamples:
     wlngPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
     wlngPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
-    wlngPlotters[-1].addCorrectionFactor('xsec','xsec')
+    if sample=='WGJetsPt130':  wlngPlotters[-1].addCorrectionFactor('0.834*2.53','xsec')  # NNLO/LO k-factor from JHEP04 (2015) 018, Table 1
+    else: wlngPlotters[-1].addCorrectionFactor('xsec','xsec')
     wlngPlotters[-1].addCorrectionFactor('genWeight','genWeight')
     wlngPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
     wlngPlotters[-1].addCorrectionFactor(scale,'scale')
@@ -427,9 +433,10 @@ for i in range(len(allmcPlotters)) :
 ############################################
 
 gdataSamples = [
-#'SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil',
+'SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil',
 #'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_NoRecoil',
-'SinglePhoton_Run2016Full_03Feb2017_allcorV2',
+#'SinglePhoton_Run2016Full_03Feb2017_allcorV2',
+#'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim',
 #'SinglePhoton_Run2016Full_ReReco_v2',
 ]
 

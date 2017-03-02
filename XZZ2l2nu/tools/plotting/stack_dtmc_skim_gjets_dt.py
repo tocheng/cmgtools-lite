@@ -104,7 +104,10 @@ if doGMCPhPtScale:
 
 outdir='plots'
 
-indir='/home/heli/XZZ/80X_20170202_light_hlt_allcorV2Skim/'
+#indir='/home/heli/XZZ/80X_20170202_light_hlt_Skim/'
+#indir='/home/heli/XZZ/80X_20170202_light_hlt_RcSkim/'
+indir='/home/heli/XZZ/80X_20170202_light_hlt_allcorV2RcSkim/'
+#indir='/home/heli/XZZ/80X_20170202_light_hlt_allcorV2Skim/'
 #indir='/home/heli/XZZ/80X_20170202_light_Skim/'
 lumi=35.87
 sepSig=True
@@ -397,7 +400,8 @@ if dyGJets :
     'G_TTGJets_BIG', 
     'G_T_tWch',  
     'G_T_tch_powheg', 
-    'G_WGToLNuG', 
+    'G_WGToLNuG',
+    'G_WGJetsPt130', 
     'G_ZNuNuGJetsGt130', 
     'G_ZNuNuGJetsGt40Lt130',
     'G_WJetsToLNu_HT100to200_BIG',
@@ -426,8 +430,12 @@ if dyGJets :
     for sample in phymetSamples:
         phymetPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
         phymetPlotters[-1].addCorrectionFactor('-1/SumWeights','norm') # negative weight for subtraction
-        phymetPlotters[-1].addCorrectionFactor('xsec','xsec')
+        if sample=='G_ZNuNuGJetsGt130': phymetPlotters[-1].addCorrectionFactor('0.1832*1.43','xsec')  # NNLO/LO k-factor from JHEP02 (2016) 057, Table 2
+        elif sample=='G_ZNuNuGJetsGt40Lt130': phymetPlotters[-1].addCorrectionFactor('xsec*1.43','xsec')
+        elif sample=='G_WGJetsPt130':  phymetPlotters[-1].addCorrectionFactor('0.834*2.53','xsec')  # NNLO/LO k-factor from JHEP04 (2015) 018, Table 1
+        else: phymetPlotters[-1].addCorrectionFactor('xsec','xsec')
         phymetPlotters[-1].addCorrectionFactor('genWeight','genWeight')
+        phymetPlotters[-1].addCorrectionFactor('GJetsRhoWeight','GJetsRhoWeight')
         phymetPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
         phymetPlotters[-1].addCorrectionFactor(g_scale,'scale')
         phymetPlotters[-1].addCorrectionFactor(str(1/gdataFidXsec),'frac') # divided by g data fid-xsec
@@ -449,6 +457,7 @@ if dyGJets :
     #'SinglePhoton_Run2016Full_03Feb2017_uncorr', 
     #'SinglePhoton_Run2016Full_03Feb2017_allcor', 
     'SinglePhoton_Run2016Full_03Feb2017_allcorV2', 
+    #'SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil', 
     #'SinglePhoton_Run2016Full_03Feb2017_v0', 
     #'SinglePhoton_Run2016Full_ReReco_v2', 
     #'SinglePhoton_Run2016Full_ReReco_v2_oldSkim', 
@@ -535,21 +544,10 @@ else:
     MCZJets.setFillProperties(1001,ROOT.kGreen+2)
 
     # some plotting definition
-    if channel=='el':
-        MCZJets.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass_el')
-        MCZJets.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt_el')
-        MCZJets.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi_el')
-        MCZJets.setAlias('llnunu_mt_to_plot', 'llnunu_mt_el')
-    elif channel=='mu':
-        MCZJets.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass_mu')
-        MCZJets.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt_mu')
-        MCZJets.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi_mu')
-        MCZJets.setAlias('llnunu_mt_to_plot', 'llnunu_mt_mu')
-    else:
-        MCZJets.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
-        MCZJets.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
-        MCZJets.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
-        MCZJets.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
+    MCZJets.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
+    MCZJets.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
+    MCZJets.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
+    MCZJets.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
 
 
 # end if dyGJets:..., else: ...
@@ -718,12 +716,12 @@ tag+='_'
 
 
 if test: 
-#    Stack.drawStack('nVert', cuts, str(lumi*1000), 80, 0.0, 80.0, titlex = "N vertices", units = "",output='nVert',outDir=outdir,separateSignal=sepSig)
-#    Stack.drawStack('rho', cuts, str(lumi*1000), 55, 0.0, 55.0, titlex = "#rho", units = "",output='rho',outDir=outdir,separateSignal=sepSig)
-#    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 30, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output='zpt',outDir=outdir,separateSignal=sepSig)
-#    Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 60, 60, 120, titlex = "M(Z)", units = "GeV",output='zmass',outDir=outdir,separateSignal=sepSig)
-#    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 50, 100.0, 1600.0, titlex = "M_{T}", units = "GeV",output='mt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
-#    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 30, 0, 1500, titlex = "MET", units = "GeV",output='met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
+    Stack.drawStack('nVert', cuts, str(lumi*1000), 80, 0.0, 80.0, titlex = "N vertices", units = "",output='nVert',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('rho', cuts, str(lumi*1000), 55, 0.0, 55.0, titlex = "#rho", units = "",output='rho',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 30, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output='zpt',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 60, 60, 120, titlex = "M(Z)", units = "GeV",output='zmass',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 50, 100.0, 1600.0, titlex = "M_{T}", units = "GeV",output='mt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 30, 0, 1500, titlex = "MET", units = "GeV",output='met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
     Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 25, -500, 500.0, titlex = "MET_{#parallel}", units = "GeV",output='met_para',outDir=outdir,separateSignal=sepSig)
 
 #    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 200, 0.0, 2000.0, titlex = "P_{T}(Z)", units = "GeV",output='zpt_high2k',outDir=outdir,separateSignal=sepSig)

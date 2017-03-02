@@ -119,7 +119,8 @@ int main(int argc, char** argv) {
   if (_doJEC )  prepareJECJER();
 
   // prepare inputs for simple met recoil tune.
-  if (_doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_isData && _doGJetsSkim)) ) 
+  //if (_doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_isData && _doGJetsSkim)) ) 
+  if (_doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_doGJetsSkim)) ) 
   {
     prepareRecoil();
     _doDummyMETUncert = true;
@@ -195,7 +196,8 @@ int main(int argc, char** argv) {
     if (_doJEC )  doJECJER();
     
     // simple met recoil tune.
-    if (_doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_isData && _doGJetsSkim)) ) doRecoil();
+    //if (_doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_isData && _doGJetsSkim)) ) doRecoil();
+    if (_doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_doGJetsSkim)) ) doRecoil();
     
 
     // add eff scale factors
@@ -1719,7 +1721,7 @@ void doJECJER()
 // prepare inputs for simple met recoil tune.
 void prepareRecoil()
 {
-  if (_doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_isData && _doGJetsSkim)) ) {
+  //if (_doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_isData && _doGJetsSkim)) ) {
     // met shift  sigma
     _file_dt_sigma[0] = new TFile(_RecoilInputFileNameData_all.c_str());
     _file_dt_sigma[1] = new TFile(_RecoilInputFileNameData_mu.c_str());
@@ -1883,7 +1885,7 @@ void prepareRecoil()
       }
     }
 
-  }
+  //}
   
   
 
@@ -1892,7 +1894,7 @@ void prepareRecoil()
 // do simple met recoil fine tuning
 void doRecoil()
 {
-  if ( _doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_isData && _doGJetsSkim)) ) {
+  //if ( _doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_isData && _doGJetsSkim)) ) {
     
     // variable central values
     Float_t met_para = _llnunu_l2_pt*cos(_llnunu_l2_phi-_llnunu_l1_phi);
@@ -2299,7 +2301,7 @@ void doRecoil()
 
 
 
-  }
+  //}
 
 }
 

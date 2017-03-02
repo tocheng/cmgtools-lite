@@ -107,8 +107,8 @@ def GetRatioHist(h1, hstack,blinding=False,blindingCut=100):
         hratio.SetBinContent(i, RR)
         hratio.SetBinError(i, EE)
         if blinding and h1.GetBinCenter(i)>blindingCut: 
-            hratio.SetBinContent(i, 0)
-            hratio.SetBinError(i, 0)
+            hratio.SetBinContent(i, -100)
+            #hratio.SetBinError(i, 0)
 
     hratio.SetMarkerStyle(20)
     hratio.SetLineWidth(1)

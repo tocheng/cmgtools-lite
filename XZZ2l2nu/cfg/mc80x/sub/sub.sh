@@ -1,6 +1,6 @@
 #!/bin/sh
 
-outdir=mc_phdynlo
+outdir=mc_wg
 config=run_xzz2l2nu_80x_cfg_photon_mc.py
 #config=run_xzz2l2nu_80x_cfg_loose_mc.py
 otherfiles=" pogRecipes.py "
