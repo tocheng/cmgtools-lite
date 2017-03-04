@@ -84,8 +84,8 @@ if doPhPtScale:
 #    scale+="*((-0.371771+0.0193019*pow(llnunu_l1_pt,1)-0.000119102*pow(llnunu_l1_pt,2)+3.90785e-07*pow(llnunu_l1_pt,3)-7.29192e-10*pow(llnunu_l1_pt,4)+7.7063e-13*pow(llnunu_l1_pt,5)-4.27744e-16*pow(llnunu_l1_pt,6)+9.61926e-20*pow(llnunu_l1_pt,7))*(llnunu_l1_pt<=900)+(0.723945)*(llnunu_l1_pt>900))"  # for allcorV2
 #    scale+="*((-0.0359107+0.0106695*llnunu_l1_pt-4.35056e-05*pow(llnunu_l1_pt,2)+7.6524e-08*pow(llnunu_l1_pt,3)-6.28775e-11*pow(llnunu_l1_pt,4)+1.9693e-14*pow(llnunu_l1_pt,5))*(llnunu_l1_pt<=900)+(0.487691)*(llnunu_l1_pt>900))"  # for ReReco
 
-    scale+="*((0.295668+0.0127154*llnunu_l1_pt-7.71163e-05*pow(llnunu_l1_pt,2)+2.2603e-07*pow(llnunu_l1_pt,3)-3.50496e-10*pow(llnunu_l1_pt,4)+2.7572e-13*pow(llnunu_l1_pt,5)-8.66455e-17*pow(llnunu_l1_pt,6))*(llnunu_l1_pt<=800)+(0.912086)*(llnunu_l1_pt>800))"  # for reminiaod allcorV2 mc hlt
-#    scale+="*((0.322959+0.0107055*llnunu_l1_pt-5.56587e-05*pow(llnunu_l1_pt,2)+1.26764e-07*pow(llnunu_l1_pt,3)-1.49478e-10*pow(llnunu_l1_pt,4)+8.91559e-14*pow(llnunu_l1_pt,5)-2.13034e-17*pow(llnunu_l1_pt,6))*(llnunu_l1_pt<=900)+(0.536969)*(llnunu_l1_pt>900))"  # for ReReco mc hlt
+#    scale+="*((0.295668+0.0127154*llnunu_l1_pt-7.71163e-05*pow(llnunu_l1_pt,2)+2.2603e-07*pow(llnunu_l1_pt,3)-3.50496e-10*pow(llnunu_l1_pt,4)+2.7572e-13*pow(llnunu_l1_pt,5)-8.66455e-17*pow(llnunu_l1_pt,6))*(llnunu_l1_pt<=800)+(0.912086)*(llnunu_l1_pt>800))"  # for reminiaod allcorV2 mc hlt
+    scale+="*((0.322959+0.0107055*llnunu_l1_pt-5.56587e-05*pow(llnunu_l1_pt,2)+1.26764e-07*pow(llnunu_l1_pt,3)-1.49478e-10*pow(llnunu_l1_pt,4)+8.91559e-14*pow(llnunu_l1_pt,5)-2.13034e-17*pow(llnunu_l1_pt,6))*(llnunu_l1_pt<=900)+(0.536969)*(llnunu_l1_pt>900))"  # for ReReco mc hlt
     
 
 
@@ -98,9 +98,9 @@ if WtQCDToGJets:
 outdir='plots_ph'
 
 #indir='/home/heli/XZZ/80X_20170202_GJets_light_hlt_allcorV2RcSkim'
-indir='/home/heli/XZZ/80X_20170202_GJets_light_hlt_allcorV2Skim'
+#indir='/home/heli/XZZ/80X_20170202_GJets_light_hlt_allcorV2Skim'
 #indir='/home/heli/XZZ/80X_20170202_GJets_light_hlt_RcSkim'
-#indir='/home/heli/XZZ/80X_20170202_GJets_light_hlt_Skim'
+indir='/home/heli/XZZ/80X_20170202_GJets_light_hlt_Skim'
 #indir='/home/heli/XZZ/80X_20170202_GJets_light_Skim'
 lumi=35.87
 sepSig=True
@@ -255,7 +255,7 @@ for sample in znngSamples:
 ###########################
 wlngSamples = [
 'WGToLNuG',
-'WGJetsPt130'
+#'WGJetsPt130'
 ]
 
 wlngPlotters=[]
@@ -263,6 +263,7 @@ for sample in wlngSamples:
     wlngPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
     wlngPlotters[-1].addCorrectionFactor('1./SumWeights','norm')
     if sample=='WGJetsPt130':  wlngPlotters[-1].addCorrectionFactor('0.834*2.53','xsec')  # NNLO/LO k-factor from JHEP04 (2015) 018, Table 1
+    elif sample=='WGToLNuG':  wlngPlotters[-1].addCorrectionFactor('xsec*2.53','xsec')  # NNLO/LO k-factor from JHEP04 (2015) 018, Table 1
     else: wlngPlotters[-1].addCorrectionFactor('xsec','xsec')
     wlngPlotters[-1].addCorrectionFactor('genWeight','genWeight')
     wlngPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
@@ -433,8 +434,8 @@ for i in range(len(allmcPlotters)) :
 ############################################
 
 gdataSamples = [
-'SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil',
-#'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_NoRecoil',
+#'SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil',
+'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_NoRecoil',
 #'SinglePhoton_Run2016Full_03Feb2017_allcorV2',
 #'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim',
 #'SinglePhoton_Run2016Full_ReReco_v2',

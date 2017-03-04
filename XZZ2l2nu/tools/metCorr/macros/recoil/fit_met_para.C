@@ -1,8 +1,8 @@
 
 
 std::string channel = "all";
-bool doMC = false;
-bool doGJets = true;
+bool doMC = true;
+bool doGJets = false;
 bool doGJetsMC = false;
 bool useZSelecLowLPt = true;
 bool useEffSf = false;
@@ -18,7 +18,8 @@ bool mcUseRhoWt = false;
 // 4.) for GJets: doGJets=true, doMC=false, useZSelecLowLPt=true, useEffSf=false
 
 std::string inputdir = 
-"/home/heli/XZZ/80X_20170202_light_hlt_allcorV2Skim"
+"/data2/XZZ2/80X_20170202_light_Skim"
+//"/home/heli/XZZ/80X_20170202_light_hlt_allcorV2Skim"
 //"/home/heli/XZZ/80X_20170202_GJets_light_hlt_allcorV2Skim"
 //"/home/heli/XZZ/80X_20170202_light_Skim"
 //"/datac/heli/XZZ2/80X_20161029_light_Skim"

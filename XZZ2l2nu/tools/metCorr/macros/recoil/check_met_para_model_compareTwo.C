@@ -3,9 +3,9 @@
 std::string indir="recoil_out8";
 
 std::string  name1 =
-"SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil_met_para_study_ZSelecLowLPt_mu"
+//"SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil_met_para_study_ZSelecLowLPt_mu"
 //"GJetsHTBinBIG_met_para_study_ZSelecLowLPt_mu"
-//"SingleEMU_Run2016Full_03Feb2017_allcorV2_met_para_study_ZSelecLowLPt_mu"
+"SingleEMU_Run2016Full_03Feb2017_allcorV2_met_para_study_ZSelecLowLPt_mu"
 //"SingleEMU_Run2016Full_03Feb2017_allcorV2_met_para_study_dtHLT_el"
 //"SingleEMU_Run2016Full_03Feb2017_allcorV2_met_para_study_dtHLT_mu"
 //"SingleEMU_Run2016Full_03Feb2017_v0_met_para_study_ZSelecLowLPt_mu"
@@ -14,8 +14,9 @@ std::string  name1 =
 //"SinglePhoton_Run2016Full_ReReco_v2_NoRecoil_met_para_study_ZSelecLowLPt"
 ;
 std::string  name2 =
-"SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil_met_para_study_PhEC_ZSelecLowLPt_mu"
-//"SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil_met_para_study_ZSelecLowLPt_mu"
+"DYJetsToLL_M50_Ext_NoRecoil_met_para_study_ZSelecLowLPt_mu"
+//"SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil_met_para_study_PhEC_ZSelecLowLPt_mu"
+//"SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil_met_para_study_ZSelecLowLPt_el"
 //"SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_RcNoSmooth_met_para_study_el"
 //"SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_RcNoSmooth_met_para_study_mu"
 //"QCDPtBinEMEnrichedBIG_met_para_study_ZSelecLowLPt_mu"
@@ -36,14 +37,15 @@ std::string  name2 =
 ;
 
 std::string leg1 = 
-//"Di-Lepton Data"
+"Di-Lepton Data"
 //"GJets Photon MC"
 //"Photon Data"
-"Photon Data EC+EE"
+//"Photon Data EC+EE"
 ;
 
 std::string leg2 = 
-"Photon Data EC"
+"ZJets MC"
+//"Photon Data EC"
 //"Photon Data"
 //"QCD Photon MC"
 //"GJets Photon MC"
@@ -108,7 +110,7 @@ ymax = _h_met_para_shift_dtmc[0]->GetBinContent(_h_met_para_shift_dtmc[0]->GetMa
 ymin = _h_met_para_shift_dtmc[0]->GetBinContent(_h_met_para_shift_dtmc[0]->GetMinimumBin());
 _h_met_para_shift_dtmc[0]->GetYaxis()->SetRangeUser(ymin, ymax);
 
-lg1[0] = new TLegend(0.6,0.6,0.85,0.85);
+lg1[0] = new TLegend(0.25,0.6,0.5,0.85);
 lg1[0]->AddEntry(_h_dt_met_para_shift[0], leg1.c_str(), "pl");
 lg1[0]->AddEntry(_h_mc_met_para_shift[0], leg2.c_str(), "pl");
 

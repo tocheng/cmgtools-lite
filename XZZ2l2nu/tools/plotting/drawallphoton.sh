@@ -1,10 +1,10 @@
 #!/bin/sh
 
 
-#tag="ReRecoSummer16HLT_FixXsec_"
+tag="ReRecoSummer16HLT_FixXsec_"
 #tag="ReRecoSummer16HLT_MCRcFixXsec_"
 #tag="ReRecoSummer16HLT_"
-tag="ReMiniAODSummer16HLT_FixXsec_"
+#tag="ReMiniAODSummer16HLT_FixXsec_"
 #tag="ReMiniAODSummer16HLT_MCRcFixXsec_"
 #tag="testhlt2_MCRc_"
 #tag="ptscale_reminiaod_"
@@ -16,7 +16,7 @@ tag="ReMiniAODSummer16HLT_FixXsec_"
 #cutChains="tight tightzptgt50lt100 tightzptgt100"
 #cutChains="tight tightzptgt100"
 #cutChains="SR"
-cutChains="tight tightzpt100 SR"
+cutChains="tight tightzptgt100 SR"
 logdir="log_ph"
 
 mkdir -p $logdir
