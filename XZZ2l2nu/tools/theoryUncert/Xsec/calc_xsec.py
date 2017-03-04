@@ -28,8 +28,8 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from calc_xsec_input import *
 
 
-from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:mc', '')
+#from Configuration.AlCa.GlobalTag import GlobalTag
+#process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:mc', '')
 process.maxEvents = cms.untracked.PSet(
     #input = cms.untracked.int32(options.maxEvents)
     input = cms.untracked.int32(-1)
@@ -39,9 +39,10 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 
 process.source = cms.Source(
     "PoolSource",
+    fileNames = inputZNuNuGJets,
     #fileNames = inputWZ3lnu,
     #fileNames = inputggZZ2e2nu,
-    fileNames = inputZZTo2L2Nu,
+    #fileNames = inputZZTo2L2Nu,
     #fileNames = inputDY4Jets_LO,
     #fileNames  = cms.untracked.vstring(options.inputFiles),
     #fileNames  = inputDYJets,

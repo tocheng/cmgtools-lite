@@ -129,8 +129,8 @@ bool _storeOldBranches = false;
 
 
 /// MT Unc from MET Unc
-bool _doMTUnc = true;
-bool _doMTUncDummy = false;
+bool _doDummyMETUncert = false;
+bool _doDummyRecoilUncert = false;
 
 
 //=========================
@@ -774,9 +774,8 @@ float MTCalc(float pt, float phi);
 float MTCalcEl(float pt, float phi);
 float MTCalcMu(float pt, float phi);
 
-void doMTUnc();
-void doMTUncMu();
-void doMTUncEl();
+void fillMETUncert();
+void fillDummyMETUncert();
 
 // 
 

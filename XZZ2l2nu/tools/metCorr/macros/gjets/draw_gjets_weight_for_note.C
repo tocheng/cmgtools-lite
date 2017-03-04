@@ -1,5 +1,12 @@
 {
-  TFile* file = new TFile("study_gjets_data_36p46_norm_npucut_modify.root");
+
+  std::string tag = "study_gjets_data_allcorV2_modify";
+
+  char name[1000];
+
+  sprintf(name, "%s.root", tag.c_str());
+
+  TFile* file = new TFile(name);
 
   gROOT->ProcessLine(".x tdrstyle.C");
 
@@ -28,7 +35,8 @@
     hzpt_el_up->GetPoint(i, xu, yu);
     hzpt_el_dn->GetPoint(i, xd, yd);
     
-    ey = sqrt(ey*ey+(yu-yd)*(yu-yd));
+    //ey = sqrt(ey*ey+(yu-yd)*(yu-yd));
+    ey = (yu-yd)/2;
     hzpt_el->SetPointError(i, ex, ey);
   }
 
@@ -41,7 +49,8 @@
     hzpt_mu_up->GetPoint(i, xu, yu);
     hzpt_mu_dn->GetPoint(i, xd, yd);
     
-    ey = sqrt(ey*ey+(yu-yd)*(yu-yd));
+    //ey = sqrt(ey*ey+(yu-yd)*(yu-yd));
+    ey = (yu-yd)/2;
     hzpt_mu->SetPointError(i, ex, ey);
   }
 
@@ -65,15 +74,18 @@
   TCanvas* plots = new TCanvas("plots", "plots");
   hzpt_el->Draw("ap a3");
   hzpt_el->Draw("pl same"); 
-//  hzpt_el_up->Draw("l same");
-//  hzpt_el_dn->Draw("l same");
-  plots->SaveAs("study_gjets_data_36p46_norm_npucut_modify_el.pdf");
+  //hzpt_el_up->Draw("l same");
+  //hzpt_el_dn->Draw("l same");
+
+  sprintf(name, "%s_el.pdf", tag.c_str());
+  plots->SaveAs(name);
 
   hzpt_mu->Draw("ap a3"); 
   hzpt_mu->Draw("pl same"); 
-//  hzpt_mu_up->Draw("l same");
-//  hzpt_mu_dn->Draw("l same");
-  plots->SaveAs("study_gjets_data_36p46_norm_npucut_modify_mu.pdf");
+  //hzpt_mu_up->Draw("l same");
+  //hzpt_mu_dn->Draw("l same");
+  sprintf(name, "%s_mu.pdf", tag.c_str());
+  plots->SaveAs(name);
 
   
 

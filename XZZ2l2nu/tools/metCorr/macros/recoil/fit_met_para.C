@@ -1,8 +1,8 @@
 
 
 std::string channel = "all";
-bool doMC = false;
-bool doGJets = true;
+bool doMC = true;
+bool doGJets = false;
 bool doGJetsMC = false;
 bool useZSelecLowLPt = true;
 bool useEffSf = false;
@@ -18,7 +18,10 @@ bool mcUseRhoWt = false;
 // 4.) for GJets: doGJets=true, doMC=false, useZSelecLowLPt=true, useEffSf=false
 
 std::string inputdir = 
-"/home/heli/XZZ/80X_20170202_light_Skim"
+"/data2/XZZ2/80X_20170202_light_Skim"
+//"/home/heli/XZZ/80X_20170202_light_hlt_allcorV2Skim"
+//"/home/heli/XZZ/80X_20170202_GJets_light_hlt_allcorV2Skim"
+//"/home/heli/XZZ/80X_20170202_light_Skim"
 //"/datac/heli/XZZ2/80X_20161029_light_Skim"
 ;
 std::string filename;
@@ -40,14 +43,16 @@ std::vector< std::string > dtfiles = {
 std::vector< std::string > gjfiles = {
 //    "SinglePhoton_Run2016Full_ReReco_v2_NoRecoil"
 //    "SinglePhoton_Run2016Full_ReReco_v2"
-//    "GJets_HT_BIG"
+//"GJetsHTBinBIG"
+//"QCDPtBinEMEnrichedBIG"
 //"SinglePhoton_Run2016Full_03Feb2017_v0_NoRecoil"
 //"SinglePhoton_Run2016Full_03Feb2017_uncorr_NoRecoil"
 //"SinglePhoton_Run2016Full_03Feb2017_allcor_NoRecoil"
-//"SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil"
+"SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil"
+//"SinglePhoton_Run2016Full_03Feb2017_allcorV2"
 //"SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_NoRecoil"
 //"SinglePhoton_Run2016Full_ReReco_v2_RePreSkim"
-"SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_RcNoSmooth"
+//"SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_RcNoSmooth"
  };
 
 
@@ -126,6 +131,7 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   channel = chan;
 
   // tags
+  //std::string tag = tag0+"_met_para_study_PhEC";
   std::string tag = tag0+"_met_para_study";
   if (useZSelecLowLPt) tag += "_ZSelecLowLPt";
   if (doMC && mcUseRhoWt) tag += "_RhoWt";
@@ -138,8 +144,8 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
 
   // define cuts
   std::string metfilter="(Flag_EcalDeadCellTriggerPrimitiveFilter&&Flag_HBHENoiseIsoFilter&&Flag_goodVertices&&Flag_HBHENoiseFilter&&Flag_globalTightHalo2016Filter&&Flag_eeBadScFilter)";
-  std::string cuts_lepaccept="((abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13&&llnunu_l1_l1_pt>50&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID==1||llnunu_l1_l2_highPtID==1))";
-  cuts_lepaccept+="||(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11&&llnunu_l1_l1_pt>115&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5))";
+  std::string cuts_lepaccept="((abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13&&llnunu_l1_l1_pt>60&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID==1||llnunu_l1_l2_highPtID==1))";
+  cuts_lepaccept+="||(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11&&llnunu_l1_l1_pt>120&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>35&&abs(llnunu_l1_l2_eta)<2.5))";
   std::string cuts_lepaccept_lowlpt="((abs(llnunu_l1_l1_pdgId)==13&&abs(llnunu_l1_l2_pdgId)==13&&llnunu_l1_l1_pt>20&&abs(llnunu_l1_l1_eta)<2.4&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.4&&(llnunu_l1_l1_highPtID==1||llnunu_l1_l2_highPtID==1))";
   cuts_lepaccept_lowlpt+="||(abs(llnunu_l1_l1_pdgId)==11&&abs(llnunu_l1_l2_pdgId)==11&&llnunu_l1_l1_pt>20&&abs(llnunu_l1_l1_eta)<2.5&&llnunu_l1_l2_pt>20&&abs(llnunu_l1_l2_eta)<2.5))";
   //std::string cuts_zmass="(llnunu_l1_mass>70&&llnunu_l1_mass<110)";
@@ -186,7 +192,11 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   
   if (doGJets) {
     base_selec = "(1)";
-    if (doGJetsMC) base_selec = "(1)*(genWeight*puWeightsummer16/SumWeights*xsec*35867)";
+    //base_selec = "(fabs(llnunu_l1_eta)<1.5)";
+    if (doGJetsMC) {
+      base_selec += "*(genWeight*puWeightsummer16/SumWeights*xsec*35867)";
+      base_selec += "*((0.295668+0.0127154*llnunu_l1_pt-7.71163e-05*pow(llnunu_l1_pt,2)+2.2603e-07*pow(llnunu_l1_pt,3)-3.50496e-10*pow(llnunu_l1_pt,4)+2.7572e-13*pow(llnunu_l1_pt,5)-8.66455e-17*pow(llnunu_l1_pt,6))*(llnunu_l1_pt<=800)+(0.912086)*(llnunu_l1_pt>800))";  // trig eff sf for reminiaod allcorV2 mc hlt
+    }
     if (useZSelecLowLPt) {
       if (channel=="el")  selec = base_selec+"*(GJetsZPtWeightLowLPtEl)";
       else if (channel=="mu") selec = base_selec+"*(GJetsZPtWeightLowLPtMu)";
@@ -255,10 +265,10 @@ void do_fit_met_para(std::string& infilename, std::string& chan) {
   Int_t NZPtBins = sizeof(ZPtBins)/sizeof(ZPtBins[0]) - 1;
   const Int_t NMetParaBins=400;
   Double_t MetParaBins[NMetParaBins+1];
-  for (int i=0; i<=NMetParaBins; i++) { MetParaBins[i] = -200.0+400.0/NMetParaBins*i; };
+  for (int i=0; i<=NMetParaBins; i++) { MetParaBins[i] = -400.0+800.0/NMetParaBins*i; };
   const Int_t NMetPerpBins=400;
   Double_t MetPerpBins[NMetPerpBins+1];
-  for (int i=0; i<=NMetPerpBins; i++) { MetPerpBins[i] = -200.0+400.0/NMetPerpBins*i; };
+  for (int i=0; i<=NMetPerpBins; i++) { MetPerpBins[i] = -400.0+800.0/NMetPerpBins*i; };
 
   // zpt profile
   pzpt = new TProfile("p_zpt", "p_zpt", NZPtBins, ZPtBins);
@@ -395,7 +405,7 @@ int fit_slice_gaus(TH2D* h2d, TH1D** h1d, std::string& plotfile){
   }
 
   h_mean->GetXaxis()->SetRangeUser(2,5000);
-  h_mean->GetYaxis()->SetRangeUser(-6,15);
+  h_mean->GetYaxis()->SetRangeUser(-15,15);
   h_sigma->GetXaxis()->SetRangeUser(2,5000);
   h_sigma->GetYaxis()->SetRangeUser(15,40);
 

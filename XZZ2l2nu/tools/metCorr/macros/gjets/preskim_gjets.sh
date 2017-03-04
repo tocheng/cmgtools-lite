@@ -13,9 +13,9 @@ g++ preskim_gjets.cc -o preskim_gjets.exe `root-config --cflags` `root-config --
 samples="SinglePhoton_Run2016Full_03Feb2017_allcorV2"
 #samples="DYJetsToLL_M50_Ext"
 indir=/data2/XZZ2/80X_20170202_GJets
-outdir=/home/heli/XZZ/80X_20170202_GJets_light
+#outdir=/home/heli/XZZ/80X_20170202_GJets_light
 #outdir=/home/heli/XZZ/80X_20170202_GJets_light_hlt
-#outdir=/home/heli/XZZ/80X_20170202_GJets_light_halo15
+outdir=/home/heli/XZZ/80X_20170202_GJets_light_onlyhalo
 
 mkdir -p $outdir
 

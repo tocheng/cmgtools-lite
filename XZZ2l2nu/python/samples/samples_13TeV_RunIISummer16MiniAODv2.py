@@ -219,7 +219,7 @@ ttgjets = [TTGJets, TTGJets_ext]
 
 ZNuNuGJetsGt130 = kreator.makeMCComponent("ZNuNuGJetsGt130", 
 "/ZNuNuGJets_MonoPhoton_PtG-130_TuneCUETP8M1_13TeV-madgraph/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM", 
-"CMS", ".*root", 0.1903)
+"CMS", ".*root", 0.1832) # xsec from miniaod generator calculation, tested to be smoothly connecting with Gt40Lt130 on photon pt spectrum
 ZNuNuGJetsGt40Lt130 = kreator.makeMCComponent("ZNuNuGJetsGt40Lt130", 
 "/ZNuNuGJets_MonoPhoton_PtG-40to130_TuneCUETP8M1_13TeV-madgraph/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM",
 "CMS", ".*root",2.816)
@@ -228,13 +228,17 @@ ZNuNuGJets = [ZNuNuGJetsGt130,ZNuNuGJetsGt40Lt130]
 
 WGToLNuG = kreator.makeMCComponent("WGToLNuG", 
 "/WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM",
-"CMS", ".*root", 585.8)
+"CMS", ".*root", 405.271) # old 585.8, new xsec from mcm: https://cms-pdmv.cern.ch/mcm/requests?page=0&dataset_name=WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8&member_of_campaign=RunIISummer15GS
 
 WGJetsPt130 = kreator.makeMCComponent("WGJetsPt130", 
 "/WGJets_MonoPhoton_PtG-130_TuneCUETP8M1_13TeV-madgraph/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM",
-"CMS", ".*root", 585.8)
+"CMS", ".*root", 0.834) # xsec from mcm: https://cms-pdmv.cern.ch/mcm/requests?page=0&dataset_name=WGJets_MonoPhoton_PtG-130_TuneCUETP8M1_13TeV-madgraph&member_of_campaign=RunIISummer15GS
+WGJetsPt40To130 = kreator.makeMCComponent("WGJetsPt40To130", 
+"/WGJets_MonoPhoton_PtG-40to130_TuneCUETP8M1_13TeV-madgraph/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM",
+"CMS", ".*root", 12.7) # xsec from mcm: https://cms-pdmv.cern.ch/mcm/requests?page=0&dataset_name=WGJets_MonoPhoton_PtG-130_TuneCUETP8M1_13TeV-madgraph&member_of_campaign=RunIISummer15GS
 
-wgjets = [WGToLNuG, WGJetsPt130]
+
+wgjets = [WGToLNuG, WGJetsPt130, WGJetsPt40To130]
 
 # QCD HT bins (cross sections from https://twiki.cern.ch/twiki/bin/viewauth/CMS/SummaryTable1G25ns#QCD
 QCD_HT50to100 = kreator.makeMCComponent("QCD_HT50to100", 
