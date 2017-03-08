@@ -190,6 +190,7 @@ cuts_CR="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>50&&!(llnunu_l1_pt>10
 cuts_CR1="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>100&&llnunu_l2_pt_to_plot<50)"
 cuts_CR2="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>50&&llnunu_l1_pt<100&&llnunu_l2_pt_to_plot>50)"
 cuts_CR3="("+cuts_lepaccept+"&&"+cuts_zmass+"&&llnunu_l1_pt>50&&llnunu_l1_pt<100&&llnunu_l2_pt_to_plot<50)"
+cuts_SRMtLt180="("+cuts_lepaccept+"&&"+cuts_zmass+"&&"+cuts_zpt100+"&&"+cuts_met50+"&&llnunu_mt_to_plot<180)"
 
 if cutChain=='loosecut': cuts=cuts_loose
 elif cutChain=='lepaccept': cuts=cuts_lepaccept
@@ -222,6 +223,24 @@ elif cutChain=='CR1': cuts=cuts_CR1
 elif cutChain=='CR2': cuts=cuts_CR2
 elif cutChain=='CR3': cuts=cuts_CR3
 elif cutChain=='SRmetParaLTm80': cuts=cuts_loose_zll_met50+"&&llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)<-80"
+elif cutChain=='SRmetParaLT0': cuts=cuts_loose_zll_met50+"&&llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)<0"
+elif cutChain=='SRmetParaGT0': cuts=cuts_loose_zll_met50+"&&llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)>0"
+elif cutChain=='SRmetParaLT50': cuts=cuts_loose_zll_met50+"&&llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)<50"
+elif cutChain=='SRmetParaLT100': cuts=cuts_loose_zll_met50+"&&llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)<100"
+elif cutChain=='SRdPhiGT0p5': cuts=cuts_loose_zll_met50+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>0.5"
+elif cutChain=='SRdPhiGT0p3': cuts=cuts_loose_zll_met50+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>0.3"
+elif cutChain=='SRdPhiLT0p5': cuts=cuts_loose_zll_met50+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))<0.5"
+elif cutChain=='SRdPhiGT0p5LT1': cuts=cuts_loose_zll_met50+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>0.5&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))<1"
+elif cutChain=='SRdPhiGT1LT1p5': cuts=cuts_loose_zll_met50+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>1&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))<1.5"
+elif cutChain=='SRdPhiGT1p5LT2': cuts=cuts_loose_zll_met50+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>1.5&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))<2"
+elif cutChain=='SRdPhiGT2': cuts=cuts_loose_zll_met50+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>2"
+elif cutChain=='SRMetGT55': cuts=cuts_loose_zll_met50+"&&llnunu_l2_pt_to_plot>55"
+elif cutChain=='SRMtLt180': cuts=cuts_SRMtLt180
+elif cutChain=='zpt100dPhiLT0p5': cuts=cuts_loose_zll+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))<0.5"
+elif cutChain=='zpt100dPhiGT0p5LT1': cuts=cuts_loose_zll+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>0.5&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))<1"
+elif cutChain=='zpt100dPhiGT1LT1p5': cuts=cuts_loose_zll+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>1&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))<1.5"
+elif cutChain=='zpt100dPhiGT1p5LT2': cuts=cuts_loose_zll+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>1.5&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))<2"
+elif cutChain=='zpt100dPhiGT2': cuts=cuts_loose_zll+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>2"
 else : cuts=cuts_loose
 
 
@@ -458,7 +477,13 @@ if dyGJets :
     gdataSamples = [
     #'SinglePhoton_Run2016Full_03Feb2017_uncorr', 
     #'SinglePhoton_Run2016Full_03Feb2017_allcor', 
+    #'SinglePhoton_Run2016Full_03Feb2017_allcorV2_ZMassFineBinGraphSmooth',
+    #'SinglePhoton_Run2016Full_03Feb2017_allcorV2_ZMassFineBinSmooth', 
+    #'SinglePhoton_Run2016Full_03Feb2017_allcorV2_ZMassFineBin', 
+    #'SinglePhoton_Run2016Full_03Feb2017_allcorV2_ZMassGraph', 
+    #'SinglePhoton_Run2016Full_03Feb2017_allcorV2_ZMassGraphSmooth', 
     'SinglePhoton_Run2016Full_03Feb2017_allcorV2', 
+    #'SinglePhoton_Run2016Full_03Feb2017_allcorV2_RcNoSmooth', 
     #'SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil', 
     #'SinglePhoton_Run2016Full_03Feb2017_v0', 
     #'SinglePhoton_Run2016Full_ReReco_v2', 
@@ -477,6 +502,7 @@ if dyGJets :
         gdataPlotters[-1].addCorrectionFactor(str(1/gdataYield),'GJetsNorm0')
         gdataPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
         gdataPlotters[-1].addCorrectionFactor(zjets_scale,'zjets_scale')
+        #gdataPlotters[-1].addCorrectionFactor('((fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))<0.5)*1.05+(fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>=0.5)*1.0)','dphiweight')
         if channel=='el' :
             gdataPlotters[-1].addCorrectionFactor('GJetsZPtWeightEl','GJetsZPtWeight')
             gdataPlotters[-1].addCorrectionFactor(str(zjetsFidXsecEl),'zjetsFidXsecEl')
@@ -718,13 +744,18 @@ tag+='_'
 
 
 if test: 
-    Stack.drawStack('nVert', cuts, str(lumi*1000), 80, 0.0, 80.0, titlex = "N vertices", units = "",output='nVert',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('nVert', cuts, str(lumi*1000), 80, 0.0, 80.0, titlex = "N vertices", units = "",output='nVert',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('rho', cuts, str(lumi*1000), 55, 0.0, 55.0, titlex = "#rho", units = "",output='rho',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 30, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output='zpt',outDir=outdir,separateSignal=sepSig)
-#    Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 60, 60, 120, titlex = "M(Z)", units = "GeV",output='zmass',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 100, 0.0, 300.0, titlex = "P_{T}(Z)", units = "GeV",output='zpt_low2',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 30, 60, 120, titlex = "M(Z)", units = "GeV",output='zmass',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 200, 0, 200, titlex = "MET", units = "GeV",output='met_low2',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
+    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 80, 100.0, 300.0, titlex = "M_{T}", units = "GeV",output='mt_low2',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+    Stack.drawStack('fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))', cuts, str(lumi*1000), 50, 0, 5, titlex = "#Delta#phi(Z,MET)", units = "",output='dphiZMet',outDir=outdir,separateSignal=sepSig)
+
 #    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 50, 100.0, 1600.0, titlex = "M_{T}", units = "GeV",output='mt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 #    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 30, 0, 1500, titlex = "MET", units = "GeV",output='met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
-#    Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 25, -500, 500.0, titlex = "MET_{#parallel}", units = "GeV",output='met_para',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 25, -500, 500.0, titlex = "MET_{#parallel}", units = "GeV",output='met_para',outDir=outdir,separateSignal=sepSig)
 
 #    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 200, 0.0, 2000.0, titlex = "P_{T}(Z)", units = "GeV",output='zpt_high2k',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 300, 0.0, 3000.0, titlex = "M_{T}", units = "GeV",output='mt_high3k',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)

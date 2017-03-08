@@ -3,8 +3,10 @@
   //gROOT->ProcessLine(".! cp study_gjets_data_ReRecoRePreSkim.root study_gjets_data_ReRecoRePreSkim_modify.root");
   //TFile* file = TFile::Open("study_gjets_data_ReRecoRePreSkim_modify.root", "update");
 
-  gROOT->ProcessLine(".! cp study_gjets_data_allcorV2.root study_gjets_data_allcorV2_modify.root");
-  TFile* file = TFile::Open("study_gjets_data_allcorV2_modify.root", "update");
+  //gROOT->ProcessLine(".! cp study_gjets_data_allcorV2.root study_gjets_data_allcorV2_modify.root");
+  //TFile* file = TFile::Open("study_gjets_data_allcorV2_modify.root", "update");
+  gROOT->ProcessLine(".! cp study_gjets_data_allcorV2FineZMassBin.root study_gjets_data_allcorV2FineZMassBin_modify.root");
+  TFile* file = TFile::Open("study_gjets_data_allcorV2FineZMassBin_modify.root", "update");
 
   TH1D* h_zpt_ratio = (TH1D*)file->Get("h_zpt_ratio");
   TH1D* h_zpt_ratio_el = (TH1D*)file->Get("h_zpt_ratio_el");

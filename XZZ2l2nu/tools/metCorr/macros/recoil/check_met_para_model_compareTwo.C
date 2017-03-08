@@ -5,16 +5,16 @@ std::string indir="recoil_out8";
 std::string  name1 =
 //"SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil_met_para_study_ZSelecLowLPt_mu"
 //"GJetsHTBinBIG_met_para_study_ZSelecLowLPt_mu"
-"SingleEMU_Run2016Full_03Feb2017_allcorV2_met_para_study_ZSelecLowLPt_mu"
+//"SingleEMU_Run2016Full_03Feb2017_allcorV2_met_para_study_ZSelecLowLPt_mu"
 //"SingleEMU_Run2016Full_03Feb2017_allcorV2_met_para_study_dtHLT_el"
-//"SingleEMU_Run2016Full_03Feb2017_allcorV2_met_para_study_dtHLT_mu"
+"SingleEMU_Run2016Full_03Feb2017_allcorV2_met_para_study_dtHLT_mu"
 //"SingleEMU_Run2016Full_03Feb2017_v0_met_para_study_ZSelecLowLPt_mu"
 //"SingleEMU_Run2016Full_ReReco_v2_DtReCalib_met_para_study_ZSelecLowLPt_mu"
 //"SinglePhoton_Run2016Full_ReReco_v2_NoRecoil_met_para_study_ZSelecLowLPt_mu"
 //"SinglePhoton_Run2016Full_ReReco_v2_NoRecoil_met_para_study_ZSelecLowLPt"
 ;
 std::string  name2 =
-"DYJetsToLL_M50_Ext_NoRecoil_met_para_study_ZSelecLowLPt_mu"
+//"DYJetsToLL_M50_Ext_NoRecoil_met_para_study_ZSelecLowLPt_mu"
 //"SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil_met_para_study_PhEC_ZSelecLowLPt_mu"
 //"SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil_met_para_study_ZSelecLowLPt_el"
 //"SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_RcNoSmooth_met_para_study_el"
@@ -22,6 +22,7 @@ std::string  name2 =
 //"QCDPtBinEMEnrichedBIG_met_para_study_ZSelecLowLPt_mu"
 //"GJetsHTBinBIG_met_para_study_ZSelecLowLPt_mu"
 //"SinglePhoton_Run2016Full_03Feb2017_allcorV2_met_para_study_mu"
+"SinglePhoton_Run2016Full_03Feb2017_allcorV2_RcNoSmooth_met_para_study_dtHLT_mu"
 //"SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_met_para_study_el"
 //"SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_met_para_study_mu"
 //"SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_RcNoSmooth_met_para_study_ZSelecLowLPt_mu"
@@ -44,9 +45,9 @@ std::string leg1 =
 ;
 
 std::string leg2 = 
-"ZJets MC"
+//"ZJets MC"
 //"Photon Data EC"
-//"Photon Data"
+"Photon Data"
 //"QCD Photon MC"
 //"GJets Photon MC"
 ;
@@ -316,6 +317,7 @@ for (int i=0; i<h_dt_met_para_vs_zpt->GetNbinsX(); i++){
   sprintf(name, "%s.pdf", plots_file.c_str());
   plots->Print(name); 
   plots->SetLogy(0);
+  plots->Print(name); 
   plots->Clear();
 
 }

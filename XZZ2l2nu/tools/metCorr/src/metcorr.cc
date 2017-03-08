@@ -3205,6 +3205,15 @@ void prepareGJetsSkim()
     _gjets_h_zmass_zpt = (TH2D*)_gjets_input_file->Get("h_zmass_zpt");
     _gjets_h_zmass_zpt_el = (TH2D*)_gjets_input_file->Get("h_zmass_zpt_el");
     _gjets_h_zmass_zpt_mu = (TH2D*)_gjets_input_file->Get("h_zmass_zpt_mu");
+   
+    // 1d z mass
+    //_gjets_h_zmass = (TH1D*)_gjets_input_file->Get("h_zmass_lowlpt");
+    //_gjets_h_zmass_el = (TH1D*)_gjets_input_file->Get("h_zmass_lowlpt_el");
+    //_gjets_h_zmass_mu = (TH1D*)_gjets_input_file->Get("h_zmass_lowlpt_mu");
+    //_gjets_h_zmass = (TH1D*)_gjets_input_file->Get("h_zmass");
+    //_gjets_h_zmass_el = (TH1D*)_gjets_input_file->Get("h_zmass_el");
+    //_gjets_h_zmass_mu = (TH1D*)_gjets_input_file->Get("h_zmass_mu");
+
 
     // for zpt reweighting
     // zpt 1d
@@ -3237,6 +3246,8 @@ void prepareGJetsSkim()
     _gjets_gr_zpt_lowlpt_ratio_mu = (TGraphErrors*)_gjets_input_file->Get("gr_zpt_lowlpt_ratio_mu");
  
 
+    // make projection of mass to 1d for 
+
     // project mass to 1d
     for (int ix=0; ix<(int)_gjets_h_zmass_zpt->GetNbinsX(); ix++) {
       for (int iy=0; iy<(int)_gjets_h_zmass_zpt->GetNbinsY(); iy++) {
@@ -3265,19 +3276,40 @@ void prepareGJetsSkim()
     for (int iy=0; iy<(int)_gjets_h_zmass_zpt->GetNbinsY(); iy++){
       sprintf(name, "h_zmass_zpt_%i", iy+1);
       TH1D* htmp = (TH1D*)_gjets_h_zmass_zpt->ProjectionX(name, iy+1, iy+1, "e");
+      htmp->Smooth();
       _gjets_h_zmass_zpt_1d_vec.push_back(htmp);
+      TGraph* grtmp = new TGraph(htmp);
+      sprintf(name, "h_zmass_zpt_%i_smooth", iy+1);
+      TH1D* hstmp = new TH1D(name, name, 520, 50, 180);
+      hstmp->Sumw2();
+      for (int isb=1; isb<=hstmp->GetNbinsX(); isb++) hstmp->SetBinContent(isb,grtmp->Eval(hstmp->GetBinCenter(isb)));
+      //_gjets_h_zmass_zpt_1d_vec.push_back(hstmp);
     }
 
     for (int iy=0; iy<(int)_gjets_h_zmass_zpt_el->GetNbinsY(); iy++){
       sprintf(name, "h_zmass_zpt_el_%i", iy+1);
       TH1D* htmp = (TH1D*)_gjets_h_zmass_zpt_el->ProjectionX(name, iy+1, iy+1, "e");
+      htmp->Smooth();
       _gjets_h_zmass_zpt_el_1d_vec.push_back(htmp);
+      TGraph* grtmp = new TGraph(htmp);
+      sprintf(name, "h_zmass_zpt_el_%i_smooth", iy+1);
+      TH1D* hstmp = new TH1D(name, name, 520, 50, 180);
+      hstmp->Sumw2();
+      for (int isb=1; isb<=hstmp->GetNbinsX(); isb++) hstmp->SetBinContent(isb,grtmp->Eval(hstmp->GetBinCenter(isb)));
+      //_gjets_h_zmass_zpt_el_1d_vec.push_back(hstmp);
     }
 
     for (int iy=0; iy<(int)_gjets_h_zmass_zpt_mu->GetNbinsY(); iy++){
       sprintf(name, "h_zmass_zpt_mu_%i", iy+1);
       TH1D* htmp = (TH1D*)_gjets_h_zmass_zpt_mu->ProjectionX(name, iy+1, iy+1, "e");
+      htmp->Smooth();
       _gjets_h_zmass_zpt_mu_1d_vec.push_back(htmp);
+      TGraph* grtmp = new TGraph(htmp);
+      sprintf(name, "h_zmass_zpt_mu_%i_smooth", iy+1);
+      TH1D* hstmp = new TH1D(name, name, 520, 50, 180);
+      hstmp->Sumw2();
+      for (int isb=1; isb<=hstmp->GetNbinsX(); isb++) hstmp->SetBinContent(isb,grtmp->Eval(hstmp->GetBinCenter(isb)));
+      //_gjets_h_zmass_zpt_mu_1d_vec.push_back(hstmp);
     }
 
 
@@ -3390,6 +3422,10 @@ void doGJetsSkim()
   if (ipt>=_gjets_h_zmass_zpt->GetNbinsY()) ipt=_gjets_h_zmass_zpt->GetNbinsY()-1;
   if (_debug) std::cout << "doGJetsSkim:: begin all zmass random " << std::endl;
   _llnunu_l1_mass = _gjets_h_zmass_zpt_1d_vec.at(ipt)->GetRandom();
+  // use graph
+  //_llnunu_l1_mass = _gjets_gr_zmass_zpt_1d_vec.at(ipt)->Eval(_llnunu_l1_pt);
+  // use 1d z mass
+  //_llnunu_l1_mass = _gjets_h_zmass->GetRandom();
   if (_debug) std::cout << "doGJetsSkim:: end all zmass random " << std::endl;
 
 
@@ -3407,6 +3443,10 @@ void doGJetsSkim()
   if (ipt>=_gjets_h_zmass_zpt_el->GetNbinsY()) ipt=_gjets_h_zmass_zpt_el->GetNbinsY()-1;
   if (_debug) std::cout << "doGJetsSkim:: begin el zmass random " << std::endl;
   _llnunu_l1_mass_el = _gjets_h_zmass_zpt_el_1d_vec.at(ipt)->GetRandom();
+  // use graph
+  //_llnunu_l1_mass_el = _gjets_gr_zmass_zpt_el_1d_vec.at(ipt)->Eval(_llnunu_l1_pt);
+  // use 1d z mass
+  //_llnunu_l1_mass_el = _gjets_h_zmass_el->GetRandom();
   if (_debug) std::cout << "doGJetsSkim:: end el zmass random " << std::endl;
 
   // calculate mt
@@ -3423,6 +3463,10 @@ void doGJetsSkim()
   if (ipt>=_gjets_h_zmass_zpt_mu->GetNbinsY()) ipt=_gjets_h_zmass_zpt_mu->GetNbinsY()-1;
   if (_debug) std::cout << "doGJetsSkim:: begin mu zmass random " << std::endl;
   _llnunu_l1_mass_mu = _gjets_h_zmass_zpt_mu_1d_vec.at(ipt)->GetRandom();
+  // use graph
+  //_llnunu_l1_mass_mu = _gjets_gr_zmass_zpt_mu_1d_vec.at(ipt)->Eval(_llnunu_l1_pt);
+  // use 1d z mass
+  //_llnunu_l1_mass_mu = _gjets_h_zmass_mu->GetRandom();
   if (_debug) std::cout << "doGJetsSkim:: end mu zmass random " << std::endl;
 
   // calculate mt
