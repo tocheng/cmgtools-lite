@@ -1,14 +1,14 @@
 
 
 std::string channel = "all";
-bool doMC = true;
+bool doMC = false;
 bool doGJets = false;
 bool doGJetsMC = false;
-bool useZSelecLowLPt = true;
+bool useZSelecLowLPt = false;
 bool useEffSf = false;
 bool mcTrgSf = false;
 bool dtTrgSf = false;
-bool dtHLT = false;
+bool dtHLT = true;
 bool mcUseRhoWt = false;
 
 // recipe:
@@ -18,8 +18,8 @@ bool mcUseRhoWt = false;
 // 4.) for GJets: doGJets=true, doMC=false, useZSelecLowLPt=true, useEffSf=false
 
 std::string inputdir = 
-"/data2/XZZ2/80X_20170202_light_Skim"
-//"/home/heli/XZZ/80X_20170202_light_hlt_allcorV2Skim"
+//"/data2/XZZ2/80X_20170202_light_Skim"
+"/home/heli/XZZ/80X_20170202_light_hlt_allcorV2RcSkim"
 //"/home/heli/XZZ/80X_20170202_GJets_light_hlt_allcorV2Skim"
 //"/home/heli/XZZ/80X_20170202_light_Skim"
 //"/datac/heli/XZZ2/80X_20161029_light_Skim"
@@ -48,8 +48,9 @@ std::vector< std::string > gjfiles = {
 //"SinglePhoton_Run2016Full_03Feb2017_v0_NoRecoil"
 //"SinglePhoton_Run2016Full_03Feb2017_uncorr_NoRecoil"
 //"SinglePhoton_Run2016Full_03Feb2017_allcor_NoRecoil"
-"SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil"
-//"SinglePhoton_Run2016Full_03Feb2017_allcorV2"
+//"SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil"
+//"SinglePhoton_Run2016Full_03Feb2017_allcorV2_RcNoSmooth"
+"SinglePhoton_Run2016Full_03Feb2017_allcorV2"
 //"SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_NoRecoil"
 //"SinglePhoton_Run2016Full_ReReco_v2_RePreSkim"
 //"SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_RcNoSmooth"

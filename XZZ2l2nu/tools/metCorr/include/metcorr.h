@@ -19,6 +19,7 @@
 #include "TCanvas.h"
 #include "TVector2.h"
 #include "TProfile.h"
+#include "TGraph.h"
 #include "TGraphErrors.h"
 #include "TEntryList.h"
 #include "TLorentzVector.h"
@@ -486,6 +487,9 @@ TFile* _gjets_input_file;
 TH2D* _gjets_h_zmass_zpt;
 TH2D* _gjets_h_zmass_zpt_el;
 TH2D* _gjets_h_zmass_zpt_mu;
+TH1D* _gjets_h_zmass;
+TH1D* _gjets_h_zmass_el;
+TH1D* _gjets_h_zmass_mu;
 TH1D* _gjets_h_zpt_ratio;
 TH1D* _gjets_h_zpt_ratio_el;
 TH1D* _gjets_h_zpt_ratio_mu;
@@ -513,6 +517,9 @@ TGraphErrors* _gjets_gr_zpt_ratio_mu_dn;
 std::vector< TH1D* > _gjets_h_zmass_zpt_1d_vec;
 std::vector< TH1D* > _gjets_h_zmass_zpt_el_1d_vec;
 std::vector< TH1D* > _gjets_h_zmass_zpt_mu_1d_vec;
+std::vector< TGraph* > _gjets_gr_zmass_zpt_1d_vec;
+std::vector< TGraph* > _gjets_gr_zmass_zpt_el_1d_vec;
+std::vector< TGraph* > _gjets_gr_zmass_zpt_mu_1d_vec;
 
 TFile* _gjets_phi_weight_input_file;
 TH1D* _gjets_h_photon_phi_weight;

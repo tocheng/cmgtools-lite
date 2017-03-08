@@ -4,12 +4,9 @@
 tag="GJets_"
 
 channels="el"
-#cutChains="tightzpt100met50 "
-cutChains="tightzpt100met50 antitightzpt100met50_CR1"
-#cutChains="antitightzpt100met50_CR1"
+cutChains="SR CR1"
 
-
-logdir="log_gjets_36p46"
+logdir="log_gjets_36p81"
 
 mkdir -p $logdir
 

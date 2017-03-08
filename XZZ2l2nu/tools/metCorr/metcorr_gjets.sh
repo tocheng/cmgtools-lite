@@ -1,12 +1,12 @@
 #!/bin/sh
 
 #inputs
-inputdir=/data2/XZZ2/80X_20170202_GJets_light_hlt
-outputdir=/home/heli/XZZ/80X_20170202_GJets_light_hlt_RcSkim
+#inputdir=/data2/XZZ2/80X_20170202_GJets_light_hlt
+#outputdir=/home/heli/XZZ/80X_20170202_GJets_light_hlt_RcSkim
 #outputdir=/home/heli/XZZ/80X_20170202_GJets_light_hlt_allcorV2Skim
 #outputdir=/home/heli/XZZ/80X_20170202_GJets_light_hlt_Skim
-#inputdir=/home/heli/XZZ/80X_20170202_GJets_light
-#outputdir=/home/heli/XZZ/80X_20170202_GJets_light_Skim
+inputdir=/home/heli/XZZ/80X_20170202_GJets_light
+outputdir=/home/heli/XZZ/80X_20170202_GJets_light_Skim
 config=config/parameters_light_gjets
 
 mkdir -p ${outputdir}
@@ -43,16 +43,20 @@ njob="0"
 #for infile in $inputdir/SinglePhoton_Run2016Full_ReReco_v2/vvTreeProducer/tree.root ;
 #for infile in $inputdir/T_tWch/vvTreeProducer/tree.root ;
 #for infile in $inputdir/TBar_tWch/vvTreeProducer/tree.root ;
-#for infile in $inputdir/SinglePhoton_Run2016Full_03Feb2017_allcorV2/vvTreeProducer/tree.root ;
 #for infile in $inputdir/SinglePhoton_Run2016Full_ReReco_v2_RePreSkim/vvTreeProducer/tree.root ;
-for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v  Single  ); 
+#for infile in $(ls $inputdir/*/vvTreeProducer/tree.root | grep -v  Single  ); 
+for infile in $inputdir/SinglePhoton_Run2016Full_03Feb2017_allcorV2/vvTreeProducer/tree.root ;
 do
   echo "+++ skimming $infile +++"
   outfile="${outputdir}/${infile/$inputdir\//}"
 
   # options for outputs
-  outfile="${outfile/\/vvTreeProducer\/tree/}"
-  #outfile="${outfile/\/vvTreeProducer\/tree/_RcNoSmooth}"
+  #outfile="${outfile/\/vvTreeProducer\/tree/}"
+  #outfile="${outfile/\/vvTreeProducer\/tree/_ZMassFineBin}"
+  #outfile="${outfile/\/vvTreeProducer\/tree/_ZMassFineBinSmooth}"
+  #outfile="${outfile/\/vvTreeProducer\/tree/_ZMassFineBinGraphSmooth}"
+  #outfile="${outfile/\/vvTreeProducer\/tree/_ZMassGraphSmooth}"
+  outfile="${outfile/\/vvTreeProducer\/tree/_RcNoSmooth}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_NoRecoil}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_test}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_ReSkim}"
