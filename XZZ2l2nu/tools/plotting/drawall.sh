@@ -1,5 +1,7 @@
 #!/bin/sh
 
+#tag="mtexcess_"
+tag="cuts_"
 #tag="debugMtFixZMassFineBinNoPhMETSub_"
 #tag="debugMtFixZMassFineBinGraphSmooth_"
 #tag="debugMtFixZMassFineBinSmooth_"
@@ -8,7 +10,7 @@
 #tag="debugMtFixZMassGraph_"
 #tag="debugMtFixV1_"
 #tag="debugMtRcNoSmooth_"
-tag="debugMt_"
+#tag="debugMt_"
 #tag="debugMtdPhiWt_"
 #tag="cutflow_"
 #tag="ReMiniSummer16_DT_PhReRecoMCRcFixXsec_"
@@ -56,8 +58,8 @@ tag="debugMt_"
 #tag="test_"
 
 #channels="mu el"
-#channels="el"
-channels="mu"
+channels="el"
+#channels="mu"
 #cutChains="loosecut lepaccept tight tightzpt50 tightzpt100 SR CR1 CR2 CR3"
 #cutChains="tight"
 #cutChains="tightzpt50"
@@ -65,8 +67,10 @@ channels="mu"
 #cutChains=" SRmetParaLT0"
 #cutChains=" SRmetParaGT0"
 #cutChains=" SRmetParaLT50"
+cutChains="SRMtGt1Lt1p05 "
+#cutChains="SRMtGt0p8Lt0p95 "
 #cutChains=" SRdPhiGT0p3 "
-cutChains=" SRdPhiLT0p5 SRdPhiGT0p5 "
+#cutChains=" SRdPhiLT0p5 SRdPhiGT0p5 "
 #cutChains=" SRdPhiLT0p5 "
 #cutChains=" zpt100dPhiLT0p5 zpt100dPhiGT0p5LT1 zpt100dPhiGT1LT1p5 zpt100dPhiGT1p5LT2 zpt100dPhiGT2 "
 #cutChains=" SRdPhiGT0p5LT1 SRdPhiGT1LT1p5 SRdPhiGT1p5LT2 SRdPhiGT2 "
@@ -130,8 +134,8 @@ do
 
 #      ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel"  --LogY --test &> ${logdir}/${tag}${cutChain}_log_${channel}.log &
 #      ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel"  --test &> ${logdir}/${tag}${cutChain}_log_${channel}.log &
-       ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --muoneg  --LogY --test &> ${logdir}/${tag}${cutChain}_emu_log_${channel}.log &
-#       ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --dyGJets  --muoneg --LogY --test &> ${logdir}/${tag}${cutChain}_emu_gjet_log_${channel}.log &
+#       ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --muoneg  --LogY --test &> ${logdir}/${tag}${cutChain}_emu_log_${channel}.log &
+       ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --dyGJets  --muoneg --LogY --test &> ${logdir}/${tag}${cutChain}_emu_gjet_log_${channel}.log &
 #      ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --dyGJets  --muoneg  --test &> ${logdir}/${tag}${cutChain}_emu_gjet_log_${channel}.log &
 #       ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --dyGJets  --LogY --test &> ${logdir}/${tag}${cutChain}_emu_gjet_log_${channel}.log &
 #       ./stack_dtmc_skim_gjets_dt.py -l -b -q  --tag="$tag" --cutChain="$cutChain" --channel="$channel" --Blind --dyGJets  --muoneg --LogY --test &> ${logdir}/${tag}${cutChain}_emu_gjet_bld_log_${channel}.log &

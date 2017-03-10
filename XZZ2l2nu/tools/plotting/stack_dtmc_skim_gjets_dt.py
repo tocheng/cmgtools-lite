@@ -241,6 +241,8 @@ elif cutChain=='zpt100dPhiGT0p5LT1': cuts=cuts_loose_zll+"&&fabs(TVector2::Phi_m
 elif cutChain=='zpt100dPhiGT1LT1p5': cuts=cuts_loose_zll+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>1&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))<1.5"
 elif cutChain=='zpt100dPhiGT1p5LT2': cuts=cuts_loose_zll+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>1.5&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))<2"
 elif cutChain=='zpt100dPhiGT2': cuts=cuts_loose_zll+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>2"
+elif cutChain=='SRMtGt0p8Lt0p95': cuts=cuts_loose_zll_met50+"&&llnunu_mt_to_plot>800&&llnunu_mt_to_plot<950"
+elif cutChain=='SRMtGt1Lt1p05': cuts=cuts_loose_zll_met50+"&&llnunu_mt_to_plot>1000&&llnunu_mt_to_plot<1050"
 else : cuts=cuts_loose
 
 
@@ -252,6 +254,8 @@ if UseMETFilter:
 cuts += '&&(nbadmuon==0)' 
 
 cuts = '('+cuts+')'
+
+print "cuts=",cuts
 
 ROOT.gROOT.ProcessLine('.x tdrstyle.C') 
 
@@ -594,12 +598,12 @@ else:
 #####################
 
 sigSamples = [
-'BulkGravToZZToZlepZinv_narrow_600',
-#'BulkGravToZZToZlepZinv_narrow_800',
+#'BulkGravToZZToZlepZinv_narrow_600',
+'BulkGravToZZToZlepZinv_narrow_800',
 'BulkGravToZZToZlepZinv_narrow_1000',
 #'BulkGravToZZToZlepZinv_narrow_1200',
 #'BulkGravToZZToZlepZinv_narrow_1400',
-'BulkGravToZZToZlepZinv_narrow_1600', 
+#'BulkGravToZZToZlepZinv_narrow_1600', 
 #'BulkGravToZZToZlepZinv_narrow_1800', 
 #'BulkGravToZZToZlepZinv_narrow_2000',
 #'BulkGravToZZToZlepZinv_narrow_2500',
@@ -747,15 +751,15 @@ if test:
 #    Stack.drawStack('nVert', cuts, str(lumi*1000), 80, 0.0, 80.0, titlex = "N vertices", units = "",output='nVert',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('rho', cuts, str(lumi*1000), 55, 0.0, 55.0, titlex = "#rho", units = "",output='rho',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 30, 0.0, 1500.0, titlex = "P_{T}(Z)", units = "GeV",output='zpt',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 100, 0.0, 300.0, titlex = "P_{T}(Z)", units = "GeV",output='zpt_low2',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 100, 0.0, 300.0, titlex = "P_{T}(Z)", units = "GeV",output='zpt_low2',outDir=outdir,separateSignal=sepSig)
     Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 30, 60, 120, titlex = "M(Z)", units = "GeV",output='zmass',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 200, 0, 200, titlex = "MET", units = "GeV",output='met_low2',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
-    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 80, 100.0, 300.0, titlex = "M_{T}", units = "GeV",output='mt_low2',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
-    Stack.drawStack('fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))', cuts, str(lumi*1000), 50, 0, 5, titlex = "#Delta#phi(Z,MET)", units = "",output='dphiZMet',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 200, 0, 200, titlex = "MET", units = "GeV",output='met_low2',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
+#    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 80, 100.0, 300.0, titlex = "M_{T}", units = "GeV",output='mt_low2',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+#    Stack.drawStack('fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))', cuts, str(lumi*1000), 50, 0, 5, titlex = "#Delta#phi(Z,MET)", units = "",output='dphiZMet',outDir=outdir,separateSignal=sepSig)
 
 #    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 50, 100.0, 1600.0, titlex = "M_{T}", units = "GeV",output='mt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 #    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 30, 0, 1500, titlex = "MET", units = "GeV",output='met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
-    Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 25, -500, 500.0, titlex = "MET_{#parallel}", units = "GeV",output='met_para',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 25, -500, 500.0, titlex = "MET_{#parallel}", units = "GeV",output='met_para',outDir=outdir,separateSignal=sepSig)
 
 #    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 200, 0.0, 2000.0, titlex = "P_{T}(Z)", units = "GeV",output='zpt_high2k',outDir=outdir,separateSignal=sepSig)
 #    Stack.drawStack('llnunu_mt_to_plot', cuts, str(lumi*1000), 300, 0.0, 3000.0, titlex = "M_{T}", units = "GeV",output='mt_high3k',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
