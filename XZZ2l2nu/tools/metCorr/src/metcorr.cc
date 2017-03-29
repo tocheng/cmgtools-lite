@@ -1744,19 +1744,28 @@ void prepareRecoil()
 
     // zpt profile, mean zpt in each zpt bin
     _p_dt_zpt[0] = (TProfile*)_file_dt_sigma[0]->Get("p_zpt");
+    _p_dt_zpt[0]->SetName("p_dt_zpt_all");
     _p_dt_zpt[1] = (TProfile*)_file_dt_sigma[1]->Get("p_zpt");
+    _p_dt_zpt[1]->SetName("p_dt_zpt_mu");
     _p_dt_zpt[2] = (TProfile*)_file_dt_sigma[2]->Get("p_zpt");
+    _p_dt_zpt[2]->SetName("p_dt_zpt_el");
 
     //
     _h_dt_met_para_shift[0] = (TH1D*)_file_dt_sigma[0]->Get("h_met_para_vs_zpt_mean");
+    _h_dt_met_para_shift[0]->SetName("h_dt_met_para_shift_all");
     _h_mc_met_para_shift[0] = (TH1D*)_file_mc_sigma[0]->Get("h_met_para_vs_zpt_mean");
+    _h_mc_met_para_shift[0]->SetName("h_mc_met_para_shift_all");
     _h_met_para_shift_dtmc[0] = (TH1D*)_h_dt_met_para_shift[0]->Clone("h_met_para_shift_dtmc_all");
     _h_met_para_shift_dtmc[0]->Add(_h_mc_met_para_shift[0], -1);
 
     _h_dt_met_para_sigma[0] = (TH1D*)_file_dt_sigma[0]->Get("h_met_para_vs_zpt_sigma");
+    _h_dt_met_para_sigma[0]->SetName("h_dt_met_para_sigma_all");
     _h_dt_met_perp_sigma[0] = (TH1D*)_file_dt_sigma[0]->Get("h_met_perp_vs_zpt_sigma");
+    _h_dt_met_perp_sigma[0]->SetName("h_dt_met_perp_sigma_all");
     _h_mc_met_para_sigma[0] = (TH1D*)_file_mc_sigma[0]->Get("h_met_para_vs_zpt_sigma");
+    _h_mc_met_para_sigma[0]->SetName("h_mc_met_para_sigma_all");
     _h_mc_met_perp_sigma[0] = (TH1D*)_file_mc_sigma[0]->Get("h_met_perp_vs_zpt_sigma");
+    _h_mc_met_perp_sigma[0]->SetName("h_mc_met_perp_sigma_all");
 
     _h_ratio_met_para_sigma_dtmc[0] = (TH1D*)_h_dt_met_para_sigma[0]->Clone("h_ratio_met_para_sigma_dtmc_all");
     _h_ratio_met_perp_sigma_dtmc[0] = (TH1D*)_h_dt_met_perp_sigma[0]->Clone("h_ratio_met_perp_sigma_dtmc_all");
@@ -1764,14 +1773,20 @@ void prepareRecoil()
     _h_ratio_met_perp_sigma_dtmc[0]->Divide(_h_mc_met_perp_sigma[0]);
 
     _h_dt_met_para_shift[1] = (TH1D*)_file_dt_sigma[1]->Get("h_met_para_vs_zpt_mean");
+    _h_dt_met_para_shift[1]->SetName("h_dt_met_para_shift_mu");
     _h_mc_met_para_shift[1] = (TH1D*)_file_mc_sigma[1]->Get("h_met_para_vs_zpt_mean");
+    _h_mc_met_para_shift[1]->SetName("h_mc_met_para_shift_mu");
     _h_met_para_shift_dtmc[1] = (TH1D*)_h_dt_met_para_shift[1]->Clone("h_met_para_shift_dtmc_mu");
     _h_met_para_shift_dtmc[1]->Add(_h_mc_met_para_shift[1], -1);
 
     _h_dt_met_para_sigma[1] = (TH1D*)_file_dt_sigma[1]->Get("h_met_para_vs_zpt_sigma");
+    _h_dt_met_para_sigma[1]->SetName("h_dt_met_para_sigma_mu");
     _h_dt_met_perp_sigma[1] = (TH1D*)_file_dt_sigma[1]->Get("h_met_perp_vs_zpt_sigma");
+    _h_dt_met_perp_sigma[1]->SetName("h_dt_met_perp_sigma_mu");
     _h_mc_met_para_sigma[1] = (TH1D*)_file_mc_sigma[1]->Get("h_met_para_vs_zpt_sigma");
+    _h_mc_met_para_sigma[1]->SetName("h_mc_met_para_sigma_mu");
     _h_mc_met_perp_sigma[1] = (TH1D*)_file_mc_sigma[1]->Get("h_met_perp_vs_zpt_sigma");
+    _h_mc_met_perp_sigma[1]->SetName("h_mc_met_perp_sigma_mu");
 
     _h_ratio_met_para_sigma_dtmc[1] = (TH1D*)_h_dt_met_para_sigma[1]->Clone("h_ratio_met_para_sigma_dtmc_mu");
     _h_ratio_met_perp_sigma_dtmc[1] = (TH1D*)_h_dt_met_perp_sigma[1]->Clone("h_ratio_met_perp_sigma_dtmc_mu");
@@ -1779,14 +1794,20 @@ void prepareRecoil()
     _h_ratio_met_perp_sigma_dtmc[1]->Divide(_h_mc_met_perp_sigma[1]);
 
     _h_dt_met_para_shift[2] = (TH1D*)_file_dt_sigma[2]->Get("h_met_para_vs_zpt_mean");
+    _h_dt_met_para_shift[2]->SetName("h_dt_met_para_shift_el");
     _h_mc_met_para_shift[2] = (TH1D*)_file_mc_sigma[2]->Get("h_met_para_vs_zpt_mean");
+    _h_mc_met_para_shift[2]->SetName("h_mc_met_para_shift_el");
     _h_met_para_shift_dtmc[2] = (TH1D*)_h_dt_met_para_shift[2]->Clone("h_met_para_shift_dtmc_el");
     _h_met_para_shift_dtmc[2]->Add(_h_mc_met_para_shift[2], -1);
 
     _h_dt_met_para_sigma[2] = (TH1D*)_file_dt_sigma[2]->Get("h_met_para_vs_zpt_sigma");
+    _h_dt_met_para_sigma[2]->SetName("h_dt_met_para_sigma_el");
     _h_dt_met_perp_sigma[2] = (TH1D*)_file_dt_sigma[2]->Get("h_met_perp_vs_zpt_sigma");
+    _h_dt_met_perp_sigma[2]->SetName("h_dt_met_perp_sigma_el");
     _h_mc_met_para_sigma[2] = (TH1D*)_file_mc_sigma[2]->Get("h_met_para_vs_zpt_sigma");
+    _h_mc_met_para_sigma[2]->SetName("h_mc_met_para_sigma_el");
     _h_mc_met_perp_sigma[2] = (TH1D*)_file_mc_sigma[2]->Get("h_met_perp_vs_zpt_sigma");
+    _h_mc_met_perp_sigma[2]->SetName("h_mc_met_perp_sigma_el");
 
     _h_ratio_met_para_sigma_dtmc[2] = (TH1D*)_h_dt_met_para_sigma[2]->Clone("h_ratio_met_para_sigma_dtmc_el");
     _h_ratio_met_perp_sigma_dtmc[2] = (TH1D*)_h_dt_met_perp_sigma[2]->Clone("h_ratio_met_perp_sigma_dtmc_el");
@@ -1794,12 +1815,6 @@ void prepareRecoil()
     _h_ratio_met_perp_sigma_dtmc[2]->Divide(_h_mc_met_perp_sigma[2]);
 
     // smooth functions
-    _h_dt_met_para_shift[0]->SetName("h_dt_met_para_shift_all");
-    _h_mc_met_para_shift[0]->SetName("h_mc_met_para_shift_all");
-    _h_dt_met_para_shift[1]->SetName("h_dt_met_para_shift_mu");
-    _h_mc_met_para_shift[1]->SetName("h_mc_met_para_shift_mu");
-    _h_dt_met_para_shift[2]->SetName("h_dt_met_para_shift_el");
-    _h_mc_met_para_shift[2]->SetName("h_mc_met_para_shift_el");
     _h_dt_met_para_shift[3] = (TH1D*)_h_dt_met_para_shift[0]->Clone("h_dt_met_para_shift_all_smooth");
     _h_mc_met_para_shift[3] = (TH1D*)_h_mc_met_para_shift[0]->Clone("h_mc_met_para_shift_all_smooth");
     _h_dt_met_para_shift[4] = (TH1D*)_h_dt_met_para_shift[1]->Clone("h_dt_met_para_shift_mu_smooth");
@@ -2248,8 +2263,8 @@ void doRecoil()
           float pt = tmp_vec.Mod();
           float phi = TVector2::Phi_mpi_pi(tmp_vec.Phi());
           float mt = MTCalcMu(pt, phi);
-          if (pt>_llnunu_l2_pt_mu_RecoilUp) _llnunu_l2_pt_RecoilUp = pt;
-          if (pt<_llnunu_l2_pt_mu_RecoilDn) _llnunu_l2_pt_RecoilDn = pt;
+          if (pt>_llnunu_l2_pt_mu_RecoilUp) _llnunu_l2_pt_mu_RecoilUp = pt;
+          if (pt<_llnunu_l2_pt_mu_RecoilDn) _llnunu_l2_pt_mu_RecoilDn = pt;
           if (TVector2::Phi_mpi_pi(phi-_llnunu_l2_phi_mu_RecoilUp)>0.0) _llnunu_l2_phi_mu_RecoilUp = phi;
           if (TVector2::Phi_mpi_pi(phi-_llnunu_l2_phi_mu_RecoilDn)<0.0) _llnunu_l2_phi_mu_RecoilDn = phi;
           if (mt>_llnunu_mt_mu_RecoilUp) _llnunu_mt_mu_RecoilUp = mt;
@@ -2287,9 +2302,9 @@ void doRecoil()
           TVector2 tmp_vec(xx,yy);
           float pt = tmp_vec.Mod();
           float phi = TVector2::Phi_mpi_pi(tmp_vec.Phi());
-          float mt = MTCalcMu(pt, phi);
-          if (pt>_llnunu_l2_pt_el_RecoilUp) _llnunu_l2_pt_RecoilUp = pt;
-          if (pt<_llnunu_l2_pt_el_RecoilDn) _llnunu_l2_pt_RecoilDn = pt;
+          float mt = MTCalcEl(pt, phi);
+          if (pt>_llnunu_l2_pt_el_RecoilUp) _llnunu_l2_pt_el_RecoilUp = pt;
+          if (pt<_llnunu_l2_pt_el_RecoilDn) _llnunu_l2_pt_el_RecoilDn = pt;
           if (TVector2::Phi_mpi_pi(phi-_llnunu_l2_phi_el_RecoilUp)>0.0) _llnunu_l2_phi_el_RecoilUp = phi;
           if (TVector2::Phi_mpi_pi(phi-_llnunu_l2_phi_el_RecoilDn)<0.0) _llnunu_l2_phi_el_RecoilDn = phi;
           if (mt>_llnunu_mt_el_RecoilUp) _llnunu_mt_el_RecoilUp = mt;
