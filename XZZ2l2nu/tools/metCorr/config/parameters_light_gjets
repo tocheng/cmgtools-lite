@@ -201,10 +201,10 @@ DyZPtWeightInputFileName: data/zptweight/dyjets_zpt_weight_lo_nlo_genAccV2.root
 doRecoil: true
 
 # use smoothed hist
-doRecoilUseSmooth: false
+doRecoilUseSmooth: true
 
 # use graph from smoothed hist
-doRecoilUseSmoothGraph: false
+doRecoilUseSmoothGraph: true
 
 # Input files
 #RecoilInputFileNameData_all: data/recoil/SingleEMU_Run2016Full_ReReco_v1_met_para_study_ZSelecLowLPt.root

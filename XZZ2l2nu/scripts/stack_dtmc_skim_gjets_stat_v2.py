@@ -14,6 +14,7 @@ def callback_rootargs(option, opt, value, parser):
 def cutsALT(cuts,syst,variation) :
     cutsNew=cuts.replace("MET", "MET_"+syst+variation, 1) 
     return cutsNew    
+    #return cuts
 
 parser = optparse.OptionParser()
 parser.add_option("-t","--tag",dest="tag",default='DataB2G_ICHEPcfg_',help="")
@@ -57,10 +58,12 @@ zjets_scale='(1)'
 if channel=='mu': 
 #    mc_scale='(1.02942)'
     if cutChain=='SR': zjets_scale='(0.960865)' # mc SR
+    elif cutChain=='SRdPhiGT0p5': zjets_scale='(0.999113)' # mc SR
     else: zjets_scale='(1.03410)' # mc zpt50
 elif channel=='el': 
 #    mc_scale='(1.02139)'
     if cutChain=='SR': zjets_scale='(1.01822)' # mc SR
+    elif cutChain=='SRdPhiGT0p5': zjets_scale='(1.01265)' # mc SR
     else: zjets_scale='(1.03737)' # mc zpt50
 else: 
 #    mc_scale='(1.02942)'
@@ -103,7 +106,7 @@ outdir='plots'
 indir='/home/heli/XZZ/80X_20170202_light_hlt_allcorV2RcSkim/'
 #indir='/home/heli/XZZ/80X_20170202_light_hlt_allcorV2Skim/'
 #indir='/home/heli/XZZ/80X_20170202_light_Skim/'
-lumi=35.87
+lumi=35.9
 sepSig=True
 doRatio=True
 Blind=options.Blind
@@ -205,6 +208,8 @@ elif cutChain=='CR': cuts=cuts_CR
 elif cutChain=='CR1': cuts=cuts_CR1
 elif cutChain=='CR2': cuts=cuts_CR2
 elif cutChain=='CR3': cuts=cuts_CR3
+elif cutChain=='SRdPhiGT0p5': cuts=cuts_loose_zll_met50+"&&fabs(TVector2::Phi_mpi_pi(llnunu_l2_phi_to_plot-llnunu_l1_phi))>0.5"
+elif cutChain=='SRzptGT200': cuts=cuts_loose_zll_met50+"&&llnunu_l1_pt>200"
 else : cuts=cuts_loose
 
 
@@ -932,15 +937,19 @@ nBins=60
 mtMin=0
 mtMax=3000
 
+metnBins=30
+metMin=0
+metMax=1500
+
 Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT',outDir=outdir,separateSignal=sepSig, blinding=Blind,blindingCut=300)
 
-Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output='MET',outDir=outdir,separateSignal=sepSig, blinding=Blind,blindingCut=300)
+Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), metnBins, metMin, metMax, titlex = "E_{T}^{miss}", units = "GeV",output='MET',outDir=outdir,separateSignal=sepSig, blinding=Blind,blindingCut=300)
 
-Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 50, -500, 500.0, titlex = "MET_{#parallel}", units = "GeV",output='met_para',outDir=outdir,separateSignal=sepSig)
+Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 50, -500, 500.0, titlex = "E_{T#parallel}^{miss}", units = "GeV",output='met_para',outDir=outdir,separateSignal=sepSig)
 
 if(not doSys) :
-  Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output='met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
-  Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 50, 0, 500, titlex = "PT_{Z}", units = "GeV",output='zpt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
+  Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), metnBins, metMin, metMax, titlex = "E_{T}^{miss}", units = "GeV",output='met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
+  Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), metnBins, metMin, metMax, titlex = "PT_{Z}", units = "GeV",output='zpt',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
 
 else :
 
@@ -962,14 +971,14 @@ else :
              plotter.changeCorrectionFactor("trgsf_up*idisotrksf","lepsf")
 
    Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_trgUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
-   Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output='MET_trgUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+   Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), metnBins, metMin, metMax, titlex = "E_{T}^{miss}", units = "GeV",output='MET_trgUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
        if ( typeP != "data" and  name != "NonReso" and name!="ZJets"):
           plotter.changeCorrectionFactor("trgsf_dn*idisotrksf","lepsf")
 
    Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_trgDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
-   Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output='MET_trgDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+   Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), metnBins, metMin, metMax, titlex = "E_{T}^{miss}", units = "GeV",output='MET_trgDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    ## id
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
@@ -977,14 +986,14 @@ else :
           plotter.changeCorrectionFactor("trgsf*idisotrksf_up","lepsf")
 
    Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_idUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
-   Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output='MET_idUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+   Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), metnBins, metMin, metMax, titlex = "E_{T}^{miss}", units = "GeV",output='MET_idUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
        if ( typeP != "data" and name != "NonReso" and name!="ZJets"):
           plotter.changeCorrectionFactor("trgsf*idisotrksf_dn","lepsf")
 
    Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_idDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
-   Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output='MET_idDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+   Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), metnBins, metMin, metMax, titlex = "E_{T}^{miss}", units = "GeV",output='MET_idDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    ## EWK and QCD
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
@@ -995,28 +1004,28 @@ else :
           plotter.changeCorrectionFactor("(ZZEwkCorrWeight_up*ZZQcdCorrWeight)*xsec","nnlo")
 
    Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_ewkUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
-   Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output='MET_ewkUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+   Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), metnBins, metMin, metMax, titlex = "E_{T}^{miss}", units = "GeV",output='MET_ewkUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
        if ( typeP != "data" and  name == "VVZReso"):
           plotter.changeCorrectionFactor("(ZZEwkCorrWeight_dn*ZZQcdCorrWeight)*xsec","nnlo")
 
    Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_ewkDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
-   Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output='MET_ewkDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+   Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), metnBins, metMin, metMax, titlex = "E_{T}^{miss}", units = "GeV",output='MET_ewkDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
        if ( typeP != "data" and  name == "VVZReso"):
           plotter.changeCorrectionFactor("(ZZEwkCorrWeight*ZZQcdCorrWeight_up)*xsec","nnlo")
 
    Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_qcdUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
-   Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output='MET_qcdUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+   Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), metnBins, metMin, metMax, titlex = "E_{T}^{miss}", units = "GeV",output='MET_qcdUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
        if ( typeP != "data" and  name == "VVZReso"):
 
           plotter.changeCorrectionFactor("(ZZEwkCorrWeight*ZZQcdCorrWeight_dn)*xsec","nnlo")
    Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_qcdDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
-   Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output='MET_qcdDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+   Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), metnBins, metMin, metMax, titlex = "E_{T}^{miss}", units = "GeV",output='MET_qcdDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    ## GJetsZPtWeight
    if ( channel=='el' and dyGJets ) :
@@ -1026,7 +1035,7 @@ else :
               plotter.changeCorrectionFactor("GJetsZPtWeightEl_up","GJetsZPtWeight")
 
        Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_fidxsecUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
-       Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output='MET_fidxsecUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+       Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), metnBins, metMin, metMax, titlex = "E_{T}^{miss}", units = "GeV",output='MET_fidxsecUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
        for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
            if ( typeP != "data" and name == "ZJets"  ):
@@ -1034,7 +1043,7 @@ else :
               plotter.changeCorrectionFactor("GJetsZPtWeightEl_dn","GJetsZPtWeight")
 
        Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_fidxsecDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
-       Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output='MET_fidxsecDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+       Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), metnBins, metMin, metMax, titlex = "E_{T}^{miss}", units = "GeV",output='MET_fidxsecDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
    if ( channel=='mu' and dyGJets ) :
        for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
@@ -1042,14 +1051,14 @@ else :
               plotter.changeCorrectionFactor(str(zjetsFidXsecMu_up),"zjetsFidXsecMu")
               plotter.changeCorrectionFactor("GJetsZPtWeightMu_up","GJetsZPtWeight")
        Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_fidxsecUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
-       Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output='MET_fidxsecUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+       Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), metnBins, metMin, metMax, titlex = "E_{T}^{miss}", units = "GeV",output='MET_fidxsecUp',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
        for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
            if ( typeP != "data" and name == "ZJets"  ):
               plotter.changeCorrectionFactor(str(zjetsFidXsecMu_dn),"zjetsFidXsecMu")
               plotter.changeCorrectionFactor("GJetsZPtWeightMu_dn","GJetsZPtWeight")
        Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_fidxsecDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
-       Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output='MET_fidxsecDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+       Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), metnBins, metMin, metMax, titlex = "E_{T}^{miss}", units = "GeV",output='MET_fidxsecDn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
        ######## MT Unc
        for (plotter,typeP,label,name) in zip(Stack.plotters,Stack.types,Stack.labels,Stack.names):
@@ -1067,8 +1076,8 @@ else :
       Stack.drawStack('llnunu_mT_'+systs+'Up', cutsALT(cuts,systs,'Up'), str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_'+systs+'Up',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
       Stack.drawStack('llnunu_mT_'+systs+'Dn', cutsALT(cuts,systs,'Dn'), str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT_'+systs+'Dn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
-      Stack.drawStack('llnunu_MET_'+systs+'Up', cutsALT(cuts,systs,'Up'), str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output='MET_'+systs+'Up',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
-      Stack.drawStack('llnunu_MET_'+systs+'Dn', cutsALT(cuts,systs,'Dn'), str(lumi*1000), 50, 0, 500, titlex = "MET", units = "GeV",output='MET_'+systs+'Dn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+      Stack.drawStack('llnunu_MET_'+systs+'Up', cutsALT(cuts,systs,'Up'), str(lumi*1000), metnBins, metMin, metMax, titlex = "E_{T}^{miss}", units = "GeV",output='MET_'+systs+'Up',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
+      Stack.drawStack('llnunu_MET_'+systs+'Dn', cutsALT(cuts,systs,'Dn'), str(lumi*1000), metnBins, metMin, metMax, titlex = "E_{T}^{miss}", units = "GeV",output='MET_'+systs+'Dn',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=300)
 
 Stack.closePSFile()
 Stack.closeROOTFile()

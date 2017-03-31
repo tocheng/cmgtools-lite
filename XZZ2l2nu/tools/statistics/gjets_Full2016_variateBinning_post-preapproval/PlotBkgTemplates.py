@@ -24,19 +24,19 @@ parser.add_option("-l",action="callback",callback=callback_rootargs)
 parser.add_option("-q",action="callback",callback=callback_rootargs)
 parser.add_option("-b",action="callback",callback=callback_rootargs)
 
+tag='ReMiniAODNoMETCutVary'
+(options,args) = parser.parse_args()
+
+cut=options.cutChain
+isDyMC=options.dyMC
+isGJets= (not isDyMC)
+observable=options.Observable
+
 def ReadTemplates(MX,channel,cat, parser):
-
-    (options,args) = parser.parse_args()
-
-    cut=options.cutChain
-    isDyMC=options.dyMC
-    isGJets= (not isDyMC)
-
     zjetsMethod = 'mczjet'
     if( not isDyMC) :
       zjetsMethod = 'gjet'
 
-    observable=options.Observable
 
     fs=""
     if(channel=="mm") :
@@ -45,7 +45,8 @@ def ReadTemplates(MX,channel,cat, parser):
       fs = "el"
 
     #gjet_zpt100met50_BulkSpin2
-    indir = zjetsMethod
+    #indir = zjetsMethod
+    indir = tag
     indir = indir + '_'
     indir = indir + cut + '_BulkGrav_narrow_'+observable
 
@@ -57,6 +58,8 @@ def ReadTemplates(MX,channel,cat, parser):
     inputfileName = inputfileName+'_'+cat
     inputfile = TFile("Datacards/"+indir+"/"+inputfileName+".root","READ")
 
+    print 'inputfile',"Datacards/"+indir+"/"+inputfileName+".root"
+
     #####
     Shape = {}
     Shape_ups = {}
@@ -66,7 +69,8 @@ def ReadTemplates(MX,channel,cat, parser):
     #process xzz zjets vvreso nonreso
     systs = ['fidxsec','id','trg','qcd','ewk','JetEn','JetRes','MuonEn','ElectronEn','PhotonEn','TauEn','Uncluster','Recoil']
     systsMT = ['JetEn','JetRes','MuonEn','ElectronEn','PhotonEn','TauEn','Uncluster','Recoil']
-    systsFull = ['LowMTUnc','statUnc','fidxsec','id','trg','qcd','ewk','JetEn','JetRes','MuonEn','ElectronEn','PhotonEn','TauEn','Uncluster','Recoil']
+    #systsFull = ['LowMTUnc','statUnc','fidxsec','id','trg','qcd','ewk','JetEn','JetRes','MuonEn','ElectronEn','PhotonEn','TauEn','Uncluster','Recoil']
+    systsFull = ['statUnc','fidxsec','id','trg','qcd','ewk','JetEn','JetRes','MuonEn','ElectronEn','PhotonEn','TauEn','Uncluster','Recoil']
 
     print 'import histograms from ',indir+"/"+inputfileName   
 
@@ -78,6 +82,8 @@ def ReadTemplates(MX,channel,cat, parser):
 
        for syst in systs :
 
+         print process,syst
+
          if(process=='nonreso') :
            continue
          if(process!='zjets' and syst == 'Recoil' ) :
@@ -88,14 +94,20 @@ def ReadTemplates(MX,channel,cat, parser):
            Shape_ups[syst+"_"+process] = (inputfile.Get(process+"_"+syst+fs+"Up")).Clone()
          elif(syst in systsMT and process=='zjets'):        
            if(syst!='Recoil') :
-             Shape_dns[syst+"_"+process] = (inputfile.Get(process+"_phyMET"+syst+"Down")).Clone()
-             Shape_ups[syst+"_"+process] = (inputfile.Get(process+"_phyMET"+syst+"Up")).Clone()
+             #Shape_dns[syst+"_"+process] = (inputfile.Get(process+"_phyMET"+syst+"Down")).Clone()
+             #Shape_ups[syst+"_"+process] = (inputfile.Get(process+"_phyMET"+syst+"Up")).Clone()
+             Shape_dns[syst+"_"+process] = (inputfile.Get(process+"_phyMET"+syst+fs+"Down")).Clone()
+             Shape_ups[syst+"_"+process] = (inputfile.Get(process+"_phyMET"+syst+fs+"Up")).Clone()
            else :
-             Shape_dns[syst+"_"+process] = (inputfile.Get(process+"_zjets"+syst+"Down")).Clone()
-             Shape_ups[syst+"_"+process] = (inputfile.Get(process+"_zjets"+syst+"Up")).Clone()
+             #Shape_dns[syst+"_"+process] = (inputfile.Get(process+"_zjets"+syst+"Down")).Clone()
+             #Shape_ups[syst+"_"+process] = (inputfile.Get(process+"_zjets"+syst+"Up")).Clone()
+             Shape_dns[syst+"_"+process] = (inputfile.Get(process+"_zjets"+syst+fs+"Down")).Clone()
+             Shape_ups[syst+"_"+process] = (inputfile.Get(process+"_zjets"+syst+fs+"Up")).Clone()
          else :        
-           Shape_dns[syst+"_"+process] = (inputfile.Get(process+"_"+syst+"Down")).Clone()
-           Shape_ups[syst+"_"+process] = (inputfile.Get(process+"_"+syst+"Up")).Clone()
+           #Shape_dns[syst+"_"+process] = (inputfile.Get(process+"_"+syst+"Down")).Clone()
+           #Shape_ups[syst+"_"+process] = (inputfile.Get(process+"_"+syst+"Up")).Clone()
+           Shape_dns[syst+"_"+process] = (inputfile.Get(process+"_"+syst+fs+"Down")).Clone()
+           Shape_ups[syst+"_"+process] = (inputfile.Get(process+"_"+syst+fs+"Up")).Clone()
 
        # MC statistical uncertainty
        if(process=='vvreso' or process=='nonreso'):
@@ -105,14 +117,17 @@ def ReadTemplates(MX,channel,cat, parser):
        if(process=='zjets'):  
          Shape_dns["statUnc_"+process] = (inputfile.Get(process+"_"+process+"StatUnc"+cat+"Down")).Clone()
          Shape_ups["statUnc_"+process] = (inputfile.Get(process+"_"+process+"StatUnc"+cat+"Up")).Clone()
+         #Shape_dns["statUnc_"+process] = (inputfile.Get(process+"_"+process+"StatUnc"+cat+fs+"Down")).Clone()
+         #Shape_ups["statUnc_"+process] = (inputfile.Get(process+"_"+process+"StatUnc"+cat+fs+"Up")).Clone()
 
        # LowMT unc
-       if(process=='zjets'):
-         Shape_dns["LowMTUnc_"+process] = (inputfile.Get(process+"_"+process+"LowMTUnc"+cat+fs+"Down")).Clone()
-         Shape_ups["LowMTUnc_"+process] = (inputfile.Get(process+"_"+process+"LowMTUnc"+cat+fs+"Up")).Clone()
+#       if(process=='zjets'):
+#         Shape_dns["LowMTUnc_"+process] = (inputfile.Get(process+"_"+process+"LowMTUnc"+cat+fs+"Down")).Clone()
+#         Shape_ups["LowMTUnc_"+process] = (inputfile.Get(process+"_"+process+"LowMTUnc"+cat+fs+"Up")).Clone()
 
-    #### out #### 
-    os.system('mkdir -p Plots')
+    #### out ####
+    outdir="Plots_"+tag+"_"+cut
+    os.system('mkdir -p '+outdir)
     for process in processes :
 
       r = Shape[process].Clone()
@@ -123,6 +138,8 @@ def ReadTemplates(MX,channel,cat, parser):
       Shape[process].SetFillColor(0)
 
       for syst in systsFull :
+
+        print process,syst
 
         if(syst!="statUnc" and process=='nonreso') :
            continue
@@ -193,16 +210,16 @@ def ReadTemplates(MX,channel,cat, parser):
         r.Draw("same")
 
         if(syst in systsMT and process=='zjets'and syst!='Recoil') :
-          c1.SaveAs('Plots/'+observable+'_'+process+'_'+fs+'_phyMET'+syst+'_'+cat+'.pdf')
-          c1.SaveAs('Plots/'+observable+'_'+process+'_'+fs+'_phyMET'+syst+'_'+cat+'.png')
+          c1.SaveAs(outdir+'/'+observable+'_'+process+'_'+fs+'_phyMET'+syst+'_'+cat+'.pdf')
+          c1.SaveAs(outdir+'/'+observable+'_'+process+'_'+fs+'_phyMET'+syst+'_'+cat+'.png')
         else :
-          c1.SaveAs('Plots/'+observable+'_'+process+'_'+fs+'_'+syst+'_'+cat+'.pdf')
-          c1.SaveAs('Plots/'+observable+'_'+process+'_'+fs+'_'+syst+'_'+cat+'.png')
+          c1.SaveAs(outdir+'/'+observable+'_'+process+'_'+fs+'_'+syst+'_'+cat+'.pdf')
+          c1.SaveAs(outdir+'/'+observable+'_'+process+'_'+fs+'_'+syst+'_'+cat+'.png')
 
-mass=[800]
+mass=[1000]
 
 for m in mass :
 
-   ReadTemplates(m,"mm",'SR', parser)
-   ReadTemplates(m,"ee",'SR', parser)
+   ReadTemplates(m,"mm",cut, parser)
+   ReadTemplates(m,"ee",cut, parser)
 

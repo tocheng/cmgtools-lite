@@ -13,6 +13,9 @@ import optparse, shlex, re
 # load signal modules
 sys.path.append('./SigInputs')
 
+#tag="ReMiniAODNoMETCutVary"
+tag="ReMiniAOD"
+
 grootargs = []
 def callback_rootargs(option, opt, value, parser):
     grootargs.append(opt)
@@ -59,7 +62,8 @@ def createXSworkspace(sigType,MX, channel,cat, parser):
     elif(channel=="ee") :
       fs = "el"
 
-    outdir = zjetsMethod+'_'+cut
+    outdir = tag+'_'+cut
+    #outdir = zjetsMethod+'_'+cut
     #outdir = outdir + '_bin'+str(bin_index)
     if(perBinStatUnc) :
       outdir = outdir + '_perBinStatUnc'
@@ -68,7 +72,9 @@ def createXSworkspace(sigType,MX, channel,cat, parser):
        os.system('mkdir -p Datacards/'+outdir)
  
     #GJets_GMCEtaWt_GMCPhPtWt_
-    prefix = "ReMiniAOD_GMCPhPtWt_"+cat+"_puWeightsummer16_muoneg_"+zjetsMethod+"_metfilter_unblind"
+
+    prefix = tag+"_GMCPhPtWt_"+cat+"_puWeightsummer16_muoneg_"+zjetsMethod+"_metfilter_unblind"
+    #prefix = "ReMiniAOD_GMCPhPtWt_"+cat+"_puWeightsummer16_muoneg_"+zjetsMethod+"_metfilter_unblind"
     inputfileName = prefix + "_" + fs + "_log_1pb"
     inputfile = TFile('Templates/'+inputfileName+".root","READ")
 
@@ -94,7 +100,7 @@ def createXSworkspace(sigType,MX, channel,cat, parser):
     #bins = [0.0, 100.0, 150.0, 200.0, 250.0, 300.0, 350.0, 400.0, 450.0, 500.0, 550.0, 600.0, 650.0, 700.0, 750.0, 800.0, 850, 900, 1000, 1100, 1250, 1650, 3000.0]
     bins = [0.0, 100.0, 150.0, 200.0, 250.0, 300.0, 350.0, 400.0, 450.0, 500.0, 600.0, 700.0, 800.0, 900, 1050, 1150, 1250, 1650, 3000.0]
     if(observable=="MET"):
-       bins = [0.0, 50, 60, 80, 100.0, 120.0, 140, 160, 180, 200.0, 250.0, 300.0, 350.0, 400.0, 450.0, 500.0]
+       bins = [0.0, 50, 100.0, 150, 200.0, 250.0, 300.0, 350.0, 400.0, 450.0, 500.0, 600, 700, 1000, 1500]
 
     '''
     bins = []
@@ -112,7 +118,6 @@ def createXSworkspace(sigType,MX, channel,cat, parser):
        rebinMerge(Shape[process],Shape_orig)  
 
        for i in range(1,Shape[process].GetXaxis().GetNbins()+1) :
-
           if(Shape[process].GetBinContent(i)<pedestal) :
             Shape[process].SetBinContent(i,pedestal)
 
@@ -133,19 +138,22 @@ def createXSworkspace(sigType,MX, channel,cat, parser):
          Shape_ups[syst+"_"+process] = TH1D(syst+"Dn_"+process, process, len(bins)-1,array('d',bins))
          rebinMerge(Shape_ups[syst+"_"+process],inputfile.Get(observable+"_"+syst+"Up_"+process))
 
-         if(syst=="trg" or syst=="id" or syst=="fidxsec") :
-
+         if(syst=="trg" or syst=="id" or syst=="fidxsec" ) :
+#         if(syst=="trg" or syst=="id" or syst=="fidxsec" or (syst in systsMT and processNameinDC[process]!='zjets') ) :
            Shape_dns[syst+"_"+process].SetName(processNameinDC[process]+"_"+syst+fs+"Down")
            Shape_ups[syst+"_"+process].SetName(processNameinDC[process]+"_"+syst+fs+"Up")
            Shape_dns[syst+"_"+process].SetTitle(processNameinDC[process])
            Shape_ups[syst+"_"+process].SetTitle(processNameinDC[process])
 
          elif(syst in systsMT and processNameinDC[process]=='zjets'):        
+#         if(syst in systsMT and processNameinDC[process]=='zjets'):        
 
            if(syst!='Recoil'):
-             Shape_dns[syst+"_"+process].SetName(processNameinDC[process]+"_phyMET"+syst+"Down")
-             Shape_ups[syst+"_"+process].SetName(processNameinDC[process]+"_phyMET"+syst+"Up")
+             Shape_dns[syst+"_"+process].SetName(processNameinDC[process]+"_phyMET"+syst+fs+"Down")
+             Shape_ups[syst+"_"+process].SetName(processNameinDC[process]+"_phyMET"+syst+fs+"Up")
            else :
+             #Shape_dns[syst+"_"+process].SetName(processNameinDC[process]+"_zjets"+syst+fs+"Down")
+             #Shape_ups[syst+"_"+process].SetName(processNameinDC[process]+"_zjets"+syst+fs+"Up")
              Shape_dns[syst+"_"+process].SetName(processNameinDC[process]+"_zjets"+syst+"Down")
              Shape_ups[syst+"_"+process].SetName(processNameinDC[process]+"_zjets"+syst+"Up")
 
@@ -156,6 +164,8 @@ def createXSworkspace(sigType,MX, channel,cat, parser):
 
            Shape_dns[syst+"_"+process].SetName(processNameinDC[process]+"_"+syst+"Down")
            Shape_ups[syst+"_"+process].SetName(processNameinDC[process]+"_"+syst+"Up")
+#           Shape_dns[syst+"_"+process].SetName(processNameinDC[process]+"_"+syst+fs+"Down")
+#           Shape_ups[syst+"_"+process].SetName(processNameinDC[process]+"_"+syst+fs+"Up")
            Shape_dns[syst+"_"+process].SetTitle(processNameinDC[process])
            Shape_ups[syst+"_"+process].SetTitle(processNameinDC[process])
 
@@ -180,13 +190,18 @@ def createXSworkspace(sigType,MX, channel,cat, parser):
          Shape_dns["statUnc_"+process] = Shape[process].Clone()
          Shape_ups["statUnc_"+process] = Shape[process].Clone()
 
-         Shape_dns["statUnc_"+process].SetName(processNameinDC[process]+"_"+processNameinDC[process]+"StatUnc"+cat+fs+"Down")
-         Shape_ups["statUnc_"+process].SetName(processNameinDC[process]+"_"+processNameinDC[process]+"StatUnc"+cat+fs+"Up")
 
-         if(process=='ZJets'):
+         #if(process=='ZJets'):
+         if(process=='ZJets' or process=='NonReso' ):
 
            Shape_dns["statUnc_"+process].SetName(processNameinDC[process]+"_"+processNameinDC[process]+"StatUnc"+cat+"Down")
            Shape_ups["statUnc_"+process].SetName(processNameinDC[process]+"_"+processNameinDC[process]+"StatUnc"+cat+"Up")
+           #Shape_dns["statUnc_"+process].SetName(processNameinDC[process]+"_"+processNameinDC[process]+"StatUnc"+cat+fs+"Down")
+           #Shape_ups["statUnc_"+process].SetName(processNameinDC[process]+"_"+processNameinDC[process]+"StatUnc"+cat+fs+"Up")
+
+         else: 
+           Shape_dns["statUnc_"+process].SetName(processNameinDC[process]+"_"+processNameinDC[process]+"StatUnc"+cat+fs+"Down")
+           Shape_ups["statUnc_"+process].SetName(processNameinDC[process]+"_"+processNameinDC[process]+"StatUnc"+cat+fs+"Up")
 
          Shape_dns["statUnc_"+process].SetTitle(processNameinDC[process])
          Shape_ups["statUnc_"+process].SetTitle(processNameinDC[process])
@@ -238,13 +253,15 @@ def createXSworkspace(sigType,MX, channel,cat, parser):
 
          Shape_dns["LowMTUnc_"+process].SetName(processNameinDC[process]+"_"+processNameinDC[process]+"LowMTUnc"+cat+fs+"Down")
          Shape_ups["LowMTUnc_"+process].SetName(processNameinDC[process]+"_"+processNameinDC[process]+"LowMTUnc"+cat+fs+"Up")
+         #Shape_dns["LowMTUnc_"+process].SetName(processNameinDC[process]+"_"+processNameinDC[process]+"LowMTUnc"+cat+"Down")
+         #Shape_ups["LowMTUnc_"+process].SetName(processNameinDC[process]+"_"+processNameinDC[process]+"LowMTUnc"+cat+"Up")
 
          Shape_dns["LowMTUnc_"+process].SetTitle(processNameinDC[process])
          Shape_ups["LowMTUnc_"+process].SetTitle(processNameinDC[process])
                      
          for j in range(1,Shape[process].GetXaxis().GetNbins()+1) :
              if Shape[process].GetBinCenter(j)<150 :
-                 Shape_dns["LowMTUnc_"+process].SetBinContent(j, Shape_dns["LowMTUnc_"+process].GetBinContent(j)*0.4)
+                 Shape_dns["LowMTUnc_"+process].SetBinContent(j, Shape_dns["LowMTUnc_"+process].GetBinContent(j)*0.6)
                  Shape_ups["LowMTUnc_"+process].SetBinContent(j, Shape_ups["LowMTUnc_"+process].GetBinContent(j)*2.5)
              elif Shape[process].GetBinCenter(j)<200 :
                  Shape_dns["LowMTUnc_"+process].SetBinContent(j, Shape_dns["LowMTUnc_"+process].GetBinContent(j)*0.95)
@@ -252,12 +269,12 @@ def createXSworkspace(sigType,MX, channel,cat, parser):
             
 
     #########
-    Shape[sigName].Scale(0.001)
-    for syst in systs :
-      if(syst=='Recoil') :
-        continue;
-      Shape_dns[syst+"_"+sigName].Scale(0.001)
-      Shape_ups[syst+"_"+sigName].Scale(0.001)
+#    Shape[sigName].Scale(0.001)
+#    for syst in systs :
+#      if(syst=='Recoil') :
+#        continue;
+#      Shape_dns[syst+"_"+sigName].Scale(0.001)
+#      Shape_ups[syst+"_"+sigName].Scale(0.001)
 
     theRates[sigName] = Shape[sigName].Integral()
     
@@ -366,54 +383,69 @@ def WriteDatacard(theFile, sigName,MX,channel,cat, theRates,obsEvents, perBinSta
         theFile.write("------------\n")
 
         theFile.write("# norm uncertainty \n")
-        theFile.write("lumi_13TeV lnN 1.06 1.06 1.06 - \n")
+        theFile.write("lumi_13TeV lnN 1.025 1.025 1.025 1.025 \n")
         theFile.write("pdf_qqbar lnN - 1.017 1.015 - \n")
+        #theFile.write("pdf_qqbar lnN - - 1.015 - \n")
         theFile.write("xzz2l2nu_accept lnN 1.01 - - - \n")
         theFile.write("trg{0} shapeN2 1.0 - 1.0 - \n".format(fs))
         theFile.write("id{0} shapeN2 1.0 - 1.0 - \n".format(fs))
+        #theFile.write("qcd{0} shapeN2 - - 1.0 - \n".format(fs))
+        #theFile.write("ewk{0} shapeN2 - - 1.0 - \n".format(fs))
         theFile.write("qcd shapeN2 - - 1.0 - \n")
         theFile.write("ewk shapeN2 - - 1.0 - \n")
-        theFile.write("trkEff lnN 1.01 1.01 1.01 1.01 \n")
+        if fs=="mu": theFile.write("trkEff lnN 1.01 1.01 1.01 1.01 \n")
+        else: theFile.write("trkEff lnN -  -  -  - \n")
         ## non-res and z+jets are data-driven now, no direct trig/id uncertainty
         theFile.write("#non-res syst unc \n")
-        unc_tmp = 1.02
-        theFile.write("idnonres{0} lnN  - - - {1}\n".format(fs,str(unc_tmp)))
-        unc_tmp = 1.01
+        #unc_tmp = 1.02
+        #theFile.write("idnonres{0} lnN  - - - {1}\n".format(fs,str(unc_tmp)))
+        #unc_tmp = 1.01
+        #if(fs=="el") :
+        #  unc_tmp = 1.06
+        #else :
+        #  unc_tmp = 1.013
+        #theFile.write("trgnonres{0} lnN  - - - {1}\n".format(fs,str(unc_tmp)))
+        #unc_tmp = 1.01
+        #if(fs=="el") :
+        #  unc_tmp = 1.04
+        #else :
+        #  unc_tmp = 1.024
+        #theFile.write("pdfnonres{0} lnN  - - - {1}\n".format(fs,str(unc_tmp)))
+        #unc_tmp = 1.01
+        #if(fs=="el") :
+        #  unc_tmp = 1.067
+        #else :
+        #  unc_tmp = 1.01
+        #theFile.write("closurenonres{0} lnN  - - - {1}\n".format(fs,str(unc_tmp)))
         if(fs=="el") :
-          unc_tmp = 1.06
+          unc_tmp = 1.1
         else :
-          unc_tmp = 1.013
-        theFile.write("trgnonres{0} lnN  - - - {1}\n".format(fs,str(unc_tmp)))
-        unc_tmp = 1.01
-        if(fs=="el") :
-          unc_tmp = 1.04
-        else :
-          unc_tmp = 1.024
-        theFile.write("pdfnonres{0} lnN  - - - {1}\n".format(fs,str(unc_tmp)))
-        unc_tmp = 1.01
-        if(fs=="el") :
-          unc_tmp = 1.067
-        else :
-          unc_tmp = 1.01
-        theFile.write("closurenonres{0} lnN  - - - {1}\n".format(fs,str(unc_tmp)))
+          unc_tmp = 1.034
+        theFile.write("nonres{0} lnN  - - - {1}\n".format(fs,str(unc_tmp)))
 
         theFile.write("#MET-induced MT unc \n")
         systsMT = ['JetEn','JetRes','MuonEn','ElectronEn','PhotonEn','Uncluster']
         for syst in systsMT :
            #signal and reso MT uncertainty
            theFile.write("{0} shapeN2 1.0 - 1.0 - \n".format(syst))
+           #theFile.write("{0}{1} shapeN2 1.0 - 1.0 - \n".format(syst,fs))
            # zjets MT uncertainty from phyMET (subtraction) in photon+jet
            #theFile.write("phyMET{0} shapeN2 - 1.0 - - \n".format(syst))
 
         theFile.write("# photon+jets zpt reweight uncertainty \n")
         theFile.write("fidxsec{0} shapeN2 - 0.5 - - \n".format(fs))
-        theFile.write("zjetsRecoil shapeN2 - 1.0 - - \n".format(syst))
+#        theFile.write("fidxsec shapeN2 - 0.5 - - \n")
+#        theFile.write("zjetsRecoil{0} shapeN2 - 1.0 - - \n".format(fs))
+#        theFile.write("zjetsRecoil{0} shapeN2 - 0.5 - - \n".format(fs))
+        theFile.write("zjetsRecoil shapeN2 - 0.5 - - \n")
 
         theFile.write("#Stat unc \n")
         if(not perBinStatUnc) :
+#           theFile.write("zjetsStatUnc{0}{1} shapeN2 - 1.0 - - \n".format(cat,fs))
            theFile.write("zjetsStatUnc{0} shapeN2 - 1.0 - - \n".format(cat))
            theFile.write("vvresoStatUnc{0}{1} shapeN2 - - 1.0 - \n".format(cat,fs))
-           theFile.write("nonresoStatUnc{0}{1} shapeN2 - - - 1.0 \n".format(cat,fs))
+           #theFile.write("nonresoStatUnc{0}{1} shapeN2 - - - 1.0 \n".format(cat,fs))
+           theFile.write("nonresoStatUnc{0} shapeN2 - - - 1.0 \n".format(cat))
         else :
            for i in range(1, len(bins)) :
                theFile.write("zjetsStatUncBin{0}{1} shapeN2 - 1.0 - - \n".format(str(i),cat))
@@ -421,6 +453,7 @@ def WriteDatacard(theFile, sigName,MX,channel,cat, theRates,obsEvents, perBinSta
                theFile.write("nonresoStatUncBin{0}{1}{2} shapeN2 - - - 1.0 \n".format(str(i),cat,fs))  
 
         if observable=="mT" : theFile.write("zjetsLowMTUnc{0}{1} shapeN2 - 1.0 - - \n".format(cat,fs))
+#        if observable=="mT" : theFile.write("zjetsLowMTUnc{0} shapeN2 - 1.0 - - \n".format(cat))
 
 
 def rebinMerge(hist,hist_orig) :
@@ -495,20 +528,23 @@ def Run():
         sigType = key
         mass = sigMasses[sigType]
 
-        outdir = zjetsMethod+'_'+cut
+        outdir = tag+'_'+cut
+        #outdir = zjetsMethod+'_'+cut
         if(perBinStatUnc) :
           outdir = outdir + '_perBinStatUnc'
 
         outdir = outdir + '_' + sigType + '_' + observable
 
         for m in mass :
-            createXSworkspace(sigType,m, "mm",'SR', parser)
-            createXSworkspace(sigType,m, "ee",'SR', parser)
-            createXSworkspace(sigType,m, "mm",'CR1', parser)
-            createXSworkspace(sigType,m, "ee",'CR1', parser)
+#            createXSworkspace(sigType,m, "mm",'SR', parser)
+#            createXSworkspace(sigType,m, "ee",'SR', parser)
+#            createXSworkspace(sigType,m, "mm",'CR1', parser)
+#            createXSworkspace(sigType,m, "ee",'CR1', parser)
+            createXSworkspace(sigType,m, "mm",cut, parser)
+            createXSworkspace(sigType,m, "ee",cut, parser)
 
             if(runLimits) :
-              cmd = 'sh Limits/runAsymptotic.sh Datacards/'+outdir+' '+str(m)+' &> Datacards/'+outdir+'/runAsymptotic_'+str(m)+'.log &'
+              cmd = 'sh Limits/runAsymptotic.sh Datacards/'+outdir+' '+str(m)+' '+cut+' &> Datacards/'+outdir+'/runAsymptotic_'+str(m)+' '+cut+'.log &'
               print cmd
               output = processCmd(cmd)
 

@@ -1,23 +1,25 @@
 
 1. setup cards and shapes
 
-   python createXZZ2l2nuWorkspace.py -l -b -q
+   python createXZZ2l2nuWorkspace.py -l -b -q --cutChain SRdPhiGT0p5
    if want to run limit
-   python createXZZ2l2nuWorkspace.py -l -b -q --runLimits
-   if want to use MET as observable,
-   python createXZZ2l2nuWorkspace.py -l -b -q --obs="MET"
+   python createXZZ2l2nuWorkspace.py -l -b -q --runLimits --cutChain SRdPhiGT0p5
+   if want to use MET as observable, 
+   python createXZZ2l2nuWorkspace.py -l -b -q --obs="MET" --cutChain SRdPhiGT0p5
 
 2.dataVSMC plot
 
   cd Diagnosis
   
-  sh runDiagnosis.sh ../Datacards/gjet_zpt100met50_BulkGrav_narrow_mT/ 800
+  sh runDiagnosis.sh ../Datacards/gjet_zpt100met50_BulkGrav_narrow_mT/ 800 SRdPhiGT0p5 
 
   cd -
 
   python PlotDataMC.py -l -b -q
   plots will be in Plots
 
+  ./PlotDataMCWorkspace.py -l -b -q --cutChain SRdPhiGT0p5
+
 3. limits
 
-python Limits/anypythonfile -l -b -q
+python Limits/anypythonfile -l -b -q --cutChain SRdPhiGT0p5

@@ -115,7 +115,7 @@ def GetRatioHist(h1, hstack,blinding=False,blindingCut=100):
     hratio.SetMarkerSize(1.)
     hratio.SetMarkerColor(ROOT.kBlack)
     hratio.GetXaxis().SetTitle('')
-    hratio.GetYaxis().SetTitle('Data/MC')
+    hratio.GetYaxis().SetTitle('Data/Bkg.')
     #hratio.GetYaxis().SetRangeUser(0.0,2.0)
     hratio.GetYaxis().SetRangeUser(0.5,1.5)
     hratio.GetXaxis().SetLabelFont(42)
@@ -344,7 +344,8 @@ class StackPlotter(object):
 
         if len(units)>0:
             frame.GetXaxis().SetTitle(titlex + " (" +units+")")
-            frame.GetYaxis().SetTitle("Events / "+str((maxi-mini)/bins)+ " "+units)
+            #frame.GetYaxis().SetTitle("Events / "+str((maxi-mini)/bins)+ " "+units)
+            frame.GetYaxis().SetTitle("Events / {:.0f} {:s}".format((maxi-mini)/bins,units))
         else:    
             frame.GetXaxis().SetTitle(titlex)
             frame.GetYaxis().SetTitle("Events")
@@ -382,7 +383,7 @@ class StackPlotter(object):
 
  #       ROOT.SetOwnership(legend,False)
 
-        legend.Draw()
+#        legend.Draw()
         if self.log:
             p1.SetLogy()
         #p1.SetLeftMargin(p1.GetLeftMargin()*1.15)
@@ -413,8 +414,8 @@ class StackPlotter(object):
 	pt.SetFillStyle(0)
 	pt.SetTextFont(42)
 	pt.SetTextSize(0.03)
-	#text = pt.AddText(0.15,0.3,"CMS Preliminary")
-	text = pt.AddText(0.15,0.3,"CMS Work in progress")
+	text = pt.AddText(0.05,0.3,"CMS Preliminary")
+#	text = pt.AddText(0.15,0.3,"CMS Work in progress")
 #	text = pt.AddText(0.25,0.3,"#sqrt{s} = 7 TeV, L = 5.1 fb^{-1}  #sqrt{s} = 8 TeV, L = 19.7 fb^{-1}")
 	#text = pt.AddText(0.55,0.3,"#sqrt{s} = 13 TeV 2015 L = "+"{:.3}".format(float(lumi)/1000)+" fb^{-1}")
 	#text = pt.AddText(0.55,0.3,"#sqrt{s} = 13 TeV 2016 L = "+"{:.3}".format(float(lumi)/1000)+" fb^{-1}")
@@ -441,7 +442,7 @@ class StackPlotter(object):
             hratio_band.Draw('E2')
             hline.Draw('HIST,SAME')
             hratio.Draw('P,SAME')
-                
+            legend.AddEntry(hratio_band,"Stat. Uncertainty","f")        
 
         # blinding mask 
         if blinding : 
@@ -475,6 +476,10 @@ class StackPlotter(object):
                 hmask_ratio.SetLineColor(16)
                 p2.cd()
                 hmask_ratio.Draw("HIST,SAME")
+
+        # draw legend
+        p1.cd()
+        legend.Draw()
 
         plot={'canvas':c1,'stack':stack,'legend':legend,'data':dataH,'dataG':dataG,'latex1':pt}
         if separateSignal and len(signalHs)>0:
@@ -1114,7 +1119,7 @@ class StackPlotter(object):
 	pt.SetTextFont(42)
 	pt.SetTextSize(0.03)
 	text = pt.AddText(0.15,0.3,"CMS Work in progress")
-	text = pt.AddText(0.55,0.3,"#sqrt{s} = 13 TeV, L = "+"{:.3}".format(float(lumi)/1000)+" fb^{-1}")
+	text = pt.AddText(0.55,0.3,"#sqrt{s} = 13 TeV, L = "+"{:.1}".format(float(lumi)/1000)+" fb^{-1}")
 	pt.Draw()   
 
         plot={'canvas':c1,'SigEffHists':SigEffHists,'BkgEffHistAll':BkgEffHistAll,'ROCGraphs':ROCGraphs,'legend':legend,'data':dataH, 'latex1':pt}

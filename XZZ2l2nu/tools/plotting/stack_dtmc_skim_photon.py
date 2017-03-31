@@ -98,9 +98,9 @@ if WtQCDToGJets:
 outdir='plots_ph'
 
 #indir='/home/heli/XZZ/80X_20170202_GJets_light_hlt_allcorV2RcSkim'
-#indir='/home/heli/XZZ/80X_20170202_GJets_light_hlt_allcorV2Skim'
+indir='/home/heli/XZZ/80X_20170202_GJets_light_hlt_allcorV2Skim'
 #indir='/home/heli/XZZ/80X_20170202_GJets_light_hlt_RcSkim'
-indir='/home/heli/XZZ/80X_20170202_GJets_light_hlt_Skim'
+#indir='/home/heli/XZZ/80X_20170202_GJets_light_hlt_Skim'
 #indir='/home/heli/XZZ/80X_20170202_GJets_light_Skim'
 lumi=35.87
 sepSig=True
@@ -434,8 +434,8 @@ for i in range(len(allmcPlotters)) :
 ############################################
 
 gdataSamples = [
-#'SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil',
-'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_NoRecoil',
+'SinglePhoton_Run2016Full_03Feb2017_allcorV2_NoRecoil',
+#'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim_NoRecoil',
 #'SinglePhoton_Run2016Full_03Feb2017_allcorV2',
 #'SinglePhoton_Run2016Full_ReReco_v2_RePreSkim',
 #'SinglePhoton_Run2016Full_ReReco_v2',
@@ -562,10 +562,10 @@ Stack.doRatio(doRatio)
 tag+='_'
 
 if test: 
-    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 75, 0.0, 1500.0, titlex = "P_{T}(#gamma)", units = "GeV",output='zpt_low',outDir=outdir,separateSignal=sepSig)
-#    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 25, 0, 1000, titlex = "MET", units = "GeV",output='met_low',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
+    Stack.drawStack('llnunu_l1_pt', cuts, str(lumi*1000), 75, 0.0, 1500.0, titlex = "p_{T}(#gamma)", units = "GeV",output='zpt_low',outDir=outdir,separateSignal=sepSig)
+    Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), 25, 0, 1000, titlex = "E_{T}^P{miss}", units = "GeV",output='met_low',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)
 #    Stack.drawStack('llnunu_l1_eta', cuts, str(lumi*1000), 100, -2.5, 2.5, titlex = "#eta(#gamma) ", units = "",output='zeta',outDir=outdir,separateSignal=sepSig)
-    Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 25, -500, 500.0, titlex = "MET_{#parallel}", units = "GeV",output='met_para',outDir=outdir,separateSignal=sepSig)
+#    Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 25, -500, 500.0, titlex = "MET_{#parallel}", units = "GeV",output='met_para',outDir=outdir,separateSignal=sepSig)
 else: 
     Stack.drawStack('nVert', cuts, str(lumi*1000), 100, 0.0, 100.0, titlex = "N vertices", units = "",output='nVert',outDir=outdir,separateSignal=sepSig)
     Stack.drawStack('rho', cuts, str(lumi*1000), 55, 0.0, 55.0, titlex = "#rho", units = "",output='rho',outDir=outdir,separateSignal=sepSig)

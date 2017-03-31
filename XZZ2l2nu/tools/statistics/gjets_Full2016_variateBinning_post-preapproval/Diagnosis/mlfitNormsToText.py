@@ -1,3 +1,5 @@
+#!/bin/env python
+
 import re
 from sys import argv, stdout, stderr, exit
 

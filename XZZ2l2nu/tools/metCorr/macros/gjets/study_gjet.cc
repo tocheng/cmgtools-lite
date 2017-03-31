@@ -33,9 +33,9 @@ int main(int argc, char** argv) {
   TFile* file2 = TFile::Open("/home/heli/XZZ/80X_20170202_GJets_light_Skim/SinglePhoton_Run2016Full_03Feb2017_allcorV2.root");
   //TFile* file2 = TFile::Open("/home/heli/XZZ/80X_20170202_GJets_light_Skim/SinglePhoton_Run2016Full_ReReco_v2_RePreSkim.root");
 
-  std::string outtag="study_gjets_data_allcorV2ZPtBinsForMass";
+  //std::string outtag="study_gjets_data_allcorV2ZPtBinsForMass";
   //std::string outtag="study_gjets_data_allcorV2FineZMassFineBin";
-  //std::string outtag="study_gjets_data_allcorV2";
+  std::string outtag="study_gjets_data_allcorV2";
   //std::string outtag="study_gjets_data_ReRecoRePreSkim";
 
   char name[1000];
@@ -187,7 +187,8 @@ int main(int argc, char** argv) {
   //Double_t ZPtBins[] = {0,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,65,70,75,80,85,90,95,100,110,120,130,140,150,160,170,180,190,200,220,240,245,260,280,300,350,500,1000,3000};
   Double_t ZPtBins[] = {0,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,65,70,75,80,85,90,95,100,110,120,130,140,160,180,200,240,280,320,400,600,1000};
   Int_t NZPtBins = sizeof(ZPtBins)/sizeof(ZPtBins[0]) - 1;
-  Double_t ZPtBinsForMass[] = {0,2,4,6,8,10,12,14,16,18,20,22,24,26,28, 30, 35, 40, 50, 60, 70, 80, 90, 100, 120, 140, 160, 180, 220, 260, 300, 500, 5000};
+  //Double_t ZPtBinsForMass[] = {0,2,4,6,8,10,12,14,16,18,20,22,24,26,28, 30, 35, 40, 50, 60, 70, 80, 90, 100, 120, 140, 160, 180, 220, 260, 300, 500, 5000};
+  Double_t ZPtBinsForMass[] = {0,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,65,70,75,80,85,90,95,100,110,120,130,140,160,180,200,240,280,320,400,600,1000};
   Int_t NZPtBinsForMass = sizeof(ZPtBinsForMass)/sizeof(ZPtBinsForMass[0]) - 1;
   //Double_t ZMassBins[] = {50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180};
   //Int_t NZMassBins = sizeof(ZMassBins)/sizeof(ZMassBins[0]) - 1;
