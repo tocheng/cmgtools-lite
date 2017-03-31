@@ -2,10 +2,14 @@
 
 
 tag="ReMiniAOD_"
+#tag="ReMiniAODNoMETCutVary_"
 
 channels="mu el"
 #cutChains="SR"
-cutChains="SR CR1"
+#cutChains="SR CR1"
+#cutChains="SRdPhiGT0p5 SR"
+cutChains="SRdPhiGT0p5 "
+#cutChains="SRzptGT200"
 logdir="log"
 
 mkdir -p $logdir

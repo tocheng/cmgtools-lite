@@ -80,7 +80,8 @@ def plotDataMC(sigType, channel,cat, parser):
     Shape_ups = {}
     Shape_dns = {}
 
-    Shape_prefit = {}
+    Shape_fit_ws = {}
+    Shape_fit = {}
 
     processes = ['NonReso','VVZReso','ZJets', 'BulkGravToZZToZlepZinv_narrow_600', 'BulkGravToZZToZlepZinv_narrow_1000', 'BulkGravToZZToZlepZinv_narrow_1600']
     processNameinDC = {'NonReso':'nonreso','VVZReso':'vvreso','ZJets':'zjets', 'BulkGravToZZToZlepZinv_narrow_600':'mX600','BulkGravToZZToZlepZinv_narrow_1000':'mX1000','BulkGravToZZToZlepZinv_narrow_1600':'mX1600'}
@@ -93,7 +94,8 @@ def plotDataMC(sigType, channel,cat, parser):
     bins = [0.0, 100.0, 150.0, 200.0, 250.0, 300.0, 350.0, 400.0, 450.0, 500.0, 600.0, 700.0, 800.0, 900, 1050, 1150, 1250, 1650, 3000.0]
     if(observable=="MET"):
        #bins = [0.0, 50, 100.0, 150.0, 200.0, 250.0, 300.0, 350.0, 400.0, 450.0, 500.0]
-       bins = [0.0, 50, 60, 80, 100.0, 120.0, 140, 160, 180, 200.0, 250.0, 300.0, 350.0, 400.0, 450.0, 500.0]
+       #bins = [0.0, 50, 60, 80, 100.0, 120.0, 140, 160, 180, 200.0, 250.0, 300.0, 350.0, 400.0, 450.0, 500.0]
+       bins = [0.0, 50, 100.0, 150, 200.0, 250.0, 300.0, 350.0, 400.0, 450.0, 500.0, 600, 700, 1000, 1500]
 
     nbins = len(bins)-1
 
@@ -216,12 +218,16 @@ def plotDataMC(sigType, channel,cat, parser):
     hmask_data = blindHist(data_obs_orig,blindingCut)
     # total uncertainty from prefit templates in MaxLikelihood
     processes = ['total_background']
-    if observable=="MET": inputfileML = TFile("Diagnosis/mlfit_b-only_met.root","READ")
-    else: inputfileML = TFile("Diagnosis/mlfit_b-only.root","READ")
+    if observable=="MET": 
+        inputfileML = TFile("Diagnosis/mlfit_b-only_met.root","READ")
+    else: 
+        #inputfileML = TFile("Diagnosis/mlfit_b-only.root","READ")
+        inputfileML = TFile("Diagnosis/mlfit_obs.root","READ")
   
     for process in processes :
        print process
-       Shape_prefit[process] = (inputfileML.Get('shapes_prefit/'+channel+'_'+cat+'/'+process)).Clone()
+       Shape_fit_ws[process] = (inputfileML.Get('shapes_prefit/'+channel+'_'+cat+'/'+process)).Clone()
+       #Shape_fit_ws[process] = (inputfileML.Get('shapes_fit_b/'+channel+'_'+cat+'/'+process)).Clone()
 
     errorUpsFull = [0.0] *(nbins)
     errorDnsFull = [0.0] *(nbins)
@@ -235,13 +241,15 @@ def plotDataMC(sigType, channel,cat, parser):
     r_full = TH1D('r_full', '',r_nbins,array('d',r_bins))
     r = TH1D('r', '',r_nbins,array('d',r_bins))
 
-    for i in range(1,Shape_prefit['total_background'].GetXaxis().GetNbins()+1) :
+    Total_bkg = Shape_fit_ws['total_background']
 
-        errorUpsFull[i-1] = Shape_prefit['total_background'].GetBinError(i)/Shape_prefit['total_background'].GetBinContent(i)
-        errorDnsFull[i-1] = Shape_prefit['total_background'].GetBinError(i)/Shape_prefit['total_background'].GetBinContent(i)
+    for i in range(1,Total_bkg.GetXaxis().GetNbins()+1) :
 
-        errorUps[i-1] = errorUps[i-1]/Shape_prefit['total_background'].GetBinContent(i)
-        errorDns[i-1] = errorDns[i-1]/Shape_prefit['total_background'].GetBinContent(i)
+        errorUpsFull[i-1] = Total_bkg.GetBinError(i)/Total_bkg.GetBinContent(i)
+        errorDnsFull[i-1] = Total_bkg.GetBinError(i)/Total_bkg.GetBinContent(i)
+
+        errorUps[i-1] = errorUps[i-1]/Total_bkg.GetBinContent(i)
+        errorDns[i-1] = errorDns[i-1]/Total_bkg.GetBinContent(i)
 
         print i
         r_full.SetBinContent(i+1,1)
@@ -262,9 +270,6 @@ def plotDataMC(sigType, channel,cat, parser):
             r.SetBinContent(r_nbins,1)
             r.SetBinError(r_nbins,max(errorUps[i-1],errorDns[i-1]))            
 
-    # set ratio range
-    #r.GetXaxis().SetRangeUser(0,bins[-1])
-    #r_full.GetXaxis().SetRangeUser(0,bins[-1])
 
     #
     r.SetMarkerColor(kCyan+3)
@@ -284,10 +289,11 @@ def plotDataMC(sigType, channel,cat, parser):
     c1.SetRightMargin(0.03);
 
     dummy = TH1D("dummy","dummy", 1, 0,bins[nbins])
+    #dummy = TH1D("dummy","dummy", 1, 0, 2000)
 
     dummy.SetBinContent(1,0.0)
-    dummy.GetXaxis().SetTitle(observable+' [GeV]')
-    if observable=="MET": dummy.GetYaxis().SetTitle('Events / 10 GeV')
+    dummy.GetXaxis().SetTitle(observable+' (GeV)')
+    if observable=="MET": dummy.GetYaxis().SetTitle('Events / 50 GeV')
     else: dummy.GetYaxis().SetTitle('Events / 50 GeV') 
     dummy.SetLineColor(0)
     dummy.SetLineWidth(0)
@@ -317,14 +323,20 @@ def plotDataMC(sigType, channel,cat, parser):
 
     hmask_data.Draw("HIST,SAME")
 
+    Shape_orig["BulkGravToZZToZlepZinv_narrow_600"].SetLineColor(ROOT.kRed+0)
+    Shape_orig["BulkGravToZZToZlepZinv_narrow_1000"].SetLineColor(ROOT.kRed+1)
+    #Shape_orig["BulkGravToZZToZlepZinv_narrow_1600"].SetLineColor(ROOT.kRed+0)
     Shape_orig["BulkGravToZZToZlepZinv_narrow_600"].Draw("histsame")
     Shape_orig["BulkGravToZZToZlepZinv_narrow_1000"].Draw("histsame")
-    Shape_orig["BulkGravToZZToZlepZinv_narrow_1600"].Draw("histsame")
+    #Shape_orig["BulkGravToZZToZlepZinv_narrow_1600"].Draw("histsame")
 
-    legend = TLegend(.45,.6,.90,.90)
-    legend.AddEntry(Shape_orig["ZJets"], 'ZJets(#gamma+jets data)', "f")
-    legend.AddEntry(Shape_orig["VVZReso"], 'Z reson. (MC ZZ/WZ/TTZ)', "f")
-    legend.AddEntry(Shape_orig["NonReso"], 'Non-reson. (e#mu data)', "f")
+    legend = TLegend(.55,.6,.90,.90)
+    legend.AddEntry(Shape_orig["ZJets"], 'Z+jets', "f")
+    legend.AddEntry(Shape_orig["VVZReso"], 'Reson. backgrounds', "f")
+    legend.AddEntry(Shape_orig["NonReso"], 'Non-Reson. backgrounds', "f")
+    legend.AddEntry(Shape_orig["BulkGravToZZToZlepZinv_narrow_600"], '1 pb BulkG-600', "f")
+    legend.AddEntry(Shape_orig["BulkGravToZZToZlepZinv_narrow_1000"], '1 pb BulkG-1000', "f")
+    #legend.AddEntry(Shape_orig["BulkGravToZZToZlepZinv_narrow_1600"], '1 pb BulkG-1600', "f")
     legend.AddEntry(data_obs_orig, 'Data', "p")
     #legend.AddEntry(r, 'Stat. Uncertainty', "f")
     #legend.AddEntry(r_full, 'Full Uncertainty', "f")
@@ -339,7 +351,8 @@ def plotDataMC(sigType, channel,cat, parser):
     latex2.SetTextSize(0.6*c1.GetTopMargin())
     latex2.SetTextFont(42)
     latex2.SetTextAlign(31) # align right
-    latex2.DrawLatex(0.92, 0.94," 35.87 fb^{-1} (13 TeV)")
+    #latex2.DrawLatex(0.92, 0.94," 35.87 fb^{-1} (13 TeV)")
+    latex2.DrawLatex(0.92, 0.94,"#sqrt{s} = 13 TeV 2016 L = 35.9 fb^{-1}")
     latex2.SetTextSize(0.4*c1.GetTopMargin())
     latex2.SetTextFont(52)
     latex2.SetTextAlign(11) # align right
@@ -362,19 +375,21 @@ def plotDataMC(sigType, channel,cat, parser):
 
     dummyR = TH1D("dummyR","dummyR", 1, 0,bins[nbins])
     dummyR.SetBinContent(1,0.0)
-    dummyR.GetXaxis().SetTitle(observable+' [GeV]')
+    dummyR.GetXaxis().SetTitle(observable+' (GeV)')
     dummyR.SetMinimum(0.5)
     dummyR.SetMaximum(2.0)
     dummyR.GetXaxis().SetMoreLogLabels(kTRUE)
     dummyR.GetXaxis().SetNoExponent(kTRUE)
     dummyR.GetYaxis().SetTitleSize(0.04);
     dummyR.GetYaxis().SetTitleOffset(1.8);
-    dummyR.GetYaxis().SetTitle("Data/MC");
+    dummyR.GetYaxis().SetTitle("Data/Bkg.");
     dummyR.GetYaxis().CenterTitle();
     dummyR.GetYaxis().SetLabelSize(0.02);
     dummyR.GetXaxis().SetMoreLogLabels(kTRUE)
     dummyR.GetXaxis().SetNoExponent(kTRUE)
-    dummyR.GetXaxis().SetTitle(observable+"(GeV)")
+    if observable=="mT": dummyR.GetXaxis().SetTitle("M_{T} (GeV)")
+    elif observable=="MET": dummyR.GetXaxis().SetTitle("E_{T}^{miss} (GeV)")
+    else: dummyR.GetXaxis().SetTitle(observable+"(GeV)")
     dummyR.Draw()
 
     added_orig=Shape_orig["NonReso"].Clone()

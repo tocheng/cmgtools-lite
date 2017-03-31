@@ -94,7 +94,7 @@ def plotLimit(parser):
 
     mH = [500,600,700,800,900,1000,1500,2500]
     for m in mH:
-      scale = 1/((3.363+3.366)*0.01*0.2*2)/1000
+      scale = 1/((3.363+3.366)*0.01*0.2*2)
       mass.append(float(m))
       zeros.append(0.0)
 
@@ -218,8 +218,8 @@ def plotLimit(parser):
 
     dummy = TH1D("dummy","dummy", 1, 500,2500)
     dummy.SetBinContent(1,0.0)
-    dummy.GetXaxis().SetTitle('m_{X} [GeV]')   
-    dummy.GetYaxis().SetTitle('95% C.L. limit on #sigma(H#rightarrowZZ) [pb]')   
+    dummy.GetXaxis().SetTitle('m_{X} (GeV)')   
+    dummy.GetYaxis().SetTitle('95% C.L. limit on #sigma(H#rightarrowZZ) (pb)')   
     dummy.SetLineColor(0)
     dummy.SetLineWidth(0)
     dummy.SetFillColor(0)

@@ -15,6 +15,8 @@ import optparse, shlex, re
 # load signal modules
 sys.path.append('./BulkGravXsec')
 
+tag="ReMiniAOD"
+
 grootargs = []
 def callback_rootargs(option, opt, value, parser):
     grootargs.append(opt)
@@ -79,7 +81,7 @@ def plotLimit(parser):
     if( not isDyMC) :
       zjetsMethod = 'gjet'
 
-    outdir = zjetsMethod+'_'+cut
+    outdir = tag+'_'+cut
     if(perBinStatUnc) :
       outdir = outdir + '_perBinStatUnc'
 
@@ -88,7 +90,7 @@ def plotLimit(parser):
     mH=[600,800,1000,1200,1400,1600,1800,2000,2500]
     for m in mH:
 
-      scale = 1/((3.363+3.366+3.370)*0.01*0.2*2)/1000
+      scale = 1/((3.363+3.366+3.370)*0.01*0.2*2)
       mass.append(float(m))
       zeros.append(0.0)
 
@@ -109,7 +111,7 @@ def plotLimit(parser):
       t.GetEntry(5)
       obs.append(t.limit*scale)
 
-      fee = TFile("Datacards/"+outdir+"/higgsCombineee_SR.Asymptotic.mH"+str(m)+".root","READ")
+      fee = TFile("Datacards/"+outdir+"/higgsCombineee_"+cut+".Asymptotic.mH"+str(m)+".root","READ")
       tee = fee.Get("limit")
 
       tee.GetEntry(2)
@@ -126,7 +128,7 @@ def plotLimit(parser):
       tee.GetEntry(5)
       obs_ee.append(tee.limit*scale)
 
-      fmm = TFile("Datacards/"+outdir+"/higgsCombinemm_SR.Asymptotic.mH"+str(m)+".root","READ")
+      fmm = TFile("Datacards/"+outdir+"/higgsCombinemm_"+cut+".Asymptotic.mH"+str(m)+".root","READ")
       tmm = fmm.Get("limit")
 
       tmm.GetEntry(2)
@@ -143,10 +145,29 @@ def plotLimit(parser):
       tmm.GetEntry(5)
       obs_mm.append(tmm.limit*scale)
 
-    print 'mass',mass
-    print 'exp',exp
-    print 'obs',obs
- 
+    print 'mass',mass.tolist()
+
+    print 'obs',obs.tolist()
+    print 'exp',exp.tolist()
+    print 'exp_p1',exp_p1.tolist()
+    print 'exp_m1',exp_m1.tolist()
+    print 'exp_p2',exp_p2.tolist()
+    print 'exp_m2',exp_m2.tolist()
+
+    print 'obs_ee',obs_ee.tolist()
+    print 'exp_ee',exp_ee.tolist()
+    print 'exp_ee_p1',exp_ee_p1.tolist()
+    print 'exp_ee_m1',exp_ee_m1.tolist()
+    print 'exp_ee_p2',exp_ee_p2.tolist()
+    print 'exp_ee_m2',exp_ee_m2.tolist()
+
+    print 'obs_mm',obs_mm.tolist()
+    print 'exp_mm',exp_mm.tolist()
+    print 'exp_mm_p1',exp_mm_p1.tolist()
+    print 'exp_mm_m1',exp_mm_m1.tolist()
+    print 'exp_mm_p2',exp_mm_p2.tolist()
+    print 'exp_mm_m2',exp_mm_m2.tolist()
+
     v_mass = TVectorD(len(mass),mass)
     v_zeros = TVectorD(len(zeros),zeros)
     v_obs = TVectorD(len(obs),obs)
@@ -181,8 +202,8 @@ def plotLimit(parser):
 
     dummy = TH1D("dummy","dummy", 1, 600,2500)
     dummy.SetBinContent(1,0.0)
-    dummy.GetXaxis().SetTitle('m_{X} [GeV]')   
-    dummy.GetYaxis().SetTitle('95% C.L. limit on #sigma(X#rightarrowZZ) [pb]')   
+    dummy.GetXaxis().SetTitle('m_{X} (GeV)')   
+    dummy.GetYaxis().SetTitle('95% C.L. limit on #sigma(X#rightarrowZZ) (pb)')   
     dummy.SetLineColor(0)
     dummy.SetLineWidth(0)
     dummy.SetFillColor(0)
@@ -219,7 +240,8 @@ def plotLimit(parser):
     latex1.SetTextSize(0.5*c.GetTopMargin())
     latex1.SetTextFont(42)
     latex1.SetTextAlign(31) # align right
-    latex1.DrawLatex(0.87, 0.95,"35.87 fb^{-1} (13 TeV)")
+    #latex1.DrawLatex(0.87, 0.95,"35.87 fb^{-1} (13 TeV)")
+    latex1.DrawLatex(0.87, 0.95,"#sqrt{s} = 13 TeV 2016 L = 35.9 fb^{-1}")
     latex2 = TLatex()
     latex2.SetNDC()    
     latex2.SetTextSize(0.7*c.GetTopMargin())
@@ -255,11 +277,11 @@ def plotLimit(parser):
 
     legend = TLegend(.45,.6,.90,.90)
     for k in ['0.5','0.2','0.1']:
-        legend.AddEntry(sigXsec[k] , "RS2 Graviton #tilde{k} = "+k, "l")
-    if unblind: legend.AddEntry(gr_obs , "Data Observed ee+#mu#mu", "pl")
-    legend.AddEntry(gr_exp , "Expected ee+#mu#mu", "l")
-    legend.AddEntry(gr_exp1 , "#pm 1#sigma ee+#mu#mu", "f")
-    legend.AddEntry(gr_exp2 , "#pm 2#sigma ee+#mu#mu", "f")
+        legend.AddEntry(sigXsec[k] , "BulkG #tilde{k} = "+k, "l")
+    if unblind: legend.AddEntry(gr_obs , "Data Observed", "pl")
+    legend.AddEntry(gr_exp , "Expected ", "l")
+    legend.AddEntry(gr_exp1 , "#pm 1 #sigma", "f")
+    legend.AddEntry(gr_exp2 , "#pm 2 #sigma", "f")
     legend.SetShadowColor(0)
     legend.SetFillColor(0)
     legend.SetLineColor(0)            
@@ -268,11 +290,11 @@ def plotLimit(parser):
     gPad.RedrawAxis()
 
     if unblind: 
-        c.SaveAs("xzz2l2nu_limit_13TeV_SR_BulkGrav_narrow_unblind.pdf")
-        c.SaveAs("xzz2l2nu_limit_13TeV_SR_BulkGrav_narrow_unblind.png")
+        c.SaveAs("xzz2l2nu_limit_13TeV_"+cut+"_BulkGrav_narrow_unblind.pdf")
+        c.SaveAs("xzz2l2nu_limit_13TeV_"+cut+"_BulkGrav_narrow_unblind.png")
     else:
-        c.SaveAs("xzz2l2nu_limit_13TeV_SR_BulkGrav_narrow.pdf")
-        c.SaveAs("xzz2l2nu_limit_13TeV_SR_BulkGrav_narrow.png")
+        c.SaveAs("xzz2l2nu_limit_13TeV_"+cut+"_BulkGrav_narrow.pdf")
+        c.SaveAs("xzz2l2nu_limit_13TeV_"+cut+"_BulkGrav_narrow.png")
 
     ## ee mm compatibility
     c2 = TCanvas("c2","c2",800, 800)
@@ -348,7 +370,8 @@ def plotLimit(parser):
 
     if unblind: gr_obs.Draw("plsame")
 
-    latex1.DrawLatex(0.87, 0.95,"35.87 fb^{-1} (13 TeV)")
+    #latex1.DrawLatex(0.87, 0.95,"35.87 fb^{-1} (13 TeV)")
+    latex1.DrawLatex(0.87, 0.95,"#sqrt{s} = 13 TeV 2016 L = 35.9 fb^{-1}")
     latex2.DrawLatex(0.25, 0.85, "CMS")
     latex3.DrawLatex(0.25, 0.8, "Preliminary")
 
@@ -359,8 +382,8 @@ def plotLimit(parser):
     legend2.AddEntry(gr_exp , "Expected ee+#mu#mu", "l")
     legend2.AddEntry(gr_exp_ee , "Expected ee", "l")
     legend2.AddEntry(gr_exp_mm , "Expected #mu#mu", "l")
-    legend2.AddEntry(gr_exp1 , "#pm 1#sigma ee+#mu#mu", "f")
-    legend2.AddEntry(gr_exp2 , "#pm 2#sigma ee+#mu#mu", "f")
+    legend2.AddEntry(gr_exp1 , "#pm 1 #sigma ee+#mu#mu", "f")
+    legend2.AddEntry(gr_exp2 , "#pm 2 #sigma ee+#mu#mu", "f")
     legend2.SetShadowColor(0)
     legend2.SetFillColor(0)
     legend2.SetLineColor(0)
@@ -369,11 +392,11 @@ def plotLimit(parser):
     gPad.RedrawAxis()
 
     if unblind:
-        c2.SaveAs("xzz2l2nu_limit_13TeV_ee+mm_SR_BulkGrav_narrow_unblind.pdf")
-        c2.SaveAs("xzz2l2nu_limit_13TeV_ee+mm_SR_BulkGrav_narrow_unbiind.png")
+        c2.SaveAs("xzz2l2nu_limit_13TeV_ee+mm_"+cut+"_BulkGrav_narrow_unblind.pdf")
+        c2.SaveAs("xzz2l2nu_limit_13TeV_ee+mm_"+cut+"_BulkGrav_narrow_unbiind.png")
     else:
-        c2.SaveAs("xzz2l2nu_limit_13TeV_ee+mm_SR_BulkGrav_narrow.pdf")
-        c2.SaveAs("xzz2l2nu_limit_13TeV_ee+mm_SR_BulkGrav_narrow.png")
+        c2.SaveAs("xzz2l2nu_limit_13TeV_ee+mm_"+cut+"_BulkGrav_narrow.pdf")
+        c2.SaveAs("xzz2l2nu_limit_13TeV_ee+mm_"+cut+"_BulkGrav_narrow.png")
 
     ## ee only
     c3 = TCanvas("c3","c3",800, 800)
@@ -396,26 +419,27 @@ def plotLimit(parser):
     if unblind:    legend3.AddEntry(gr_obs_ee , "Data Observed ee", "pl")
     legend3.AddEntry(gr_exp , "Expected ee+#mu#mu", "l")
     legend3.AddEntry(gr_exp_ee , "Expected ee", "l")
-    legend3.AddEntry(gr_exp1_ee , "#pm 1#sigma ee", "f")
-    legend3.AddEntry(gr_exp2_ee , "#pm 2#sigma ee", "f")
+    legend3.AddEntry(gr_exp1_ee , "#pm 1 #sigma ee", "f")
+    legend3.AddEntry(gr_exp2_ee , "#pm 2 #sigma ee", "f")
     legend3.SetShadowColor(0)
     legend3.SetFillColor(0)
     legend3.SetLineColor(0)
     legend3.Draw("same")
 
 
-    latex1.DrawLatex(0.87, 0.95,"35.87 fb^{-1} (13 TeV)")
+#    latex1.DrawLatex(0.87, 0.95,"35.87 fb^{-1} (13 TeV)")
+    latex1.DrawLatex(0.87, 0.95,"#sqrt{s} = 13 TeV 2016 L = 35.9 fb^{-1}")
     latex2.DrawLatex(0.25, 0.85, "CMS")
     latex3.DrawLatex(0.25, 0.8, "Preliminary")
 
     gPad.RedrawAxis()
 
     if unblind:
-        c3.SaveAs("xzz2l2nu_limit_13TeV_ee_SR_BulkGrav_narrow_unblind.pdf")
-        c3.SaveAs("xzz2l2nu_limit_13TeV_ee_SR_BulkGrav_narrow_unbiind.png")
+        c3.SaveAs("xzz2l2nu_limit_13TeV_ee_"+cut+"_BulkGrav_narrow_unblind.pdf")
+        c3.SaveAs("xzz2l2nu_limit_13TeV_ee_"+cut+"_BulkGrav_narrow_unbiind.png")
     else:
-        c3.SaveAs("xzz2l2nu_limit_13TeV_ee_SR_BulkGrav_narrow.pdf")
-        c3.SaveAs("xzz2l2nu_limit_13TeV_ee_SR_BulkGrav_narrow.png")
+        c3.SaveAs("xzz2l2nu_limit_13TeV_ee_"+cut+"_BulkGrav_narrow.pdf")
+        c3.SaveAs("xzz2l2nu_limit_13TeV_ee_"+cut+"_BulkGrav_narrow.png")
 
     ## mm only
     c4 = TCanvas("c4","c4",800, 800)
@@ -435,28 +459,29 @@ def plotLimit(parser):
     if unblind: gr_obs_mm.Draw("plsame")
 
     legend4 = TLegend(.45,.60,.90,.90)
-    if unblind:    legend4.AddEntry(gr_obs_mm , "Data Observed mm", "pl")
+    if unblind:    legend4.AddEntry(gr_obs_mm , "Data Observed #mu#mu", "pl")
     legend4.AddEntry(gr_exp , "Expected ee+#mu#mu", "l")
-    legend4.AddEntry(gr_exp_mm , "Expected mm", "l")
-    legend4.AddEntry(gr_exp1_mm , "#pm 1#sigma ee", "f")
-    legend4.AddEntry(gr_exp2_mm , "#pm 2#sigma ee", "f")
+    legend4.AddEntry(gr_exp_mm , "Expected #mu#mu", "l")
+    legend4.AddEntry(gr_exp1_mm , "#pm 1 #sigma #mu#mu", "f")
+    legend4.AddEntry(gr_exp2_mm , "#pm 2 #sigma #mu#mu", "f")
     legend4.SetShadowColor(0)
     legend4.SetFillColor(0)
     legend4.SetLineColor(0)
     legend4.Draw("same")
 
-    latex1.DrawLatex(0.87, 0.95,"35.87 fb^{-1} (13 TeV)")
+#    latex1.DrawLatex(0.87, 0.95,"35.87 fb^{-1} (13 TeV)")
+    latex1.DrawLatex(0.87, 0.95,"#sqrt{s} = 13 TeV 2016 L = 35.9 fb^{-1}")
     latex2.DrawLatex(0.25, 0.85, "CMS")
     latex3.DrawLatex(0.25, 0.8, "Preliminary")
 
     gPad.RedrawAxis()
 
     if unblind:
-        c4.SaveAs("xzz2l2nu_limit_13TeV_mm_SR_BulkGrav_narrow_unblind.pdf")
-        c4.SaveAs("xzz2l2nu_limit_13TeV_mm_SR_BulkGrav_narrow_unbiind.png")
+        c4.SaveAs("xzz2l2nu_limit_13TeV_mm_"+cut+"_BulkGrav_narrow_unblind.pdf")
+        c4.SaveAs("xzz2l2nu_limit_13TeV_mm_"+cut+"_BulkGrav_narrow_unbiind.png")
     else:
-        c4.SaveAs("xzz2l2nu_limit_13TeV_mm_SR_BulkGrav_narrow.pdf")
-        c4.SaveAs("xzz2l2nu_limit_13TeV_mm_SR_BulkGrav_narrow.png")
+        c4.SaveAs("xzz2l2nu_limit_13TeV_mm_"+cut+"_BulkGrav_narrow.pdf")
+        c4.SaveAs("xzz2l2nu_limit_13TeV_mm_"+cut+"_BulkGrav_narrow.png")
 
 def Run():
 

@@ -1,7 +1,8 @@
 #!/bin/sh
 
 
-tag="ReRecoSummer16HLT_FixXsec_"
+tag="PAS_ReRecoSummer16HLT_FixXsec_"
+#tag="ReRecoSummer16HLT_FixXsec_"
 #tag="ReRecoSummer16HLT_MCRcFixXsec_"
 #tag="ReRecoSummer16HLT_"
 #tag="ReMiniAODSummer16HLT_FixXsec_"
@@ -16,7 +17,8 @@ tag="ReRecoSummer16HLT_FixXsec_"
 #cutChains="tight tightzptgt50lt100 tightzptgt100"
 #cutChains="tight tightzptgt100"
 #cutChains="SR"
-cutChains="tight tightzptgt100 SR"
+#cutChains="tight tightzptgt100 SR"
+cutChains="tight"
 logdir="log_ph"
 
 mkdir -p $logdir

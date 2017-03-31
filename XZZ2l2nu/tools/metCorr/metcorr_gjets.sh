@@ -51,12 +51,12 @@ do
   outfile="${outputdir}/${infile/$inputdir\//}"
 
   # options for outputs
-  #outfile="${outfile/\/vvTreeProducer\/tree/}"
+  outfile="${outfile/\/vvTreeProducer\/tree/}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_ZMassFineBin}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_ZMassFineBinSmooth}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_ZMassFineBinGraphSmooth}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_ZMassGraphSmooth}"
-  outfile="${outfile/\/vvTreeProducer\/tree/_RcNoSmooth}"
+  #outfile="${outfile/\/vvTreeProducer\/tree/_RcNoSmooth}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_NoRecoil}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_test}"
   #outfile="${outfile/\/vvTreeProducer\/tree/_ReSkim}"
