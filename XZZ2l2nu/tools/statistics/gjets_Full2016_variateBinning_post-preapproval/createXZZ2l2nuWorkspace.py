@@ -13,8 +13,10 @@ import optparse, shlex, re
 # load signal modules
 sys.path.append('./SigInputs')
 
-#tag="ReMiniAODNoMETCutVary"
 tag="ReMiniAOD"
+#tag="ReMiniAODCRScale"
+#tag="ReMiniAODNoMETCutVary"
+#tag="ReMiniAODNoTune"
 
 grootargs = []
 def callback_rootargs(option, opt, value, parser):
@@ -100,6 +102,7 @@ def createXSworkspace(sigType,MX, channel,cat, parser):
     #bins = [0.0, 100.0, 150.0, 200.0, 250.0, 300.0, 350.0, 400.0, 450.0, 500.0, 550.0, 600.0, 650.0, 700.0, 750.0, 800.0, 850, 900, 1000, 1100, 1250, 1650, 3000.0]
     bins = [0.0, 100.0, 150.0, 200.0, 250.0, 300.0, 350.0, 400.0, 450.0, 500.0, 600.0, 700.0, 800.0, 900, 1050, 1150, 1250, 1650, 3000.0]
     if(observable=="MET"):
+       #bins = [0.0, 50, 100.0, 150, 200.0, 250.0, 300.0, 350.0, 400.0, 450.0, 500.0, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000, 1100, 1200, 1300, 1400, 1500]
        bins = [0.0, 50, 100.0, 150, 200.0, 250.0, 300.0, 350.0, 400.0, 450.0, 500.0, 600, 700, 1000, 1500]
 
     '''
@@ -220,12 +223,13 @@ def createXSworkspace(sigType,MX, channel,cat, parser):
 
            Shape_dns["statUncBin"+str(i)+"_"+process] = Shape[process].Clone()
            Shape_ups["statUncBin"+str(i)+"_"+process] = Shape[process].Clone()
-           Shape_dns["statUncBin"+str(i)+"_"+process].SetName(processNameinDC[process]+"_"+processNameinDC[process]+"StatUncBin"+str(i)+cat+fs+"Down")
-           Shape_ups["statUncBin"+str(i)+"_"+process].SetName(processNameinDC[process]+"_"+processNameinDC[process]+"StatUncBin"+str(i)+cat+fs+"Up")
 
-           if(process=='ZJets'):
+           if(process=='ZJets' or process=='NonReso' ):
              Shape_dns["statUncBin"+str(i)+"_"+process].SetName(processNameinDC[process]+"_"+processNameinDC[process]+"StatUncBin"+str(i)+cat+"Down")
              Shape_ups["statUncBin"+str(i)+"_"+process].SetName(processNameinDC[process]+"_"+processNameinDC[process]+"StatUncBin"+str(i)+cat+"Up")
+           else:
+             Shape_dns["statUncBin"+str(i)+"_"+process].SetName(processNameinDC[process]+"_"+processNameinDC[process]+"StatUncBin"+str(i)+cat+fs+"Down")
+             Shape_ups["statUncBin"+str(i)+"_"+process].SetName(processNameinDC[process]+"_"+processNameinDC[process]+"StatUncBin"+str(i)+cat+fs+"Up")
 
            Shape_dns["statUncBin"+str(i)+"_"+process].SetTitle(processNameinDC[process])
            Shape_ups["statUncBin"+str(i)+"_"+process].SetTitle(processNameinDC[process])
@@ -324,10 +328,10 @@ def createXSworkspace(sigType,MX, channel,cat, parser):
 
     ## Write Datacards 
     fo = open("Datacards/"+outdir+"/mX"+str(MX)+"ZZ2l2nu_"+channel+"_"+cat+".txt", "wb")
-    WriteDatacard(fo, sigName,MX,channel,cat, theRates,Nobs, perBinStatUnc, observable)
+    WriteDatacard(fo, sigName,MX,channel,cat, theRates,Nobs, perBinStatUnc, observable, bins)
     fo.close()
 
-def WriteDatacard(theFile, sigName,MX,channel,cat, theRates,obsEvents, perBinStatUnc, observable):
+def WriteDatacard(theFile, sigName,MX,channel,cat, theRates,obsEvents, perBinStatUnc, observable, bins):
         numberSig = 1
         numberBg  = len(theRates)-1
 
@@ -384,9 +388,14 @@ def WriteDatacard(theFile, sigName,MX,channel,cat, theRates,obsEvents, perBinSta
 
         theFile.write("# norm uncertainty \n")
         theFile.write("lumi_13TeV lnN 1.025 1.025 1.025 1.025 \n")
-        theFile.write("pdf_qqbar lnN - 1.017 1.015 - \n")
+        #theFile.write("pdf_qqbar lnN - 1.017 1.015 - \n")
         #theFile.write("pdf_qqbar lnN - - 1.015 - \n")
-        theFile.write("xzz2l2nu_accept lnN 1.01 - - - \n")
+        #theFile.write("xzz2l2nu_accept lnN 1.01 - - - \n")
+        theFile.write("pdf_xsec         lnN    -           1.017       -           - \n")
+        theFile.write("qcd_xsec         lnN    -           1.023       -           - \n")
+        theFile.write("pdf_accept       lnN    1.01        1.034    1.01           -  \n") 
+        if fs=="mu": theFile.write("qcd_accept       lnN    -       1.131     1.029 - \n")
+        else: theFile.write("qcd_accept       lnN    -           1.227    1.029  -  \n")
         theFile.write("trg{0} shapeN2 1.0 - 1.0 - \n".format(fs))
         theFile.write("id{0} shapeN2 1.0 - 1.0 - \n".format(fs))
         #theFile.write("qcd{0} shapeN2 - - 1.0 - \n".format(fs))
@@ -420,7 +429,7 @@ def WriteDatacard(theFile, sigName,MX,channel,cat, theRates,obsEvents, perBinSta
         if(fs=="el") :
           unc_tmp = 1.1
         else :
-          unc_tmp = 1.034
+          unc_tmp = 1.024
         theFile.write("nonres{0} lnN  - - - {1}\n".format(fs,str(unc_tmp)))
 
         theFile.write("#MET-induced MT unc \n")
@@ -449,10 +458,11 @@ def WriteDatacard(theFile, sigName,MX,channel,cat, theRates,obsEvents, perBinSta
         else :
            for i in range(1, len(bins)) :
                theFile.write("zjetsStatUncBin{0}{1} shapeN2 - 1.0 - - \n".format(str(i),cat))
-               theFile.write("vvresoStatUncBin{0}{1}{2} shapeN2 - - - 1.0 \n".format(str(i),cat,fs))
-               theFile.write("nonresoStatUncBin{0}{1}{2} shapeN2 - - - 1.0 \n".format(str(i),cat,fs))  
+               theFile.write("vvresoStatUncBin{0}{1}{2} shapeN2 - - 1.0 - \n".format(str(i),cat,fs))
+               #theFile.write("nonresoStatUncBin{0}{1}{2} shapeN2 - - - 1.0 \n".format(str(i),cat,fs))  
+               theFile.write("nonresoStatUncBin{0}{1} shapeN2 - - - 1.0 \n".format(str(i),cat))  
 
-        if observable=="mT" : theFile.write("zjetsLowMTUnc{0}{1} shapeN2 - 1.0 - - \n".format(cat,fs))
+#        if observable=="mT" : theFile.write("zjetsLowMTUnc{0}{1} shapeN2 - 1.0 - - \n".format(cat,fs))
 #        if observable=="mT" : theFile.write("zjetsLowMTUnc{0} shapeN2 - 1.0 - - \n".format(cat))
 
 

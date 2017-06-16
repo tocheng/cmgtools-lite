@@ -1,16 +1,16 @@
 
 sigMasses = {
-#             'ggH': [500,600,700,800,900,1000,1500,2500], 
-#             'VBF': [500,600,700,800,900,1000,1500,2500],
+             'ggH': [500,600,700,800,900,1000,1500,2500], 
+             'VBF': [500,600,700,800,900,1000,1500,2500],
              'BulkGrav_narrow':[600,800,1000,1200,1400,1600,1800,2000,2500],
-#             'Graviton2PB_width0':[750,800,1200,2000],
-#             'Graviton2PB_width0p1':[750,800,1200,2000],
-#             'Graviton2PB_width0p2':[750,800,1200,2000],
-#             'Graviton2PB_width0p3':[750,800,1200,2000],
-#             'Graviton2PBqqbar_width0':[750,800,1200,2000],
-#             'Graviton2PBqqbar_width0p1':[750,800,1200,2000],
-#             'Graviton2PBqqbar_width0p2':[750,800,1200,2000],
-#             'Graviton2PBqqbar_width0p3':[750,800,1200,2000]
+             'Graviton2PB_width0':[750,800,1200,2000],
+             'Graviton2PB_width0p1':[750,800,1200,2000],
+             'Graviton2PB_width0p2':[750,800,1200,2000],
+             'Graviton2PB_width0p3':[750,800,1200,2000],
+             'Graviton2PBqqbar_width0':[750,800,1200,2000],
+             'Graviton2PBqqbar_width0p1':[750,800,1200,2000],
+             'Graviton2PBqqbar_width0p2':[750,800,1200,2000],
+             'Graviton2PBqqbar_width0p3':[750,800,1200,2000]
             }
 
 sigNames = {

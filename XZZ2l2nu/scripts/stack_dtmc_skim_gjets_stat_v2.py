@@ -55,20 +55,25 @@ g_scale='(1)'
 mc_scale='(1)'
 zjets_scale='(1)'
 
-if channel=='mu': 
-#    mc_scale='(1.02942)'
-    if cutChain=='SR': zjets_scale='(0.960865)' # mc SR
-    elif cutChain=='SRdPhiGT0p5': zjets_scale='(0.999113)' # mc SR
-    else: zjets_scale='(1.03410)' # mc zpt50
-elif channel=='el': 
-#    mc_scale='(1.02139)'
-    if cutChain=='SR': zjets_scale='(1.01822)' # mc SR
-    elif cutChain=='SRdPhiGT0p5': zjets_scale='(1.01265)' # mc SR
-    else: zjets_scale='(1.03737)' # mc zpt50
-else: 
-#    mc_scale='(1.02942)'
-    zjets_scale='(1.03741)'
+# temp turn off mc_scale
+#mc_scale="(1)"
+#zjets_scale="(1)"
 
+if channel=='mu':
+#    mc_scale='(1.02942)'
+    zjets_scale='(1.03627471042)'
+#    if cutChain=='SR': zjets_scale='(0.960865)' # mc SR
+#    elif cutChain=='SRdPhiGT0p5': zjets_scale='(0.999113)' # mc SR
+#    else: zjets_scale='(1.03410)' # mc zpt50
+elif channel=='el':
+#    mc_scale='(1.02139)'
+    zjets_scale='(1.04227778889)'
+#    if cutChain=='SR': zjets_scale='(1.01822)' # mc SR
+#    elif cutChain=='SRdPhiGT0p5': zjets_scale='(1.01265)' # mc SR
+#    else: zjets_scale='(1.03737)' # mc zpt50
+else:
+#    mc_scale='(1.02942)'
+    zjets_scale='(1.03627471042)'
 
 # temp turn off mc_scale
 #mc_scale="(1)"
