@@ -24,7 +24,8 @@ parser.add_option("-l",action="callback",callback=callback_rootargs)
 parser.add_option("-q",action="callback",callback=callback_rootargs)
 parser.add_option("-b",action="callback",callback=callback_rootargs)
 
-tag='ReMiniAODNoMETCutVary'
+tag='ReMiniAOD'
+#tag='ReMiniAODNoMETCutVary'
 (options,args) = parser.parse_args()
 
 cut=options.cutChain
@@ -89,36 +90,30 @@ def ReadTemplates(MX,channel,cat, parser):
          if(process!='zjets' and syst == 'Recoil' ) :
            continue
 
-         if(syst=="trg" or syst=="id" or syst=="zpt" or syst=="fidxsec") :
+         if(syst=="trg" or syst=="id" or syst=="fidxsec" ) :
            Shape_dns[syst+"_"+process] = (inputfile.Get(process+"_"+syst+fs+"Down")).Clone()
            Shape_ups[syst+"_"+process] = (inputfile.Get(process+"_"+syst+fs+"Up")).Clone()
          elif(syst in systsMT and process=='zjets'):        
            if(syst!='Recoil') :
-             #Shape_dns[syst+"_"+process] = (inputfile.Get(process+"_phyMET"+syst+"Down")).Clone()
-             #Shape_ups[syst+"_"+process] = (inputfile.Get(process+"_phyMET"+syst+"Up")).Clone()
              Shape_dns[syst+"_"+process] = (inputfile.Get(process+"_phyMET"+syst+fs+"Down")).Clone()
              Shape_ups[syst+"_"+process] = (inputfile.Get(process+"_phyMET"+syst+fs+"Up")).Clone()
            else :
-             #Shape_dns[syst+"_"+process] = (inputfile.Get(process+"_zjets"+syst+"Down")).Clone()
-             #Shape_ups[syst+"_"+process] = (inputfile.Get(process+"_zjets"+syst+"Up")).Clone()
-             Shape_dns[syst+"_"+process] = (inputfile.Get(process+"_zjets"+syst+fs+"Down")).Clone()
-             Shape_ups[syst+"_"+process] = (inputfile.Get(process+"_zjets"+syst+fs+"Up")).Clone()
+             Shape_dns[syst+"_"+process] = (inputfile.Get(process+"_zjets"+syst+"Down")).Clone()
+             Shape_ups[syst+"_"+process] = (inputfile.Get(process+"_zjets"+syst+"Up")).Clone()
          else :        
-           #Shape_dns[syst+"_"+process] = (inputfile.Get(process+"_"+syst+"Down")).Clone()
-           #Shape_ups[syst+"_"+process] = (inputfile.Get(process+"_"+syst+"Up")).Clone()
-           Shape_dns[syst+"_"+process] = (inputfile.Get(process+"_"+syst+fs+"Down")).Clone()
-           Shape_ups[syst+"_"+process] = (inputfile.Get(process+"_"+syst+fs+"Up")).Clone()
+           Shape_dns[syst+"_"+process] = (inputfile.Get(process+"_"+syst+"Down")).Clone()
+           Shape_ups[syst+"_"+process] = (inputfile.Get(process+"_"+syst+"Up")).Clone()
+
+
 
        # MC statistical uncertainty
-       if(process=='vvreso' or process=='nonreso'):
-         Shape_dns["statUnc_"+process] = (inputfile.Get(process+"_"+process+"StatUnc"+cat+fs+"Down")).Clone()
-         Shape_ups["statUnc_"+process] = (inputfile.Get(process+"_"+process+"StatUnc"+cat+fs+"Up")).Clone()
 
-       if(process=='zjets'):  
+       if(process=='zjets' or process=='nonreso'):  
          Shape_dns["statUnc_"+process] = (inputfile.Get(process+"_"+process+"StatUnc"+cat+"Down")).Clone()
          Shape_ups["statUnc_"+process] = (inputfile.Get(process+"_"+process+"StatUnc"+cat+"Up")).Clone()
-         #Shape_dns["statUnc_"+process] = (inputfile.Get(process+"_"+process+"StatUnc"+cat+fs+"Down")).Clone()
-         #Shape_ups["statUnc_"+process] = (inputfile.Get(process+"_"+process+"StatUnc"+cat+fs+"Up")).Clone()
+       else:
+         Shape_dns["statUnc_"+process] = (inputfile.Get(process+"_"+process+"StatUnc"+cat+fs+"Down")).Clone()
+         Shape_ups["statUnc_"+process] = (inputfile.Get(process+"_"+process+"StatUnc"+cat+fs+"Up")).Clone()
 
        # LowMT unc
 #       if(process=='zjets'):

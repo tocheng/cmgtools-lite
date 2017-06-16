@@ -25,8 +25,9 @@ def parseOptions():
              + '%prog -h for help')
     parser = optparse.OptionParser(usage)
 
+    parser.add_option("-s", "--signal", dest="signal",default='xzz1000',help="signal")
     parser.add_option("-i", "--input", dest="inputfile",default='input.root',help="input root file")
-    parser.add_option("-o", "--output", dest="outputplot",default='output.pdf',help="output plot file")
+    parser.add_option("-o", "--output", dest="output",default='output',help="output file")
     parser.add_option("--obs", dest="Observable",default='mT',help="template observable")
     #parser.add_option("--unblind",action="store_true", dest="unblind", default=False,help="unblind")
 
@@ -58,6 +59,7 @@ def plotDataMC(file_in, outputplot, plots, observable, signal, shape_type, chann
 
     ## signal
     h_signal_ws = file_in.Get(shape_type+'/'+channel+'_'+cat+'/'+signal).Clone("h_signal_ws")
+    if shape_type=="shapes_fit_b": h_signal_ws = file_in.Get('shapes_prefit/'+channel+'_'+cat+'/'+signal).Clone("h_signal_ws")
  
     ## backgrounds
     h_nonreso_ws = file_in.Get(shape_type+'/'+channel+'_'+cat+'/nonreso').Clone("h_nonreso_ws")
@@ -88,6 +90,10 @@ def plotDataMC(file_in, outputplot, plots, observable, signal, shape_type, chann
     data_d_array_exl = array('d', [-bins[ib] +(bins[ib]+bins[ib+1])/2 for ib in range(nbins)])
     gr_data = TGraphAsymmErrors(nbins,data_d_array_x,data_d_array_y,data_d_array_exl,data_d_array_exh,data_d_array_eyl,data_d_array_eyh)
     gr_data.SetName("gr_data")
+    for ip in range(nbins): 
+        if gr_data.GetY()[ip]<=0.0: 
+            gr_data.SetPointEYhigh(ip,0.0)   
+            gr_data.SetPointEYlow(ip,0.0)   
 
     # ratio bins
     r_bins = [0,0.001]+bins[1:-2] + [bins[-1]-0.001,bins[-1]] # extend lower and higher bins
@@ -101,8 +107,11 @@ def plotDataMC(file_in, outputplot, plots, observable, signal, shape_type, chann
 
     for i in range(1, nbins+1) :
         # h_data
-        h_data.SetBinContent(i, data_d_array_y[i-1])
-        h_data.SetBinError(i, (data_d_array_eyh[i-1]+data_d_array_eyl[i-1])/2.0)
+        data_cnt=data_d_array_y[i-1]
+        data_err=(data_d_array_eyh[i-1]+data_d_array_eyl[i-1])/2.0
+        if data_cnt<=0.0:  data_err = 0.0;
+        h_data.SetBinContent(i, data_cnt)
+        h_data.SetBinError(i, data_err)
 
         # total background
         h_total_background.SetBinContent(i, h_total_background_ws.GetBinContent(i)/(bins[i]-bins[i-1])*50.0)
@@ -150,6 +159,7 @@ def plotDataMC(file_in, outputplot, plots, observable, signal, shape_type, chann
     h_signal.SetFillColor(kRed+2)
     if shape_type=="shapes_fit_s": h_signal.SetFillStyle(3001)
     elif shape_type=="shapes_prefit": h_signal.SetFillStyle(0)
+    elif shape_type=="shapes_fit_b": h_signal.SetFillStyle(0)
     h_signal.SetLineStyle(1)
     h_signal.SetLineWidth(3)
 
@@ -207,12 +217,14 @@ def plotDataMC(file_in, outputplot, plots, observable, signal, shape_type, chann
     #hmask_data.Draw("HIST,SAME")
 
     if shape_type=="shapes_prefit": h_signal.Draw("HIST SAME")
+    elif shape_type=="shapes_fit_b": h_signal.Draw("HIST SAME")
     
     legend = TLegend(.55,.6,.90,.90)
     legend.AddEntry(h_zjets, 'Z+jets', "f")
     legend.AddEntry(h_vvreso, 'Reson. backgrounds', "f")
     legend.AddEntry(h_nonreso, 'Non-Reson. backgrounds', "f")
     if shape_type=="shapes_prefit": legend.AddEntry(h_signal, '1 pb BulkG M = 1 TeV', "f")
+    elif shape_type=="shapes_fit_b": legend.AddEntry(h_signal, '1 pb BulkG M = 1 TeV', "f")
     elif shape_type=="shapes_fit_s": legend.AddEntry(h_signal, 'BulkG M = 1 TeV', "f")
     legend.AddEntry(gr_data, 'Data', "pl")
     legend.SetShadowColor(0);
@@ -341,11 +353,16 @@ def plotDataMC(file_in, outputplot, plots, observable, signal, shape_type, chann
         h_line.SetBinContent(1,1.0)
         h_line.Draw("hist, same")
         # draw error band only if draw ratio
-        h_band_all.Draw("e3same")
+        #h_band_all.Draw("e3same")
         h_band_sys.Draw("e3same")
         # create and draw ratio
         h_ratio = h_data.Clone('h_ratio')
         h_ratio.Divide(h_total_background)
+        # reset empty data bin to -1 with zero error
+        for ibin in range(1, h_ratio.GetNbinsX()+1):
+            if h_ratio.GetBinContent(ibin)<=0.0: 
+                h_ratio.SetBinContent(ibin, -1)
+                h_ratio.SetBinError(ibin, 0)
         h_ratio.SetLineColor(1)
         h_ratio.SetMarkerColor(1)
         h_ratio.SetMarkerStyle(20)
@@ -360,18 +377,21 @@ def plotDataMC(file_in, outputplot, plots, observable, signal, shape_type, chann
         legend2.SetLineColorAlpha(0,0);
         legend2.Draw("same")
         legend3 = TLegend(.74,.233,.94,.267)
-        legend3.AddEntry(h_band_all, 'sys.+stat. unc.', "f")
+        #legend3.AddEntry(h_band_all, 'sys.+stat. unc.', "f")
         legend3.SetFillStyle(0);
         legend3.SetFillColor(0);
         legend3.SetLineStyle(0);
         legend3.SetLineColorAlpha(0,0);
         legend3.Draw("same")
 
-#    print "data graph: ", data_d_array_y.tolist()
-#    print "data hist : ", [h_data.GetBinContent(i+1) for i in range(h_data.GetNbinsX())]
-#    print "total bkg : ", [h_total_background.GetBinContent(i+1) for i in range(h_total_background.GetNbinsX())]
+    print "data graph: ", data_d_array_y.tolist()
+    print "data graph err up: ", data_d_array_eyh.tolist()
+    print "data graph err dn: ", data_d_array_eyl.tolist()
+    print "data hist : ", [h_data.GetBinContent(i+1) for i in range(h_data.GetNbinsX())]
+    print "total bkg : ", [h_total_background.GetBinContent(i+1) for i in range(h_total_background.GetNbinsX())]
 
     gPad.RedrawAxis()
+
 
     plots.Print(outputplot)
 
@@ -400,11 +420,12 @@ def Run():
     (options,args) = parser.parse_args()
 
     inputfile = options.inputfile
-    outputplot = options.outputplot
+    output = options.output
     observable=options.Observable
     #unblind=options.unblind
 
-    signal="xzz1000"
+    #signal="xzz1000"
+    signal=options.signal
 
     #input file
     file_in = TFile(inputfile)
@@ -416,6 +437,7 @@ def Run():
     plots.SetRightMargin(0.05);
 
     # open the plots file
+    outputplot = output+".pdf"
     plots.Print(outputplot+"[")
   
     # draw pull instead of ratio

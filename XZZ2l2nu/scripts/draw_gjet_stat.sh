@@ -1,7 +1,8 @@
 #!/bin/sh
 
 
-tag="ReMiniAOD_"
+tag="ReMiniAODCRScale_"
+#tag="ReMiniAODNoTune_"
 #tag="ReMiniAODNoMETCutVary_"
 
 channels="mu el"

@@ -14,7 +14,11 @@ import optparse, shlex, re
 
 # load signal modules
 sys.path.append('./SigInputs')
-sys.path.append('./BulkGravXsec')
+#sys.path.append('./BulkGravXsec')
+
+from BulkGZZ2l2nuXsec import *
+
+tag="ReMiniAOD"
 
 grootargs = []
 def callback_rootargs(option, opt, value, parser):
@@ -80,13 +84,11 @@ def plotLimit(parser):
     observable=options.Observable
     unblind=options.unblind
 
-    zjetsMethod = 'mczjet'
-    if( not isDyMC) :
-      zjetsMethod = 'gjet'
 
-    outdirPre = zjetsMethod+'_'+cut
+    outdirPre = tag+'_'+cut
     if(perBinStatUnc) :
-      outdir = outdirPre + '_perBinStatUnc'
+      outdirPre = outdirPre + '_perBinStatUnc'
+
 
 
     mH=[750,800,1200,2000]
@@ -115,7 +117,7 @@ def plotLimit(parser):
       t.GetEntry(5)
       obs.append(t.limit*scale)
 
-      fee = TFile("Datacards/"+outdir+"/higgsCombineee_SR.Asymptotic.mH"+str(m)+".root","READ")
+      fee = TFile("Datacards/"+outdir+"/higgsCombineee_"+cut+".Asymptotic.mH"+str(m)+".root","READ")
       tee = fee.Get("limit")
 
       tee.GetEntry(2)
@@ -132,7 +134,7 @@ def plotLimit(parser):
       tee.GetEntry(5)
       obs_ee.append(tee.limit*scale)
 
-      fmm = TFile("Datacards/"+outdir+"/higgsCombinemm_SR.Asymptotic.mH"+str(m)+".root","READ")
+      fmm = TFile("Datacards/"+outdir+"/higgsCombinemm_"+cut+".Asymptotic.mH"+str(m)+".root","READ")
       tmm = fmm.Get("limit")
 
       tmm.GetEntry(2)
@@ -226,7 +228,7 @@ def plotLimit(parser):
     dummy = TH1D("dummy","dummy", 1, 600,2500)
     dummy.SetBinContent(1,0.0)
     dummy.GetXaxis().SetTitle('m_{X} (GeV)')   
-    dummy.GetYaxis().SetTitle('95% C.L. limit on #sigma(X#rightarrowZZ) (pb)')   
+    dummy.GetYaxis().SetTitle('#sigma(X#rightarrowZZ) (pb)')   
     dummy.SetLineColor(0)
     dummy.SetLineWidth(0)
     dummy.SetFillColor(0)
@@ -281,8 +283,8 @@ def plotLimit(parser):
     latex1.SetTextSize(0.5*c.GetTopMargin())
     latex1.SetTextFont(42)
     latex1.SetTextAlign(31) # align right
-#    latex1.DrawLatex(0.87, 0.95,"35.87 fb^{-1} (13 TeV)")
-    latex1.DrawLatex(0.87, 0.95,"#sqrt{s} = 13 TeV 2016 L = 35.9 fb^{-1}")
+    latex1.DrawLatex(0.87, 0.95,"35.9 fb^{-1} (13 TeV)")
+#    latex1.DrawLatex(0.87, 0.95,"#sqrt{s} = 13 TeV 2016 L = 35.9 fb^{-1}")
     latex2 = TLatex()
     latex2.SetNDC()    
     latex2.SetTextSize(0.7*c.GetTopMargin())
@@ -296,41 +298,69 @@ def plotLimit(parser):
     latex3.SetTextAlign(11)
     latex3.DrawLatex(0.25, 0.8, "Preliminary")
 
-    _temp = __import__('BulkGZZ2l2nuXsec', globals(), locals(), ['BulkGZZ2l2nuXsec'], -1)
-    BulkGZZ2l2nuXsec = _temp.BulkGZZ2l2nuXsec
+#    _temp = __import__('BulkGZZ2l2nuXsec', globals(), locals(), ['BulkGZZ2l2nuXsec'], -1)
+#    BulkGZZ2l2nuXsec = _temp.BulkGZZ2l2nuXsec
+
+
 
     sigXsec={}
     index=0
-    for k in ['0.5','0.2','0.1']:
-      sigXsec[k] = ROOT.TGraph()
+    for k in ['0.5','0.1']:
+      sigXsec[k] = ROOT.TGraphErrors()
       sigXsec[k].SetName("sigXsec_k"+k)
 
       N = 0
       for mass in BulkGZZ2l2nuXsec[k].keys():
-          sigXsec[k].SetPoint(N,mass,BulkGZZ2l2nuXsec[k][mass]*(25.02502502502502))
+          tmp_xsec = BulkGZZ2l2nuXsec[k][mass]
+          tmp_err = tmp_xsec*sqrt(BulkGZZ2l2nuXsecPDFUnc[mass]**2+BulkGZZ2l2nuXsecQCDUnc[mass]**2)
+          sigXsec[k].SetPoint(N,mass,tmp_xsec)
+          sigXsec[k].SetPointError(N,10,tmp_err)
           N = N +1
       sigXsec[k].Sort()
       sigXsec[k].SetLineWidth(1)
       sigXsec[k].SetLineColor(ROOT.kRed+index)
       sigXsec[k].SetLineStyle(1+index)
-      sigXsec[k].Draw("csame")
+      sigXsec[k].SetFillStyle(3003)
+      sigXsec[k].SetFillColor(ROOT.kRed)
+#      sigXsec[k].Draw("c 3 same")
+      #sigXsec[k].Draw("csame")
       index=index+1
 
-    legend = TLegend(.45,.55,.90,.90)
-    for k in ['0.5','0.2','0.1']:
-        legend.AddEntry(sigXsec[k] , "BulkG #tilde{k} = "+k, "l")
-    if unblind: legend.AddEntry(gr_obs , "Data Observed ", "pl")
-    legend.AddEntry(gr_exp , "Expected qqG width = 0 GeV", "l")
-    legend.AddEntry(gr_exp_0p1 , "Expected qqG width = 0.1#timesm_{X}", "l")
-    legend.AddEntry(gr_exp_0p2 , "Expected qqG width = 0.2#timesm_{X}", "l")
-    legend.AddEntry(gr_exp_0p3 , "Expected qqG width = 0.3#timesm_{X}", "l")
-    legend.AddEntry(gr_exp1 , "#pm 1 #sigma ", "f")
-    legend.AddEntry(gr_exp2 , "#pm 2 #sigma ", "f")
+    legend0 = TLegend(.5,.81,.90,.90)
+    legend0.SetHeader("95% CL upper limits: qqG")
+    legend0.SetShadowColor(0)
+    legend0.SetFillColor(0)
+#    legend0.SetFillStyle(0)
+    legend0.SetLineColor(0)
+    if unblind:
+        legend0.AddEntry(gr_obs , "Observed", "pl")
+        legend0.Draw("same")
+
+    legend = TLegend(.5,.57,.90,.80)
+    legend.SetHeader("Median expected:")
+    legend.AddEntry(gr_exp , "width = 0 GeV", "l")
+    legend.AddEntry(gr_exp_0p1 , "width = 0.1#timesm_{X}", "l")
+    legend.AddEntry(gr_exp_0p2 , "width = 0.2#timesm_{X}", "l")
+    legend.AddEntry(gr_exp_0p3 , "width = 0.3#timesm_{X}", "l")
+    legend.AddEntry(gr_exp1 , "68% expected width = 0 GeV ", "f")
+    legend.AddEntry(gr_exp2 , "95% expected width = 0 GeV ", "f")
     legend.SetShadowColor(0)
     legend.SetFillColor(0)
-    legend.SetLineColor(0)            
+#    legend.SetFillStyle(0)
+    legend.SetLineColor(0)
     legend.Draw("same")
-                                                            
+
+    legend1 = TLegend(0.5,0.45,0.90,0.56)
+    legend1.SetHeader("BulkG #rightarrow ZZ cross-sections")
+    for k in ['0.5','0.1']:
+        legend1.AddEntry(sigXsec[k] , "#tilde{k} = "+k, "l")
+    legend1.AddEntry(sigXsec['0.5'], "PDF+QCD uncertainties", "f")
+    legend1.SetShadowColor(0)
+    legend1.SetFillColor(0)
+#    legend1.SetFillStyle(0)
+    legend1.SetLineColor(0)
+ #   legend1.Draw("same")
+
     gPad.RedrawAxis()
 
     if unblind: 

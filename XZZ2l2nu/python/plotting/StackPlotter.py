@@ -116,8 +116,8 @@ def GetRatioHist(h1, hstack,blinding=False,blindingCut=100):
     hratio.SetMarkerColor(ROOT.kBlack)
     hratio.GetXaxis().SetTitle('')
     hratio.GetYaxis().SetTitle('Data/Bkg.')
-    #hratio.GetYaxis().SetRangeUser(0.0,2.0)
-    hratio.GetYaxis().SetRangeUser(0.5,1.5)
+    hratio.GetYaxis().SetRangeUser(0.0,2.0)
+    #hratio.GetYaxis().SetRangeUser(0.5,1.5)
     hratio.GetXaxis().SetLabelFont(42)
     hratio.GetXaxis().SetLabelOffset(0.007)
     hratio.GetXaxis().SetLabelSize(0.1)
@@ -210,6 +210,7 @@ class StackPlotter(object):
 
         ROOT.gStyle.SetOptStat(0)
         ROOT.gStyle.SetOptTitle(0)
+        ROOT.gStyle.SetErrorX(0.5)
         
         p1.cd()
             
@@ -374,7 +375,7 @@ class StackPlotter(object):
             if typeP != "data" and typeP !='signal':
                 legend.AddEntry(histo,label,"f")
             elif typeP == 'data':
-                legend.AddEntry(histo,label,"p")
+                legend.AddEntry(histo,label,"lep")
 
         for (histo,label,typeP) in reversed(zip(hists,self.labels,self.types)):
             if typeP == "signal":
@@ -413,15 +414,25 @@ class StackPlotter(object):
 	pt.SetTextAlign(12)
 	pt.SetFillStyle(0)
 	pt.SetTextFont(42)
-	pt.SetTextSize(0.03)
-	text = pt.AddText(0.05,0.3,"CMS Preliminary")
+	pt.SetTextSize(0.035)
+#	text = pt.AddText(0.05,0.3,"CMS Preliminary")
 #	text = pt.AddText(0.15,0.3,"CMS Work in progress")
 #	text = pt.AddText(0.25,0.3,"#sqrt{s} = 7 TeV, L = 5.1 fb^{-1}  #sqrt{s} = 8 TeV, L = 19.7 fb^{-1}")
 	#text = pt.AddText(0.55,0.3,"#sqrt{s} = 13 TeV 2015 L = "+"{:.3}".format(float(lumi)/1000)+" fb^{-1}")
 	#text = pt.AddText(0.55,0.3,"#sqrt{s} = 13 TeV 2016 L = "+"{:.3}".format(float(lumi)/1000)+" fb^{-1}")
-	text = pt.AddText(0.55,0.3,self.paveText) 
+	text = pt.AddText(0.66,0.3,self.paveText) 
 	pt.Draw()   
-        
+
+        latex2 = ROOT.TLatex()
+        latex2.SetNDC()
+        latex2.SetTextSize(1*p1.GetTopMargin())
+        latex2.SetTextFont(62)
+        latex2.SetTextAlign(11) # align right
+        latex2.DrawLatex(0.25, 0.85, "CMS")
+        latex2.SetTextSize(0.7*p1.GetTopMargin())
+        latex2.SetTextFont(52)
+        latex2.SetTextAlign(11)
+        latex2.DrawLatex(0.25, 0.8, "Preliminary")       
 
         if self.doRatioPlot:
             hratio = GetRatioHist(dataH,stack,blinding, blindingCut)
@@ -442,7 +453,7 @@ class StackPlotter(object):
             hratio_band.Draw('E2')
             hline.Draw('HIST,SAME')
             hratio.Draw('P,SAME')
-            legend.AddEntry(hratio_band,"Stat. Uncertainty","f")        
+            legend.AddEntry(hratio_band,"Stat. uncertainty","f")        
 
         # blinding mask 
         if blinding : 

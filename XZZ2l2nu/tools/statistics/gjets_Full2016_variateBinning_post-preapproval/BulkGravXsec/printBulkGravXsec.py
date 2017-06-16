@@ -15,7 +15,7 @@ def latex_float(f):
 #if you want the cross section (CX) using a ktilda' you do
 #CX(ktilda',pb) = CX(ktilda=0.1,pb) * (ktilda' / 0.1)^2
 
-ktilda=0.1
+ktilda=0.05
 
 masses = [600,800,1000,1200,1400,1600,1800,2000,2500,3000,3500,4000,4500]
 BulkGXsec = {200:5.649417401247585,

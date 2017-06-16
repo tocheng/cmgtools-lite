@@ -19,7 +19,7 @@ combineCards.py ee_SR=mX${mX}ZZ2l2nu_ee_${cut}.txt mm_SR=mX${mX}ZZ2l2nu_mm_${cut
 combine -M MaxLikelihoodFit --minimizerTolerance 0.001 --preFitValue 0.001 \
 --saveOverallShapes \
 --saveNormalizations --saveShapes --saveWithUncertainties -m ${mX} mX${mX}ZZ2l2nu_${cut}.txt 
-mv mlfit.root mlfit_obs.root
+mv mlfit.root mlfit_obs_$mX.root
 
 
 #combine -M MaxLikelihoodFit --minimizerTolerance 0.001 --preFitValue 0.001 \
