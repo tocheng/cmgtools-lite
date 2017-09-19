@@ -13,10 +13,10 @@ Instructions for package development.
    Note: do this on the webpage, just click the links below and find the "Fork" button on the webpage.
 
    The Heppy Framework:
-   https://github.com/mmhy/cmg-cmssw.git
+   https://github.com/VirginiaCMS/cmg-cmssw.git
 
    The analysis package:
-   https://github.com/mmhy/cmgtools-lite.git
+   https://github.com/VirginiaCMS/cmgtools-lite.git
 
 2. Setup Environment
 
@@ -41,16 +41,16 @@ Instructions for package development.
 4. Add MMHY repository which contains the CMGTools/XZZ2l2nu package, and fetch it
 
   ```
-  git remote add mmhy https://github.com/mmhy/cmg-cmssw.git
-  git fetch mmhy
+  git remote add VirginiaCMS https://github.com/VirginiaCMS/cmg-cmssw.git
+  git fetch VirginiaCMS
   ```
 
 5. Configure the sparse checkout (to only checkout needed packages), and check out only the Heppy framework
 
   ```
-  curl -O https://raw.githubusercontent.com/mmhy/cmgtools-lite/xzz2l2nu_80x/XZZ2l2nu/tools/sparse-checkout
+  curl -O https://raw.githubusercontent.com/VirginiaCMS/cmgtools-lite/xzz2l2nu_80x/XZZ2l2nu/tools/sparse-checkout
   mv sparse-checkout .git/info/sparse-checkout
-  git checkout -b xzz2l2nu_heppy_80X mmhy/xzz2l2nu_heppy_80X
+  git checkout -b xzz2l2nu_heppy_80X VirginiaCMS/xzz2l2nu_heppy_80X
   ```
 
   [the rest in this section is not need for everyday life.]
@@ -76,7 +76,7 @@ Instructions for package development.
   git push origin xzz2l2nu_heppy_80X_dev
   ```
 
-  To update the mmhy repository with your own Heppy framework developement, similar way is required as described in section 12 below. 
+  To update the VirginiaCMS repository with your own Heppy framework developement, similar way is required as described in section 12 below. 
 
   **If ever possible, please don't change the Heppy framework.**
 
@@ -85,7 +85,7 @@ Instructions for package development.
   The CMGTools is made as a standalone package. So we need to add repository separately:
 
   ```
-  git clone -o mmhy https://github.com/mmhy/cmgtools-lite.git -b xzz2l2nu_80x CMGTools
+  git clone -o VirginiaCMS https://github.com/VirginiaCMS/cmgtools-lite.git -b xzz2l2nu_80x CMGTools
   ```
 
 6.1.  MuonRecalibrator: 
@@ -99,7 +99,7 @@ Instructions for package development.
     for updating this part of codes. 
 
   Note, NO extra preparation is needed to configure this package, since 2016-08-25 it 
-  is included in https://github.com/mmhy/cmg-cmssw.git in xzz2l2nu_heppy_80X branch already.
+  is included in https://github.com/VirginiaCMS/cmg-cmssw.git in xzz2l2nu_heppy_80X branch already.
 
 
 7. Compile the package together with Heppy Framework:
@@ -141,10 +141,10 @@ Instructions for package development.
 
   Note, do all following in your CMSSWxxx/src/CMSTools/ directory, not the CMSSWxxx/src.
 
-  * Update the branch xzz2l2nu_80x in your local repository with others developements on mmhy
+  * Update the branch xzz2l2nu_80x in your local repository with others developements on VirginiaCMS
     ```
     git checkout xzz2l2nu_80x
-    git fetch mmhy 
+    git fetch VirginiaCMS 
     ```
 
   * Rebased your development branch to the head of xzz2l2nu_80x, and update it in your own repository
@@ -162,7 +162,7 @@ Instructions for package development.
 
   E.g. A PR from hengne's xzz2l2nu_80x_dev branch to MMHY's xzz2l2nu_80x will look like this in the following link:
 
-      https://github.com/mmhy/cmgtools-lite/compare/xzz2l2nu_80x...hengne:xzz2l2nu_80x_dev  
+      https://github.com/VirginiaCMS/cmgtools-lite/compare/xzz2l2nu_80x...hengne:xzz2l2nu_80x_dev  
 
 
 **Let's make it a rule here: Please always let other collabrators to view and sign your PR before merging it, even if you have the permission to do it all by yourself.**
