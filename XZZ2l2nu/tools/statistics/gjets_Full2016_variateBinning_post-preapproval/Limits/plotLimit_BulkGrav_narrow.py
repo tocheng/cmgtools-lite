@@ -17,7 +17,8 @@ from BulkGZZ2l2nuXsec import *
 # load signal modules
 #sys.path.append('./BulkGravXsec')
 
-tag="ReMiniAOD"
+tag="ReMiniAODCRScaleMoreSig"
+#tag="ReMiniAOD"
 
 grootargs = []
 def callback_rootargs(option, opt, value, parser):
@@ -88,7 +89,7 @@ def plotLimit(parser):
 
     print outdir
 
-    mH=[600,800,1000,1200,1400,1600,1800,2000,2500]
+    mH=[200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1800,2000,2500]
     for m in mH:
 
       scale = 1/((3.363+3.366+3.370)*0.01*0.2*2)
@@ -202,6 +203,7 @@ def plotLimit(parser):
     c.SetLeftMargin(0.16)
 
     dummy = TH1D("dummy","dummy", 1, 600,2500)
+    #dummy = TH1D("dummy","dummy", 1, 200,2500)
     dummy.SetBinContent(1,0.0)
     dummy.GetXaxis().SetTitle('m_{X} (GeV)')   
     #dummy.GetYaxis().SetTitle('95% C.L. limit on #sigma(X#rightarrowZZ) (pb)')   
@@ -255,7 +257,7 @@ def plotLimit(parser):
     latex3.SetTextSize(0.5*c.GetTopMargin())
     latex3.SetTextFont(52)
     latex3.SetTextAlign(11)
-    latex3.DrawLatex(0.25, 0.8, "Preliminary")
+#    latex3.DrawLatex(0.25, 0.8, "Preliminary")
 
     #_temp = __import__('BulkGZZ2l2nuXsec', globals(), locals(), ['BulkGZZ2l2nuXsec'], -1)
     #BulkGZZ2l2nuXsec = _temp.BulkGZZ2l2nuXsec
@@ -264,7 +266,7 @@ def plotLimit(parser):
     sigXsec={}
     index=0
     #for k in ['0.5','0.1','0.05']:
-    for k in ['0.5','0.1']:
+    for k in ['1.0','0.5','0.1']:
       sigXsec[k] = ROOT.TGraphErrors()
       sigXsec[k].SetName("sigXsec_k"+k)
 
@@ -294,19 +296,19 @@ def plotLimit(parser):
     legend.AddEntry(gr_exp2 , "95% expected", "f")
     legend.SetShadowColor(0)
     legend.SetFillColor(0)
-#    legend.SetFillStyle(0)
+    legend.SetFillStyle(1)
     legend.SetLineColor(0)
     legend.Draw("same")
    
     legend1 = TLegend(0.45,0.56,0.90,0.68)
     legend1.SetHeader("BulkG #rightarrow ZZ cross-sections")
     #for k in ['0.5','0.1','0.05']:
-    for k in ['0.5','0.1']:
+    for k in ['1.0','0.5','0.1']:
         legend1.AddEntry(sigXsec[k] , "#tilde{k} = "+k, "l")
     legend1.AddEntry(sigXsec['0.5'], "PDF+QCD uncertainties", "f")
     legend1.SetShadowColor(0)
     legend1.SetFillColor(0)
-#    legend1.SetFillStyle(0)
+    legend1.SetFillStyle(1)
     legend1.SetLineColor(0)            
     legend1.Draw("same")
     
@@ -314,11 +316,13 @@ def plotLimit(parser):
     gPad.RedrawAxis("g")
 
     if unblind: 
-        c.SaveAs("xzz2l2nu_limit_13TeV_"+cut+"_BulkGrav_narrow_unblind.pdf")
-        c.SaveAs("xzz2l2nu_limit_13TeV_"+cut+"_BulkGrav_narrow_unblind.png")
+        c.SaveAs(tag+"_xzz2l2nu_limit_13TeV_"+cut+"_BulkGrav_narrow_unblind.pdf")
+        c.SaveAs(tag+"_xzz2l2nu_limit_13TeV_"+cut+"_BulkGrav_narrow_unblind.png")
+        c.SaveAs(tag+"_xzz2l2nu_limit_13TeV_"+cut+"_BulkGrav_narrow_unblind.C")
     else:
-        c.SaveAs("xzz2l2nu_limit_13TeV_"+cut+"_BulkGrav_narrow.pdf")
-        c.SaveAs("xzz2l2nu_limit_13TeV_"+cut+"_BulkGrav_narrow.png")
+        c.SaveAs(tag+"_xzz2l2nu_limit_13TeV_"+cut+"_BulkGrav_narrow.pdf")
+        c.SaveAs(tag+"_xzz2l2nu_limit_13TeV_"+cut+"_BulkGrav_narrow.png")
+        c.SaveAs(tag+"_xzz2l2nu_limit_13TeV_"+cut+"_BulkGrav_narrow.C")
 
     ## ee mm compatibility
     c2 = TCanvas("c2","c2",800, 800)
@@ -397,7 +401,7 @@ def plotLimit(parser):
     latex1.DrawLatex(0.87, 0.95,"35.9 fb^{-1} (13 TeV)")
     #latex1.DrawLatex(0.87, 0.95,"#sqrt{s} = 13 TeV 2016 L = 35.9 fb^{-1}")
     latex2.DrawLatex(0.25, 0.85, "CMS")
-    latex3.DrawLatex(0.25, 0.8, "Preliminary")
+#    latex3.DrawLatex(0.25, 0.8, "Preliminary")
 
     legend2 = TLegend(.45,.60,.90,.90)
     legend2.SetHeader("95% CL upper limits")
@@ -409,18 +413,20 @@ def plotLimit(parser):
     legend2.AddEntry(gr_exp2 , "95% expected ee+#mu#mu", "f")
     legend2.SetShadowColor(0)
     legend2.SetFillColor(0)
-#    legend2.SetFillStyle(0)
+    legend2.SetFillStyle(0)
     legend2.SetLineColor(0)
     legend2.Draw("same")
 
     gPad.RedrawAxis("g")
 
     if unblind:
-        c2.SaveAs("xzz2l2nu_limit_13TeV_ee+mm_"+cut+"_BulkGrav_narrow_unblind.pdf")
-        c2.SaveAs("xzz2l2nu_limit_13TeV_ee+mm_"+cut+"_BulkGrav_narrow_unbiind.png")
+        c2.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee+mm_"+cut+"_BulkGrav_narrow_unblind.pdf")
+        c2.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee+mm_"+cut+"_BulkGrav_narrow_unbiind.png")
+        c2.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee+mm_"+cut+"_BulkGrav_narrow_unbiind.C")
     else:
-        c2.SaveAs("xzz2l2nu_limit_13TeV_ee+mm_"+cut+"_BulkGrav_narrow.pdf")
-        c2.SaveAs("xzz2l2nu_limit_13TeV_ee+mm_"+cut+"_BulkGrav_narrow.png")
+        c2.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee+mm_"+cut+"_BulkGrav_narrow.pdf")
+        c2.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee+mm_"+cut+"_BulkGrav_narrow.png")
+        c2.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee+mm_"+cut+"_BulkGrav_narrow.C")
 
     ## ee only
     c3 = TCanvas("c3","c3",800, 800)
@@ -448,7 +454,7 @@ def plotLimit(parser):
     legend3.AddEntry(gr_exp , "Median expected ee+#mu#mu", "l")
     legend3.SetShadowColor(0)
     legend3.SetFillColor(0)
-#    legend3.SetFillStyle(0)
+    legend3.SetFillStyle(0)
     legend3.SetLineColor(0)
     legend3.Draw("same")
 
@@ -456,16 +462,18 @@ def plotLimit(parser):
     latex1.DrawLatex(0.87, 0.95,"35.9 fb^{-1} (13 TeV)")
 #    latex1.DrawLatex(0.87, 0.95,"#sqrt{s} = 13 TeV 2016 L = 35.9 fb^{-1}")
     latex2.DrawLatex(0.25, 0.85, "CMS")
-    latex3.DrawLatex(0.25, 0.8, "Preliminary")
+#    latex3.DrawLatex(0.25, 0.8, "Preliminary")
 
     gPad.RedrawAxis("g")
 
     if unblind:
-        c3.SaveAs("xzz2l2nu_limit_13TeV_ee_"+cut+"_BulkGrav_narrow_unblind.pdf")
-        c3.SaveAs("xzz2l2nu_limit_13TeV_ee_"+cut+"_BulkGrav_narrow_unbiind.png")
+        c3.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee_"+cut+"_BulkGrav_narrow_unblind.pdf")
+        c3.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee_"+cut+"_BulkGrav_narrow_unbiind.png")
+        c3.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee_"+cut+"_BulkGrav_narrow_unbiind.C")
     else:
-        c3.SaveAs("xzz2l2nu_limit_13TeV_ee_"+cut+"_BulkGrav_narrow.pdf")
-        c3.SaveAs("xzz2l2nu_limit_13TeV_ee_"+cut+"_BulkGrav_narrow.png")
+        c3.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee_"+cut+"_BulkGrav_narrow.pdf")
+        c3.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee_"+cut+"_BulkGrav_narrow.png")
+        c3.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee_"+cut+"_BulkGrav_narrow.C")
 
     ## mm only
     c4 = TCanvas("c4","c4",800, 800)
@@ -487,30 +495,32 @@ def plotLimit(parser):
     legend4 = TLegend(.45,.60,.90,.90)
 
     legend4.SetHeader("95% CL upper limits: #mu#mu")
-    if unblind:    legend3.AddEntry(gr_obs_mm , "Observed", "pl")
+    if unblind:    legend4.AddEntry(gr_obs_mm , "Observed", "pl")
     legend4.AddEntry(gr_exp_mm , "Median expected", "l")
     legend4.AddEntry(gr_exp1_mm , "68% expected", "f")
     legend4.AddEntry(gr_exp2_mm , "95% expected", "f")
     legend4.AddEntry(gr_exp , "Median expected ee+#mu#mu", "l")
     legend4.SetShadowColor(0)
     legend4.SetFillColor(0)
-#    legend4.SetFillStyle(0)
+    legend4.SetFillStyle(0)
     legend4.SetLineColor(0)
     legend4.Draw("same")
 
     latex1.DrawLatex(0.87, 0.95,"35.9 fb^{-1} (13 TeV)")
 #    latex1.DrawLatex(0.87, 0.95,"#sqrt{s} = 13 TeV 2016 L = 35.9 fb^{-1}")
     latex2.DrawLatex(0.25, 0.85, "CMS")
-    latex3.DrawLatex(0.25, 0.8, "Preliminary")
+#    latex3.DrawLatex(0.25, 0.8, "Preliminary")
 
     gPad.RedrawAxis("g")
 
     if unblind:
-        c4.SaveAs("xzz2l2nu_limit_13TeV_mm_"+cut+"_BulkGrav_narrow_unblind.pdf")
-        c4.SaveAs("xzz2l2nu_limit_13TeV_mm_"+cut+"_BulkGrav_narrow_unbiind.png")
+        c4.SaveAs(tag+"_xzz2l2nu_limit_13TeV_mm_"+cut+"_BulkGrav_narrow_unblind.pdf")
+        c4.SaveAs(tag+"_xzz2l2nu_limit_13TeV_mm_"+cut+"_BulkGrav_narrow_unbiind.png")
+        c4.SaveAs(tag+"_xzz2l2nu_limit_13TeV_mm_"+cut+"_BulkGrav_narrow_unbiind.C")
     else:
-        c4.SaveAs("xzz2l2nu_limit_13TeV_mm_"+cut+"_BulkGrav_narrow.pdf")
-        c4.SaveAs("xzz2l2nu_limit_13TeV_mm_"+cut+"_BulkGrav_narrow.png")
+        c4.SaveAs(tag+"_xzz2l2nu_limit_13TeV_mm_"+cut+"_BulkGrav_narrow.pdf")
+        c4.SaveAs(tag+"_xzz2l2nu_limit_13TeV_mm_"+cut+"_BulkGrav_narrow.png")
+        c4.SaveAs(tag+"_xzz2l2nu_limit_13TeV_mm_"+cut+"_BulkGrav_narrow.C")
 
 def Run():
 

@@ -245,7 +245,7 @@ def plotDataMC(file_in, outputplot, plots, observable, signal, shape_type, chann
     latex2.SetTextSize(0.4*plots.GetTopMargin())
     latex2.SetTextFont(52)
     latex2.SetTextAlign(11)
-    latex2.DrawLatex(0.27, 0.94, "Preliminary")
+#    latex2.DrawLatex(0.27, 0.94, "Preliminary")
 
     if shape_type=="shapes_prefit": latex2.DrawLatex(0.27, 0.85, "Pre-fit")
     elif shape_type=="shapes_fit_b": latex2.DrawLatex(0.27, 0.85, "Post-fit B-only")

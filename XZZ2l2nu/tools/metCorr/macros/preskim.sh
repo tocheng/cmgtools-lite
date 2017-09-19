@@ -6,8 +6,12 @@
 g++ preskim.cc -o preskim.exe `root-config --cflags` `root-config --libs`
 
 #inputs
-indir=/data2/XZZ2/80X_20170202
-outdir=/home/heli/XZZ/80X_20170202_light
+indir=/data2/XZZ2/sig_temp2
+outdir=/home/heli/XZZ/80X_20170202_new_sig_light2
+#indir=/data2/XZZ2/sig_temp
+#outdir=/home/heli/XZZ/80X_20170202_new_sig_light
+#indir=/data2/XZZ2/80X_20170202
+#outdir=/home/heli/XZZ/80X_20170202_light
 #samples="QCD_Pt*_MuEnriched*"
 #samples="QCD_Pt*_EMEnriched"
 #samples="WJetsToLNu_HT*"
@@ -18,9 +22,9 @@ outdir=/home/heli/XZZ/80X_20170202_light
 #samples="VBF_HToZ*"
 #samples="DYJetsToLL_M50_Ext"
 #samples="GluGluHTo*"
-#samples="*"
+samples="*"
 #samples="SingleMuon*_03Feb2017*"
-samples="Single[EM]*_03Feb2017*_allcorV2"
+#samples="Single[EM]*_03Feb2017*_allcorV2"
 #samples="SingleElectron*_03Feb2017*"
 #samples="SingleEMU_Run2016B2H_ReReco_36p1fbinv"
 #samples="SingleEMU_Run2016H_PromptReco_new"

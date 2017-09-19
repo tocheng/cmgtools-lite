@@ -1,5 +1,5 @@
 #!/bin/env python
-
+#author Hengne Li
 
 def latex_float(f):
     float_str = "{0:.3e}".format(f)
@@ -15,9 +15,9 @@ def latex_float(f):
 #if you want the cross section (CX) using a ktilda' you do
 #CX(ktilda',pb) = CX(ktilda=0.1,pb) * (ktilda' / 0.1)^2
 
-ktilda=0.05
+ktilda=1.0
 
-masses = [600,800,1000,1200,1400,1600,1800,2000,2500,3000,3500,4000,4500]
+masses = [200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1800,2000,2500,3000,3500,4000,4500]
 BulkGXsec = {200:5.649417401247585,
 260:1.9429371431011526,
 300:1.0684873854214705,

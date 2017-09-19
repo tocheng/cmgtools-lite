@@ -96,7 +96,7 @@ void setTDRStyle()
 	tdrStyle->SetPadRightMargin(0.05);
 
 	// For the Global title:
-	tdrStyle->SetOptTitle(1);
+	tdrStyle->SetOptTitle(0);
 	tdrStyle->SetTitleFont(42);
 	tdrStyle->SetTitleColor(1);
 	tdrStyle->SetTitleTextColor(1);

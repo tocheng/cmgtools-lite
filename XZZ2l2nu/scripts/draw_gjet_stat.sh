@@ -1,7 +1,8 @@
 #!/bin/sh
 
 
-tag="ReMiniAODCRScale_"
+tag="ReMiniAODCRScaleMoreSig_"
+#tag="ReMiniAODCRScale_"
 #tag="ReMiniAODNoTune_"
 #tag="ReMiniAODNoMETCutVary_"
 

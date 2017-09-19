@@ -1,8 +1,12 @@
 #!/bin/sh
 
 #inputs
-inputdir=/home/heli/XZZ/80X_20170202_light
-outputdir=/home/heli/XZZ/80X_20170202_light_Skim
+#inputdir=/home/heli/XZZ/80X_20170202_light
+#outputdir=/home/heli/XZZ/80X_20170202_light_Skim
+#inputdir=/home/heli/XZZ/80X_20170202_new_sig_light
+#outputdir=/home/heli/XZZ/80X_20170202_new_sig_light_Skim
+inputdir=/home/heli/XZZ/80X_20170202_new_sig_light2
+outputdir=/home/heli/XZZ/80X_20170202_new_sig_light2_Skim
 config=config/parameters_light
 
 mkdir -p ${outputdir}

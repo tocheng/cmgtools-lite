@@ -432,7 +432,7 @@ class StackPlotter(object):
         latex2.SetTextSize(0.7*p1.GetTopMargin())
         latex2.SetTextFont(52)
         latex2.SetTextAlign(11)
-        latex2.DrawLatex(0.25, 0.8, "Preliminary")       
+#        latex2.DrawLatex(0.25, 0.8, "Preliminary")       
 
         if self.doRatioPlot:
             hratio = GetRatioHist(dataH,stack,blinding, blindingCut)
@@ -505,6 +505,7 @@ class StackPlotter(object):
         #os.system('epstopdf '+outDir+'/'+output+'.eps')
         #c1.Print(self.outFileName+'.ps')
         c1.Print(self.outFileName+'.pdf')
+        c1.SaveAs(self.outFileName+'.C')
 
         self.fout.cd()
         c1.Write() 

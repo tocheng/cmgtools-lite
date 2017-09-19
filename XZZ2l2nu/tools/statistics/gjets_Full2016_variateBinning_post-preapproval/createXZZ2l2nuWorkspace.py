@@ -13,7 +13,8 @@ import optparse, shlex, re
 # load signal modules
 sys.path.append('./SigInputs')
 
-tag="ReMiniAOD"
+tag="ReMiniAODCRScaleMoreSig"
+#tag="ReMiniAOD"
 #tag="ReMiniAODCRScale"
 #tag="ReMiniAODNoMETCutVary"
 #tag="ReMiniAODNoTune"
@@ -554,7 +555,7 @@ def Run():
             createXSworkspace(sigType,m, "ee",cut, parser)
 
             if(runLimits) :
-              cmd = 'sh Limits/runAsymptotic.sh Datacards/'+outdir+' '+str(m)+' '+cut+' &> Datacards/'+outdir+'/runAsymptotic_'+str(m)+' '+cut+'.log &'
+              cmd = 'sh Limits/runAsymptotic.sh Datacards/'+outdir+' '+str(m)+' '+cut+' &> Datacards/'+outdir+'/runAsymptotic_'+str(m)+'.log &'
               print cmd
               output = processCmd(cmd)
 
