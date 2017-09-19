@@ -14,7 +14,10 @@
 
    rmax=0.0001
    rabsacc=0.00001
-
+   if [ "$mH" -lt "600" ]; then 
+     rmax=0.01
+     rabsacc=0.0005
+   fi
    
    cmd="combine -m ${mH} -M Asymptotic mX${mH}ZZ2l2nu_${cut}.txt --rMax $rmax --rAbsAcc $rabsacc --noFitAsimov"
    echo "command: $cmd"

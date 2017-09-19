@@ -26,11 +26,12 @@
   python PlotDataMC.py -l -b -q
   plots will be in Plots
 
-  ./PlotDataMCWorkspace.py -l -b -q --cutChain SRdPhiGT0p5 -i Diagnosis/mlfit_obs_mt_1000.root  -o Plots/DataMCWorkspace_ReMiniAOD_SRdPhiGT0p5_1000
+  ./PlotDataMCWorkspace.py -l -b -q  -i Diagnosis/mlfit_obs_mt_1000.root  -o Plots/DataMCWorkspace_ReMiniAOD_SRdPhiGT0p5_1000
 
 if plot MET
-  ./PlotDataMCWorkspace.py -l -b -q --cutChain SRdPhiGT0p5 -i Diagnosis/mlfit_obs_met_1000.root  -o Plots/DataMCWorkspace_ReMiniAOD_SRdPhiGT0p5_MET_1000 --obs MET 
+  ./PlotDataMCWorkspace.py -l -b -q  -i Diagnosis/mlfit_obs_met_1000.root  -o Plots/DataMCWorkspace_ReMiniAOD_SRdPhiGT0p5_MET_1000 --obs MET 
 
 3. limits
 
 python Limits/anypythonfile -l -b -q --cutChain SRdPhiGT0p5
+./Limits/plotLimit_BulkGrav_narrow.py -l -b -q --unblind --cutChain SRdPhiGT0p5 --perBinStatUnc 
