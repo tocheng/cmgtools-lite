@@ -1,0 +1,36 @@
+
+1. setup cards and shapes
+
+   ./createXZZ2l2nuWorkspace.py -l -b -q --cutChain SRdPhiGT0p5
+
+   if want to run limit
+   ./createXZZ2l2nuWorkspace.py -l -b -q --runLimits --cutChain SRdPhiGT0p5
+
+   if want to use MET as observable, 
+   ./createXZZ2l2nuWorkspace.py -l -b -q --obs="MET" --cutChain SRdPhiGT0p5
+
+   for perbin stat uncert.
+   ./createXZZ2l2nuWorkspace.py -l -b -q --runLimits --cutChain SRdPhiGT0p5 --perBinStatUnc 
+   or:
+   ./createXZZ2l2nuWorkspace.py -l -b -q  --cutChain SRdPhiGT0p5 --perBinStatUnc 
+   ./createXZZ2l2nuWorkspace.py -l -b -q --obs="MET" --runLimits --cutChain SRdPhiGT0p5 --perBinStatUnc 
+
+2.dataVSMC plot
+
+  cd Diagnosis
+  
+  sh runDiagnosis.sh ../Datacards/gjet_zpt100met50_BulkGrav_narrow_mT/ 800 SRdPhiGT0p5 
+
+  cd -
+
+  python PlotDataMC.py -l -b -q
+  plots will be in Plots
+
+  ./PlotDataMCWorkspace.py -l -b -q --cutChain SRdPhiGT0p5 -i Diagnosis/mlfit_obs_mt_1000.root  -o Plots/DataMCWorkspace_ReMiniAOD_SRdPhiGT0p5_1000
+
+if plot MET
+  ./PlotDataMCWorkspace.py -l -b -q --cutChain SRdPhiGT0p5 -i Diagnosis/mlfit_obs_met_1000.root  -o Plots/DataMCWorkspace_ReMiniAOD_SRdPhiGT0p5_MET_1000 --obs MET 
+
+3. limits
+
+python Limits/anypythonfile -l -b -q --cutChain SRdPhiGT0p5

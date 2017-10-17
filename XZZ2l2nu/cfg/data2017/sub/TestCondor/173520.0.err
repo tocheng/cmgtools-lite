@@ -1,0 +1,7 @@
+[eos-cp] going to copy 1 files and 17 B
+
+[eos-cp] copied 1/1 files and 17 B in 1.48 seconds with 11 B/s
+warning: there is no file to copy!
+[0B/0B][100%][==================================================][0B/s]  
+Run: [ERROR] Server responded with an error: [3011] Unable to open file /eos/cms/store/user/tocheng/Cert_294927-302663_13TeV_PromptReco_Collisions17_JSON.txt; No such file or directory
+

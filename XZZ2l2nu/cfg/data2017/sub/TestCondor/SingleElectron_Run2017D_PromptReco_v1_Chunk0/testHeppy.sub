@@ -1,0 +1,8 @@
+executable            = testEOSonCONDOR.sh
+arguments             = $(ClusterId) $(ProcId)
+output                = $(ClusterId).$(ProcId).out
+error                 = $(ClusterId).$(ProcId).err
+log                   = $(ClusterId).log
+transfer_input_files  = myproxy,pogRecipesData92X.py,pycfg.py,config.pck,options.json
+transfer_out_files  = log.txt
+queue

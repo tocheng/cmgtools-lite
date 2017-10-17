@@ -1,0 +1,20 @@
+000 (173520.000.000) 10/08 13:04:53 Job submitted from host: <128.142.194.28:9618?addrs=128.142.194.28-9618+[2001-1458-301-e1--100-16]-9618&noUDP&sock=3516551_11ff_15>
+...
+001 (173520.000.000) 10/08 13:16:10 Job executing on host: <188.185.129.191:9618?addrs=188.185.129.191-9618+[--1]-9618&noUDP&sock=17359_b902_3>
+...
+006 (173520.000.000) 10/08 13:16:18 Image size of job updated: 1116
+	2  -  MemoryUsage of job (MB)
+	1044  -  ResidentSetSize of job (KB)
+...
+007 (173520.000.000) 10/08 13:16:23 Shadow exception!
+	Error from slot1_3@b6f6505701.cern.ch: STARTER at 188.185.129.191 failed to send file(s) to <128.142.194.28:9618>: error reading from /pool/condor/dir_2956/Cert_294927-302663_13TeV_PromptReco_Collisions17_JSON.txt: (errno 2) No such file or directory; SHADOW failed to receive file(s) from <188.185.129.191:35305>
+	4776  -  Run Bytes Sent By Job
+	926  -  Run Bytes Received By Job
+...
+012 (173520.000.000) 10/08 13:16:23 Job was held.
+	Error from slot1_3@b6f6505701.cern.ch: STARTER at 188.185.129.191 failed to send file(s) to <128.142.194.28:9618>: error reading from /pool/condor/dir_2956/Cert_294927-302663_13TeV_PromptReco_Collisions17_JSON.txt: (errno 2) No such file or directory; SHADOW failed to receive file(s) from <188.185.129.191:35305>
+	Code 13 Subcode 2
+...
+009 (173520.000.000) 10/09 13:16:43 Job was aborted by the user.
+	Job removed by SYSTEM_PERIODIC_REMOVE due to wall time exceeded allowed max.
+...

@@ -1,0 +1,8 @@
+executable            = testEOSonCONDOR.sh
+arguments             = inputFile1.txt
+output                = $(ClusterId).$(ProcId).out
+error                 = $(ClusterId).$(ProcId).err
+log                   = $(ClusterId).log
+transfer_input_files  = inputFile1.txt,inputFile3.txt
+transfer_output_files = inputFile2.txt,Cert_294927-302663_13TeV_PromptReco_Collisions17_JSON.txt
+queue

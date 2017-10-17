@@ -38,7 +38,7 @@ if __name__ == '__main__':
     parser.add_option("-p", "--pattern", dest="pattern", default="root://cms-xrd-global.cern.ch/%s", help="Use this pattern to convert lfn in pfn; must contain '%s' ")
     parser.add_option("-e", "--eos", dest="pattern", action="store_const", const = 'root://eoscms.cern.ch//eos/cms%s',
                       help="Use eos.cern.ch to access the files")
-    parser.add_option("-A", "--AAA", dest="pattern", action="store_const", const = "root://cms-xrd-global.cern.ch/%s",
+    parser.add_option("-A", "--AAA", dest="pattern", action="store_const", const = "%s",#"root://cms-xrd-global.cern.ch/%s",
                       help="Use AAA to access the files, with the global redirector")
     parser.add_option("--fnal", dest="pattern", action="store_const", const = "root://cmsxrootd.fnal.gov/%s",
                       help="Use AAA to access the files, with the global redirector")

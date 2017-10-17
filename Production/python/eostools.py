@@ -48,7 +48,7 @@ def runEOSCommand(path, cmd, *args):
     tokens = splitPFN(path)
     
     #obviously, this is not nice
-    command = ['/afs/cern.ch/project/eos/installation/pro/bin/eos.select', cmd]
+    command = ['/afs/cern.ch/project/eos/installation/scripts/bin/eos.select', cmd]
     command.extend(args)
     command.append(tokens[2])
     return _runCommand(command)
