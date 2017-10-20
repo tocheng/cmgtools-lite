@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
 runOnData=False
-usePrivateSQlite=True
+usePrivateSQlite=False
 
 process = cms.Process("NEW")
 
@@ -23,7 +23,7 @@ process.load('Configuration.StandardSequences.MagneticField_cff')
 # Message Logger settings
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.destinations = ['cout', 'cerr']
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 
 # Set the process options -- Display summary at the end, enable unscheduled execution
 process.options = cms.untracked.PSet( 
@@ -33,14 +33,12 @@ process.options = cms.untracked.PSet(
 
 # How many events to process
 process.maxEvents = cms.untracked.PSet( 
-   input = cms.untracked.int32(100)
+   input = cms.untracked.int32(-1)
 )
 
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-#        'root://eoscms.cern.ch//eos/cms/store/mc/RunIISpring16MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/00000/02404626-C64D-E611-9744-485B39897231.root'
-         'root://eoscms.cern.ch//eos/cms/store/mc/RunIISummer16MiniAODv2/BulkGravToZZToZlepZinv_narrow_M-1000_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/80000/98AD845E-23B7-E611-B336-141877637B68.root'
     )
 )
 
@@ -56,18 +54,11 @@ process.OUT = cms.OutputModule("PoolOutputModule",
     ])
 )
 
-
-
-
 from Configuration.AlCa.autoCond import autoCond
 if runOnData:
-  process.GlobalTag.globaltag = autoCond['run2_data']
-  # Spring16_25nsV6_DATA_AK4PFchs
-  #process.GlobalTag.globaltag = '80X_dataRun2_2016SeptRepro_v6'
+  process.GlobalTag.globaltag = '92X_dataRun2_Prompt_v9'#'92X_dataRun2_2017Repro_v4'#autoCond['run2_data']
 else:
-  process.GlobalTag.globaltag = autoCond['run2_mc']
-  # Summer16_25nsV5_MC_AK4PFchs
-  #process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v7'
+  process.GlobalTag.globaltag = '92X_upgrade2017_realistic_v11'#autoCond['run2_mc']
 
 if usePrivateSQlite:
     from CondCore.DBCommon.CondDBSetup_cfi import *
@@ -79,7 +70,6 @@ if usePrivateSQlite:
 
     process.jec = cms.ESSource("PoolDBESSource",CondDBSetup,
                                connect = cms.string( "frontier://FrontierProd/CMS_CONDITIONS"),
-                               #connect = cms.string( "frontier://FrontierPrep/CMS_COND_PHYSICSTOOLS"),
                                #connect = cms.string('sqlite:'+era+'.db'),
                                toGet =  cms.VPSet(
             cms.PSet(
@@ -96,11 +86,9 @@ if usePrivateSQlite:
                                )
     process.es_prefer_jec = cms.ESPrefer("PoolDBESSource",'jec')
 
-
 # e/gamma regression
 #process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
 #process.EGMenergyCorrection = cms.Path(process.regressionApplication)
-
 
 # met 
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
@@ -116,10 +104,7 @@ runMetCorAndUncFromMiniAOD(process,
 #                           pfCandColl=cms.InputTag("packedPFCandidates"),
 #                           recoMetFromPFCs=True,
 #                           )
-
-
 #process.p = cms.Path(process.fullPatMetSequence)
-
 
 # met filters
 process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
@@ -129,7 +114,5 @@ process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
 process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
 process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
 process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
-
-
 
 process.endpath= cms.EndPath(process.BadPFMuonFilter * process.BadChargedCandidateFilter * process.OUT)

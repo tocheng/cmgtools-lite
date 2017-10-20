@@ -60,19 +60,10 @@ zjets_scale='(1)'
 #zjets_scale="(1)"
 
 if channel=='mu':
-#    mc_scale='(1.02942)'
     zjets_scale='(1.03627471042)'
-#    if cutChain=='SR': zjets_scale='(0.960865)' # mc SR
-#    elif cutChain=='SRdPhiGT0p5': zjets_scale='(0.999113)' # mc SR
-#    else: zjets_scale='(1.03410)' # mc zpt50
 elif channel=='el':
-#    mc_scale='(1.02139)'
     zjets_scale='(1.04227778889)'
-#    if cutChain=='SR': zjets_scale='(1.01822)' # mc SR
-#    elif cutChain=='SRdPhiGT0p5': zjets_scale='(1.01265)' # mc SR
-#    else: zjets_scale='(1.03737)' # mc zpt50
 else:
-#    mc_scale='(1.02942)'
     zjets_scale='(1.03627471042)'
 
 # temp turn off mc_scale
@@ -105,13 +96,9 @@ if doGMCPhPtScale:
 
 
 outdir='plots'
-
-#indir='/home/heli/XZZ/80X_20170202_light_hlt_Skim/'
-#indir='/home/heli/XZZ/80X_20170202_light_hlt_RcSkim/'
 indir='/home/heli/XZZ/80X_20170202_light_hlt_allcorV2RcSkim/'
-#indir='/home/heli/XZZ/80X_20170202_light_hlt_allcorV2Skim/'
-#indir='/home/heli/XZZ/80X_20170202_light_Skim/'
 lumi=35.9
+
 sepSig=True
 doRatio=True
 Blind=options.Blind
@@ -225,6 +212,7 @@ if UseMETFilter:
 cuts += '&&(nbadmuon==0)' 
 
 cuts = '('+cuts+')'
+print cuts
 
 ROOT.gROOT.ProcessLine('.x tdrstyle.C') 
 
@@ -253,7 +241,7 @@ for sample in vvSamples:
     if sample == 'WZTo3LNu': vvPlotters[-1].addCorrectionFactor('4.4297','xsec') 
     else: vvPlotters[-1].addCorrectionFactor('xsec','xsec')
     if sample == 'ZZTo2L2Nu' : vvPlotters[-1].addCorrectionFactor("(ZZEwkCorrWeight*ZZQcdCorrWeight)", 'nnlo')
-    vvPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
+    vvPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1))');
     vvPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
     vvPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
 
@@ -341,19 +329,19 @@ else:
         mcnonresoPlotters[-1].addCorrectionFactor(puWeight,'puWeight')
         mcnonresoPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
         mcnonresoPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
-        mcnonresoPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
+        mcnonresoPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1))');
         mcnonresoPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
         mcnonresoPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
     
-    MCNONRESO = MergedPlotter(mcnonresoPlotters)
-    MCNONRESO.setFillProperties(1001,ROOT.kAzure-9)
+    NONRES = MergedPlotter(mcnonresoPlotters)
+    NONRES.setFillProperties(1001,ROOT.kAzure-9)
 
     # some plotting definition
-    MCNONRESO.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
-    MCNONRESO.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
-    MCNONRESO.setAlias('llnunu_MET', 'llnunu_l2_pt')
-    MCNONRESO.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
-    MCNONRESO.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
+    NONRES.setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
+    NONRES.setAlias('llnunu_l2_pt_to_plot', 'llnunu_l2_pt')
+    NONRES.setAlias('llnunu_MET', 'llnunu_l2_pt')
+    NONRES.setAlias('llnunu_l2_phi_to_plot', 'llnunu_l2_phi')
+    NONRES.setAlias('llnunu_mt_to_plot', 'llnunu_mt')
 
     for syst in ['JetEn','JetRes','MuonEn','ElectronEn','TauEn','PhotonEn','Uncluster','Recoil'] :
         NONRES.setAlias('llnunu_mT_'+syst+'Up', 'llnunu_mt')
@@ -397,7 +385,7 @@ if dyGJets :
     zjetsFidXsecLowLptEl = 459.14012486577632899
     zjetsFidXsecLowLptMu = 660.78150166340503802
 
-    gdataLumi=35.867*1000
+    gdataLumi=lumi*1000
     gdataFidXsec=gdataYield/gdataLumi
     zjetsFidXsecEl*=el_gjet_scale
     zjetsFidXsecMu*=mu_gjet_scale
@@ -542,7 +530,7 @@ else:
         mczjetsPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
         mczjetsPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
         mczjetsPlotters[-1].addCorrectionFactor(zjets_scale,'zjets_scale')
-        mczjetsPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
+        mczjetsPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1))');
         mczjetsPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
         mczjetsPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT') 
 
@@ -621,29 +609,36 @@ else:
 # Signal samples
 #####################
 
+'''
 sigSamples = [
-'BulkGravToZZToZlepZinv_narrow_600',
 'BulkGravToZZToZlepZinv_narrow_800',
+'BulkGravToZZToZlepZinv_narrow_900',
 'BulkGravToZZToZlepZinv_narrow_1000',
+'BulkGravToZZToZlepZinv_narrow_1100',
 'BulkGravToZZToZlepZinv_narrow_1200',
+'BulkGravToZZToZlepZinv_narrow_1300',
 'BulkGravToZZToZlepZinv_narrow_1400',
-'BulkGravToZZToZlepZinv_narrow_1600', 
-'BulkGravToZZToZlepZinv_narrow_1800', 
+'BulkGravToZZToZlepZinv_narrow_1500',
+'BulkGravToZZToZlepZinv_narrow_1600',
+'BulkGravToZZToZlepZinv_narrow_1800',
 'BulkGravToZZToZlepZinv_narrow_2000',
 'BulkGravToZZToZlepZinv_narrow_2500',
 'BulkGravToZZToZlepZinv_narrow_3000',
-'BulkGravToZZToZlepZinv_narrow_3500', 
-'BulkGravToZZToZlepZinv_narrow_4000', 
-'BulkGravToZZToZlepZinv_narrow_4500', 
+'BulkGravToZZToZlepZinv_narrow_3500',
+'BulkGravToZZToZlepZinv_narrow_4000',
+'BulkGravToZZToZlepZinv_narrow_4500',
 ]
 
 sigPlotters=[]
 sigSampleNames = {
-'BulkGravToZZToZlepZinv_narrow_600':str(k)+' x BulkG-600',
 'BulkGravToZZToZlepZinv_narrow_800':str(k)+' x BulkG-800',
+'BulkGravToZZToZlepZinv_narrow_900':str(k)+' x BulkG-900',
 'BulkGravToZZToZlepZinv_narrow_1000':str(k)+' x BulkG-1000',
+'BulkGravToZZToZlepZinv_narrow_1100':str(k)+' x BulkG-1100',
 'BulkGravToZZToZlepZinv_narrow_1200':str(k)+' x BulkG-1200',
+'BulkGravToZZToZlepZinv_narrow_1300':str(k)+' x BulkG-1300',
 'BulkGravToZZToZlepZinv_narrow_1400':str(k)+' x BulkG-1400',
+'BulkGravToZZToZlepZinv_narrow_1500':str(k)+' x BulkG-1500',
 'BulkGravToZZToZlepZinv_narrow_1600':str(k)+' x BulkG-1600',
 'BulkGravToZZToZlepZinv_narrow_1800':str(k)+' x BulkG-1800',
 'BulkGravToZZToZlepZinv_narrow_2000':str(k)+' x BulkG-2000',
@@ -655,11 +650,14 @@ sigSampleNames = {
 }
 
 BulkGZZ2l2nuXsec = {
-600:8.61578e-03,
 800:1.57965e-03,
+900:7.89276e-04,
 1000:4.21651e-04,
+1100:2.38382e-04,
 1200:1.39919e-04,
+1300:8.50521e-05,
 1400:5.32921e-05,
+1500:3.43731e-05,
 1600:2.24428e-05,
 1800:1.01523e-05,
 2000:4.86037e-06,
@@ -671,11 +669,14 @@ BulkGZZ2l2nuXsec = {
 }
 
 sigXsec = {
-'BulkGravToZZToZlepZinv_narrow_600'  : BulkGZZ2l2nuXsec[600]*k,
 'BulkGravToZZToZlepZinv_narrow_800'  : BulkGZZ2l2nuXsec[800]*k,
+'BulkGravToZZToZlepZinv_narrow_900'  : BulkGZZ2l2nuXsec[900]*k,
 'BulkGravToZZToZlepZinv_narrow_1000' : BulkGZZ2l2nuXsec[1000]*k,
+'BulkGravToZZToZlepZinv_narrow_1100' : BulkGZZ2l2nuXsec[1100]*k,
 'BulkGravToZZToZlepZinv_narrow_1200' : BulkGZZ2l2nuXsec[1200]*k,
+'BulkGravToZZToZlepZinv_narrow_1300' : BulkGZZ2l2nuXsec[1300]*k,
 'BulkGravToZZToZlepZinv_narrow_1400' : BulkGZZ2l2nuXsec[1400]*k,
+'BulkGravToZZToZlepZinv_narrow_1500' : BulkGZZ2l2nuXsec[1500]*k,
 'BulkGravToZZToZlepZinv_narrow_1600' : BulkGZZ2l2nuXsec[1600]*k,
 'BulkGravToZZToZlepZinv_narrow_1800' : BulkGZZ2l2nuXsec[1800]*k,
 'BulkGravToZZToZlepZinv_narrow_2000' : BulkGZZ2l2nuXsec[2000]*k,
@@ -684,6 +685,7 @@ sigXsec = {
 'BulkGravToZZToZlepZinv_narrow_3500' : BulkGZZ2l2nuXsec[3500]*k,
 'BulkGravToZZToZlepZinv_narrow_4000' : BulkGZZ2l2nuXsec[4000]*k,
 'BulkGravToZZToZlepZinv_narrow_4500' : BulkGZZ2l2nuXsec[4500]*k,
+
 }
 
 if SignalAll1pb:
@@ -700,7 +702,7 @@ for sample in sigSamples:
     sigPlotters[-1].addCorrectionFactor(lepsf,'lepsf')
     sigPlotters[-1].addCorrectionFactor(mc_scale,'mc_scale')
     sigPlotters[-1].setFillProperties(0,ROOT.kWhite)
-    sigPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
+		    sigPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
     sigPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
     sigPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
     sigPlotters[-1].setAlias('llnunu_l1_mass_to_plot', 'llnunu_l1_mass')
@@ -788,55 +790,191 @@ for sample in ggHSamples:
 Graviton2PBPlotters=[]
 
 Graviton2PBSamples = [
-'Graviton2PBqqbarToZZTo2L2Nu_width0_1200',    
-'Graviton2PBqqbarToZZTo2L2Nu_width0p2_1200',
-'Graviton2PBqqbarToZZTo2L2Nu_width0_2000',    
-'Graviton2PBqqbarToZZTo2L2Nu_width0p2_2000',
-'Graviton2PBqqbarToZZTo2L2Nu_width0_3000',   
-'Graviton2PBqqbarToZZTo2L2Nu_width0p2_3000',
-'Graviton2PBqqbarToZZTo2L2Nu_width0_4000',    
-'Graviton2PBqqbarToZZTo2L2Nu_width0p2_4000',
-'Graviton2PBqqbarToZZTo2L2Nu_width0_750',    
-'Graviton2PBqqbarToZZTo2L2Nu_width0p2_750',
-'Graviton2PBqqbarToZZTo2L2Nu_width0_800',     
-'Graviton2PBqqbarToZZTo2L2Nu_width0p2_800',
-'Graviton2PBqqbarToZZTo2L2Nu_width0p1_1200',  
-'Graviton2PBqqbarToZZTo2L2Nu_width0p3_1200',
-'Graviton2PBqqbarToZZTo2L2Nu_width0p1_2000',  
-'Graviton2PBqqbarToZZTo2L2Nu_width0p3_2000',
-'Graviton2PBqqbarToZZTo2L2Nu_width0p1_3000',  
-'Graviton2PBqqbarToZZTo2L2Nu_width0p3_3000',
-'Graviton2PBqqbarToZZTo2L2Nu_width0p1_4000',  
-'Graviton2PBqqbarToZZTo2L2Nu_width0p3_4000',
-'Graviton2PBqqbarToZZTo2L2Nu_width0p1_750',   
-'Graviton2PBqqbarToZZTo2L2Nu_width0p3_750',
-'Graviton2PBqqbarToZZTo2L2Nu_width0p1_800',   
-'Graviton2PBqqbarToZZTo2L2Nu_width0p3_800',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_200',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_300',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_400',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_500',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_600',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_700',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_750',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_800',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_900',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_1000',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_1100',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_1200',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_1300',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_1400',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_1500',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_1600',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_1800',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_2000',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_2500',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_3000',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_3500',
+'Graviton2PBqqbarToZZTo2L2Nu_width0_4000',
 
-'Graviton2PBToZZTo2L2Nu_width0_1200',   
-'Graviton2PBToZZTo2L2Nu_width0p1_3000',  
+
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_200',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_300',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_400',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_500',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_600',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_700',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_750',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_800',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_900',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_1000',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_1100',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_1200',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_1300',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_1400',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_1500',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_1600',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_1800',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_2000',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_2500',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_3000',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_3500',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p1_4000',
+
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_200',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_300',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_400',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_500',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_600',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_700',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_750',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_800',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_900',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_1000',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_1100',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_1200',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_1300',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_1400',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_1500',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_1600',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_1800',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_2000',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_2500',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_3000',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_3500',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p2_4000',
+
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_200',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_300',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_400',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_500',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_600',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_700',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_750',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_800',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_900',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_1000',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_1100',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_1200',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_1300',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_1400',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_1500',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_1600',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_1800',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_2000',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_2500',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_3000',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_3500',
+'Graviton2PBqqbarToZZTo2L2Nu_width0p3_4000',
+
+'Graviton2PBToZZTo2L2Nu_width0_200',
+'Graviton2PBToZZTo2L2Nu_width0_300',
+'Graviton2PBToZZTo2L2Nu_width0_400',
+'Graviton2PBToZZTo2L2Nu_width0_500',
+'Graviton2PBToZZTo2L2Nu_width0_600',
+'Graviton2PBToZZTo2L2Nu_width0_700',
+'Graviton2PBToZZTo2L2Nu_width0_750',
+'Graviton2PBToZZTo2L2Nu_width0_800',
+'Graviton2PBToZZTo2L2Nu_width0_900',
+'Graviton2PBToZZTo2L2Nu_width0_1000',
+'Graviton2PBToZZTo2L2Nu_width0_1100',
+'Graviton2PBToZZTo2L2Nu_width0_1200',
+'Graviton2PBToZZTo2L2Nu_width0_1300',
+'Graviton2PBToZZTo2L2Nu_width0_1400',
+'Graviton2PBToZZTo2L2Nu_width0_1500',
+'Graviton2PBToZZTo2L2Nu_width0_1600',
+'Graviton2PBToZZTo2L2Nu_width0_1800',
+'Graviton2PBToZZTo2L2Nu_width0_2000',
+'Graviton2PBToZZTo2L2Nu_width0_2500',
+'Graviton2PBToZZTo2L2Nu_width0_3000',
+'Graviton2PBToZZTo2L2Nu_width0_3500',
+'Graviton2PBToZZTo2L2Nu_width0_4000',
+
+'Graviton2PBToZZTo2L2Nu_width0p1_200',
+'Graviton2PBToZZTo2L2Nu_width0p1_300',
+'Graviton2PBToZZTo2L2Nu_width0p1_400',
+'Graviton2PBToZZTo2L2Nu_width0p1_500',
+'Graviton2PBToZZTo2L2Nu_width0p1_600',
+'Graviton2PBToZZTo2L2Nu_width0p1_700',
+'Graviton2PBToZZTo2L2Nu_width0p1_750',
+'Graviton2PBToZZTo2L2Nu_width0p1_800',
+'Graviton2PBToZZTo2L2Nu_width0p1_900',
+'Graviton2PBToZZTo2L2Nu_width0p1_1000',
+'Graviton2PBToZZTo2L2Nu_width0p1_1100',
+'Graviton2PBToZZTo2L2Nu_width0p1_1200',
+'Graviton2PBToZZTo2L2Nu_width0p1_1300',
+'Graviton2PBToZZTo2L2Nu_width0p1_1400',
+'Graviton2PBToZZTo2L2Nu_width0p1_1500',
+'Graviton2PBToZZTo2L2Nu_width0p1_1600',
+'Graviton2PBToZZTo2L2Nu_width0p1_1800',
+'Graviton2PBToZZTo2L2Nu_width0p1_2000',
+'Graviton2PBToZZTo2L2Nu_width0p1_2500',
+'Graviton2PBToZZTo2L2Nu_width0p1_3000',
+'Graviton2PBToZZTo2L2Nu_width0p1_3500',
+'Graviton2PBToZZTo2L2Nu_width0p1_4000',
+
+'Graviton2PBToZZTo2L2Nu_width0p2_200',
+'Graviton2PBToZZTo2L2Nu_width0p2_300',
+'Graviton2PBToZZTo2L2Nu_width0p2_400',
+'Graviton2PBToZZTo2L2Nu_width0p2_500',
+'Graviton2PBToZZTo2L2Nu_width0p2_600',
+'Graviton2PBToZZTo2L2Nu_width0p2_700',
 'Graviton2PBToZZTo2L2Nu_width0p2_750',
-'Graviton2PBToZZTo2L2Nu_width0_2000',    
-'Graviton2PBToZZTo2L2Nu_width0p1_4000',  
 'Graviton2PBToZZTo2L2Nu_width0p2_800',
-'Graviton2PBToZZTo2L2Nu_width0_3000',    
-'Graviton2PBToZZTo2L2Nu_width0p1_750',   
-'Graviton2PBToZZTo2L2Nu_width0p3_1200',
-'Graviton2PBToZZTo2L2Nu_width0_4000',    
-'Graviton2PBToZZTo2L2Nu_width0p1_800',   
-'Graviton2PBToZZTo2L2Nu_width0p3_2000',
-'Graviton2PBToZZTo2L2Nu_width0_750',     
-'Graviton2PBToZZTo2L2Nu_width0p2_1200',  
-'Graviton2PBToZZTo2L2Nu_width0p3_3000',
-'Graviton2PBToZZTo2L2Nu_width0_800',     
-'Graviton2PBToZZTo2L2Nu_width0p2_2000',  
-'Graviton2PBToZZTo2L2Nu_width0p3_4000',
-'Graviton2PBToZZTo2L2Nu_width0p1_1200',  
-'Graviton2PBToZZTo2L2Nu_width0p2_3000',  
+'Graviton2PBToZZTo2L2Nu_width0p2_900',
+'Graviton2PBToZZTo2L2Nu_width0p2_1000',
+'Graviton2PBToZZTo2L2Nu_width0p2_1100',
+'Graviton2PBToZZTo2L2Nu_width0p2_1200',
+'Graviton2PBToZZTo2L2Nu_width0p2_1300',
+'Graviton2PBToZZTo2L2Nu_width0p2_1400',
+'Graviton2PBToZZTo2L2Nu_width0p2_1500',
+'Graviton2PBToZZTo2L2Nu_width0p2_1600',
+'Graviton2PBToZZTo2L2Nu_width0p2_1800',
+'Graviton2PBToZZTo2L2Nu_width0p2_2000',
+'Graviton2PBToZZTo2L2Nu_width0p2_2500',
+'Graviton2PBToZZTo2L2Nu_width0p2_3000',
+'Graviton2PBToZZTo2L2Nu_width0p2_3500',
+'Graviton2PBToZZTo2L2Nu_width0p2_4000',
+
+'Graviton2PBToZZTo2L2Nu_width0p3_200',
+'Graviton2PBToZZTo2L2Nu_width0p3_300',
+'Graviton2PBToZZTo2L2Nu_width0p3_400',
+'Graviton2PBToZZTo2L2Nu_width0p3_500',
+'Graviton2PBToZZTo2L2Nu_width0p3_600',
+'Graviton2PBToZZTo2L2Nu_width0p3_700',
 'Graviton2PBToZZTo2L2Nu_width0p3_750',
-'Graviton2PBToZZTo2L2Nu_width0p1_2000', 
-'Graviton2PBToZZTo2L2Nu_width0p2_4000',  
-'Graviton2PBToZZTo2L2Nu_width0p3_800'
+'Graviton2PBToZZTo2L2Nu_width0p3_800',
+'Graviton2PBToZZTo2L2Nu_width0p3_900',
+'Graviton2PBToZZTo2L2Nu_width0p3_1000',
+'Graviton2PBToZZTo2L2Nu_width0p3_1100',
+'Graviton2PBToZZTo2L2Nu_width0p3_1200',
+'Graviton2PBToZZTo2L2Nu_width0p3_1300',
+'Graviton2PBToZZTo2L2Nu_width0p3_1400',
+'Graviton2PBToZZTo2L2Nu_width0p3_1500',
+'Graviton2PBToZZTo2L2Nu_width0p3_1600',
+'Graviton2PBToZZTo2L2Nu_width0p3_1800',
+'Graviton2PBToZZTo2L2Nu_width0p3_2000',
+'Graviton2PBToZZTo2L2Nu_width0p3_2500',
+'Graviton2PBToZZTo2L2Nu_width0p3_3000',
+'Graviton2PBToZZTo2L2Nu_width0p3_3500',
+'Graviton2PBToZZTo2L2Nu_width0p3_4000',
+
 ]
 
 for sample in Graviton2PBSamples:
@@ -867,21 +1005,36 @@ for sample in Graviton2PBSamples:
     Graviton2PBPlotters[-1].setAlias('llnunu_mT_RecoilUp', 'llnunu_mt')
     Graviton2PBPlotters[-1].setAlias('llnunu_mT_RecoilDn', 'llnunu_mt')
 
+'''
+
 ##########################
 # Data Observed
 ##########################
 
 dataSamples = [
-'SingleEMU_Run2016Full_03Feb2017_allcorV2',
-#'SingleEMU_Run2016Full_03Feb2017_v0',
-#'SingleEMU_Run2016Full_ReReco_v2_DtReCalib',
-#'SingleEMU_Run2016Full_ReReco_v2',
+
+'SingleElectron_Run2017C_PromptReco_v1',
+'SingleElectron_Run2017C_PromptReco_v2',
+'SingleElectron_Run2017C_PromptReco_v3',
+'SingleElectron_Run2017D_PromptReco_v1',
+
+#'SingleMuon_Run2017B_PromptReco_v1',
+#'SingleMuon_Run2017B_PromptReco_v2',
+
+'SingleMuon_Run2017C_PromptReco_v1',
+'SingleMuon_Run2017C_PromptReco_v2',
+'SingleMuon_Run2017C_PromptReco_v3',
+'SingleMuon_Run2017D_PromptReco_v1'
+
+#'SingleEMU_Run2016Full_03Feb2017_allcorV2',
+
 ]
 
 dataPlotters=[]
 for sample in dataSamples:
-    dataPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
-    dataPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l1_trigerob_HLTbit>>4&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>4&1))');
+    dataPlotters.append(TreePlotter(sample, '/afs/cern.ch/work/t/tocheng/Heppy/Heppy2017/Data2017/'+sample+'.root','tree')) 
+    #dataPlotters.append(TreePlotter(sample, indir+'/'+sample+'.root','tree'))
+    dataPlotters[-1].setAlias('passMuHLT', '((llnunu_l1_l1_trigerob_HLTbit>>3&1)||(llnunu_l1_l2_trigerob_HLTbit>>3&1))');
     dataPlotters[-1].setAlias('passElHLT', '((llnunu_l1_l1_trigerob_HLTbit>>1&1)||(llnunu_l1_l2_trigerob_HLTbit>>1&1))');
     dataPlotters[-1].addCorrectionFactor('(passMuHLT||passElHLT)','HLT')
 
@@ -913,14 +1066,16 @@ Stack.addPlotter(Data, "data_obs", "Data", "data")
 if muoneg: 
     Stack.addPlotter(NONRES, "NonReso","Non-reson. (e#mu data)", "background")
 else:
-    Stack.addPlotter(WW, "NonReso","WW/WZ/WJets non-reson.", "background")
-    Stack.addPlotter(TT, "TT","TT", "background")
+    Stack.addPlotter(NONRES, "NonReso","TT/WW/WZ/WJets non-reson.", "background")
+
 Stack.addPlotter(VV, "VVZReso","ZZ WZ reson.", "background")
+
 if dyGJets: 
     Stack.addPlotter(ZJets, "ZJets","ZJets(#gamma+Jets data)", "background")
 else: 
     Stack.addPlotter(ZJets, "ZJets","ZJets(MC)", "background")
 
+'''
 for i in range(len(sigSamples)):
   sigPlotters[i].setLineProperties(2,ROOT.kRed+i,2)
   Stack.addPlotter(sigPlotters[i],sigSamples[i],sigSampleNames[sigSamples[i]],'signal')  
@@ -932,6 +1087,7 @@ for i in range(len(ggHSamples)):
 for i in range(len(Graviton2PBSamples)):
   Graviton2PBPlotters[i].setLineProperties(2,ROOT.kGreen+i,2)
   Stack.addPlotter(Graviton2PBPlotters[i],Graviton2PBSamples[i],Graviton2PBSamples[i],'signal')
+'''
 
 Stack.setLog(LogY)
 Stack.doRatio(doRatio)
@@ -948,9 +1104,21 @@ metMax=1500
 
 Stack.drawStack('llnunu_mT', cuts, str(lumi*1000), nBins, mtMin, mtMax, titlex = "M_{T}", units = "GeV",output='mT',outDir=outdir,separateSignal=sepSig, blinding=Blind,blindingCut=300)
 
-Stack.drawStack('llnunu_MET', cuts, str(lumi*1000), metnBins, metMin, metMax, titlex = "E_{T}^{miss}", units = "GeV",output='MET',outDir=outdir,separateSignal=sepSig, blinding=Blind,blindingCut=300)
+Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 40, -200, 200.0, titlex = "E_{T#parallel}^{miss}", units = "GeV",output='met_para',outDir=outdir,separateSignal=sepSig)
+Stack.drawStack('llnunu_l2_pt_to_plot*sin(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 40, -200, 200.0, titlex = "E_{T#perp}^{miss}", units = "GeV",output=tag+'met_perp',outDir=outdir,separateSignal=sepSig)
 
-Stack.drawStack('llnunu_l2_pt_to_plot*cos(llnunu_l2_phi_to_plot-llnunu_l1_phi)', cuts, str(lumi*1000), 50, -500, 500.0, titlex = "E_{T#parallel}^{miss}", units = "GeV",output='met_para',outDir=outdir,separateSignal=sepSig)
+Stack.drawStack('llnunu_l1_mass_to_plot', cuts, str(lumi*1000), 20, 70, 110, titlex = "M(Z)", units = "GeV",output=tag+'zmass_smbin',outDir=outdir,separateSignal=sepSig)
+
+Stack.drawStack('llnunu_l1_l1_pt', cuts, str(lumi*1000), 25, 0, 500, titlex = "PT_{l1}", units = "GeV",output='ptl1',outDir=outdir,separateSignal=sepSig)
+Stack.drawStack('llnunu_l1_l2_pt', cuts, str(lumi*1000), 25, 0, 500, titlex = "PT_{l2}", units = "GeV",output='ptl2',outDir=outdir,separateSignal=sepSig)
+
+Stack.drawStack('llnunu_l1_l1_eta', cuts, str(lumi*1000), 25,-2.5,2.5, titlex = "#eta_{l1}", units = "",output='etal1',outDir=outdir,separateSignal=sepSig)
+Stack.drawStack('llnunu_l1_l2_eta', cuts, str(lumi*1000), 25,-2.5,2.5, titlex = "#eta_{l2}", units = "",output='etal2',outDir=outdir,separateSignal=sepSig)
+
+Stack.drawStack('llnunu_l1_l1_phi', cuts, str(lumi*1000), 32,-3.2,3.2, titlex = "#phi_{l1}", units = "",output='phil1',outDir=outdir,separateSignal=sepSig)
+Stack.drawStack('llnunu_l1_l2_phi', cuts, str(lumi*1000), 32,-3.2,3.2, titlex = "#phi_{l2}", units = "",output='phil2',outDir=outdir,separateSignal=sepSig)
+
+Stack.drawStack('sqrt((llnunu_l1_l1_eta-llnunu_l1_l2_eta)*(llnunu_l1_l1_eta-llnunu_l1_l2_eta)+(abs(llnunu_l1_l1_phi-llnunu_l1_l2_phi)*(abs(llnunu_l1_l1_phi-llnunu_l1_l2_phi)<=6.283)+(abs(llnunu_l1_l1_phi-llnunu_l1_l2_phi)-6.283)*(abs(llnunu_l1_l1_phi-llnunu_l1_l2_phi)>=6.283))*(abs(llnunu_l1_l1_phi-llnunu_l1_l2_phi)*(abs(llnunu_l1_l1_phi-llnunu_l1_l2_phi)<=6.283)+(abs(llnunu_l1_l1_phi-llnunu_l1_l2_phi)-6.283)*(abs(llnunu_l1_l1_phi-llnunu_l1_l2_phi)>=6.283)))', cuts, str(lumi*1000), 50, 0, 10, titlex = "#deltaR_{l1l2}", units = "",output='dRl1l2',outDir=outdir,separateSignal=sepSig)
 
 if(not doSys) :
   Stack.drawStack('llnunu_l2_pt_to_plot', cuts, str(lumi*1000), metnBins, metMin, metMax, titlex = "E_{T}^{miss}", units = "GeV",output='met',outDir=outdir,separateSignal=sepSig,blinding=Blind,blindingCut=200)

@@ -3,6 +3,7 @@
 dir=$1
 queue="1nd"
 
+
 #n1=`rootls ${dd}/*/*.root | grep root | wc -l`;
 #n2=`ls -l ${dd}/* | grep pck |wc -l`;
 
@@ -27,21 +28,12 @@ do
     else 
       if [ ! -f $dd/vvTreeProducer/tree.root.url ];
       then
-         rr=`bjobs -o "name" -J ${dd} | grep -v JOB_NAME | grep ${dd}`;
-         if [ "$rr" == "$dd" ];
-         then
-            echo "  job $dd is still running";
-         else
-           echo "job $dir/$dd needs to resubmit";
+           echo "  job $dd needs to resubmit";
            cd $dd;
-           #echo "  bsub -q $queue -J $dd  < batchScript.sh" ;
-           rm cmsRun*
-           rm *.log
-           rm -rf LSF*
-           rm -rf Loop*
-           bsub -q $queue -J $dd  < batchScript.sh &
+
+           python $CMSSW_BASE/src/PhysicsTools/HeppyCore/python/framework/looper.py pycfg.py config.pck --options=options.json > ${dd}.log 2>&1 &
+
            cd -
-         fi
       fi;
     fi;
 
