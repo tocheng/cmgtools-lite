@@ -178,7 +178,7 @@ class ComponentCreator(object):
         ds = createDataset( user, dataset, pattern, readcache=True, run_range=run_range, json=json )
         files = ds.listOfGoodFiles()
         mapping = 'root://eoscms.cern.ch//eos/cms%s'
-        if useAAA: mapping = 'root://cms-xrd-global.cern.ch/%s'
+        if useAAA: mapping = 'root://cmseos.fnal.gov/%s'#'root://cms-xrd-global.cern.ch/%s'
         return [ mapping % f for f in files]
 
     def getPrimaryDatasetEntries(self, dataset, user, pattern, useAAA=False, run_range=None):
@@ -191,7 +191,7 @@ class ComponentCreator(object):
         ds = createMyDataset( user, dataset, pattern, dbsInstance, True )
         files = ds.listOfGoodFiles()
         mapping = 'root://eoscms.cern.ch//eos/cms%s'
-        if useAAA: mapping = 'root://cms-xrd-global.cern.ch/%s'
+        if useAAA: mapping = 'root://cmseos.fnal.gov/%s'
         return [ mapping % f for f in files]
 
     def getSkimEfficiency(self,dataset,user):
@@ -214,7 +214,7 @@ def testSamples(mcSamples, allowAAA=False):
             fail = True
             if allowAAA:
                 try:
-                    newfile = convertFile(X.files[0], "root://cms-xrd-global.cern.ch/%s")
+                    newfile = convertFile(X.files[0], "root://cmseos.fnal.gov/%s")
                     if newfile != X.files[0]:
                         if "events" in check_output(["edmFileUtil","--ls",newfile]):
                             print "yes, but only via AAA"
