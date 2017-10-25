@@ -1,0 +1,37 @@
+
+Contact: Hengne Li, lihengne@gmail.com
+
+Modify plots.
+
+ZPT:
+  ee:  drawZPT_ee.C 
+  mm:  drawZPT_mm.C
+
+MET:
+  ee:  drawMET_ee.C 
+  mm:  drawMET_mm.C 
+
+MT:
+  ee:  drawMT_ee.C  
+  mm:  drawMT_mm.C  
+
+Limits:
+
+  narrow width ee+mm: draw_Limits_eemm.C
+  narrow width ee:    draw_Limits_ee.C
+  narrow width mm:    draw_Limits_mm.C
+
+  wide width ggG: draw_Limits_ggG.C
+  wide width qqG: draw_Limits_qqG.C
+
+Just run the macros, eg: 
+
+  root -l drawZPT_mm.C
+
+A updated plot will be printed, eg:
+
+  updated_zpt_mm.pdf
+
+
+
+
