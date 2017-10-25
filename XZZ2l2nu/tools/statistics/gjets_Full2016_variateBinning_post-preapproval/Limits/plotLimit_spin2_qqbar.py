@@ -241,40 +241,47 @@ def plotLimit(parser):
     dummy.Draw()
 
     gr_exp2 = TGraphAsymmErrors(v_mass,v_exp,v_zeros,v_zeros,v_exp_m2,v_exp_p2)
+    gr_exp2.SetName("gr_exp2")
     gr_exp2.SetLineColor(kOrange)
     gr_exp2.SetFillColor(kOrange)
     gr_exp2.Draw("e3same")
 
     gr_exp1 = TGraphAsymmErrors(v_mass,v_exp,v_zeros,v_zeros,v_exp_m1,v_exp_p1)
+    gr_exp1.SetName("gr_exp1")
     gr_exp1.SetLineColor(kGreen+1)
     gr_exp1.SetFillColor(kGreen+1)
     gr_exp1.Draw("e3same")
 
     gr_exp = TGraphAsymmErrors(v_mass,v_exp,v_zeros,v_zeros,v_zeros,v_zeros)
+    gr_exp.SetName("gr_exp")
     gr_exp.SetLineColor(1)
     gr_exp.SetLineWidth(2)
     gr_exp.SetLineStyle(2)
     gr_exp.Draw("csame")
 
     gr_obs = TGraphAsymmErrors(v_mass,v_obs,v_zeros,v_zeros,v_zeros,v_zeros)
+    gr_obs.SetName("gr_obs")
     gr_obs.SetLineColor(1)
     gr_obs.SetLineWidth(3)
     gr_obs.SetMarkerStyle(20)
     if unblind: gr_obs.Draw("plsame")
 
     gr_exp_0p1 = TGraphAsymmErrors(v_mass,v_exp_0p1,v_zeros,v_zeros,v_zeros,v_zeros)
+    gr_exp_0p1.SetName("gr_exp_0p1")
     gr_exp_0p1.SetLineColor(kRed)
     gr_exp_0p1.SetLineWidth(2)
     gr_exp_0p1.SetLineStyle(2)
     gr_exp_0p1.Draw("csame")
 
     gr_exp_0p2 = TGraphAsymmErrors(v_mass,v_exp_0p2,v_zeros,v_zeros,v_zeros,v_zeros)
+    gr_exp_0p2.SetName("gr_exp_0p2")
     gr_exp_0p2.SetLineColor(kBlue)
     gr_exp_0p2.SetLineWidth(2)
     gr_exp_0p2.SetLineStyle(2)
     gr_exp_0p2.Draw("csame")
 
     gr_exp_0p3 = TGraphAsymmErrors(v_mass,v_exp_0p3,v_zeros,v_zeros,v_zeros,v_zeros)
+    gr_exp_0p3.SetName("gr_exp_0p3")
     gr_exp_0p3.SetLineColor(kViolet+2)
     gr_exp_0p3.SetLineWidth(2)
     gr_exp_0p3.SetLineStyle(2)
@@ -309,7 +316,7 @@ def plotLimit(parser):
     index=0
     for k in ['0.5','0.1']:
       sigXsec[k] = ROOT.TGraphErrors()
-      sigXsec[k].SetName("sigXsec_k"+k)
+      sigXsec[k].SetName("sigXsec_k"+k.replace(".","p"))
 
       N = 0
       for mass in BulkGZZ2l2nuXsec[k].keys():
@@ -329,6 +336,7 @@ def plotLimit(parser):
       index=index+1
 
     legend0 = TLegend(.5,.81,.90,.90)
+    legend0.SetName("legend0")
     legend0.SetHeader("95% CL upper limits: qqG")
     legend0.SetShadowColor(0)
     legend0.SetFillColor(0)
@@ -339,6 +347,7 @@ def plotLimit(parser):
         legend0.Draw("same")
 
     legend = TLegend(.5,.57,.90,.80)
+    legend.SetName("legend")
     legend.SetHeader("Median expected:")
     legend.AddEntry(gr_exp , "width = 0 GeV", "l")
     legend.AddEntry(gr_exp_0p1 , "width = 0.1#timesm_{X}", "l")
@@ -353,6 +362,7 @@ def plotLimit(parser):
     legend.Draw("same")
 
     legend1 = TLegend(0.5,0.45,0.90,0.56)
+    legend1.SetName("legend1")
     legend1.SetHeader("BulkG #rightarrow ZZ cross-sections")
     for k in ['0.5','0.1']:
         legend1.AddEntry(sigXsec[k] , "#tilde{k} = "+k, "l")
@@ -370,10 +380,12 @@ def plotLimit(parser):
         c.SaveAs(tag+"_xzz2l2nu_limit_13TeV_"+cut+"_qqG_unblind.pdf")
         c.SaveAs(tag+"_xzz2l2nu_limit_13TeV_"+cut+"_qqG_unblind.png")
         c.SaveAs(tag+"_xzz2l2nu_limit_13TeV_"+cut+"_qqG_unblind.C")
+        c.SaveAs(tag+"_xzz2l2nu_limit_13TeV_"+cut+"_qqG_unblind.root")
     else:
         c.SaveAs(tag+"_xzz2l2nu_limit_13TeV_"+cut+"_qqG.pdf")
         c.SaveAs(tag+"_xzz2l2nu_limit_13TeV_"+cut+"_qqG.png")
         c.SaveAs(tag+"_xzz2l2nu_limit_13TeV_"+cut+"_qqG.C")
+        c.SaveAs(tag+"_xzz2l2nu_limit_13TeV_"+cut+"_qqG.root")
 
     ## ee mm compatibility
     c2 = TCanvas("c2","c2",800, 800)
@@ -473,10 +485,12 @@ def plotLimit(parser):
         c2.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee+mm_"+cut+"_qqG_unblind.pdf")
         c2.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee+mm_"+cut+"_qqG_unbiind.png")
         c2.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee+mm_"+cut+"_qqG_unbiind.C")
+        c2.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee+mm_"+cut+"_qqG_unbiind.root")
     else:
         c2.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee+mm_"+cut+"_qqG.pdf")
         c2.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee+mm_"+cut+"_qqG.png")
         c2.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee+mm_"+cut+"_qqG.C")
+        c2.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee+mm_"+cut+"_qqG.root")
 
     ## ee only
     c3 = TCanvas("c3","c3",800, 800)
@@ -516,10 +530,12 @@ def plotLimit(parser):
         c3.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee_"+cut+"_qqG_unblind.pdf")
         c3.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee_"+cut+"_qqG_unbiind.png")
         c3.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee_"+cut+"_qqG_unbiind.C")
+        c3.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee_"+cut+"_qqG_unbiind.root")
     else:
         c3.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee_"+cut+"_qqG.pdf")
         c3.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee_"+cut+"_qqG.png")
         c3.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee_"+cut+"_qqG.C")
+        c3.SaveAs(tag+"_xzz2l2nu_limit_13TeV_ee_"+cut+"_qqG.root")
 
     ## mm only
     c4 = TCanvas("c4","c4",800, 800)
@@ -558,10 +574,12 @@ def plotLimit(parser):
         c4.SaveAs(tag+"_xzz2l2nu_limit_13TeV_mm_"+cut+"_qqG_unblind.pdf")
         c4.SaveAs(tag+"_xzz2l2nu_limit_13TeV_mm_"+cut+"_qqG_unbiind.png")
         c4.SaveAs(tag+"_xzz2l2nu_limit_13TeV_mm_"+cut+"_qqG_unbiind.C")
+        c4.SaveAs(tag+"_xzz2l2nu_limit_13TeV_mm_"+cut+"_qqG_unbiind.root")
     else:
         c4.SaveAs(tag+"_xzz2l2nu_limit_13TeV_mm_"+cut+"_qqG.pdf")
         c4.SaveAs(tag+"_xzz2l2nu_limit_13TeV_mm_"+cut+"_qqG.png")
         c4.SaveAs(tag+"_xzz2l2nu_limit_13TeV_mm_"+cut+"_qqG.C")
+        c4.SaveAs(tag+"_xzz2l2nu_limit_13TeV_mm_"+cut+"_qqG.root")
 
 def Run():
 
