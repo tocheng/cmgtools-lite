@@ -1,0 +1,92 @@
+imax 1
+jmax 3
+kmax *
+------------
+shapes * * mX2500ZZ2l2nu_ee_SRdPhiGT0p5.root $PROCESS $PROCESS_$SYSTEMATIC 
+------------
+bin ee_SRdPhiGT0p5 
+observation 9336.0 
+------------
+bin ee_SRdPhiGT0p5 ee_SRdPhiGT0p5 ee_SRdPhiGT0p5 ee_SRdPhiGT0p5 
+process xzz2500 zjets vvreso nonreso 
+process 0 1 2 3 
+rate 12380.1443 8666.1039 650.8595 265.6035 
+------------
+# norm uncertainty 
+lumi_13TeV lnN 1.025 1.025 1.025 1.025 
+pdf_xsec         lnN    -           1.023   1.017           - 
+qcd_xsec         lnN    -           1.035   1.030           - 
+pdf_accept       lnN    1.01        1.034    1.01           -  
+qcd_accept       lnN    -           1.227    1.029  -  
+trgel shapeN2 1.0 - 1.0 - 
+idel shapeN2 1.0 - 1.0 - 
+qcd shapeN2 - - 1.0 - 
+ewk shapeN2 - - 1.0 - 
+trkEff lnN -  -  -  - 
+#non-res syst unc 
+nonresel lnN  - - - 1.1
+#MET-induced MT unc 
+JetEn shapeN2 1.0 - 1.0 - 
+JetRes shapeN2 1.0 - 1.0 - 
+MuonEn shapeN2 1.0 - 1.0 - 
+ElectronEn shapeN2 1.0 - 1.0 - 
+PhotonEn shapeN2 1.0 - 1.0 - 
+Uncluster shapeN2 1.0 - 1.0 - 
+# photon+jets zpt reweight uncertainty 
+fidxsecel shapeN2 - 0.5 - - 
+zjetsRecoil shapeN2 - 0.5 - - 
+#Stat unc 
+zjetsStatUncBin1SRdPhiGT0p5 shapeN2 - 1.0 - - 
+vvresoStatUncBin1SRdPhiGT0p5el shapeN2 - - 1.0 - 
+nonresoStatUncBin1SRdPhiGT0p5 shapeN2 - - - 1.0 
+zjetsStatUncBin2SRdPhiGT0p5 shapeN2 - 1.0 - - 
+vvresoStatUncBin2SRdPhiGT0p5el shapeN2 - - 1.0 - 
+nonresoStatUncBin2SRdPhiGT0p5 shapeN2 - - - 1.0 
+zjetsStatUncBin3SRdPhiGT0p5 shapeN2 - 1.0 - - 
+vvresoStatUncBin3SRdPhiGT0p5el shapeN2 - - 1.0 - 
+nonresoStatUncBin3SRdPhiGT0p5 shapeN2 - - - 1.0 
+zjetsStatUncBin4SRdPhiGT0p5 shapeN2 - 1.0 - - 
+vvresoStatUncBin4SRdPhiGT0p5el shapeN2 - - 1.0 - 
+nonresoStatUncBin4SRdPhiGT0p5 shapeN2 - - - 1.0 
+zjetsStatUncBin5SRdPhiGT0p5 shapeN2 - 1.0 - - 
+vvresoStatUncBin5SRdPhiGT0p5el shapeN2 - - 1.0 - 
+nonresoStatUncBin5SRdPhiGT0p5 shapeN2 - - - 1.0 
+zjetsStatUncBin6SRdPhiGT0p5 shapeN2 - 1.0 - - 
+vvresoStatUncBin6SRdPhiGT0p5el shapeN2 - - 1.0 - 
+nonresoStatUncBin6SRdPhiGT0p5 shapeN2 - - - 1.0 
+zjetsStatUncBin7SRdPhiGT0p5 shapeN2 - 1.0 - - 
+vvresoStatUncBin7SRdPhiGT0p5el shapeN2 - - 1.0 - 
+nonresoStatUncBin7SRdPhiGT0p5 shapeN2 - - - 1.0 
+zjetsStatUncBin8SRdPhiGT0p5 shapeN2 - 1.0 - - 
+vvresoStatUncBin8SRdPhiGT0p5el shapeN2 - - 1.0 - 
+nonresoStatUncBin8SRdPhiGT0p5 shapeN2 - - - 1.0 
+zjetsStatUncBin9SRdPhiGT0p5 shapeN2 - 1.0 - - 
+vvresoStatUncBin9SRdPhiGT0p5el shapeN2 - - 1.0 - 
+nonresoStatUncBin9SRdPhiGT0p5 shapeN2 - - - 1.0 
+zjetsStatUncBin10SRdPhiGT0p5 shapeN2 - 1.0 - - 
+vvresoStatUncBin10SRdPhiGT0p5el shapeN2 - - 1.0 - 
+nonresoStatUncBin10SRdPhiGT0p5 shapeN2 - - - 1.0 
+zjetsStatUncBin11SRdPhiGT0p5 shapeN2 - 1.0 - - 
+vvresoStatUncBin11SRdPhiGT0p5el shapeN2 - - 1.0 - 
+nonresoStatUncBin11SRdPhiGT0p5 shapeN2 - - - 1.0 
+zjetsStatUncBin12SRdPhiGT0p5 shapeN2 - 1.0 - - 
+vvresoStatUncBin12SRdPhiGT0p5el shapeN2 - - 1.0 - 
+nonresoStatUncBin12SRdPhiGT0p5 shapeN2 - - - 1.0 
+zjetsStatUncBin13SRdPhiGT0p5 shapeN2 - 1.0 - - 
+vvresoStatUncBin13SRdPhiGT0p5el shapeN2 - - 1.0 - 
+nonresoStatUncBin13SRdPhiGT0p5 shapeN2 - - - 1.0 
+zjetsStatUncBin14SRdPhiGT0p5 shapeN2 - 1.0 - - 
+vvresoStatUncBin14SRdPhiGT0p5el shapeN2 - - 1.0 - 
+nonresoStatUncBin14SRdPhiGT0p5 shapeN2 - - - 1.0 
+zjetsStatUncBin15SRdPhiGT0p5 shapeN2 - 1.0 - - 
+vvresoStatUncBin15SRdPhiGT0p5el shapeN2 - - 1.0 - 
+nonresoStatUncBin15SRdPhiGT0p5 shapeN2 - - - 1.0 
+zjetsStatUncBin16SRdPhiGT0p5 shapeN2 - 1.0 - - 
+vvresoStatUncBin16SRdPhiGT0p5el shapeN2 - - 1.0 - 
+nonresoStatUncBin16SRdPhiGT0p5 shapeN2 - - - 1.0 
+zjetsStatUncBin17SRdPhiGT0p5 shapeN2 - 1.0 - - 
+vvresoStatUncBin17SRdPhiGT0p5el shapeN2 - - 1.0 - 
+nonresoStatUncBin17SRdPhiGT0p5 shapeN2 - - - 1.0 
+zjetsStatUncBin18SRdPhiGT0p5 shapeN2 - 1.0 - - 
+vvresoStatUncBin18SRdPhiGT0p5el shapeN2 - - 1.0 - 
+nonresoStatUncBin18SRdPhiGT0p5 shapeN2 - - - 1.0 
