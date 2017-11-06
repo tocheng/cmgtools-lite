@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
 runOnData=False
-usePrivateSQlite=True
+usePrivateSQlite=False
 
 process = cms.Process("NEW")
 
@@ -33,41 +33,24 @@ process.options = cms.untracked.PSet(
 
 # How many events to process
 process.maxEvents = cms.untracked.PSet( 
-   input = cms.untracked.int32(100)
+   input = cms.untracked.int32(-1)
 )
 
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-#        'root://eoscms.cern.ch//eos/cms/store/mc/RunIISpring16MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/00000/02404626-C64D-E611-9744-485B39897231.root'
-         'root://eoscms.cern.ch//eos/cms/store/mc/RunIISummer16MiniAODv2/BulkGravToZZToZlepZinv_narrow_M-1000_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/80000/98AD845E-23B7-E611-B336-141877637B68.root'
     )
 )
-
-process.OUT = cms.OutputModule("PoolOutputModule",
-    fileName = cms.untracked.string('test.root'),
-    outputCommands = cms.untracked.vstring(['drop *', 
-                'keep *_slimmedMETs_*_NEW',
-                'keep *_TriggerResults_*_NEW',
-#                'keep *_slimmedElectrons_*_NEW',
-#                'keep *_slimmedPhotons_*_NEW',
-                'keep *_BadChargedCandidateFilter_*_*',
-                'keep *_BadPFMuonFilter_*_*',
-    ])
-)
-
-
-
 
 from Configuration.AlCa.autoCond import autoCond
 if runOnData:
   process.GlobalTag.globaltag = autoCond['run2_data']
   # Spring16_25nsV6_DATA_AK4PFchs
-  #process.GlobalTag.globaltag = '80X_dataRun2_2016SeptRepro_v6'
+  process.GlobalTag.globaltag = '80X_dataRun2_2016SeptRepro_v6'
 else:
-  process.GlobalTag.globaltag = autoCond['run2_mc']
+  #process.GlobalTag.globaltag = autoCond['run2_mc']
   # Summer16_25nsV5_MC_AK4PFchs
-  #process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v7'
+  process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v6'
 
 if usePrivateSQlite:
     from CondCore.DBCommon.CondDBSetup_cfi import *
@@ -101,6 +84,34 @@ if usePrivateSQlite:
 #process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
 #process.EGMenergyCorrection = cms.Path(process.regressionApplication)
 
+## jet recluster
+from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
+
+# AK R=0.8 from PUPPI inputs with basic grooming, W tagging, and top tagging
+jetToolbox( process, 'ak8', 'ak8JetSubs', 'OUT', miniAOD=True, runOnMC=True, PUMethod='Puppi', addPruning=True, addSoftDrop=True ,
+# add Nsubjettiness tau1, tau2, tau3, tau4
+addTrimming=True, addFiltering=True, addSoftDropSubjets=True, addPrunedSubjets=True, addNsub=True, maxTau=4,
+# add btagging for 'fat' jet
+bTagDiscriminators = ['pfBoostedDoubleSecondaryVertexAK8BJetTags','pfCombinedSecondaryVertexV2BJetTags','pfCombinedInclusiveSecondaryVertexV2BJetTags'],
+# add JEC
+JETCorrPayload = 'AK8PFPuppi', JETCorrLevels = ['L2Relative', 'L3Absolute'] )
+
+process.OUT = cms.OutputModule("PoolOutputModule",
+    fileName = cms.untracked.string('Loop/cmsswPreProcessing.root'),
+    outputCommands = cms.untracked.vstring('keep *',
+        'keep *_slimmedMETs_*_NEW',
+        'keep *_TriggerResults_*_NEW',
+        'keep *_BadChargedCandidateFilter_*_*',
+        'keep *_BadPFMuonFilter_*_*',
+        'keep *_packedPFCandidates*_*_*', 
+        'keep *_selectedPatJetsAK8PFPuppi*_*_NEW',
+        'keep *_packedPatJetsAK8PFPuppi*_*_NEW',
+        'keep floatedmValueMap_ak8PFJetsPuppi*__NEW',
+        'keep floatedmValueMap_NjettinessAK8Puppi_*_NEW',
+        'keep floatedmValueMap_*_*_NEW',
+        )
+)
+
 
 # met 
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
@@ -129,7 +140,5 @@ process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
 process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
 process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
 process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
-
-
 
 process.endpath= cms.EndPath(process.BadPFMuonFilter * process.BadChargedCandidateFilter * process.OUT)
