@@ -47,15 +47,12 @@ removeMETFlag: true
 doMTUnc: true
 doMTUncDummy: false
 
-
 # tree selection string
 selection: (1)
 
 # store old branches 
 #storeOldBranches: true
 storeOldBranches: false
-
-
 
 #====================================================================
 #  ╔═╗╦ ╦  ╦ ╦╔═╗╦╔═╗╦ ╦╔╦╗╔═╗
@@ -80,7 +77,6 @@ PUInputFileNames: pileup_MC_80x_2016FullReReco_69200.root
 
 # PU weight hist name
 PUWeightHistName: puweight_dtmc
-
 
 #====================================================================
 #  ╔═╗ ╦╔═╗╔╦╗╔═╗  ╔═╗╦╔═╦╔╦╗
@@ -108,11 +104,9 @@ MuonPtRecalibInputForMC: data/kalman/MC_80X_13TeV.root
 
 doElecPtRecalibSimpleData: false
 ElecPtRecalibSimpleDataScale: 1.00341
-#ElecPtRecalibSimpleDataScale: 1.00971
 
 doElecPtRecalibSimpleDataPogRecipe: false
 # if above pog recipe is true, will correct electron energy according to seeding xtal energies
-
 
 doMuonPtRecalibSimpleData: false
 MuonPtRecalibSimpleDataScale: 0.999744
@@ -175,7 +169,7 @@ addDyZPtWeightLOUseFunction: true
 
 # add new DY jets gen-weights for mergeing NLO and LO
 # to gain statistics
-addDyNewGenWeight: true
+addDyNewGenWeight: false
 
 # input root file
 #DyZPtWeightInputFileName: data/zptweight/dyjets_zpt_weight_lo_nlo_sel.root

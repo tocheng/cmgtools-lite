@@ -19,7 +19,6 @@
 #include "TCanvas.h"
 #include "TVector2.h"
 #include "TProfile.h"
-#include "TGraph.h"
 #include "TGraphErrors.h"
 #include "TEntryList.h"
 #include "TLorentzVector.h"
@@ -130,8 +129,8 @@ bool _storeOldBranches = false;
 
 
 /// MT Unc from MET Unc
-bool _doDummyMETUncert = false;
-bool _doDummyRecoilUncert = false;
+bool _doMTUnc = true;
+bool _doMTUncDummy = false;
 
 
 //=========================
@@ -205,8 +204,6 @@ std::string _DyZPtWeightInputFileName = "data/zptweight/dyjets_zpt_weight_lo_nlo
 // to gain statistics
 bool _addDyNewGenWeight = true;
 
-
-
 // not from config file
 TFile* _fdyzpt;
 TH1D*  _hdyzpt_dtmc_ratio;
@@ -215,8 +212,6 @@ TF1*   _fcdyzpt_dtmc_ratio_resbos;
 TF1*   _fcdyzpt_dtmc_ratio_resbos_refit;
 TH1D*  _hdyzpt_mc_nlo_lo_ratio;
 TF1*   _fcdyzpt_mc_nlo_lo_ratio;
-
-
 
 //========================
 // Add SM ZZ Corrections 
@@ -295,7 +290,6 @@ JME::JetParameters* _JERPar_Reso_DATA;
 JME::JetParameters* _JERPar_Reso_MC;
 
 
-
 //==============================================
 // Do simple version of the MET recoil tuning
 //==============================================
@@ -357,9 +351,7 @@ std::string _EffScaleInputFileName_Trg_El = "data/eff/trigereff12p9.root";
 // - mu trigger eff
 std::string _EffScaleInputFileName_Trg_Mu = "data/eff/trigeff_mu.root";
 
-std::string _EffScaleInputFileName_muoneg_scale = "data/eff/meratiopt.root";
-TFile* _file_sf_muoneg;
-TH1F* _h_sf_muoneg;
+
 // not from config file
 // electron sf
 TFile* _file_idiso_el;
@@ -489,9 +481,6 @@ TFile* _gjets_input_file;
 TH2D* _gjets_h_zmass_zpt;
 TH2D* _gjets_h_zmass_zpt_el;
 TH2D* _gjets_h_zmass_zpt_mu;
-TH1D* _gjets_h_zmass;
-TH1D* _gjets_h_zmass_el;
-TH1D* _gjets_h_zmass_mu;
 TH1D* _gjets_h_zpt_ratio;
 TH1D* _gjets_h_zpt_ratio_el;
 TH1D* _gjets_h_zpt_ratio_mu;
@@ -519,9 +508,6 @@ TGraphErrors* _gjets_gr_zpt_ratio_mu_dn;
 std::vector< TH1D* > _gjets_h_zmass_zpt_1d_vec;
 std::vector< TH1D* > _gjets_h_zmass_zpt_el_1d_vec;
 std::vector< TH1D* > _gjets_h_zmass_zpt_mu_1d_vec;
-std::vector< TGraph* > _gjets_gr_zmass_zpt_1d_vec;
-std::vector< TGraph* > _gjets_gr_zmass_zpt_el_1d_vec;
-std::vector< TGraph* > _gjets_gr_zmass_zpt_mu_1d_vec;
 
 TFile* _gjets_phi_weight_input_file;
 TH1D* _gjets_h_photon_phi_weight;
@@ -532,6 +518,7 @@ TH2D* _gjet_h_rho_weight;
 TFile* _gjets_trig_eff_input_file;
 TH2D* _gjets_h_trig_eff_weight;
 
+bool _doBoostJet = true;
 
 //======================================================
 // ╔╦╗╦═╗╔═╗╔═╗  ╦  ╦╔═╗╦═╗╦╔═╗╔╗ ╦  ╔═╗╔═╗
@@ -625,6 +612,37 @@ Float_t _llnunu_l1_l1_eSeedXtal, _llnunu_l1_l2_eSeedXtal;
 Float_t _llnunu_l1_l1_highPtID, _llnunu_l1_l2_highPtID;
 Int_t   _llnunu_l1_l1_trigerob_HLTbit, _llnunu_l1_l2_trigerob_HLTbit;
 
+// boostJet
+Int_t _nboostJetAK8Puppi;
+Int_t _boostJetAK8Puppi_puId[10];
+Float_t _boostJetAK8Puppi_rawPt[10];
+
+Float_t _boostJetAK8Puppi_pt[10];
+Float_t _boostJetAK8Puppi_eta[10];
+Float_t _boostJetAK8Puppi_rapidity[10];
+Float_t _boostJetAK8Puppi_phi[10];
+Float_t _boostJetAK8Puppi_mass[10];
+Float_t _boostJetAK8_pt,_boostJetAK8_eta,_boostJetAK8_phi,_boostJetAK8_mass;
+
+Float_t _boostJetAK8Puppi_softDrop_massCorr[10];
+Float_t _boostJetAK8Puppi_softDrop_massBare[10];
+Float_t _boostJetAK8_softDropMass;
+
+Float_t _boostJetAK8Puppi_tau1[10];
+Float_t _boostJetAK8Puppi_tau2[10];
+Float_t _boostJetAK8Puppi_tau3[10];
+Float_t _boostJetAK8Puppi_tau4[10];
+Float_t _boostJetAK8Puppi_tau21_DDT[10];
+Float_t _boostJetAK8_tau21;
+
+Float_t _boostJetAK8Puppi_s1BTag[10];
+Float_t _boostJetAK8Puppi_s2BTag[10];
+
+Float_t _boostJetAK8Puppi_btagBOOSTED[10];
+Float_t _boostJetAK8_btagBOOSTED;
+
+Float_t _mTfull;
+
 // MC Only
 Int_t   _nTrueInt;
 Float_t _genWeight;
@@ -664,7 +682,7 @@ Float_t _ZZEwkCorrWeight, _ZZEwkCorrWeight_up, _ZZEwkCorrWeight_dn;
 Float_t _ZZQcdCorrWeight, _ZZQcdCorrWeight_up, _ZZQcdCorrWeight_dn;
 
 // efficiency scale factors
-Float_t _trgsf, _isosf, _idsf, _trksf, _idisotrksf,_etrgsf,_mtrgsf,_escale,_mscale;
+Float_t _trgsf, _isosf, _idsf, _trksf, _idisotrksf,_etrgsf,_mtrgsf;
 Float_t _trgsf_err, _isosf_err, _idsf_err, _trksf_err,_etrgsf_err,_mtrgsf_err;
 Float_t _trgsf_up, _trgsf_dn, _idisotrksf_up, _idisotrksf_dn,_etrgsf_up, _etrgsf_dn,_mtrgsf_up, _mtrgsf_dn;
 
@@ -734,13 +752,11 @@ void doElecPtRecalibSimpleData();
 // do muon re-calib, simple version
 void doMuonPtRecalibSimpleData();
 
-
 // prepare inputs for addDyZPtWeight
 void prepareDyZPtWeight();
 
 // addDyZPtWeight
 void addDyZPtWeight();
-
 
 // prepare for addZZCorrections
 void prepareZZCorrections();
@@ -760,9 +776,6 @@ void prepareRecoil();
 // do simple met recoil fine tuning
 void doRecoil();
 
-// fill dummy recoil uncert
-void fillDummyRecoilUncert();
-
 // prepare eff scale factors
 void prepareEffScale();
     
@@ -778,13 +791,17 @@ void prepareGJetsSkim();
 // do gjets skim
 void doGJetsSkim();
 
+// do boostJet selection
+void doBoostJetSelection();
+
 // do MT alternatives
 float MTCalc(float pt, float phi);
 float MTCalcEl(float pt, float phi);
 float MTCalcMu(float pt, float phi);
 
-void fillMETUncert();
-void fillDummyMETUncert();
+void doMTUnc();
+void doMTUncMu();
+void doMTUncEl();
 
 // 
 

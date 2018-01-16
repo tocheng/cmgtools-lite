@@ -99,6 +99,11 @@ int main(int argc, char** argv) {
   // prepare the trees
   prepareTrees();
 
+  // make sure _doMTUncDummy is on if DyJets and doGJets/is data
+  if (_isDyJets||(_doGJetsSkim&&_isData)) {
+    _doMTUncDummy = true;
+  }
+
   // prepare inputs for pu weights
   if (_addPUWeights && !_isData) preparePUWeights();
 
@@ -107,7 +112,6 @@ int main(int argc, char** argv) {
 
   // prepare inputs for muon re-calib
   if (_doMuonPtRecalib && !_doGJetsSkim) prepareMuonPtRecalib();
-
 
   // prepare inputs for addDyZPtWeight
   if (_addDyZPtWeight && !_isData && _isDyJets && !_doGJetsSkim) prepareDyZPtWeight();
@@ -119,23 +123,7 @@ int main(int argc, char** argv) {
   if (_doJEC )  prepareJECJER();
 
   // prepare inputs for simple met recoil tune.
-  //if (_doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_isData && _doGJetsSkim)) ) 
-  if (_doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_doGJetsSkim)) ) 
-  {
-    prepareRecoil();
-    _doDummyMETUncert = true;
-    _doDummyRecoilUncert = false;
-  }
-  else if (_isData ) 
-  {
-    _doDummyMETUncert = true;
-    _doDummyRecoilUncert = true;
-  } 
-  else 
-  {
-    _doDummyMETUncert = false;
-    _doDummyRecoilUncert = true;
-  }
+  if (_doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_isData && _doGJetsSkim)) ) prepareRecoil();
 
   // prepare eff scale factors
   if (_addEffScale && (!_isData || _addEffScaleOnData) && !_doGJetsSkim ) prepareEffScale();
@@ -196,9 +184,7 @@ int main(int argc, char** argv) {
     if (_doJEC )  doJECJER();
     
     // simple met recoil tune.
-    //if (_doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_isData && _doGJetsSkim)) ) doRecoil();
-    if (_doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_doGJetsSkim)) ) doRecoil();
-    
+    if (_doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_isData && _doGJetsSkim)) ) doRecoil();
 
     // add eff scale factors
     if (_addEffScale && (!_isData || _addEffScaleOnData) && !_doGJetsSkim ) addEffScale();
@@ -207,14 +193,24 @@ int main(int argc, char** argv) {
     if (_addEMuTrgScale) addEmuTrgsf();
 
     // add alternative MT due to MET unc NOT for data
-    if (_storeErr ) {
-      if (_doDummyMETUncert) fillDummyMETUncert();
-      else fillMETUncert();
-      if (_doDummyRecoilUncert)  fillDummyRecoilUncert();
+    if (_doMTUnc ) doMTUnc();
+    if (_doMTUnc && _doGJetsSkim ) doMTUncEl();
+    if (_doMTUnc && _doGJetsSkim ) doMTUncMu();
+
+    if (_doBoostJet){
+ 
+       //std::cout<<"nboostJetAK8Puppi "<<_nboostJetAK8Puppi<<std::endl;
+       if(_nboostJetAK8Puppi<=0){
+         continue;
+       }
+       else{
+         doBoostJetSelection(); 
+       }
     }
 
     // fill output tree
     _tree_out->Fill(); 
+
   }  
 
 
@@ -276,6 +272,8 @@ void readConfigFile()
   _storeErr = parm.GetBool("storeErr", kTRUE);
   _removeHLTFlag = parm.GetBool("removeHLTFlag", kFALSE);
   _removeMETFlag = parm.GetBool("removeMETFlag", kFALSE);
+  _doMTUnc = parm.GetBool("doMTUnc", kTRUE);
+  _doMTUncDummy = parm.GetBool("doMTUncDummy", kFALSE);
 
   //=========================
   // add PU weights
@@ -402,9 +400,6 @@ void readConfigFile()
     _EffScaleInputFileName_Trg_Mu = parm.GetString("EffScaleInputFileName_Trg_Mu", "data/eff/trigeff_mu.root");
   }
 
-  if (_addEMuTrgScale){
-    _EffScaleInputFileName_muoneg_scale = parm.GetString("EffScaleInputFileName_muoneg_scale", "data/eff/meratiopt.root");
-  }
 
   //==============================================
   // Do GJets skimming
@@ -445,7 +440,6 @@ bool  prepareTrees()
   // isData  
   _tree_in->SetBranchAddress("isData",&_isData);
 
-
   // check if tree has events
   if (_tree_in->GetEntries()<=0) {
     std::cout << "prepareTrees():: input tree has no event pass selection. Quit." <<std::endl;
@@ -461,6 +455,26 @@ bool  prepareTrees()
   _tree_in->SetBranchAddress("evt", &_evt);
   _tree_in->SetBranchAddress("rho", &_rho);
   _tree_in->SetBranchAddress("xsec", &_xsec);
+  _tree_in->SetBranchAddress("nboostJetAK8Puppi", &_nboostJetAK8Puppi);
+
+  //if(_tree_in->FindBranch("boostJetAK8*")){
+
+  _tree_in->SetBranchAddress("boostJetAK8Puppi_pt", _boostJetAK8Puppi_pt);
+  _tree_in->SetBranchAddress("boostJetAK8Puppi_eta", _boostJetAK8Puppi_eta);
+  _tree_in->SetBranchAddress("boostJetAK8Puppi_phi", _boostJetAK8Puppi_phi);
+  _tree_in->SetBranchAddress("boostJetAK8Puppi_mass", _boostJetAK8Puppi_mass);
+
+  _tree_in->SetBranchAddress("boostJetAK8Puppi_tau1", _boostJetAK8Puppi_tau1);
+  _tree_in->SetBranchAddress("boostJetAK8Puppi_tau2", _boostJetAK8Puppi_tau2);
+  _tree_in->SetBranchAddress("boostJetAK8Puppi_tau3", _boostJetAK8Puppi_tau3);
+  _tree_in->SetBranchAddress("boostJetAK8Puppi_tau4", _boostJetAK8Puppi_tau4);
+
+  _tree_in->SetBranchAddress("boostJetAK8Puppi_btagBOOSTED", _boostJetAK8Puppi_btagBOOSTED);
+  _tree_in->SetBranchAddress("boostJetAK8Puppi_softDrop_massCorr", _boostJetAK8Puppi_softDrop_massCorr);
+  _tree_in->SetBranchAddress("boostJetAK8Puppi_softDrop_massBare", _boostJetAK8Puppi_softDrop_massBare);
+
+
+  //}
 
   if (_doGJetsSkim) {
     _tree_in->SetBranchAddress("gjet_mt", &_gjet_mt);
@@ -480,45 +494,46 @@ bool  prepareTrees()
     _tree_in->SetBranchAddress("gjet_l2_rawPhi", &_gjet_l2_rawPhi);
     _tree_in->SetBranchAddress("gjet_l2_rawSumEt", &_gjet_l2_rawSumEt);
 
-    _tree_in->SetBranchAddress("gjet_l2_genPhi", &_gjet_l2_genPhi);
-    _tree_in->SetBranchAddress("gjet_l2_genEta", &_gjet_l2_genEta);
+    if (_doMTUnc && !_doMTUncDummy ) {
+      _tree_in->SetBranchAddress("gjet_l2_genPhi", &_gjet_l2_genPhi);
+      _tree_in->SetBranchAddress("gjet_l2_genEta", &_gjet_l2_genEta);
 
-    _tree_in->SetBranchAddress("gjet_l2_t1Pt_JetEnUp", &_gjet_l2_t1Pt_JetEnUp);
-    _tree_in->SetBranchAddress("gjet_l2_t1Pt_JetEnDn", &_gjet_l2_t1Pt_JetEnDn);
-    _tree_in->SetBranchAddress("gjet_l2_t1Phi_JetEnUp", &_gjet_l2_t1Phi_JetEnUp);
-    _tree_in->SetBranchAddress("gjet_l2_t1Phi_JetEnDn", &_gjet_l2_t1Phi_JetEnDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_JetEnUp", &_gjet_l2_t1Pt_JetEnUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_JetEnDn", &_gjet_l2_t1Pt_JetEnDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_JetEnUp", &_gjet_l2_t1Phi_JetEnUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_JetEnDn", &_gjet_l2_t1Phi_JetEnDn);
 
-    _tree_in->SetBranchAddress("gjet_l2_t1Pt_JetResUp", &_gjet_l2_t1Pt_JetResUp);
-    _tree_in->SetBranchAddress("gjet_l2_t1Pt_JetResDn", &_gjet_l2_t1Pt_JetResDn);
-    _tree_in->SetBranchAddress("gjet_l2_t1Phi_JetResUp", &_gjet_l2_t1Phi_JetResUp);
-    _tree_in->SetBranchAddress("gjet_l2_t1Phi_JetResDn", &_gjet_l2_t1Phi_JetResDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_JetResUp", &_gjet_l2_t1Pt_JetResUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_JetResDn", &_gjet_l2_t1Pt_JetResDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_JetResUp", &_gjet_l2_t1Phi_JetResUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_JetResDn", &_gjet_l2_t1Phi_JetResDn);
 
-    _tree_in->SetBranchAddress("gjet_l2_t1Pt_UnclusterUp", &_gjet_l2_t1Pt_UnclusterUp);
-    _tree_in->SetBranchAddress("gjet_l2_t1Pt_UnclusterDn", &_gjet_l2_t1Pt_UnclusterDn);
-    _tree_in->SetBranchAddress("gjet_l2_t1Phi_UnclusterUp", &_gjet_l2_t1Phi_UnclusterUp);
-    _tree_in->SetBranchAddress("gjet_l2_t1Phi_UnclusterDn", &_gjet_l2_t1Phi_UnclusterDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_UnclusterUp", &_gjet_l2_t1Pt_UnclusterUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_UnclusterDn", &_gjet_l2_t1Pt_UnclusterDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_UnclusterUp", &_gjet_l2_t1Phi_UnclusterUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_UnclusterDn", &_gjet_l2_t1Phi_UnclusterDn);
 
-    _tree_in->SetBranchAddress("gjet_l2_t1Pt_MuonEnUp", &_gjet_l2_t1Pt_MuonEnUp);
-    _tree_in->SetBranchAddress("gjet_l2_t1Pt_MuonEnDn", &_gjet_l2_t1Pt_MuonEnDn);
-    _tree_in->SetBranchAddress("gjet_l2_t1Phi_MuonEnUp", &_gjet_l2_t1Phi_MuonEnUp);
-    _tree_in->SetBranchAddress("gjet_l2_t1Phi_MuonEnDn", &_gjet_l2_t1Phi_MuonEnDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_MuonEnUp", &_gjet_l2_t1Pt_MuonEnUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_MuonEnDn", &_gjet_l2_t1Pt_MuonEnDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_MuonEnUp", &_gjet_l2_t1Phi_MuonEnUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_MuonEnDn", &_gjet_l2_t1Phi_MuonEnDn);
 
-    _tree_in->SetBranchAddress("gjet_l2_t1Pt_TauEnUp", &_gjet_l2_t1Pt_TauEnUp);
-    _tree_in->SetBranchAddress("gjet_l2_t1Pt_TauEnDn", &_gjet_l2_t1Pt_TauEnDn);
-    _tree_in->SetBranchAddress("gjet_l2_t1Phi_TauEnUp", &_gjet_l2_t1Phi_TauEnUp);
-    _tree_in->SetBranchAddress("gjet_l2_t1Phi_TauEnDn", &_gjet_l2_t1Phi_TauEnDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_TauEnUp", &_gjet_l2_t1Pt_TauEnUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_TauEnDn", &_gjet_l2_t1Pt_TauEnDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_TauEnUp", &_gjet_l2_t1Phi_TauEnUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_TauEnDn", &_gjet_l2_t1Phi_TauEnDn);
 
-    _tree_in->SetBranchAddress("gjet_l2_t1Pt_ElectronEnUp", &_gjet_l2_t1Pt_ElectronEnUp);
-    _tree_in->SetBranchAddress("gjet_l2_t1Pt_ElectronEnDn", &_gjet_l2_t1Pt_ElectronEnDn);
-    _tree_in->SetBranchAddress("gjet_l2_t1Phi_ElectronEnUp", &_gjet_l2_t1Phi_ElectronEnUp);
-    _tree_in->SetBranchAddress("gjet_l2_t1Phi_ElectronEnDn", &_gjet_l2_t1Phi_ElectronEnDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_ElectronEnUp", &_gjet_l2_t1Pt_ElectronEnUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_ElectronEnDn", &_gjet_l2_t1Pt_ElectronEnDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_ElectronEnUp", &_gjet_l2_t1Phi_ElectronEnUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_ElectronEnDn", &_gjet_l2_t1Phi_ElectronEnDn);
 
-    _tree_in->SetBranchAddress("gjet_l2_t1Pt_PhotonEnUp", &_gjet_l2_t1Pt_PhotonEnUp);
-    _tree_in->SetBranchAddress("gjet_l2_t1Pt_PhotonEnDn", &_gjet_l2_t1Pt_PhotonEnDn);
-    _tree_in->SetBranchAddress("gjet_l2_t1Phi_PhotonEnUp", &_gjet_l2_t1Phi_PhotonEnUp);
-    _tree_in->SetBranchAddress("gjet_l2_t1Phi_PhotonEnDn", &_gjet_l2_t1Phi_PhotonEnDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_PhotonEnUp", &_gjet_l2_t1Pt_PhotonEnUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Pt_PhotonEnDn", &_gjet_l2_t1Pt_PhotonEnDn);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_PhotonEnUp", &_gjet_l2_t1Phi_PhotonEnUp);
+      _tree_in->SetBranchAddress("gjet_l2_t1Phi_PhotonEnDn", &_gjet_l2_t1Phi_PhotonEnDn);
 
-    
+    }
     if (_isData){
       _tree_in->SetBranchAddress("PreScale22", &_PreScale22);
       _tree_in->SetBranchAddress("PreScale30", &_PreScale30);
@@ -602,6 +617,9 @@ bool  prepareTrees()
       _tree_in->SetBranchAddress("genNeu_eta", _genNeu_eta);
       _tree_in->SetBranchAddress("genNeu_phi", _genNeu_phi);
     }
+  }
+
+  if(_doMTUnc && !_doGJetsSkim && !_doMTUncDummy ){
 
     _tree_in->SetBranchAddress("llnunu_l2_t1Pt_JetEnUp", &_llnunu_l2_pt_JetEnUp);
     _tree_in->SetBranchAddress("llnunu_l2_t1Pt_JetEnDn", &_llnunu_l2_pt_JetEnDn);
@@ -641,7 +659,6 @@ bool  prepareTrees()
 
   }
 
-
   // 2.) Output tree
 
   // output tree
@@ -669,6 +686,22 @@ bool  prepareTrees()
     _tree_out->Branch("llnunu_l1_l2_eta_old", &_llnunu_l1_l2_eta_old, "llnunu_l1_l2_eta_old/F");
     _tree_out->Branch("llnunu_l1_l2_phi_old", &_llnunu_l1_l2_phi_old, "llnunu_l1_l2_phi_old/F");
     _tree_out->Branch("llnunu_l1_l2_ptErr_old", &_llnunu_l1_l2_ptErr_old, "llnunu_l1_l2_ptErr_old/F");
+  }
+
+  // selected the "best" boost jet as hardonic Z/H candidate
+  if(_doBoostJet){
+
+    _tree_out->Branch("boostJetAK8_tau21", &_boostJetAK8_tau21, "boostJetAK8_tau21/F");
+    _tree_out->Branch("boostJetAK8_softDropMass", &_boostJetAK8_softDropMass, "boostJetAK8_softDropMass/F");
+
+    _tree_out->Branch("boostJetAK8_pt", &_boostJetAK8_pt, "boostJetAK8_pt/F");
+    _tree_out->Branch("boostJetAK8_eta", &_boostJetAK8_eta, "boostJetAK8_eta/F");
+    _tree_out->Branch("boostJetAK8_phi", &_boostJetAK8_phi, "boostJetAK8_phi/F");
+    _tree_out->Branch("boostJetAK8_mass", &_boostJetAK8_mass, "boostJetAK8_mass/F");
+
+    _tree_out->Branch("boostJetAK8_btagBOOSTED", &_boostJetAK8_btagBOOSTED, "boostJetAK8_btagBOOSTED/F");
+    _tree_out->Branch("mTfull",&_mTfull,"mTfull/F");
+
   }
 
   // for add SM qqZZ QCD/EW corrections
@@ -743,16 +776,12 @@ bool  prepareTrees()
     }
     if (!_storeOldBranches) {
       _tree_out->SetBranchStatus("gjet_*", 0);
-      //_tree_out->SetBranchStatus("gjet_l1_idCutBased", 1);
-      //_tree_out->SetBranchStatus("gjet_l1_hOverE", 1);
-      //_tree_out->SetBranchStatus("gjet_l1_r9", 1);
-      //_tree_out->SetBranchStatus("gjet_l1_sigmaIetaIeta", 1);
       _tree_out->SetBranchStatus("PreScale*", 0);
     }
   }
 
   // store alternative MT
-  if(_storeErr){
+  if(_doMTUnc){
 
     _tree_out->Branch("llnunu_mt_JetEnUp", &_llnunu_mt_JetEnUp, "llnunu_mt_JetEnUp/F");
     _tree_out->Branch("llnunu_mt_JetEnDn", &_llnunu_mt_JetEnDn, "llnunu_mt_JetEnDn/F");
@@ -770,93 +799,65 @@ bool  prepareTrees()
     _tree_out->Branch("llnunu_mt_UnclusterDn", &_llnunu_mt_UnclusterDn, "llnunu_mt_UnclusterDn/F");
 
     if(_doGJetsSkim){
-      _tree_out->Branch("llnunu_mt_el_JetEnUp", &_llnunu_mt_el_JetEnUp, "llnunu_mt_el_JetEnUp/F");
-      _tree_out->Branch("llnunu_mt_el_JetEnDn", &_llnunu_mt_el_JetEnDn, "llnunu_mt_el_JetEnDn/F");
-      _tree_out->Branch("llnunu_mt_el_JetResUp", &_llnunu_mt_el_JetResUp, "llnunu_mt_el_JetResUp/F");
-      _tree_out->Branch("llnunu_mt_el_JetResDn", &_llnunu_mt_el_JetResDn, "llnunu_mt_el_JetResDn/F");
-      _tree_out->Branch("llnunu_mt_el_MuonEnUp", &_llnunu_mt_el_MuonEnUp, "llnunu_mt_el_MuonEnUp/F");
-      _tree_out->Branch("llnunu_mt_el_MuonEnDn", &_llnunu_mt_el_MuonEnDn, "llnunu_mt_el_MuonEnDn/F");
-      _tree_out->Branch("llnunu_mt_el_ElectronEnUp", &_llnunu_mt_el_ElectronEnUp, "llnunu_mt_el_ElectronEnUp/F");
-      _tree_out->Branch("llnunu_mt_el_ElectronEnDn", &_llnunu_mt_el_ElectronEnDn, "llnunu_mt_el_ElectronEnDn/F");
-      _tree_out->Branch("llnunu_mt_el_TauEnUp", &_llnunu_mt_el_TauEnUp, "llnunu_mt_el_TauEnUp/F");
-      _tree_out->Branch("llnunu_mt_el_TauEnDn", &_llnunu_mt_el_TauEnDn, "llnunu_mt_el_TauEnDn/F");
-      _tree_out->Branch("llnunu_mt_el_PhotonEnUp", &_llnunu_mt_el_PhotonEnUp, "llnunu_mt_el_PhotonEnUp/F");
-      _tree_out->Branch("llnunu_mt_el_PhotonEnDn", &_llnunu_mt_el_PhotonEnDn, "llnunu_mt_el_PhotonEnDn/F");
-      _tree_out->Branch("llnunu_mt_el_UnclusterUp", &_llnunu_mt_el_UnclusterUp, "llnunu_mt_el_UnclusterUp/F");
-      _tree_out->Branch("llnunu_mt_el_UnclusterDn", &_llnunu_mt_el_UnclusterDn, "llnunu_mt_el_UnclusterDn/F");
 
-      _tree_out->Branch("llnunu_mt_mu_JetEnUp", &_llnunu_mt_mu_JetEnUp, "llnunu_mt_mu_JetEnUp/F");
-      _tree_out->Branch("llnunu_mt_mu_JetEnDn", &_llnunu_mt_mu_JetEnDn, "llnunu_mt_mu_JetEnDn/F");
-      _tree_out->Branch("llnunu_mt_mu_JetResUp", &_llnunu_mt_mu_JetResUp, "llnunu_mt_mu_JetResUp/F");
-      _tree_out->Branch("llnunu_mt_mu_JetResDn", &_llnunu_mt_mu_JetResDn, "llnunu_mt_mu_JetResDn/F");
-      _tree_out->Branch("llnunu_mt_mu_MuonEnUp", &_llnunu_mt_mu_MuonEnUp, "llnunu_mt_mu_MuonEnUp/F");
-      _tree_out->Branch("llnunu_mt_mu_MuonEnDn", &_llnunu_mt_mu_MuonEnDn, "llnunu_mt_mu_MuonEnDn/F");
-      _tree_out->Branch("llnunu_mt_mu_ElectronEnUp", &_llnunu_mt_mu_ElectronEnUp, "llnunu_mt_mu_ElectronEnUp/F");
-      _tree_out->Branch("llnunu_mt_mu_ElectronEnDn", &_llnunu_mt_mu_ElectronEnDn, "llnunu_mt_mu_ElectronEnDn/F");
-      _tree_out->Branch("llnunu_mt_mu_TauEnUp", &_llnunu_mt_mu_TauEnUp, "llnunu_mt_mu_TauEnUp/F");
-      _tree_out->Branch("llnunu_mt_mu_TauEnDn", &_llnunu_mt_mu_TauEnDn, "llnunu_mt_mu_TauEnDn/F");
-      _tree_out->Branch("llnunu_mt_mu_PhotonEnUp", &_llnunu_mt_mu_PhotonEnUp, "llnunu_mt_mu_PhotonEnUp/F");
-      _tree_out->Branch("llnunu_mt_mu_PhotonEnDn", &_llnunu_mt_mu_PhotonEnDn, "llnunu_mt_mu_PhotonEnDn/F");
-      _tree_out->Branch("llnunu_mt_mu_UnclusterUp", &_llnunu_mt_mu_UnclusterUp, "llnunu_mt_mu_UnclusterUp/F");
-      _tree_out->Branch("llnunu_mt_mu_UnclusterDn", &_llnunu_mt_mu_UnclusterDn, "llnunu_mt_mu_UnclusterDn/F");
+	_tree_out->Branch("llnunu_mt_el_JetEnUp", &_llnunu_mt_el_JetEnUp, "llnunu_mt_el_JetEnUp/F");
+    	_tree_out->Branch("llnunu_mt_el_JetEnDn", &_llnunu_mt_el_JetEnDn, "llnunu_mt_el_JetEnDn/F");
+    	_tree_out->Branch("llnunu_mt_el_JetResUp", &_llnunu_mt_el_JetResUp, "llnunu_mt_el_JetResUp/F");
+    	_tree_out->Branch("llnunu_mt_el_JetResDn", &_llnunu_mt_el_JetResDn, "llnunu_mt_el_JetResDn/F");
+    	_tree_out->Branch("llnunu_mt_el_MuonEnUp", &_llnunu_mt_el_MuonEnUp, "llnunu_mt_el_MuonEnUp/F");
+    	_tree_out->Branch("llnunu_mt_el_MuonEnDn", &_llnunu_mt_el_MuonEnDn, "llnunu_mt_el_MuonEnDn/F");
+    	_tree_out->Branch("llnunu_mt_el_ElectronEnUp", &_llnunu_mt_el_ElectronEnUp, "llnunu_mt_el_ElectronEnUp/F");
+    	_tree_out->Branch("llnunu_mt_el_ElectronEnDn", &_llnunu_mt_el_ElectronEnDn, "llnunu_mt_el_ElectronEnDn/F");
+    	_tree_out->Branch("llnunu_mt_el_TauEnUp", &_llnunu_mt_el_TauEnUp, "llnunu_mt_el_TauEnUp/F");
+    	_tree_out->Branch("llnunu_mt_el_TauEnDn", &_llnunu_mt_el_TauEnDn, "llnunu_mt_el_TauEnDn/F");
+    	_tree_out->Branch("llnunu_mt_el_PhotonEnUp", &_llnunu_mt_el_PhotonEnUp, "llnunu_mt_el_PhotonEnUp/F");
+    	_tree_out->Branch("llnunu_mt_el_PhotonEnDn", &_llnunu_mt_el_PhotonEnDn, "llnunu_mt_el_PhotonEnDn/F");
+    	_tree_out->Branch("llnunu_mt_el_UnclusterUp", &_llnunu_mt_el_UnclusterUp, "llnunu_mt_el_UnclusterUp/F");
+    	_tree_out->Branch("llnunu_mt_el_UnclusterDn", &_llnunu_mt_el_UnclusterDn, "llnunu_mt_el_UnclusterDn/F");
 
-      _tree_out->Branch("llnunu_l2_t1Pt_JetEnUp", &_llnunu_l2_pt_JetEnUp, "llnunu_l2_t1Pt_JetEnUp/F");
-      _tree_out->Branch("llnunu_l2_t1Pt_JetEnDn", &_llnunu_l2_pt_JetEnDn, "llnunu_l2_t1Pt_JetEnDn/F");
-      _tree_out->Branch("llnunu_l2_t1Phi_JetEnUp", &_llnunu_l2_phi_JetEnUp, "llnunu_l2_t1Phi_JetEnUp/F");
-      _tree_out->Branch("llnunu_l2_t1Phi_JetEnDn", &_llnunu_l2_phi_JetEnDn, "llnunu_l2_t1Phi_JetEnDn/F");
-      _tree_out->Branch("llnunu_l2_t1Pt_JetResUp", &_llnunu_l2_pt_JetResUp, "llnunu_l2_t1Pt_JetResUp/F");
-      _tree_out->Branch("llnunu_l2_t1Pt_JetResDn", &_llnunu_l2_pt_JetResDn, "llnunu_l2_t1Pt_JetResDn/F");
-      _tree_out->Branch("llnunu_l2_t1Phi_JetResUp", &_llnunu_l2_phi_JetResUp, "llnunu_l2_t1Phi_JetResUp/F");
-      _tree_out->Branch("llnunu_l2_t1Phi_JetResDn", &_llnunu_l2_phi_JetResDn, "llnunu_l2_t1Phi_JetResDn/F");
-      _tree_out->Branch("llnunu_l2_t1Pt_MuonEnUp", &_llnunu_l2_pt_MuonEnUp, "llnunu_l2_t1Pt_MuonEnUp/F");
-      _tree_out->Branch("llnunu_l2_t1Pt_MuonEnDn", &_llnunu_l2_pt_MuonEnDn, "llnunu_l2_t1Pt_MuonEnDn/F");
-      _tree_out->Branch("llnunu_l2_t1Phi_MuonEnUp", &_llnunu_l2_phi_MuonEnUp, "llnunu_l2_t1Phi_MuonEnUp/F");
-      _tree_out->Branch("llnunu_l2_t1Phi_MuonEnDn", &_llnunu_l2_phi_MuonEnDn, "llnunu_l2_t1Phi_MuonEnDn/F");
-      _tree_out->Branch("llnunu_l2_t1Pt_TauEnUp", &_llnunu_l2_pt_TauEnUp, "llnunu_l2_t1Pt_TauEnUp/F");
-      _tree_out->Branch("llnunu_l2_t1Pt_TauEnDn", &_llnunu_l2_pt_TauEnDn, "llnunu_l2_t1Pt_TauEnDn/F");
-      _tree_out->Branch("llnunu_l2_t1Phi_TauEnUp", &_llnunu_l2_phi_TauEnUp, "llnunu_l2_t1Phi_TauEnUp/F");
-      _tree_out->Branch("llnunu_l2_t1Phi_TauEnDn", &_llnunu_l2_phi_TauEnDn, "llnunu_l2_t1Phi_TauEnDn/F");
-      _tree_out->Branch("llnunu_l2_t1Pt_ElectronEnUp", &_llnunu_l2_pt_ElectronEnUp, "llnunu_l2_t1Pt_ElectronEnUp/F");
-      _tree_out->Branch("llnunu_l2_t1Pt_ElectronEnDn", &_llnunu_l2_pt_ElectronEnDn, "llnunu_l2_t1Pt_ElectronEnDn/F");
-      _tree_out->Branch("llnunu_l2_t1Phi_ElectronEnUp", &_llnunu_l2_phi_ElectronEnUp, "llnunu_l2_t1Phi_ElectronEnUp/F");
-      _tree_out->Branch("llnunu_l2_t1Phi_ElectronEnDn", &_llnunu_l2_phi_ElectronEnDn, "llnunu_l2_t1Phi_ElectronEnDn/F");
-      _tree_out->Branch("llnunu_l2_t1Pt_PhotonEnUp", &_llnunu_l2_pt_PhotonEnUp, "llnunu_l2_t1Pt_PhotonEnUp/F");
-      _tree_out->Branch("llnunu_l2_t1Pt_PhotonEnDn", &_llnunu_l2_pt_PhotonEnDn, "llnunu_l2_t1Pt_PhotonEnDn/F");
-      _tree_out->Branch("llnunu_l2_t1Phi_PhotonEnUp", &_llnunu_l2_phi_PhotonEnUp, "llnunu_l2_t1Phi_PhotonEnUp/F");
-      _tree_out->Branch("llnunu_l2_t1Phi_PhotonEnDn", &_llnunu_l2_phi_PhotonEnDn, "llnunu_l2_t1Phi_PhotonEnDn/F");
-      _tree_out->Branch("llnunu_l2_t1Pt_UnclusterUp", &_llnunu_l2_pt_UnclusterUp, "llnunu_l2_t1Pt_UnclusterUp/F");
-      _tree_out->Branch("llnunu_l2_t1Pt_UnclusterDn", &_llnunu_l2_pt_UnclusterDn, "llnunu_l2_t1Pt_UnclusterDn/F");
-      _tree_out->Branch("llnunu_l2_t1Phi_UnclusterUp", &_llnunu_l2_phi_UnclusterUp, "llnunu_l2_t1Phi_UnclusterUp/F");
-      _tree_out->Branch("llnunu_l2_t1Phi_UnclusterDn", &_llnunu_l2_phi_UnclusterDn, "llnunu_l2_t1Phi_UnclusterDn/F");
-
+    	_tree_out->Branch("llnunu_mt_mu_JetEnUp", &_llnunu_mt_mu_JetEnUp, "llnunu_mt_mu_JetEnUp/F");
+    	_tree_out->Branch("llnunu_mt_mu_JetEnDn", &_llnunu_mt_mu_JetEnDn, "llnunu_mt_mu_JetEnDn/F");
+    	_tree_out->Branch("llnunu_mt_mu_JetResUp", &_llnunu_mt_mu_JetResUp, "llnunu_mt_mu_JetResUp/F");
+    	_tree_out->Branch("llnunu_mt_mu_JetResDn", &_llnunu_mt_mu_JetResDn, "llnunu_mt_mu_JetResDn/F");
+    	_tree_out->Branch("llnunu_mt_mu_MuonEnUp", &_llnunu_mt_mu_MuonEnUp, "llnunu_mt_mu_MuonEnUp/F");
+    	_tree_out->Branch("llnunu_mt_mu_MuonEnDn", &_llnunu_mt_mu_MuonEnDn, "llnunu_mt_mu_MuonEnDn/F");
+    	_tree_out->Branch("llnunu_mt_mu_ElectronEnUp", &_llnunu_mt_mu_ElectronEnUp, "llnunu_mt_mu_ElectronEnUp/F");
+    	_tree_out->Branch("llnunu_mt_mu_ElectronEnDn", &_llnunu_mt_mu_ElectronEnDn, "llnunu_mt_mu_ElectronEnDn/F");
+    	_tree_out->Branch("llnunu_mt_mu_TauEnUp", &_llnunu_mt_mu_TauEnUp, "llnunu_mt_mu_TauEnUp/F");
+    	_tree_out->Branch("llnunu_mt_mu_TauEnDn", &_llnunu_mt_mu_TauEnDn, "llnunu_mt_mu_TauEnDn/F");
+    	_tree_out->Branch("llnunu_mt_mu_PhotonEnUp", &_llnunu_mt_mu_PhotonEnUp, "llnunu_mt_mu_PhotonEnUp/F");
+    	_tree_out->Branch("llnunu_mt_mu_PhotonEnDn", &_llnunu_mt_mu_PhotonEnDn, "llnunu_mt_mu_PhotonEnDn/F");
+    	_tree_out->Branch("llnunu_mt_mu_UnclusterUp", &_llnunu_mt_mu_UnclusterUp, "llnunu_mt_mu_UnclusterUp/F");
+    	_tree_out->Branch("llnunu_mt_mu_UnclusterDn", &_llnunu_mt_mu_UnclusterDn, "llnunu_mt_mu_UnclusterDn/F");
 
     }
   }
 
   // Recoil uncertainties
-  _tree_out->Branch("llnunu_l2_pt_RecoilUp", &_llnunu_l2_pt_RecoilUp, "llnunu_l2_pt_RecoilUp/F");
-  _tree_out->Branch("llnunu_l2_pt_RecoilDn", &_llnunu_l2_pt_RecoilDn, "llnunu_l2_pt_RecoilDn/F");
-  _tree_out->Branch("llnunu_l2_phi_RecoilUp", &_llnunu_l2_phi_RecoilUp, "llnunu_l2_phi_RecoilUp/F");
-  _tree_out->Branch("llnunu_l2_phi_RecoilDn", &_llnunu_l2_phi_RecoilDn, "llnunu_l2_phi_RecoilDn/F");
-  _tree_out->Branch("llnunu_mt_RecoilUp", &_llnunu_mt_RecoilUp, "llnunu_mt_RecoilUp/F");
-  _tree_out->Branch("llnunu_mt_RecoilDn", &_llnunu_mt_RecoilDn, "llnunu_mt_RecoilDn/F");
+  if (_doRecoil) {
+    _tree_out->Branch("llnunu_l2_pt_RecoilUp", &_llnunu_l2_pt_RecoilUp, "llnunu_l2_pt_RecoilUp/F");
+    _tree_out->Branch("llnunu_l2_pt_RecoilDn", &_llnunu_l2_pt_RecoilDn, "llnunu_l2_pt_RecoilDn/F");
+    _tree_out->Branch("llnunu_l2_phi_RecoilUp", &_llnunu_l2_phi_RecoilUp, "llnunu_l2_phi_RecoilUp/F");
+    _tree_out->Branch("llnunu_l2_phi_RecoilDn", &_llnunu_l2_phi_RecoilDn, "llnunu_l2_phi_RecoilDn/F");
+    _tree_out->Branch("llnunu_mt_RecoilUp", &_llnunu_mt_RecoilUp, "llnunu_mt_RecoilUp/F");
+    _tree_out->Branch("llnunu_mt_RecoilDn", &_llnunu_mt_RecoilDn, "llnunu_mt_RecoilDn/F");
     
-  if (_doGJetsSkim){
-    _tree_out->Branch("llnunu_l2_pt_el_RecoilUp", &_llnunu_l2_pt_el_RecoilUp, "llnunu_l2_pt_el_RecoilUp/F");
-    _tree_out->Branch("llnunu_l2_pt_el_RecoilDn", &_llnunu_l2_pt_el_RecoilDn, "llnunu_l2_pt_el_RecoilDn/F");
-    _tree_out->Branch("llnunu_l2_phi_el_RecoilUp", &_llnunu_l2_phi_el_RecoilUp, "llnunu_l2_phi_el_RecoilUp/F");
-    _tree_out->Branch("llnunu_l2_phi_el_RecoilDn", &_llnunu_l2_phi_el_RecoilDn, "llnunu_l2_phi_el_RecoilDn/F");
-    _tree_out->Branch("llnunu_mt_el_RecoilUp", &_llnunu_mt_el_RecoilUp, "llnunu_mt_el_RecoilUp/F");
-    _tree_out->Branch("llnunu_mt_el_RecoilDn", &_llnunu_mt_el_RecoilDn, "llnunu_mt_el_RecoilDn/F");
-    _tree_out->Branch("llnunu_l2_pt_mu_RecoilUp", &_llnunu_l2_pt_mu_RecoilUp, "llnunu_l2_pt_mu_RecoilUp/F");
-    _tree_out->Branch("llnunu_l2_pt_mu_RecoilDn", &_llnunu_l2_pt_mu_RecoilDn, "llnunu_l2_pt_mu_RecoilDn/F");
-    _tree_out->Branch("llnunu_l2_phi_mu_RecoilUp", &_llnunu_l2_phi_mu_RecoilUp, "llnunu_l2_phi_mu_RecoilUp/F");
-    _tree_out->Branch("llnunu_l2_phi_mu_RecoilDn", &_llnunu_l2_phi_mu_RecoilDn, "llnunu_l2_phi_mu_RecoilDn/F");
-    _tree_out->Branch("llnunu_mt_mu_RecoilUp", &_llnunu_mt_mu_RecoilUp, "llnunu_mt_mu_RecoilUp/F");
-    _tree_out->Branch("llnunu_mt_mu_RecoilDn", &_llnunu_mt_mu_RecoilDn, "llnunu_mt_mu_RecoilDn/F");
+    if (_doGJetsSkim){
+      _tree_out->Branch("llnunu_l2_pt_el_RecoilUp", &_llnunu_l2_pt_el_RecoilUp, "llnunu_l2_pt_el_RecoilUp/F");
+      _tree_out->Branch("llnunu_l2_pt_el_RecoilDn", &_llnunu_l2_pt_el_RecoilDn, "llnunu_l2_pt_el_RecoilDn/F");
+      _tree_out->Branch("llnunu_l2_phi_el_RecoilUp", &_llnunu_l2_phi_el_RecoilUp, "llnunu_l2_phi_el_RecoilUp/F");
+      _tree_out->Branch("llnunu_l2_phi_el_RecoilDn", &_llnunu_l2_phi_el_RecoilDn, "llnunu_l2_phi_el_RecoilDn/F");
+      _tree_out->Branch("llnunu_mt_el_RecoilUp", &_llnunu_mt_el_RecoilUp, "llnunu_mt_el_RecoilUp/F");
+      _tree_out->Branch("llnunu_mt_el_RecoilDn", &_llnunu_mt_el_RecoilDn, "llnunu_mt_el_RecoilDn/F");
+      _tree_out->Branch("llnunu_l2_pt_mu_RecoilUp", &_llnunu_l2_pt_mu_RecoilUp, "llnunu_l2_pt_mu_RecoilUp/F");
+      _tree_out->Branch("llnunu_l2_pt_mu_RecoilDn", &_llnunu_l2_pt_mu_RecoilDn, "llnunu_l2_pt_mu_RecoilDn/F");
+      _tree_out->Branch("llnunu_l2_phi_mu_RecoilUp", &_llnunu_l2_phi_mu_RecoilUp, "llnunu_l2_phi_mu_RecoilUp/F");
+      _tree_out->Branch("llnunu_l2_phi_mu_RecoilDn", &_llnunu_l2_phi_mu_RecoilDn, "llnunu_l2_phi_mu_RecoilDn/F");
+      _tree_out->Branch("llnunu_mt_mu_RecoilUp", &_llnunu_mt_mu_RecoilUp, "llnunu_mt_mu_RecoilUp/F");
+      _tree_out->Branch("llnunu_mt_mu_RecoilDn", &_llnunu_mt_mu_RecoilDn, "llnunu_mt_mu_RecoilDn/F");
 
+    }
   }
-
 
   // _storeErr 
   if(_tree_out->FindBranch("llnunu_l2_t1*_*")) _tree_out->SetBranchStatus("llnunu_l2_t1*_*", 0);
@@ -968,17 +969,27 @@ void doMuonPtRecalib()
     _llnunu_l1_mt = (Float_t)zv.Mt();
     _llnunu_l1_mass = (Float_t)zv.M();
 
+    /*
+    TVector2 vec_met(_llnunu_l2_pt*cos(_llnunu_l2_phi), _llnunu_l2_pt*sin(_llnunu_l2_phi));
+    Float_t et1 = TMath::Sqrt(_llnunu_l1_mass*_llnunu_l1_mass + _llnunu_l1_pt*_llnunu_l1_pt);
+    Float_t et2 = TMath::Sqrt(_llnunu_l1_mass*_llnunu_l1_mass + _llnunu_l2_pt*_llnunu_l2_pt);
+    _llnunu_mt = TMath::Sqrt(2.0*_llnunu_l1_mass*_llnunu_l1_mass+2.0*(et1*et2
+               -_llnunu_l1_pt*cos(_llnunu_l1_phi)*_llnunu_l2_pt*cos(_llnunu_l2_phi)
+               -_llnunu_l1_pt*sin(_llnunu_l1_phi)*_llnunu_l2_pt*sin(_llnunu_l2_phi)));
+    */    
     _llnunu_mt = MTCalc(_llnunu_l2_pt,_llnunu_l2_phi);
 
   }
 
 }
 
-void fillMETUncert(){
+void doMTUnc(){
 
-  _llnunu_mt = MTCalc(_llnunu_l2_pt,_llnunu_l2_phi);
+    if(!_doMTUncDummy){
 
-  float mt_JetEn_col[5] = {
+        _llnunu_mt = MTCalc(_llnunu_l2_pt,_llnunu_l2_phi);
+
+        float mt_JetEn_col[5] = {
                _llnunu_mt,
                MTCalc(_llnunu_l2_pt_JetEnUp,_llnunu_l2_phi_JetEnUp),
                MTCalc(_llnunu_l2_pt_JetEnUp,_llnunu_l2_phi_JetEnDn),
@@ -986,10 +997,10 @@ void fillMETUncert(){
                MTCalc(_llnunu_l2_pt_JetEnDn,_llnunu_l2_phi_JetEnDn)
               };
 
-  _llnunu_mt_JetEnUp = TMath::MaxElement(5, mt_JetEn_col);
-  _llnunu_mt_JetEnDn = TMath::MinElement(5, mt_JetEn_col);
+      	_llnunu_mt_JetEnUp = TMath::MaxElement(5, mt_JetEn_col);
+      	_llnunu_mt_JetEnDn = TMath::MinElement(5, mt_JetEn_col);
 
-  float mt_JetRes_col[5] = {
+        float mt_JetRes_col[5] = {
                _llnunu_mt,
                MTCalc(_llnunu_l2_pt_JetResUp,_llnunu_l2_phi_JetResUp),
                MTCalc(_llnunu_l2_pt_JetResUp,_llnunu_l2_phi_JetResDn),
@@ -997,11 +1008,11 @@ void fillMETUncert(){
                MTCalc(_llnunu_l2_pt_JetResDn,_llnunu_l2_phi_JetResDn)
               };
 
-  _llnunu_mt_JetResUp = TMath::MaxElement(5, mt_JetRes_col);
-  _llnunu_mt_JetResDn = TMath::MinElement(5, mt_JetRes_col);
+        _llnunu_mt_JetResUp = TMath::MaxElement(5, mt_JetRes_col);
+        _llnunu_mt_JetResDn = TMath::MinElement(5, mt_JetRes_col);
 
 
-  float mt_MuonEn_col[5] = {
+        float mt_MuonEn_col[5] = {
                _llnunu_mt,
                MTCalc(_llnunu_l2_pt_MuonEnUp,_llnunu_l2_phi_MuonEnUp),
                MTCalc(_llnunu_l2_pt_MuonEnUp,_llnunu_l2_phi_MuonEnDn),
@@ -1009,11 +1020,11 @@ void fillMETUncert(){
                MTCalc(_llnunu_l2_pt_MuonEnDn,_llnunu_l2_phi_MuonEnDn)
               };
 
-  _llnunu_mt_MuonEnUp = TMath::MaxElement(5, mt_MuonEn_col);
-  _llnunu_mt_MuonEnDn = TMath::MinElement(5, mt_MuonEn_col);
+        _llnunu_mt_MuonEnUp = TMath::MaxElement(5, mt_MuonEn_col);
+        _llnunu_mt_MuonEnDn = TMath::MinElement(5, mt_MuonEn_col);
 
 
-  float mt_ElectronEn_col[5] = {
+        float mt_ElectronEn_col[5] = {
                _llnunu_mt,
                MTCalc(_llnunu_l2_pt_ElectronEnUp,_llnunu_l2_phi_ElectronEnUp),
                MTCalc(_llnunu_l2_pt_ElectronEnUp,_llnunu_l2_phi_ElectronEnDn),
@@ -1021,10 +1032,10 @@ void fillMETUncert(){
                MTCalc(_llnunu_l2_pt_ElectronEnDn,_llnunu_l2_phi_ElectronEnDn)
               };
 
-  _llnunu_mt_ElectronEnUp = TMath::MaxElement(5, mt_ElectronEn_col);
-  _llnunu_mt_ElectronEnDn = TMath::MinElement(5, mt_ElectronEn_col);
+        _llnunu_mt_ElectronEnUp = TMath::MaxElement(5, mt_ElectronEn_col);
+        _llnunu_mt_ElectronEnDn = TMath::MinElement(5, mt_ElectronEn_col);
 
-  float mt_PhotonEn_col[5] = {
+        float mt_PhotonEn_col[5] = {
                _llnunu_mt,
                MTCalc(_llnunu_l2_pt_PhotonEnUp,_llnunu_l2_phi_PhotonEnUp),
                MTCalc(_llnunu_l2_pt_PhotonEnUp,_llnunu_l2_phi_PhotonEnDn),
@@ -1032,11 +1043,11 @@ void fillMETUncert(){
                MTCalc(_llnunu_l2_pt_PhotonEnDn,_llnunu_l2_phi_PhotonEnDn)
               };
 
-  _llnunu_mt_PhotonEnUp = TMath::MaxElement(5, mt_PhotonEn_col);
-  _llnunu_mt_PhotonEnDn = TMath::MinElement(5, mt_PhotonEn_col);
+        _llnunu_mt_PhotonEnUp = TMath::MaxElement(5, mt_PhotonEn_col);
+        _llnunu_mt_PhotonEnDn = TMath::MinElement(5, mt_PhotonEn_col);
 
 
-  float mt_TauEn_col[5] = {
+        float mt_TauEn_col[5] = {
                _llnunu_mt,
                MTCalc(_llnunu_l2_pt_TauEnUp,_llnunu_l2_phi_TauEnUp),
                MTCalc(_llnunu_l2_pt_TauEnUp,_llnunu_l2_phi_TauEnDn),
@@ -1044,10 +1055,10 @@ void fillMETUncert(){
                MTCalc(_llnunu_l2_pt_TauEnDn,_llnunu_l2_phi_TauEnDn)
               };
 
-  _llnunu_mt_TauEnUp = TMath::MaxElement(5, mt_TauEn_col);
-  _llnunu_mt_TauEnDn = TMath::MinElement(5, mt_TauEn_col);
+        _llnunu_mt_TauEnUp = TMath::MaxElement(5, mt_TauEn_col);
+        _llnunu_mt_TauEnDn = TMath::MinElement(5, mt_TauEn_col);
 
-  float mt_Uncluster_col[5] = {
+        float mt_Uncluster_col[5] = {
                _llnunu_mt,
                MTCalc(_llnunu_l2_pt_UnclusterUp,_llnunu_l2_phi_UnclusterUp),
                MTCalc(_llnunu_l2_pt_UnclusterUp,_llnunu_l2_phi_UnclusterDn),
@@ -1055,362 +1066,285 @@ void fillMETUncert(){
                MTCalc(_llnunu_l2_pt_UnclusterDn,_llnunu_l2_phi_UnclusterDn)
               };
 
-  _llnunu_mt_UnclusterUp = TMath::MaxElement(5, mt_Uncluster_col);
-  _llnunu_mt_UnclusterDn = TMath::MinElement(5, mt_Uncluster_col);
+        _llnunu_mt_UnclusterUp = TMath::MaxElement(5, mt_Uncluster_col);
+        _llnunu_mt_UnclusterDn = TMath::MinElement(5, mt_Uncluster_col);
 
-  if (_doGJetsSkim) 
-  {
+    }
+    else{
+	_llnunu_mt_JetEnUp = _llnunu_mt;
+        _llnunu_mt_JetEnDn = _llnunu_mt;
+        _llnunu_mt_JetResUp = _llnunu_mt;
+        _llnunu_mt_JetResDn = _llnunu_mt;
+        _llnunu_mt_MuonEnUp = _llnunu_mt;
+        _llnunu_mt_MuonEnDn = _llnunu_mt;
+        _llnunu_mt_ElectronEnUp = _llnunu_mt;
+        _llnunu_mt_ElectronEnDn = _llnunu_mt;
+        _llnunu_mt_PhotonEnUp = _llnunu_mt;
+        _llnunu_mt_PhotonEnDn = _llnunu_mt;
+        _llnunu_mt_TauEnUp = _llnunu_mt;
+        _llnunu_mt_TauEnDn = _llnunu_mt;
+        _llnunu_mt_UnclusterUp = _llnunu_mt;
+        _llnunu_mt_UnclusterDn = _llnunu_mt;
 
-    // met
-    _llnunu_l2_pt_JetEnUp = _gjet_l2_t1Pt_JetEnUp;
-    _llnunu_l2_pt_JetEnDn = _gjet_l2_t1Pt_JetEnDn;
-    _llnunu_l2_phi_JetEnUp = _gjet_l2_t1Phi_JetEnUp;
-    _llnunu_l2_phi_JetEnDn = _gjet_l2_t1Phi_JetEnDn;
-    _llnunu_l2_pt_JetResUp = _gjet_l2_t1Pt_JetResUp;
-    _llnunu_l2_pt_JetResDn = _gjet_l2_t1Pt_JetResDn;
-    _llnunu_l2_phi_JetResUp = _gjet_l2_t1Phi_JetResUp;
-    _llnunu_l2_phi_JetResDn = _gjet_l2_t1Phi_JetResDn;
-    _llnunu_l2_pt_MuonEnUp = _gjet_l2_t1Pt_MuonEnUp;
-    _llnunu_l2_pt_MuonEnDn = _gjet_l2_t1Pt_MuonEnDn;
-    _llnunu_l2_phi_MuonEnUp = _gjet_l2_t1Phi_MuonEnUp;
-    _llnunu_l2_phi_MuonEnDn = _gjet_l2_t1Phi_MuonEnDn;
-    _llnunu_l2_pt_TauEnUp = _gjet_l2_t1Pt_TauEnUp;
-    _llnunu_l2_pt_TauEnDn = _gjet_l2_t1Pt_TauEnDn;
-    _llnunu_l2_phi_TauEnUp = _gjet_l2_t1Phi_TauEnUp;
-    _llnunu_l2_phi_TauEnDn = _gjet_l2_t1Phi_TauEnDn;
-    _llnunu_l2_pt_ElectronEnUp = _gjet_l2_t1Pt_ElectronEnUp;
-    _llnunu_l2_pt_ElectronEnDn = _gjet_l2_t1Pt_ElectronEnDn;
-    _llnunu_l2_phi_ElectronEnUp = _gjet_l2_t1Phi_ElectronEnUp;
-    _llnunu_l2_phi_ElectronEnDn = _gjet_l2_t1Phi_ElectronEnDn;
-    _llnunu_l2_pt_PhotonEnUp = _gjet_l2_t1Pt_PhotonEnUp;
-    _llnunu_l2_pt_PhotonEnDn = _gjet_l2_t1Pt_PhotonEnDn;
-    _llnunu_l2_phi_PhotonEnUp = _gjet_l2_t1Phi_PhotonEnUp;
-    _llnunu_l2_phi_PhotonEnDn = _gjet_l2_t1Phi_PhotonEnDn;
-    _llnunu_l2_pt_UnclusterUp = _gjet_l2_t1Pt_UnclusterUp;
-    _llnunu_l2_pt_UnclusterDn = _gjet_l2_t1Pt_UnclusterDn;
-    _llnunu_l2_phi_UnclusterUp = _gjet_l2_t1Phi_UnclusterUp;
-    _llnunu_l2_phi_UnclusterDn = _gjet_l2_t1Phi_UnclusterDn;
+    }
 
-
-    // mt
-
-    _llnunu_mt_el = MTCalcEl(_llnunu_l2_pt_el,_llnunu_l2_phi_el);
-
-    float Up_pt = _gjet_l2_t1Pt_JetEnUp/_gjet_l2_pt;
-    float Up_phi = _gjet_l2_t1Phi_JetEnUp/_gjet_l2_phi; 
-    float Dn_pt = _gjet_l2_t1Pt_JetEnDn/_gjet_l2_pt;
-    float Dn_phi = _gjet_l2_t1Phi_JetEnDn/_gjet_l2_phi;
-        
-    float mt_col[5];
-
-    mt_col[0] = _llnunu_mt_el;
-    mt_col[1] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
-    mt_col[2] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
-    mt_col[3] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
-    mt_col[4] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
-              
-    _llnunu_mt_el_JetEnUp = TMath::MaxElement(5, mt_col);
-    _llnunu_mt_el_JetEnDn = TMath::MinElement(5, mt_col);
-
-    Up_pt = _gjet_l2_t1Pt_JetResUp/_gjet_l2_pt;
-    Up_phi = _gjet_l2_t1Phi_JetResUp/_gjet_l2_phi;    
-    Dn_pt = _gjet_l2_t1Pt_JetResDn/_gjet_l2_pt;
-    Dn_phi = _gjet_l2_t1Phi_JetResDn/_gjet_l2_phi;
-
-    mt_col[0] = _llnunu_mt_el;
-    mt_col[1] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
-    mt_col[2] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
-    mt_col[3] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
-    mt_col[4] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
-
-    _llnunu_mt_el_JetResUp = TMath::MaxElement(5, mt_col);
-    _llnunu_mt_el_JetResDn = TMath::MinElement(5, mt_col);
-
-    Up_pt = _gjet_l2_t1Pt_MuonEnUp/_gjet_l2_pt;
-    Up_phi = _gjet_l2_t1Phi_MuonEnUp/_gjet_l2_phi;
-    Dn_pt = _gjet_l2_t1Pt_MuonEnDn/_gjet_l2_pt;
-    Dn_phi = _gjet_l2_t1Phi_MuonEnDn/_gjet_l2_phi;
-
-    mt_col[0] = _llnunu_mt_el;
-    mt_col[1] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
-    mt_col[2] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
-    mt_col[3] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
-    mt_col[4] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
-
-    _llnunu_mt_el_MuonEnUp = TMath::MaxElement(5, mt_col);
-    _llnunu_mt_el_MuonEnDn = TMath::MinElement(5, mt_col);
-
-    Up_pt = _gjet_l2_t1Pt_ElectronEnUp/_gjet_l2_pt;
-    Up_phi = _gjet_l2_t1Phi_ElectronEnUp/_gjet_l2_phi;
-    Dn_pt = _gjet_l2_t1Pt_ElectronEnDn/_gjet_l2_pt;
-    Dn_phi = _gjet_l2_t1Phi_ElectronEnDn/_gjet_l2_phi;
-
-    mt_col[0] = _llnunu_mt_el;
-    mt_col[1] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
-    mt_col[2] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
-    mt_col[3] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
-    mt_col[4] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
-
-    _llnunu_mt_el_ElectronEnUp = TMath::MaxElement(5, mt_col);
-    _llnunu_mt_el_ElectronEnDn = TMath::MinElement(5, mt_col);
-
-    Up_pt = _gjet_l2_t1Pt_PhotonEnUp/_gjet_l2_pt;
-    Up_phi = _gjet_l2_t1Phi_PhotonEnUp/_gjet_l2_phi;
-    Dn_pt = _gjet_l2_t1Pt_PhotonEnDn/_gjet_l2_pt;
-    Dn_phi = _gjet_l2_t1Phi_PhotonEnDn/_gjet_l2_phi;
-
-    mt_col[0] = _llnunu_mt_el;
-    mt_col[1] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
-    mt_col[2] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
-    mt_col[3] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
-    mt_col[4] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
-
-    _llnunu_mt_el_PhotonEnUp = TMath::MaxElement(5, mt_col);
-    _llnunu_mt_el_PhotonEnDn = TMath::MinElement(5, mt_col);
-
-    Up_pt = _gjet_l2_t1Pt_TauEnUp/_gjet_l2_pt;
-    Up_phi = _gjet_l2_t1Phi_TauEnUp/_gjet_l2_phi;
-    Dn_pt = _gjet_l2_t1Pt_TauEnDn/_gjet_l2_pt;
-    Dn_phi = _gjet_l2_t1Phi_TauEnDn/_gjet_l2_phi;
-
-    mt_col[0] = _llnunu_mt_el;
-    mt_col[1] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
-    mt_col[2] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
-    mt_col[3] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
-    mt_col[4] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
-
-    _llnunu_mt_el_TauEnUp = TMath::MaxElement(5, mt_col);
-    _llnunu_mt_el_TauEnDn = TMath::MinElement(5, mt_col);
-
-    Up_pt = _gjet_l2_t1Pt_UnclusterUp/_gjet_l2_pt;
-    Up_phi = _gjet_l2_t1Phi_UnclusterUp/_gjet_l2_phi;
-    Dn_pt = _gjet_l2_t1Pt_UnclusterDn/_gjet_l2_pt;
-    Dn_phi = _gjet_l2_t1Phi_UnclusterDn/_gjet_l2_phi;
-
-    mt_col[0] = _llnunu_mt_el;
-    mt_col[1] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
-    mt_col[2] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
-    mt_col[3] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
-    mt_col[4] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
-
-    _llnunu_mt_el_UnclusterUp = TMath::MaxElement(5, mt_col);
-    _llnunu_mt_el_UnclusterDn = TMath::MinElement(5, mt_col);
-
-
-    // muon
-    _llnunu_mt_mu = MTCalcMu(_llnunu_l2_pt_mu,_llnunu_l2_phi_mu);
-
-    Up_pt = _gjet_l2_t1Pt_JetEnUp/_gjet_l2_pt;
-    Up_phi = _gjet_l2_t1Phi_JetEnUp/_gjet_l2_phi; 
-    Dn_pt = _gjet_l2_t1Pt_JetEnDn/_gjet_l2_pt;
-    Dn_phi = _gjet_l2_t1Phi_JetEnDn/_gjet_l2_phi;
-
-    mt_col[0] = _llnunu_mt_mu;
-    mt_col[1] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
-    mt_col[2] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
-    mt_col[3] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
-    mt_col[4] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
-
-    _llnunu_mt_mu_JetEnUp = TMath::MaxElement(5, mt_col);
-    _llnunu_mt_mu_JetEnDn = TMath::MinElement(5, mt_col);
-
-    Up_pt = _gjet_l2_t1Pt_JetResUp/_gjet_l2_pt;
-    Up_phi = _gjet_l2_t1Phi_JetResUp/_gjet_l2_phi;
-    Dn_pt = _gjet_l2_t1Pt_JetResDn/_gjet_l2_pt;
-    Dn_phi = _gjet_l2_t1Phi_JetResDn/_gjet_l2_phi;
-
-    mt_col[0] = _llnunu_mt_mu;
-    mt_col[1] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
-    mt_col[2] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
-    mt_col[3] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
-    mt_col[4] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
-
-    _llnunu_mt_mu_JetResUp = TMath::MaxElement(5, mt_col);
-    _llnunu_mt_mu_JetResDn = TMath::MinElement(5, mt_col);
-
-    Up_pt = _gjet_l2_t1Pt_MuonEnUp/_gjet_l2_pt;
-    Up_phi = _gjet_l2_t1Phi_MuonEnUp/_gjet_l2_phi;
-    Dn_pt = _gjet_l2_t1Pt_MuonEnDn/_gjet_l2_pt;
-    Dn_phi = _gjet_l2_t1Phi_MuonEnDn/_gjet_l2_phi;
-
-    mt_col[0] = _llnunu_mt_mu;
-    mt_col[1] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
-    mt_col[2] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
-    mt_col[3] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
-    mt_col[4] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
-
-    _llnunu_mt_mu_MuonEnUp = TMath::MaxElement(5, mt_col);
-    _llnunu_mt_mu_MuonEnDn = TMath::MinElement(5, mt_col);
-
-    Up_pt = _gjet_l2_t1Pt_ElectronEnUp/_gjet_l2_pt;
-    Up_phi = _gjet_l2_t1Phi_ElectronEnUp/_gjet_l2_phi;
-    Dn_pt = _gjet_l2_t1Pt_ElectronEnDn/_gjet_l2_pt;
-    Dn_phi = _gjet_l2_t1Phi_ElectronEnDn/_gjet_l2_phi;
-
-    mt_col[0] = _llnunu_mt_mu;
-    mt_col[1] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
-    mt_col[2] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
-    mt_col[3] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
-    mt_col[4] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
-
-    _llnunu_mt_mu_ElectronEnUp = TMath::MaxElement(5, mt_col);
-    _llnunu_mt_mu_ElectronEnDn = TMath::MinElement(5, mt_col);
-
-    Up_pt = _gjet_l2_t1Pt_PhotonEnUp/_gjet_l2_pt;
-    Up_phi = _gjet_l2_t1Phi_PhotonEnUp/_gjet_l2_phi;
-    Dn_pt = _gjet_l2_t1Pt_PhotonEnDn/_gjet_l2_pt;
-    Dn_phi = _gjet_l2_t1Phi_PhotonEnDn/_gjet_l2_phi;
-
-    mt_col[0] = _llnunu_mt_mu;
-    mt_col[1] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
-    mt_col[2] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
-    mt_col[3] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
-    mt_col[4] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
-
-    _llnunu_mt_mu_PhotonEnUp = TMath::MaxElement(5, mt_col);
-    _llnunu_mt_mu_PhotonEnDn = TMath::MinElement(5, mt_col);
-
-    Up_pt = _gjet_l2_t1Pt_TauEnUp/_gjet_l2_pt;
-    Up_phi = _gjet_l2_t1Phi_TauEnUp/_gjet_l2_phi;
-    Dn_pt = _gjet_l2_t1Pt_TauEnDn/_gjet_l2_pt;
-    Dn_phi = _gjet_l2_t1Phi_TauEnDn/_gjet_l2_phi;
-
-    mt_col[0] = _llnunu_mt_mu;
-    mt_col[1] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
-    mt_col[2] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
-    mt_col[3] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
-    mt_col[4] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
-
-    _llnunu_mt_mu_TauEnUp = TMath::MaxElement(5, mt_col);
-    _llnunu_mt_mu_TauEnDn = TMath::MinElement(5, mt_col);
-
-    Up_pt = _gjet_l2_t1Pt_UnclusterUp/_gjet_l2_pt;
-    Up_phi = _gjet_l2_t1Phi_UnclusterUp/_gjet_l2_phi;
-    Dn_pt = _gjet_l2_t1Pt_UnclusterDn/_gjet_l2_pt;
-    Dn_phi = _gjet_l2_t1Phi_UnclusterDn/_gjet_l2_phi;
-
-    mt_col[0] = _llnunu_mt_mu;
-    mt_col[1] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
-    mt_col[2] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
-    mt_col[3] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
-    mt_col[4] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
-
-    _llnunu_mt_mu_UnclusterUp = TMath::MaxElement(5, mt_col);
-    _llnunu_mt_mu_UnclusterDn = TMath::MinElement(5, mt_col);
-  }
 }
 
-void fillDummyMETUncert()
-{
+void doMTUncEl(){
 
-  _llnunu_l2_pt_JetEnUp = _llnunu_l1_pt;
-  _llnunu_l2_pt_JetEnDn = _llnunu_l1_pt;
-  _llnunu_l2_phi_JetEnUp = _llnunu_l1_phi;
-  _llnunu_l2_phi_JetEnDn = _llnunu_l1_phi;
-  _llnunu_l2_pt_JetResUp = _llnunu_l1_pt;
-  _llnunu_l2_pt_JetResDn = _llnunu_l1_pt;
-  _llnunu_l2_phi_JetResUp = _llnunu_l1_phi;
-  _llnunu_l2_phi_JetResDn = _llnunu_l1_phi;
-  _llnunu_l2_pt_MuonEnUp = _llnunu_l1_pt;
-  _llnunu_l2_pt_MuonEnDn = _llnunu_l1_pt;
-  _llnunu_l2_phi_MuonEnUp = _llnunu_l1_phi;
-  _llnunu_l2_phi_MuonEnDn = _llnunu_l1_phi;
-  _llnunu_l2_pt_TauEnUp = _llnunu_l1_pt;
-  _llnunu_l2_pt_TauEnDn = _llnunu_l1_pt;
-  _llnunu_l2_phi_TauEnUp = _llnunu_l1_phi;
-  _llnunu_l2_phi_TauEnDn = _llnunu_l1_phi;
-  _llnunu_l2_pt_ElectronEnUp = _llnunu_l1_pt;
-  _llnunu_l2_pt_ElectronEnDn = _llnunu_l1_pt;
-  _llnunu_l2_phi_ElectronEnUp = _llnunu_l1_phi;
-  _llnunu_l2_phi_ElectronEnDn = _llnunu_l1_phi;
-  _llnunu_l2_pt_PhotonEnUp = _llnunu_l1_pt;
-  _llnunu_l2_pt_PhotonEnDn = _llnunu_l1_pt;
-  _llnunu_l2_phi_PhotonEnUp = _llnunu_l1_phi;
-  _llnunu_l2_phi_PhotonEnDn = _llnunu_l1_phi;
-  _llnunu_l2_pt_UnclusterUp = _llnunu_l1_pt;
-  _llnunu_l2_pt_UnclusterDn = _llnunu_l1_pt;
-  _llnunu_l2_phi_UnclusterUp = _llnunu_l1_phi;
-  _llnunu_l2_phi_UnclusterDn = _llnunu_l1_phi;
+      if(!_doMTUncDummy){
 
-  _llnunu_mt_JetEnUp = _llnunu_mt;
-  _llnunu_mt_JetEnDn = _llnunu_mt;
-  _llnunu_mt_JetResUp = _llnunu_mt;
-  _llnunu_mt_JetResDn = _llnunu_mt;
-  _llnunu_mt_MuonEnUp = _llnunu_mt;
-  _llnunu_mt_MuonEnDn = _llnunu_mt;
-  _llnunu_mt_ElectronEnUp = _llnunu_mt;
-  _llnunu_mt_ElectronEnDn = _llnunu_mt;
-  _llnunu_mt_PhotonEnUp = _llnunu_mt;
-  _llnunu_mt_PhotonEnDn = _llnunu_mt;
-  _llnunu_mt_TauEnUp = _llnunu_mt;
-  _llnunu_mt_TauEnDn = _llnunu_mt;
-  _llnunu_mt_UnclusterUp = _llnunu_mt;
-  _llnunu_mt_UnclusterDn = _llnunu_mt;
+        _llnunu_mt_el = MTCalcEl(_llnunu_l2_pt_el,_llnunu_l2_phi_el);
 
-  if (_doGJetsSkim)
-  {
+        float Up_pt = _gjet_l2_t1Pt_JetEnUp/_gjet_l2_pt;
+        float Up_phi = _gjet_l2_t1Phi_JetEnUp/_gjet_l2_phi; 
+        float Dn_pt = _gjet_l2_t1Pt_JetEnDn/_gjet_l2_pt;
+        float Dn_phi = _gjet_l2_t1Phi_JetEnDn/_gjet_l2_phi;
 
-    _llnunu_l2_pt_JetEnUp = _gjet_l2_pt;
-    _llnunu_l2_pt_JetEnDn = _gjet_l2_pt;
-    _llnunu_l2_phi_JetEnUp = _gjet_l2_phi;
-    _llnunu_l2_phi_JetEnDn = _gjet_l2_phi;
-    _llnunu_l2_pt_JetResUp = _gjet_l2_pt;
-    _llnunu_l2_pt_JetResDn = _gjet_l2_pt;
-    _llnunu_l2_phi_JetResUp = _gjet_l2_phi;
-    _llnunu_l2_phi_JetResDn = _gjet_l2_phi;
-    _llnunu_l2_pt_MuonEnUp = _gjet_l2_pt;
-    _llnunu_l2_pt_MuonEnDn = _gjet_l2_pt;
-    _llnunu_l2_phi_MuonEnUp = _gjet_l2_phi;
-    _llnunu_l2_phi_MuonEnDn = _gjet_l2_phi;
-    _llnunu_l2_pt_TauEnUp = _gjet_l2_pt;
-    _llnunu_l2_pt_TauEnDn = _gjet_l2_pt;
-    _llnunu_l2_phi_TauEnUp = _gjet_l2_phi;
-    _llnunu_l2_phi_TauEnDn = _gjet_l2_phi;
-    _llnunu_l2_pt_ElectronEnUp = _gjet_l2_pt;
-    _llnunu_l2_pt_ElectronEnDn = _gjet_l2_pt;
-    _llnunu_l2_phi_ElectronEnUp = _gjet_l2_phi;
-    _llnunu_l2_phi_ElectronEnDn = _gjet_l2_phi;
-    _llnunu_l2_pt_PhotonEnUp = _gjet_l2_pt;
-    _llnunu_l2_pt_PhotonEnDn = _gjet_l2_pt;
-    _llnunu_l2_phi_PhotonEnUp = _gjet_l2_phi;
-    _llnunu_l2_phi_PhotonEnDn = _gjet_l2_phi;
-    _llnunu_l2_pt_UnclusterUp = _gjet_l2_pt;
-    _llnunu_l2_pt_UnclusterDn = _gjet_l2_pt;
-    _llnunu_l2_phi_UnclusterUp = _gjet_l2_phi;
-    _llnunu_l2_phi_UnclusterDn = _gjet_l2_phi;
+        float mt_col[5];
+        
+        mt_col[0] = _llnunu_mt_el;
+        mt_col[1] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
+        mt_col[2] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
+        mt_col[3] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
+        mt_col[4] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
+              
+        _llnunu_mt_el_JetEnUp = TMath::MaxElement(5, mt_col);
+        _llnunu_mt_el_JetEnDn = TMath::MinElement(5, mt_col);
 
-    _llnunu_mt_el_JetEnUp = _llnunu_mt_el;
-    _llnunu_mt_el_JetEnDn = _llnunu_mt_el;
-    _llnunu_mt_el_JetResUp = _llnunu_mt_el;
-    _llnunu_mt_el_JetResDn = _llnunu_mt_el;
-    _llnunu_mt_el_MuonEnUp = _llnunu_mt_el;
-    _llnunu_mt_el_MuonEnDn = _llnunu_mt_el;
-    _llnunu_mt_el_ElectronEnUp = _llnunu_mt_el;
-    _llnunu_mt_el_ElectronEnDn = _llnunu_mt_el;
-    _llnunu_mt_el_PhotonEnUp = _llnunu_mt_el;
-    _llnunu_mt_el_PhotonEnDn = _llnunu_mt_el;
-    _llnunu_mt_el_TauEnUp = _llnunu_mt_el;
-    _llnunu_mt_el_TauEnDn = _llnunu_mt_el;
-    _llnunu_mt_el_UnclusterUp = _llnunu_mt_el;
-    _llnunu_mt_el_UnclusterDn = _llnunu_mt_el;
+        Up_pt = _gjet_l2_t1Pt_JetResUp/_gjet_l2_pt;
+        Up_phi = _gjet_l2_t1Phi_JetResUp/_gjet_l2_phi;    
+        Dn_pt = _gjet_l2_t1Pt_JetResDn/_gjet_l2_pt;
+        Dn_phi = _gjet_l2_t1Phi_JetResDn/_gjet_l2_phi;
+
+        mt_col[0] = _llnunu_mt_el;
+        mt_col[1] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
+        mt_col[2] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
+        mt_col[3] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
+        mt_col[4] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
+
+        _llnunu_mt_el_JetResUp = TMath::MaxElement(5, mt_col);
+        _llnunu_mt_el_JetResDn = TMath::MinElement(5, mt_col);
+
+        Up_pt = _gjet_l2_t1Pt_MuonEnUp/_gjet_l2_pt;
+        Up_phi = _gjet_l2_t1Phi_MuonEnUp/_gjet_l2_phi;
+        Dn_pt = _gjet_l2_t1Pt_MuonEnDn/_gjet_l2_pt;
+        Dn_phi = _gjet_l2_t1Phi_MuonEnDn/_gjet_l2_phi;
+
+        mt_col[0] = _llnunu_mt_el;
+        mt_col[1] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
+        mt_col[2] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
+        mt_col[3] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
+        mt_col[4] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
+
+        _llnunu_mt_el_MuonEnUp = TMath::MaxElement(5, mt_col);
+        _llnunu_mt_el_MuonEnDn = TMath::MinElement(5, mt_col);
+
+        Up_pt = _gjet_l2_t1Pt_ElectronEnUp/_gjet_l2_pt;
+        Up_phi = _gjet_l2_t1Phi_ElectronEnUp/_gjet_l2_phi;
+        Dn_pt = _gjet_l2_t1Pt_ElectronEnDn/_gjet_l2_pt;
+        Dn_phi = _gjet_l2_t1Phi_ElectronEnDn/_gjet_l2_phi;
+
+        mt_col[0] = _llnunu_mt_el;
+        mt_col[1] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
+        mt_col[2] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
+        mt_col[3] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
+        mt_col[4] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
+
+        _llnunu_mt_el_ElectronEnUp = TMath::MaxElement(5, mt_col);
+        _llnunu_mt_el_ElectronEnDn = TMath::MinElement(5, mt_col);
+
+        Up_pt = _gjet_l2_t1Pt_PhotonEnUp/_gjet_l2_pt;
+        Up_phi = _gjet_l2_t1Phi_PhotonEnUp/_gjet_l2_phi;
+        Dn_pt = _gjet_l2_t1Pt_PhotonEnDn/_gjet_l2_pt;
+        Dn_phi = _gjet_l2_t1Phi_PhotonEnDn/_gjet_l2_phi;
+
+        mt_col[0] = _llnunu_mt_el;
+        mt_col[1] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
+        mt_col[2] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
+        mt_col[3] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
+        mt_col[4] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
+
+        _llnunu_mt_el_PhotonEnUp = TMath::MaxElement(5, mt_col);
+        _llnunu_mt_el_PhotonEnDn = TMath::MinElement(5, mt_col);
+
+        Up_pt = _gjet_l2_t1Pt_TauEnUp/_gjet_l2_pt;
+        Up_phi = _gjet_l2_t1Phi_TauEnUp/_gjet_l2_phi;
+        Dn_pt = _gjet_l2_t1Pt_TauEnDn/_gjet_l2_pt;
+        Dn_phi = _gjet_l2_t1Phi_TauEnDn/_gjet_l2_phi;
+
+        mt_col[0] = _llnunu_mt_el;
+        mt_col[1] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
+        mt_col[2] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
+        mt_col[3] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
+        mt_col[4] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
+
+        _llnunu_mt_el_TauEnUp = TMath::MaxElement(5, mt_col);
+        _llnunu_mt_el_TauEnDn = TMath::MinElement(5, mt_col);
+
+        Up_pt = _gjet_l2_t1Pt_UnclusterUp/_gjet_l2_pt;
+        Up_phi = _gjet_l2_t1Phi_UnclusterUp/_gjet_l2_phi;
+        Dn_pt = _gjet_l2_t1Pt_UnclusterDn/_gjet_l2_pt;
+        Dn_phi = _gjet_l2_t1Phi_UnclusterDn/_gjet_l2_phi;
+
+        mt_col[0] = _llnunu_mt_el;
+        mt_col[1] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
+        mt_col[2] = MTCalcEl(Up_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
+        mt_col[3] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Up_phi*_llnunu_l2_phi_el);
+        mt_col[4] = MTCalcEl(Dn_pt*_llnunu_l2_pt_el, Dn_phi*_llnunu_l2_phi_el);
+
+        _llnunu_mt_el_UnclusterUp = TMath::MaxElement(5, mt_col);
+        _llnunu_mt_el_UnclusterDn = TMath::MinElement(5, mt_col);
 
 
-    _llnunu_mt_mu_JetEnUp = _llnunu_mt_mu;
-    _llnunu_mt_mu_JetEnDn = _llnunu_mt_mu;
-    _llnunu_mt_mu_JetResUp = _llnunu_mt_mu;
-    _llnunu_mt_mu_JetResDn = _llnunu_mt_mu;
-    _llnunu_mt_mu_MuonEnUp = _llnunu_mt_mu;
-    _llnunu_mt_mu_MuonEnDn = _llnunu_mt_mu;
-    _llnunu_mt_mu_ElectronEnUp = _llnunu_mt_mu;
-    _llnunu_mt_mu_ElectronEnDn = _llnunu_mt_mu;
-    _llnunu_mt_mu_PhotonEnUp = _llnunu_mt_mu;
-    _llnunu_mt_mu_PhotonEnDn = _llnunu_mt_mu;
-    _llnunu_mt_mu_TauEnUp = _llnunu_mt_mu;
-    _llnunu_mt_mu_TauEnDn = _llnunu_mt_mu;
-    _llnunu_mt_mu_UnclusterUp = _llnunu_mt_mu;
-    _llnunu_mt_mu_UnclusterDn = _llnunu_mt_mu;
-  }
- 
+    }
+    else{
+
+        _llnunu_mt_el_JetEnUp = _llnunu_mt_el;
+        _llnunu_mt_el_JetEnDn = _llnunu_mt_el;
+        _llnunu_mt_el_JetResUp = _llnunu_mt_el;
+        _llnunu_mt_el_JetResDn = _llnunu_mt_el;
+        _llnunu_mt_el_MuonEnUp = _llnunu_mt_el;
+        _llnunu_mt_el_MuonEnDn = _llnunu_mt_el;
+        _llnunu_mt_el_ElectronEnUp = _llnunu_mt_el;
+        _llnunu_mt_el_ElectronEnDn = _llnunu_mt_el;
+        _llnunu_mt_el_PhotonEnUp = _llnunu_mt_el;
+        _llnunu_mt_el_PhotonEnDn = _llnunu_mt_el;
+        _llnunu_mt_el_TauEnUp = _llnunu_mt_el;
+        _llnunu_mt_el_TauEnDn = _llnunu_mt_el;
+        _llnunu_mt_el_UnclusterUp = _llnunu_mt_el;
+        _llnunu_mt_el_UnclusterDn = _llnunu_mt_el;
+
+    }
+
+}
+
+void doMTUncMu(){
+
+     if(!_doMTUncDummy){
+
+        _llnunu_mt_mu = MTCalcMu(_llnunu_l2_pt_mu,_llnunu_l2_phi_mu);
+
+        float Up_pt = _gjet_l2_t1Pt_JetEnUp/_gjet_l2_pt;
+        float Up_phi = _gjet_l2_t1Phi_JetEnUp/_gjet_l2_phi;
+        float Dn_pt = _gjet_l2_t1Pt_JetEnDn/_gjet_l2_pt;
+        float Dn_phi = _gjet_l2_t1Phi_JetEnDn/_gjet_l2_phi;
+
+        float mt_col[5];
+
+        mt_col[0] = _llnunu_mt_mu;
+        mt_col[1] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
+        mt_col[2] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
+        mt_col[3] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
+        mt_col[4] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
+
+        _llnunu_mt_mu_JetEnUp = TMath::MaxElement(5, mt_col);
+        _llnunu_mt_mu_JetEnDn = TMath::MinElement(5, mt_col);
+
+        Up_pt = _gjet_l2_t1Pt_JetResUp/_gjet_l2_pt;
+        Up_phi = _gjet_l2_t1Phi_JetResUp/_gjet_l2_phi;
+        Dn_pt = _gjet_l2_t1Pt_JetResDn/_gjet_l2_pt;
+        Dn_phi = _gjet_l2_t1Phi_JetResDn/_gjet_l2_phi;
+
+        mt_col[0] = _llnunu_mt_mu;
+        mt_col[1] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
+        mt_col[2] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
+        mt_col[3] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
+        mt_col[4] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
+
+        _llnunu_mt_mu_JetResUp = TMath::MaxElement(5, mt_col);
+        _llnunu_mt_mu_JetResDn = TMath::MinElement(5, mt_col);
+
+        Up_pt = _gjet_l2_t1Pt_MuonEnUp/_gjet_l2_pt;
+        Up_phi = _gjet_l2_t1Phi_MuonEnUp/_gjet_l2_phi;
+        Dn_pt = _gjet_l2_t1Pt_MuonEnDn/_gjet_l2_pt;
+        Dn_phi = _gjet_l2_t1Phi_MuonEnDn/_gjet_l2_phi;
+
+        mt_col[0] = _llnunu_mt_mu;
+        mt_col[1] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
+        mt_col[2] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
+        mt_col[3] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
+        mt_col[4] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
+
+        _llnunu_mt_mu_MuonEnUp = TMath::MaxElement(5, mt_col);
+        _llnunu_mt_mu_MuonEnDn = TMath::MinElement(5, mt_col);
+
+        Up_pt = _gjet_l2_t1Pt_ElectronEnUp/_gjet_l2_pt;
+        Up_phi = _gjet_l2_t1Phi_ElectronEnUp/_gjet_l2_phi;
+        Dn_pt = _gjet_l2_t1Pt_ElectronEnDn/_gjet_l2_pt;
+        Dn_phi = _gjet_l2_t1Phi_ElectronEnDn/_gjet_l2_phi;
+
+        mt_col[0] = _llnunu_mt_mu;
+        mt_col[1] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
+        mt_col[2] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
+        mt_col[3] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
+        mt_col[4] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
+
+        _llnunu_mt_mu_ElectronEnUp = TMath::MaxElement(5, mt_col);
+        _llnunu_mt_mu_ElectronEnDn = TMath::MinElement(5, mt_col);
+
+        Up_pt = _gjet_l2_t1Pt_PhotonEnUp/_gjet_l2_pt;
+        Up_phi = _gjet_l2_t1Phi_PhotonEnUp/_gjet_l2_phi;
+        Dn_pt = _gjet_l2_t1Pt_PhotonEnDn/_gjet_l2_pt;
+        Dn_phi = _gjet_l2_t1Phi_PhotonEnDn/_gjet_l2_phi;
+
+        mt_col[0] = _llnunu_mt_mu;
+        mt_col[1] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
+        mt_col[2] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
+        mt_col[3] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
+        mt_col[4] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
+
+        _llnunu_mt_mu_PhotonEnUp = TMath::MaxElement(5, mt_col);
+        _llnunu_mt_mu_PhotonEnDn = TMath::MinElement(5, mt_col);
+
+        Up_pt = _gjet_l2_t1Pt_TauEnUp/_gjet_l2_pt;
+        Up_phi = _gjet_l2_t1Phi_TauEnUp/_gjet_l2_phi;
+        Dn_pt = _gjet_l2_t1Pt_TauEnDn/_gjet_l2_pt;
+        Dn_phi = _gjet_l2_t1Phi_TauEnDn/_gjet_l2_phi;
+
+        mt_col[0] = _llnunu_mt_mu;
+        mt_col[1] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
+        mt_col[2] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
+        mt_col[3] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
+        mt_col[4] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
+
+        _llnunu_mt_mu_TauEnUp = TMath::MaxElement(5, mt_col);
+        _llnunu_mt_mu_TauEnDn = TMath::MinElement(5, mt_col);
+
+        Up_pt = _gjet_l2_t1Pt_UnclusterUp/_gjet_l2_pt;
+        Up_phi = _gjet_l2_t1Phi_UnclusterUp/_gjet_l2_phi;
+        Dn_pt = _gjet_l2_t1Pt_UnclusterDn/_gjet_l2_pt;
+        Dn_phi = _gjet_l2_t1Phi_UnclusterDn/_gjet_l2_phi;
+
+        mt_col[0] = _llnunu_mt_mu;
+        mt_col[1] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
+        mt_col[2] = MTCalcMu(Up_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
+        mt_col[3] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Up_phi*_llnunu_l2_phi_mu);
+        mt_col[4] = MTCalcMu(Dn_pt*_llnunu_l2_pt_mu, Dn_phi*_llnunu_l2_phi_mu);
+
+        _llnunu_mt_mu_UnclusterUp = TMath::MaxElement(5, mt_col);
+        _llnunu_mt_mu_UnclusterDn = TMath::MinElement(5, mt_col);
+
+    }
+    else{
+
+        _llnunu_mt_mu_JetEnUp = _llnunu_mt_mu;
+        _llnunu_mt_mu_JetEnDn = _llnunu_mt_mu;
+        _llnunu_mt_mu_JetResUp = _llnunu_mt_mu;
+        _llnunu_mt_mu_JetResDn = _llnunu_mt_mu;
+        _llnunu_mt_mu_MuonEnUp = _llnunu_mt_mu;
+        _llnunu_mt_mu_MuonEnDn = _llnunu_mt_mu;
+        _llnunu_mt_mu_ElectronEnUp = _llnunu_mt_mu;
+        _llnunu_mt_mu_ElectronEnDn = _llnunu_mt_mu;
+        _llnunu_mt_mu_PhotonEnUp = _llnunu_mt_mu;
+        _llnunu_mt_mu_PhotonEnDn = _llnunu_mt_mu;
+        _llnunu_mt_mu_TauEnUp = _llnunu_mt_mu;
+        _llnunu_mt_mu_TauEnDn = _llnunu_mt_mu;
+        _llnunu_mt_mu_UnclusterUp = _llnunu_mt_mu;
+        _llnunu_mt_mu_UnclusterDn = _llnunu_mt_mu;
+
+    }
+
 }
 
 
@@ -1654,6 +1588,7 @@ void addDyZPtWeight()
     }
   }
 
+  /*
   if (_addDyNewGenWeight && !_isData && _isDyJets) {
     Float_t ZJetsLOSumWeights(49877138);
     Float_t ZJetsNLOSumWeights(450670522117);
@@ -1666,8 +1601,10 @@ void addDyZPtWeight()
       _ZJetsGenWeight = _genWeight/ZJetsLOSumWeights*ZJetsLOSumEvents/(ZJetsNLOSumEvents+ZJetsLOSumEvents);
     }
   }
+  */
 
 }
+
 
 
 // prepare JEC/JER
@@ -1724,7 +1661,7 @@ void doJECJER()
 // prepare inputs for simple met recoil tune.
 void prepareRecoil()
 {
-  //if (_doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_isData && _doGJetsSkim)) ) {
+  if (_doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_isData && _doGJetsSkim)) ) {
     // met shift  sigma
     _file_dt_sigma[0] = new TFile(_RecoilInputFileNameData_all.c_str());
     _file_dt_sigma[1] = new TFile(_RecoilInputFileNameData_mu.c_str());
@@ -1747,28 +1684,19 @@ void prepareRecoil()
 
     // zpt profile, mean zpt in each zpt bin
     _p_dt_zpt[0] = (TProfile*)_file_dt_sigma[0]->Get("p_zpt");
-    _p_dt_zpt[0]->SetName("p_dt_zpt_all");
     _p_dt_zpt[1] = (TProfile*)_file_dt_sigma[1]->Get("p_zpt");
-    _p_dt_zpt[1]->SetName("p_dt_zpt_mu");
     _p_dt_zpt[2] = (TProfile*)_file_dt_sigma[2]->Get("p_zpt");
-    _p_dt_zpt[2]->SetName("p_dt_zpt_el");
 
     //
     _h_dt_met_para_shift[0] = (TH1D*)_file_dt_sigma[0]->Get("h_met_para_vs_zpt_mean");
-    _h_dt_met_para_shift[0]->SetName("h_dt_met_para_shift_all");
     _h_mc_met_para_shift[0] = (TH1D*)_file_mc_sigma[0]->Get("h_met_para_vs_zpt_mean");
-    _h_mc_met_para_shift[0]->SetName("h_mc_met_para_shift_all");
     _h_met_para_shift_dtmc[0] = (TH1D*)_h_dt_met_para_shift[0]->Clone("h_met_para_shift_dtmc_all");
     _h_met_para_shift_dtmc[0]->Add(_h_mc_met_para_shift[0], -1);
 
     _h_dt_met_para_sigma[0] = (TH1D*)_file_dt_sigma[0]->Get("h_met_para_vs_zpt_sigma");
-    _h_dt_met_para_sigma[0]->SetName("h_dt_met_para_sigma_all");
     _h_dt_met_perp_sigma[0] = (TH1D*)_file_dt_sigma[0]->Get("h_met_perp_vs_zpt_sigma");
-    _h_dt_met_perp_sigma[0]->SetName("h_dt_met_perp_sigma_all");
     _h_mc_met_para_sigma[0] = (TH1D*)_file_mc_sigma[0]->Get("h_met_para_vs_zpt_sigma");
-    _h_mc_met_para_sigma[0]->SetName("h_mc_met_para_sigma_all");
     _h_mc_met_perp_sigma[0] = (TH1D*)_file_mc_sigma[0]->Get("h_met_perp_vs_zpt_sigma");
-    _h_mc_met_perp_sigma[0]->SetName("h_mc_met_perp_sigma_all");
 
     _h_ratio_met_para_sigma_dtmc[0] = (TH1D*)_h_dt_met_para_sigma[0]->Clone("h_ratio_met_para_sigma_dtmc_all");
     _h_ratio_met_perp_sigma_dtmc[0] = (TH1D*)_h_dt_met_perp_sigma[0]->Clone("h_ratio_met_perp_sigma_dtmc_all");
@@ -1776,20 +1704,14 @@ void prepareRecoil()
     _h_ratio_met_perp_sigma_dtmc[0]->Divide(_h_mc_met_perp_sigma[0]);
 
     _h_dt_met_para_shift[1] = (TH1D*)_file_dt_sigma[1]->Get("h_met_para_vs_zpt_mean");
-    _h_dt_met_para_shift[1]->SetName("h_dt_met_para_shift_mu");
     _h_mc_met_para_shift[1] = (TH1D*)_file_mc_sigma[1]->Get("h_met_para_vs_zpt_mean");
-    _h_mc_met_para_shift[1]->SetName("h_mc_met_para_shift_mu");
     _h_met_para_shift_dtmc[1] = (TH1D*)_h_dt_met_para_shift[1]->Clone("h_met_para_shift_dtmc_mu");
     _h_met_para_shift_dtmc[1]->Add(_h_mc_met_para_shift[1], -1);
 
     _h_dt_met_para_sigma[1] = (TH1D*)_file_dt_sigma[1]->Get("h_met_para_vs_zpt_sigma");
-    _h_dt_met_para_sigma[1]->SetName("h_dt_met_para_sigma_mu");
     _h_dt_met_perp_sigma[1] = (TH1D*)_file_dt_sigma[1]->Get("h_met_perp_vs_zpt_sigma");
-    _h_dt_met_perp_sigma[1]->SetName("h_dt_met_perp_sigma_mu");
     _h_mc_met_para_sigma[1] = (TH1D*)_file_mc_sigma[1]->Get("h_met_para_vs_zpt_sigma");
-    _h_mc_met_para_sigma[1]->SetName("h_mc_met_para_sigma_mu");
     _h_mc_met_perp_sigma[1] = (TH1D*)_file_mc_sigma[1]->Get("h_met_perp_vs_zpt_sigma");
-    _h_mc_met_perp_sigma[1]->SetName("h_mc_met_perp_sigma_mu");
 
     _h_ratio_met_para_sigma_dtmc[1] = (TH1D*)_h_dt_met_para_sigma[1]->Clone("h_ratio_met_para_sigma_dtmc_mu");
     _h_ratio_met_perp_sigma_dtmc[1] = (TH1D*)_h_dt_met_perp_sigma[1]->Clone("h_ratio_met_perp_sigma_dtmc_mu");
@@ -1797,20 +1719,14 @@ void prepareRecoil()
     _h_ratio_met_perp_sigma_dtmc[1]->Divide(_h_mc_met_perp_sigma[1]);
 
     _h_dt_met_para_shift[2] = (TH1D*)_file_dt_sigma[2]->Get("h_met_para_vs_zpt_mean");
-    _h_dt_met_para_shift[2]->SetName("h_dt_met_para_shift_el");
     _h_mc_met_para_shift[2] = (TH1D*)_file_mc_sigma[2]->Get("h_met_para_vs_zpt_mean");
-    _h_mc_met_para_shift[2]->SetName("h_mc_met_para_shift_el");
     _h_met_para_shift_dtmc[2] = (TH1D*)_h_dt_met_para_shift[2]->Clone("h_met_para_shift_dtmc_el");
     _h_met_para_shift_dtmc[2]->Add(_h_mc_met_para_shift[2], -1);
 
     _h_dt_met_para_sigma[2] = (TH1D*)_file_dt_sigma[2]->Get("h_met_para_vs_zpt_sigma");
-    _h_dt_met_para_sigma[2]->SetName("h_dt_met_para_sigma_el");
     _h_dt_met_perp_sigma[2] = (TH1D*)_file_dt_sigma[2]->Get("h_met_perp_vs_zpt_sigma");
-    _h_dt_met_perp_sigma[2]->SetName("h_dt_met_perp_sigma_el");
     _h_mc_met_para_sigma[2] = (TH1D*)_file_mc_sigma[2]->Get("h_met_para_vs_zpt_sigma");
-    _h_mc_met_para_sigma[2]->SetName("h_mc_met_para_sigma_el");
     _h_mc_met_perp_sigma[2] = (TH1D*)_file_mc_sigma[2]->Get("h_met_perp_vs_zpt_sigma");
-    _h_mc_met_perp_sigma[2]->SetName("h_mc_met_perp_sigma_el");
 
     _h_ratio_met_para_sigma_dtmc[2] = (TH1D*)_h_dt_met_para_sigma[2]->Clone("h_ratio_met_para_sigma_dtmc_el");
     _h_ratio_met_perp_sigma_dtmc[2] = (TH1D*)_h_dt_met_perp_sigma[2]->Clone("h_ratio_met_perp_sigma_dtmc_el");
@@ -1818,6 +1734,12 @@ void prepareRecoil()
     _h_ratio_met_perp_sigma_dtmc[2]->Divide(_h_mc_met_perp_sigma[2]);
 
     // smooth functions
+    _h_dt_met_para_shift[0]->SetName("h_dt_met_para_shift_all");
+    _h_mc_met_para_shift[0]->SetName("h_mc_met_para_shift_all");
+    _h_dt_met_para_shift[1]->SetName("h_dt_met_para_shift_mu");
+    _h_mc_met_para_shift[1]->SetName("h_mc_met_para_shift_mu");
+    _h_dt_met_para_shift[2]->SetName("h_dt_met_para_shift_el");
+    _h_mc_met_para_shift[2]->SetName("h_mc_met_para_shift_el");
     _h_dt_met_para_shift[3] = (TH1D*)_h_dt_met_para_shift[0]->Clone("h_dt_met_para_shift_all_smooth");
     _h_mc_met_para_shift[3] = (TH1D*)_h_mc_met_para_shift[0]->Clone("h_mc_met_para_shift_all_smooth");
     _h_dt_met_para_shift[4] = (TH1D*)_h_dt_met_para_shift[1]->Clone("h_dt_met_para_shift_mu_smooth");
@@ -1903,8 +1825,7 @@ void prepareRecoil()
       }
     }
 
-  //}
-  
+  }
   
 
 }
@@ -1912,7 +1833,7 @@ void prepareRecoil()
 // do simple met recoil fine tuning
 void doRecoil()
 {
-  //if ( _doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_isData && _doGJetsSkim)) ) {
+  if ( _doRecoil && ((!_isData && _isDyJets && !_doGJetsSkim )||(_isData && _doGJetsSkim)) ) {
     
     // variable central values
     Float_t met_para = _llnunu_l2_pt*cos(_llnunu_l2_phi-_llnunu_l1_phi);
@@ -2163,9 +2084,6 @@ void doRecoil()
 
     }
 
-    
-
-
     // recalculate vars
     Float_t met_px = met_para*cos(_llnunu_l1_phi)-met_perp*sin(_llnunu_l1_phi);
     Float_t met_py = met_para*sin(_llnunu_l1_phi)+met_perp*cos(_llnunu_l1_phi);
@@ -2266,8 +2184,8 @@ void doRecoil()
           float pt = tmp_vec.Mod();
           float phi = TVector2::Phi_mpi_pi(tmp_vec.Phi());
           float mt = MTCalcMu(pt, phi);
-          if (pt>_llnunu_l2_pt_mu_RecoilUp) _llnunu_l2_pt_mu_RecoilUp = pt;
-          if (pt<_llnunu_l2_pt_mu_RecoilDn) _llnunu_l2_pt_mu_RecoilDn = pt;
+          if (pt>_llnunu_l2_pt_mu_RecoilUp) _llnunu_l2_pt_RecoilUp = pt;
+          if (pt<_llnunu_l2_pt_mu_RecoilDn) _llnunu_l2_pt_RecoilDn = pt;
           if (TVector2::Phi_mpi_pi(phi-_llnunu_l2_phi_mu_RecoilUp)>0.0) _llnunu_l2_phi_mu_RecoilUp = phi;
           if (TVector2::Phi_mpi_pi(phi-_llnunu_l2_phi_mu_RecoilDn)<0.0) _llnunu_l2_phi_mu_RecoilDn = phi;
           if (mt>_llnunu_mt_mu_RecoilUp) _llnunu_mt_mu_RecoilUp = mt;
@@ -2305,9 +2223,9 @@ void doRecoil()
           TVector2 tmp_vec(xx,yy);
           float pt = tmp_vec.Mod();
           float phi = TVector2::Phi_mpi_pi(tmp_vec.Phi());
-          float mt = MTCalcEl(pt, phi);
-          if (pt>_llnunu_l2_pt_el_RecoilUp) _llnunu_l2_pt_el_RecoilUp = pt;
-          if (pt<_llnunu_l2_pt_el_RecoilDn) _llnunu_l2_pt_el_RecoilDn = pt;
+          float mt = MTCalcMu(pt, phi);
+          if (pt>_llnunu_l2_pt_el_RecoilUp) _llnunu_l2_pt_RecoilUp = pt;
+          if (pt<_llnunu_l2_pt_el_RecoilDn) _llnunu_l2_pt_RecoilDn = pt;
           if (TVector2::Phi_mpi_pi(phi-_llnunu_l2_phi_el_RecoilUp)>0.0) _llnunu_l2_phi_el_RecoilUp = phi;
           if (TVector2::Phi_mpi_pi(phi-_llnunu_l2_phi_el_RecoilDn)<0.0) _llnunu_l2_phi_el_RecoilDn = phi;
           if (mt>_llnunu_mt_el_RecoilUp) _llnunu_mt_el_RecoilUp = mt;
@@ -2319,21 +2237,16 @@ void doRecoil()
 
 
 
-  //}
+  }
+  else if (_doGJetsSkim) {
+    // if doGJets but not gjets data, create dummy branches.  
+    _llnunu_l2_pt_RecoilUp = _llnunu_l2_pt;
+    _llnunu_l2_pt_RecoilDn = _llnunu_l2_pt;
+    _llnunu_l2_phi_RecoilUp = _llnunu_l2_phi;
+    _llnunu_l2_phi_RecoilDn = _llnunu_l2_phi;
+    _llnunu_mt_RecoilUp = _llnunu_mt;
+    _llnunu_mt_RecoilDn = _llnunu_mt;
 
-}
-
-// fill dummy recoil uncertainties
-void fillDummyRecoilUncert()
-{
-  _llnunu_l2_pt_RecoilUp = _llnunu_l2_pt;
-  _llnunu_l2_pt_RecoilDn = _llnunu_l2_pt;
-  _llnunu_l2_phi_RecoilUp = _llnunu_l2_phi;
-  _llnunu_l2_phi_RecoilDn = _llnunu_l2_phi;
-  _llnunu_mt_RecoilUp = _llnunu_mt;
-  _llnunu_mt_RecoilDn = _llnunu_mt;
-
-  if (doGJetsSkim) {
     _llnunu_l2_pt_mu_RecoilUp = _llnunu_l2_pt_mu;
     _llnunu_l2_pt_mu_RecoilDn = _llnunu_l2_pt_mu;
     _llnunu_l2_phi_mu_RecoilUp = _llnunu_l2_phi_mu;
@@ -2347,9 +2260,13 @@ void fillDummyRecoilUncert()
     _llnunu_l2_phi_el_RecoilDn = _llnunu_l2_phi_el;
     _llnunu_mt_el_RecoilUp = _llnunu_mt_el;
     _llnunu_mt_el_RecoilDn = _llnunu_mt_el;
+
+
   }
 
 }
+
+
 
 // prepareEffScale
 void prepareEffScale()
@@ -3040,110 +2957,169 @@ void addEffScale()
 void prepareEmuTrgsf()
 {
   _tree_out->Branch("etrgsf", &_etrgsf, "etrgsf/F");
-  _tree_out->Branch("escale", &_escale, "escale/F");
   _tree_out->Branch("etrgsf_err", &_etrgsf_err, "etrgsf_err/F");
   _tree_out->Branch("etrgsf_up", &_etrgsf_up, "etrgsf_up/F");
   _tree_out->Branch("etrgsf_dn", &_etrgsf_dn, "etrgsf_dn/F");
   _tree_out->Branch("mtrgsf", &_mtrgsf, "mtrgsf/F");
-  _tree_out->Branch("mscale", &_mscale, "mscale/F");
   _tree_out->Branch("mtrgsf_err", &_mtrgsf_err, "mtrgsf_err/F");
   _tree_out->Branch("mtrgsf_up", &_mtrgsf_up, "mtrgsf_up/F");
   _tree_out->Branch("mtrgsf_dn", &_mtrgsf_dn, "mtrgsf_dn/F");
-  _file_sf_muoneg = TFile::Open(_EffScaleInputFileName_muoneg_scale.c_str());
   _file_trg_el = TFile::Open(_EffScaleInputFileName_Trg_El.c_str());
-  _h_sf_trg_el_l1=(TH2D*)_file_trg_el->Get("efficiency_dt");
+  _h_sf_trg_el_l1=(TH2D*)_file_trg_el->Get("ell1pteta");
   _file_trg_mu = TFile::Open(_EffScaleInputFileName_Trg_Mu.c_str());
-  _h_sf_muoneg = (TH1F*)_file_sf_muoneg->Get("meratio");
-  _h_eff_trg_mu50tkmu50_dt_1 = (TH2*)_file_trg_mu->Get("h_eff_trg_mu50tkmu50_dt_1");
-  _h_eff_trg_mu50tkmu50_dt_2 = (TH2*)_file_trg_mu->Get("h_eff_trg_mu50tkmu50_dt_2");
-  _h_eff_trg_mu50tkmu50_dt_3 = (TH2*)_file_trg_mu->Get("h_eff_trg_mu50tkmu50_dt_3");
-  _h_eff_trg_mu50tkmu50_dt_4 = (TH2*)_file_trg_mu->Get("h_eff_trg_mu50tkmu50_dt_4");
+  _h_eff_trg_mu_l1_tot = (TH2D*)_file_trg_mu->Get("htrg_l1_tot");
+  _h_eff_trg_mu_l2_tot = (TH2D*)_file_trg_mu->Get("htrg_l2_tot");
+  _h_eff_trg_mu_l1_l1p = (TH2D*)_file_trg_mu->Get("htrg_l1_l1p");
+  _h_eff_trg_mu_l2_l1p = (TH2D*)_file_trg_mu->Get("htrg_l2_l1p");
+  _h_eff_trg_mu_l1_l1f = (TH2D*)_file_trg_mu->Get("htrg_l1_l1f");
+  _h_eff_trg_mu_l2_l1f = (TH2D*)_file_trg_mu->Get("htrg_l2_l1f");
+  _h_eff_trg_mu_l1_l1pl2f = (TH2D*)_file_trg_mu->Get("htrg_l1_l1pl2f");
+  _h_eff_trg_mu_l1_l1pl2p = (TH2D*)_file_trg_mu->Get("htrg_l1_l1pl2p");
+  _h_eff_trg_mu_l1_l1fl2p = (TH2D*)_file_trg_mu->Get("htrg_l1_l1fl2p");
+  _h_eff_trg_mu_l2_l1pl2f = (TH2D*)_file_trg_mu->Get("htrg_l2_l1pl2f");
+  _h_eff_trg_mu_l2_l1pl2p = (TH2D*)_file_trg_mu->Get("htrg_l2_l1pl2p");
+  _h_eff_trg_mu_l2_l1fl2p = (TH2D*)_file_trg_mu->Get("htrg_l2_l1fl2p");
+
+  _NPtBins_eff_trg_mu = _h_eff_trg_mu_l2_tot->GetNbinsX();
+  _NEtaBins_eff_trg_mu = _h_eff_trg_mu_l2_tot->GetNbinsY();
+  _N_eff_trg_mu_tot = _h_eff_trg_mu_l2_tot->IntegralAndError(Int_t(1), _NPtBins_eff_trg_mu, Int_t(1), _NEtaBins_eff_trg_mu, _N_eff_trg_mu_tot_err);
+  _N_eff_trg_mu_l1p = _h_eff_trg_mu_l2_l1p->IntegralAndError(Int_t(1), _NPtBins_eff_trg_mu, Int_t(1), _NEtaBins_eff_trg_mu, _N_eff_trg_mu_l1p_err);
+  _N_eff_trg_mu_l1f = _h_eff_trg_mu_l2_l1f->IntegralAndError(Int_t(1), _NPtBins_eff_trg_mu, Int_t(1), _NEtaBins_eff_trg_mu, _N_eff_trg_mu_l1f_err);
+  _N_eff_trg_mu_l1pl2f = _h_eff_trg_mu_l2_l1pl2f->IntegralAndError(Int_t(1), _NPtBins_eff_trg_mu, Int_t(1), _NEtaBins_eff_trg_mu, _N_eff_trg_mu_l1pl2f_err);
+  _N_eff_trg_mu_l1pl2p = _h_eff_trg_mu_l2_l1pl2p->IntegralAndError(Int_t(1), _NPtBins_eff_trg_mu, Int_t(1), _NEtaBins_eff_trg_mu, _N_eff_trg_mu_l1pl2p_err);
+  _N_eff_trg_mu_l1fl2p = _h_eff_trg_mu_l2_l1fl2p->IntegralAndError(Int_t(1), _NPtBins_eff_trg_mu, Int_t(1), _NEtaBins_eff_trg_mu, _N_eff_trg_mu_l1fl2p_err);
+
+  _h_eff_trg_mu_l1_tot_norm = (TH2D*)_h_eff_trg_mu_l1_tot->Clone("htrg_l1_tot_norm");
+  _h_eff_trg_mu_l2_tot_norm = (TH2D*)_h_eff_trg_mu_l2_tot->Clone("htrg_l2_tot_norm");
+  _h_eff_trg_mu_l1_l1p_norm = (TH2D*)_h_eff_trg_mu_l1_l1p->Clone("htrg_l1_l1p_norm");
+  _h_eff_trg_mu_l1_l1f_norm = (TH2D*)_h_eff_trg_mu_l1_l1f->Clone("htrg_l1_l1f_norm");
+  _h_eff_trg_mu_l2_l1p_norm = (TH2D*)_h_eff_trg_mu_l2_l1p->Clone("htrg_l2_l1p_norm");
+  _h_eff_trg_mu_l2_l1f_norm = (TH2D*)_h_eff_trg_mu_l2_l1f->Clone("htrg_l2_l1f_norm");
+  _h_eff_trg_mu_l1_l1pl2f_norm = (TH2D*)_h_eff_trg_mu_l1_l1pl2f->Clone("htrg_l1_l1pl2f_norm");
+  _h_eff_trg_mu_l1_l1pl2p_norm = (TH2D*)_h_eff_trg_mu_l1_l1pl2p->Clone("htrg_l1_l1pl2p_norm");
+  _h_eff_trg_mu_l1_l1fl2p_norm = (TH2D*)_h_eff_trg_mu_l1_l1fl2p->Clone("htrg_l1_l1fl2p_norm");
+  _h_eff_trg_mu_l2_l1pl2f_norm = (TH2D*)_h_eff_trg_mu_l2_l1pl2f->Clone("htrg_l2_l1pl2f_norm");
+  _h_eff_trg_mu_l2_l1pl2p_norm = (TH2D*)_h_eff_trg_mu_l2_l1pl2p->Clone("htrg_l2_l1pl2p_norm");
+  _h_eff_trg_mu_l2_l1fl2p_norm = (TH2D*)_h_eff_trg_mu_l2_l1fl2p->Clone("htrg_l2_l1fl2p_norm");
+
+ 
+  _h_eff_trg_mu_l1_tot_norm->Scale(1./_N_eff_trg_mu_tot);
+  _h_eff_trg_mu_l2_tot_norm->Scale(1./_N_eff_trg_mu_tot);
+  _h_eff_trg_mu_l1_l1p_norm->Scale(1./_N_eff_trg_mu_l1p);
+  _h_eff_trg_mu_l1_l1f_norm->Scale(1./_N_eff_trg_mu_l1f);
+  _h_eff_trg_mu_l2_l1p_norm->Scale(1./_N_eff_trg_mu_l1p);
+  _h_eff_trg_mu_l2_l1f_norm->Scale(1./_N_eff_trg_mu_l1f);
+  _h_eff_trg_mu_l1_l1pl2f_norm->Scale(1./_N_eff_trg_mu_l1pl2f);
+  _h_eff_trg_mu_l1_l1pl2p_norm->Scale(1./_N_eff_trg_mu_l1pl2p);
+  _h_eff_trg_mu_l1_l1fl2p_norm->Scale(1./_N_eff_trg_mu_l1fl2p);
+  _h_eff_trg_mu_l2_l1pl2f_norm->Scale(1./_N_eff_trg_mu_l1pl2f);
+  _h_eff_trg_mu_l2_l1pl2p_norm->Scale(1./_N_eff_trg_mu_l1pl2p);
+  _h_eff_trg_mu_l2_l1fl2p_norm->Scale(1./_N_eff_trg_mu_l1fl2p);
+
+  _h_eff_trg_mu_l1_l1p_norm_vs_tot    = (TH2D*)_h_eff_trg_mu_l1_l1p_norm->Clone("htrg_l1_l1p_norm_vs_tot");
+  _h_eff_trg_mu_l1_l1f_norm_vs_tot    = (TH2D*)_h_eff_trg_mu_l1_l1f_norm->Clone("htrg_l1_l1f_norm_vs_tot");
+  _h_eff_trg_mu_l2_l1p_norm_vs_tot    = (TH2D*)_h_eff_trg_mu_l2_l1p_norm->Clone("htrg_l2_l1p_norm_vs_tot");
+  _h_eff_trg_mu_l2_l1f_norm_vs_tot    = (TH2D*)_h_eff_trg_mu_l2_l1f_norm->Clone("htrg_l2_l1f_norm_vs_tot");
+  _h_eff_trg_mu_l1_l1pl2f_norm_vs_tot = (TH2D*)_h_eff_trg_mu_l1_l1pl2f_norm->Clone("htrg_l1_l1pl2f_norm_vs_tot");
+  _h_eff_trg_mu_l1_l1pl2p_norm_vs_tot = (TH2D*)_h_eff_trg_mu_l1_l1pl2p_norm->Clone("htrg_l1_l1pl2p_norm_vs_tot");
+  _h_eff_trg_mu_l1_l1fl2p_norm_vs_tot = (TH2D*)_h_eff_trg_mu_l1_l1fl2p_norm->Clone("htrg_l1_l1fl2p_norm_vs_tot");
+  _h_eff_trg_mu_l2_l1pl2f_norm_vs_tot = (TH2D*)_h_eff_trg_mu_l2_l1pl2f_norm->Clone("htrg_l2_l1pl2f_norm_vs_tot");
+  _h_eff_trg_mu_l2_l1pl2p_norm_vs_tot = (TH2D*)_h_eff_trg_mu_l2_l1pl2p_norm->Clone("htrg_l2_l1pl2p_norm_vs_tot");
+  _h_eff_trg_mu_l2_l1fl2p_norm_vs_tot = (TH2D*)_h_eff_trg_mu_l2_l1fl2p_norm->Clone("htrg_l2_l1fl2p_norm_vs_tot");
+  _h_eff_trg_mu_l1_l1pl2f_norm_vs_l1p = (TH2D*)_h_eff_trg_mu_l1_l1pl2f_norm->Clone("htrg_l1_l1pl2f_norm_vs_l1p");
+  _h_eff_trg_mu_l1_l1pl2p_norm_vs_l1p = (TH2D*)_h_eff_trg_mu_l1_l1pl2p_norm->Clone("htrg_l1_l1pl2p_norm_vs_l1p");
+  _h_eff_trg_mu_l1_l1fl2p_norm_vs_l1f = (TH2D*)_h_eff_trg_mu_l1_l1fl2p_norm->Clone("htrg_l1_l1fl2p_norm_vs_l1f");
+  _h_eff_trg_mu_l2_l1pl2f_norm_vs_l1p = (TH2D*)_h_eff_trg_mu_l2_l1pl2f_norm->Clone("htrg_l2_l1pl2f_norm_vs_l1p");
+  _h_eff_trg_mu_l2_l1pl2p_norm_vs_l1p = (TH2D*)_h_eff_trg_mu_l2_l1pl2p_norm->Clone("htrg_l2_l1pl2p_norm_vs_l1p");
+  _h_eff_trg_mu_l2_l1fl2p_norm_vs_l1f = (TH2D*)_h_eff_trg_mu_l2_l1fl2p_norm->Clone("htrg_l2_l1fl2p_norm_vs_l1f");
+
+  _h_eff_trg_mu_l1_l1p_norm_vs_tot->Divide(_h_eff_trg_mu_l1_tot_norm);
+  _h_eff_trg_mu_l1_l1f_norm_vs_tot->Divide(_h_eff_trg_mu_l1_tot_norm);
+  _h_eff_trg_mu_l2_l1p_norm_vs_tot->Divide(_h_eff_trg_mu_l2_tot_norm);
+  _h_eff_trg_mu_l2_l1f_norm_vs_tot->Divide(_h_eff_trg_mu_l2_tot_norm);
+  _h_eff_trg_mu_l1_l1pl2f_norm_vs_tot->Divide(_h_eff_trg_mu_l1_tot_norm);
+  _h_eff_trg_mu_l1_l1pl2p_norm_vs_tot->Divide(_h_eff_trg_mu_l1_tot_norm);
+  _h_eff_trg_mu_l1_l1fl2p_norm_vs_tot->Divide(_h_eff_trg_mu_l1_tot_norm);
+  _h_eff_trg_mu_l2_l1pl2f_norm_vs_tot->Divide(_h_eff_trg_mu_l2_tot_norm);
+  _h_eff_trg_mu_l2_l1pl2p_norm_vs_tot->Divide(_h_eff_trg_mu_l2_tot_norm);
+  _h_eff_trg_mu_l2_l1fl2p_norm_vs_tot->Divide(_h_eff_trg_mu_l2_tot_norm);
+  _h_eff_trg_mu_l1_l1pl2f_norm_vs_l1p->Divide(_h_eff_trg_mu_l1_l1p_norm);
+  _h_eff_trg_mu_l1_l1pl2p_norm_vs_l1p->Divide(_h_eff_trg_mu_l1_l1p_norm);
+  _h_eff_trg_mu_l1_l1fl2p_norm_vs_l1f->Divide(_h_eff_trg_mu_l1_l1f_norm);
+  _h_eff_trg_mu_l2_l1pl2f_norm_vs_l1p->Divide(_h_eff_trg_mu_l2_l1p_norm);
+  _h_eff_trg_mu_l2_l1pl2p_norm_vs_l1p->Divide(_h_eff_trg_mu_l2_l1p_norm);
+  _h_eff_trg_mu_l2_l1fl2p_norm_vs_l1f->Divide(_h_eff_trg_mu_l2_l1f_norm);
 }
 
 // add efficiency scale factors for emu
 void addEmuTrgsf()
 {
-  double eta1a = fabs(_llnunu_l1_l1_eta);
-  double pt1a = _llnunu_l1_l1_pt;
-  
-  double eta1b = fabs(_llnunu_l1_l1_eta);
-  double pt1b = _llnunu_l1_l1_pt;
-  
-  double eff1a_dt, err1a_dt, eff1a_mc, err1a_mc;
-  double eff1b_dt, err1b_dt, eff1b_mc, err1b_mc;
-  
-  double rnd = _rand3->Rndm();
-  TH2* h_effa_dt;
-  TH2* h_effa_mc;
-  TH2* h_effb_dt;
-  TH2* h_effb_mc;
-  _escale=1;
-  _mscale=1;
-  if (abs(_llnunu_l1_l1_pdgId)==11){
-    _escale=_h_sf_muoneg->GetBinContent(_h_sf_muoneg->FindBin(_llnunu_l1_l2_pt));
-    if(_h_sf_muoneg->GetBinContent(_h_sf_muoneg->FindBin(_llnunu_l1_l1_pt))>0.0001)
-      _mscale=1/_h_sf_muoneg->GetBinContent(_h_sf_muoneg->FindBin(_llnunu_l1_l1_pt));
-  }
-  else{
-    _escale=_h_sf_muoneg->GetBinContent(_h_sf_muoneg->FindBin(_llnunu_l1_l1_pt));
-    if(_h_sf_muoneg->GetBinContent(_h_sf_muoneg->FindBin(_llnunu_l1_l2_pt))>0.0001)
-      _mscale=1/_h_sf_muoneg->GetBinContent(_h_sf_muoneg->FindBin(_llnunu_l1_l2_pt));
-  }
-  if (rnd<=0.5/(0.5+17.0+3.0+16.0)) {
-    // for 2016 period1 0.5/fb, run B, including starkup problems, up to run 274094
-    h_effb_dt = (TH2*)_h_eff_trg_mu50tkmu50_dt_1;
-  }
-  else if (rnd>0.5/(0.5+17.0+3.0+16.0)&&rnd<=(0.5+17.0)/(0.5+17.0+3.0+16.0)) {
-        // for 2016 period2 17.0/fb, run BCDEF, until L1 EMTF fixed
-    h_effb_dt = (TH2*)_h_eff_trg_mu50tkmu50_dt_2;
-  }
-  else if (rnd>(0.5+17.0)/(0.5+17.0+3.0+16.0)&&rnd<=(0.5+17.0+3.0)/(0.5+17.0+3.0+16.0)) {
-        // for 2016 period3 3.0/fb, run F post L1 EMFT fix from Run 278167
-    h_effb_dt = (TH2*)_h_eff_trg_mu50tkmu50_dt_3;
-  } 
-  else {
-    // for 2016 period4 16.0/fb, run GH, post HIP fix
-    h_effb_dt = (TH2*)_h_eff_trg_mu50tkmu50_dt_4;
-  }    
+      int trg_bin_l1 = _h_eff_trg_mu_l1_l1p_norm_vs_tot->FindBin(_llnunu_l1_l1_pt,fabs(_llnunu_l1_l1_eta));
+    int trg_bin_l2 = _h_eff_trg_mu_l2_l1pl2f_norm_vs_l1p->FindBin(_llnunu_l1_l2_pt,fabs(_llnunu_l1_l2_eta));
+    double trg_sc_l1_l1p_vs_tot = _h_eff_trg_mu_l1_l1p_norm_vs_tot->GetBinContent(trg_bin_l1);
+    double trg_sc_l2_l1pl2f_vs_l1p = _h_eff_trg_mu_l2_l1pl2f_norm_vs_l1p->GetBinContent(trg_bin_l2);
+    double trg_sc_l2_l1pl2p_vs_l1p = _h_eff_trg_mu_l2_l1pl2p_norm_vs_l1p->GetBinContent(trg_bin_l2);
+    double trg_sc_l2_l1fl2p_vs_tot = _h_eff_trg_mu_l2_l1fl2p_norm_vs_tot->GetBinContent(trg_bin_l2);
+    double trg_sc_l1_l1p_vs_tot_err = _h_eff_trg_mu_l1_l1p_norm_vs_tot->GetBinError(trg_bin_l1);
+    double trg_sc_l2_l1pl2f_vs_l1p_err = _h_eff_trg_mu_l2_l1pl2f_norm_vs_l1p->GetBinError(trg_bin_l2);
+    double trg_sc_l2_l1pl2p_vs_l1p_err = _h_eff_trg_mu_l2_l1pl2p_norm_vs_l1p->GetBinError(trg_bin_l2);
+    double trg_sc_l2_l1fl2p_vs_tot_err = _h_eff_trg_mu_l2_l1fl2p_norm_vs_tot->GetBinError(trg_bin_l2);
 
-  // protection
-  if (eta1b<h_effb_dt->GetXaxis()->GetXmin()) eta1b =  0.1+h_effb_dt->GetXaxis()->GetXmin();
-  if (eta1b>h_effb_dt->GetXaxis()->GetXmax()) eta1b = -0.1+h_effb_dt->GetXaxis()->GetXmax();
-  if (pt1b<h_effb_dt->GetYaxis()->GetXmin()) pt1b =  0.1+h_effb_dt->GetYaxis()->GetXmin();
-  if (pt1b>h_effb_dt->GetYaxis()->GetXmax()) pt1b = -0.1+h_effb_dt->GetYaxis()->GetXmax();
+    double trg_npass = _N_eff_trg_mu_l1pl2f*trg_sc_l1_l1p_vs_tot*trg_sc_l2_l1pl2f_vs_l1p
+                     + _N_eff_trg_mu_l1pl2p*trg_sc_l1_l1p_vs_tot*trg_sc_l2_l1pl2p_vs_l1p
+                     + _N_eff_trg_mu_l1fl2p*trg_sc_l2_l1fl2p_vs_tot
+                     ;
+    double trg_npass_err = pow(_N_eff_trg_mu_l1pl2f_err*trg_sc_l1_l1p_vs_tot*trg_sc_l2_l1pl2f_vs_l1p,2)
+                         + pow(_N_eff_trg_mu_l1pl2f*trg_sc_l1_l1p_vs_tot_err*trg_sc_l2_l1pl2f_vs_l1p,2)
+                         + pow(_N_eff_trg_mu_l1pl2f*trg_sc_l1_l1p_vs_tot*trg_sc_l2_l1pl2f_vs_l1p_err,2)
+                         + pow(_N_eff_trg_mu_l1pl2p_err*trg_sc_l1_l1p_vs_tot*trg_sc_l2_l1pl2p_vs_l1p,2)
+                         + pow(_N_eff_trg_mu_l1pl2p*trg_sc_l1_l1p_vs_tot_err*trg_sc_l2_l1pl2p_vs_l1p,2)
+                         + pow(_N_eff_trg_mu_l1pl2p*trg_sc_l1_l1p_vs_tot*trg_sc_l2_l1pl2p_vs_l1p_err,2)
+                         + pow(_N_eff_trg_mu_l1fl2p_err*trg_sc_l2_l1fl2p_vs_tot,2)
+                         + pow(_N_eff_trg_mu_l1fl2p*trg_sc_l2_l1fl2p_vs_tot_err,2)
+                         ;
+    trg_npass_err = sqrt(trg_npass_err);
 
-  eff1b_dt = h_effb_dt->GetBinContent(h_effb_dt->FindBin(eta1b,pt1b));
-  err1b_dt = h_effb_dt->GetBinError(h_effb_dt->FindBin(eta1b,pt1b));
+    double trg_nfail = _N_eff_trg_mu_tot-trg_npass;
+    double trg_nfail_err = sqrt(_N_eff_trg_mu_tot_err*_N_eff_trg_mu_tot_err
+                                 - _N_eff_trg_mu_l1pl2f_err*_N_eff_trg_mu_l1pl2f_err
+                                 - _N_eff_trg_mu_l1pl2p_err*_N_eff_trg_mu_l1pl2p_err
+                                 - _N_eff_trg_mu_l1fl2p_err*_N_eff_trg_mu_l1fl2p_err);
 
-      // if use mu50||tkmu50
-  double trg_eff = eff1b_dt;
-  double trg_eff_err = err1b_dt;
-  double trg_eff_up = trg_eff+0.5*err1b_dt;
-  double trg_eff_dn = trg_eff-0.5*err1b_dt;
-  if (trg_eff_up>1) trg_eff_up=1;
-  if (trg_eff_dn<0) trg_eff_dn=0;
-  trg_eff_err=trg_eff_up-trg_eff_dn;
-  _mtrgsf = trg_eff;
-  _mtrgsf_err = trg_eff_err;
-  _mtrgsf_up = trg_eff_up;
-  _mtrgsf_dn = trg_eff_dn;
-  double el_eta=fabs(_llnunu_l1_l1_eta);
-  double el_pt = _llnunu_l1_l1_pt;
-  if (el_eta>_h_sf_trg_el_l1->GetXaxis()->GetXmax()) el_eta = -0.1 + _h_sf_trg_el_l1->GetXaxis()->GetXmax();
-  if (el_pt>_h_sf_trg_el_l1->GetYaxis()->GetXmax()) el_pt = -0.1 + _h_sf_trg_el_l1->GetYaxis()->GetXmax();
-  if (el_pt<_h_sf_trg_el_l1->GetYaxis()->GetXmin()) el_pt = +0.1 + _h_sf_trg_el_l1->GetYaxis()->GetXmin();
-  _etrgsf = _h_sf_trg_el_l1->GetBinContent(_h_sf_trg_el_l1->FindBin(el_eta, el_pt));
-  _etrgsf_err = _h_sf_trg_el_l1->GetBinError(_h_sf_trg_el_l1->FindBin(el_eta, el_pt));
-  _etrgsf_up = _etrgsf+0.5*_etrgsf_err;
-  _etrgsf_dn = _etrgsf-0.5*_etrgsf_err;
-  if (_etrgsf>=1) _etrgsf = 1;
-  if (_etrgsf<=0) _etrgsf = 0;
-  if (_etrgsf_up>=1) _etrgsf_up=1;
-  if (_etrgsf_up<=0) _etrgsf_up=0;
-  if (_etrgsf_dn>=1) _etrgsf_dn=1;
-  if (_etrgsf_dn<=0) _etrgsf_dn=0;
+    double trg_eff = trg_npass/(trg_npass+trg_nfail);
+    double trg_eff_err = (pow(trg_nfail*trg_npass_err,2)+pow(trg_npass*trg_nfail_err,2))/pow(trg_npass+trg_nfail,4);
+    trg_eff_err = sqrt(trg_eff_err);
 
-  _etrgsf_err = fabs(_etrgsf_up-_etrgsf_dn);
+    double trg_eff_up = trg_eff+0.5*trg_eff_err;
+    double trg_eff_dn = trg_eff-0.5*trg_eff_err;
+
+    if (trg_eff>=1) trg_eff=1;
+    if (trg_eff<=0) trg_eff=0;
+    if (trg_eff_up>=1) trg_eff_up=1;
+    if (trg_eff_dn>=1) trg_eff_dn=1;
+    if (trg_eff_up<=0) trg_eff_up=0;
+    if (trg_eff_dn<=0) trg_eff_dn=0;
+    trg_eff_err = fabs(trg_eff_up-trg_eff_dn);
+
+    _mtrgsf = trg_eff;
+    _mtrgsf_err = trg_eff_err;
+    _mtrgsf_up = trg_eff_up;
+    _mtrgsf_dn = trg_eff_dn;
+
+    _etrgsf = _h_sf_trg_el_l1->GetBinContent(_h_sf_trg_el_l1->FindBin(_llnunu_l1_l1_pt,fabs(_llnunu_l1_l1_eta)))/100;
+    _etrgsf_err = _h_sf_trg_el_l1->GetBinError(_h_sf_trg_el_l1->FindBin(_llnunu_l1_l1_pt,fabs(_llnunu_l1_l1_eta)))/100;
+
+    _etrgsf_up = _etrgsf+0.5*_etrgsf_err;
+    _etrgsf_dn = _etrgsf-0.5*_etrgsf_err;
+    if (_etrgsf>=1) _etrgsf = 1;
+    if (_etrgsf<=0) _etrgsf = 0;
+    if (_etrgsf_up>=1) _etrgsf_up=1;
+    if (_etrgsf_up<=0) _etrgsf_up=0;
+    if (_etrgsf_dn>=1) _etrgsf_dn=1;
+    if (_etrgsf_dn<=0) _etrgsf_dn=0;
+
+    _etrgsf_err = fabs(_etrgsf_up-_etrgsf_dn);
+
 
 }
 
@@ -3158,21 +3134,9 @@ void prepareGJetsSkim()
     _gjets_input_file = TFile::Open(_GJetsSkimInputFileName.c_str());
 
     // for mass generation
-    //_gjets_h_zmass_zpt = (TH2D*)_gjets_input_file->Get("h_zmass_zpt_lowlpt");
-    //_gjets_h_zmass_zpt_el = (TH2D*)_gjets_input_file->Get("h_zmass_zpt_lowlpt_el");
-    //_gjets_h_zmass_zpt_mu = (TH2D*)_gjets_input_file->Get("h_zmass_zpt_lowlpt_mu");
-    _gjets_h_zmass_zpt = (TH2D*)_gjets_input_file->Get("h_zmass_zpt");
-    _gjets_h_zmass_zpt_el = (TH2D*)_gjets_input_file->Get("h_zmass_zpt_el");
-    _gjets_h_zmass_zpt_mu = (TH2D*)_gjets_input_file->Get("h_zmass_zpt_mu");
-   
-    // 1d z mass
-    //_gjets_h_zmass = (TH1D*)_gjets_input_file->Get("h_zmass_lowlpt");
-    //_gjets_h_zmass_el = (TH1D*)_gjets_input_file->Get("h_zmass_lowlpt_el");
-    //_gjets_h_zmass_mu = (TH1D*)_gjets_input_file->Get("h_zmass_lowlpt_mu");
-    //_gjets_h_zmass = (TH1D*)_gjets_input_file->Get("h_zmass");
-    //_gjets_h_zmass_el = (TH1D*)_gjets_input_file->Get("h_zmass_el");
-    //_gjets_h_zmass_mu = (TH1D*)_gjets_input_file->Get("h_zmass_mu");
-
+    _gjets_h_zmass_zpt = (TH2D*)_gjets_input_file->Get("h_zmass_zpt_lowlpt");
+    _gjets_h_zmass_zpt_el = (TH2D*)_gjets_input_file->Get("h_zmass_zpt_lowlpt_el");
+    _gjets_h_zmass_zpt_mu = (TH2D*)_gjets_input_file->Get("h_zmass_zpt_lowlpt_mu");
 
     // for zpt reweighting
     // zpt 1d
@@ -3205,8 +3169,6 @@ void prepareGJetsSkim()
     _gjets_gr_zpt_lowlpt_ratio_mu = (TGraphErrors*)_gjets_input_file->Get("gr_zpt_lowlpt_ratio_mu");
  
 
-    // make projection of mass to 1d for 
-
     // project mass to 1d
     for (int ix=0; ix<(int)_gjets_h_zmass_zpt->GetNbinsX(); ix++) {
       for (int iy=0; iy<(int)_gjets_h_zmass_zpt->GetNbinsY(); iy++) {
@@ -3235,40 +3197,19 @@ void prepareGJetsSkim()
     for (int iy=0; iy<(int)_gjets_h_zmass_zpt->GetNbinsY(); iy++){
       sprintf(name, "h_zmass_zpt_%i", iy+1);
       TH1D* htmp = (TH1D*)_gjets_h_zmass_zpt->ProjectionX(name, iy+1, iy+1, "e");
-      htmp->Smooth();
       _gjets_h_zmass_zpt_1d_vec.push_back(htmp);
-      TGraph* grtmp = new TGraph(htmp);
-      sprintf(name, "h_zmass_zpt_%i_smooth", iy+1);
-      TH1D* hstmp = new TH1D(name, name, 520, 50, 180);
-      hstmp->Sumw2();
-      for (int isb=1; isb<=hstmp->GetNbinsX(); isb++) hstmp->SetBinContent(isb,grtmp->Eval(hstmp->GetBinCenter(isb)));
-      //_gjets_h_zmass_zpt_1d_vec.push_back(hstmp);
     }
 
     for (int iy=0; iy<(int)_gjets_h_zmass_zpt_el->GetNbinsY(); iy++){
       sprintf(name, "h_zmass_zpt_el_%i", iy+1);
       TH1D* htmp = (TH1D*)_gjets_h_zmass_zpt_el->ProjectionX(name, iy+1, iy+1, "e");
-      htmp->Smooth();
       _gjets_h_zmass_zpt_el_1d_vec.push_back(htmp);
-      TGraph* grtmp = new TGraph(htmp);
-      sprintf(name, "h_zmass_zpt_el_%i_smooth", iy+1);
-      TH1D* hstmp = new TH1D(name, name, 520, 50, 180);
-      hstmp->Sumw2();
-      for (int isb=1; isb<=hstmp->GetNbinsX(); isb++) hstmp->SetBinContent(isb,grtmp->Eval(hstmp->GetBinCenter(isb)));
-      //_gjets_h_zmass_zpt_el_1d_vec.push_back(hstmp);
     }
 
     for (int iy=0; iy<(int)_gjets_h_zmass_zpt_mu->GetNbinsY(); iy++){
       sprintf(name, "h_zmass_zpt_mu_%i", iy+1);
       TH1D* htmp = (TH1D*)_gjets_h_zmass_zpt_mu->ProjectionX(name, iy+1, iy+1, "e");
-      htmp->Smooth();
       _gjets_h_zmass_zpt_mu_1d_vec.push_back(htmp);
-      TGraph* grtmp = new TGraph(htmp);
-      sprintf(name, "h_zmass_zpt_mu_%i_smooth", iy+1);
-      TH1D* hstmp = new TH1D(name, name, 520, 50, 180);
-      hstmp->Sumw2();
-      for (int isb=1; isb<=hstmp->GetNbinsX(); isb++) hstmp->SetBinContent(isb,grtmp->Eval(hstmp->GetBinCenter(isb)));
-      //_gjets_h_zmass_zpt_mu_1d_vec.push_back(hstmp);
     }
 
 
@@ -3381,10 +3322,6 @@ void doGJetsSkim()
   if (ipt>=_gjets_h_zmass_zpt->GetNbinsY()) ipt=_gjets_h_zmass_zpt->GetNbinsY()-1;
   if (_debug) std::cout << "doGJetsSkim:: begin all zmass random " << std::endl;
   _llnunu_l1_mass = _gjets_h_zmass_zpt_1d_vec.at(ipt)->GetRandom();
-  // use graph
-  //_llnunu_l1_mass = _gjets_gr_zmass_zpt_1d_vec.at(ipt)->Eval(_llnunu_l1_pt);
-  // use 1d z mass
-  //_llnunu_l1_mass = _gjets_h_zmass->GetRandom();
   if (_debug) std::cout << "doGJetsSkim:: end all zmass random " << std::endl;
 
 
@@ -3402,10 +3339,6 @@ void doGJetsSkim()
   if (ipt>=_gjets_h_zmass_zpt_el->GetNbinsY()) ipt=_gjets_h_zmass_zpt_el->GetNbinsY()-1;
   if (_debug) std::cout << "doGJetsSkim:: begin el zmass random " << std::endl;
   _llnunu_l1_mass_el = _gjets_h_zmass_zpt_el_1d_vec.at(ipt)->GetRandom();
-  // use graph
-  //_llnunu_l1_mass_el = _gjets_gr_zmass_zpt_el_1d_vec.at(ipt)->Eval(_llnunu_l1_pt);
-  // use 1d z mass
-  //_llnunu_l1_mass_el = _gjets_h_zmass_el->GetRandom();
   if (_debug) std::cout << "doGJetsSkim:: end el zmass random " << std::endl;
 
   // calculate mt
@@ -3422,10 +3355,6 @@ void doGJetsSkim()
   if (ipt>=_gjets_h_zmass_zpt_mu->GetNbinsY()) ipt=_gjets_h_zmass_zpt_mu->GetNbinsY()-1;
   if (_debug) std::cout << "doGJetsSkim:: begin mu zmass random " << std::endl;
   _llnunu_l1_mass_mu = _gjets_h_zmass_zpt_mu_1d_vec.at(ipt)->GetRandom();
-  // use graph
-  //_llnunu_l1_mass_mu = _gjets_gr_zmass_zpt_mu_1d_vec.at(ipt)->Eval(_llnunu_l1_pt);
-  // use 1d z mass
-  //_llnunu_l1_mass_mu = _gjets_h_zmass_mu->GetRandom();
   if (_debug) std::cout << "doGJetsSkim:: end mu zmass random " << std::endl;
 
   // calculate mt
@@ -3439,13 +3368,6 @@ void doGJetsSkim()
   if (_debug) std::cout << "doGJetsSkim:: start getting photon pt weight " << std::endl;
   // get zpt weight
   ipt = _gjets_h_zpt_ratio->GetXaxis()->FindBin(_llnunu_l1_pt); 
-
-  //_GJetsZPtWeight = _gjets_h_zpt_ratio->GetBinContent(ipt);
-  //_GJetsZPtWeightEl = _gjets_h_zpt_ratio_el->GetBinContent(ipt);
-  //_GJetsZPtWeightMu = _gjets_h_zpt_ratio_mu->GetBinContent(ipt);
-  //_GJetsZPtWeightLowLPt = _gjets_h_zpt_lowlpt_ratio->GetBinContent(ipt);
-  //_GJetsZPtWeightLowLPtEl = _gjets_h_zpt_lowlpt_ratio_el->GetBinContent(ipt);
-  //_GJetsZPtWeightLowLPtMu = _gjets_h_zpt_lowlpt_ratio_mu->GetBinContent(ipt);
 
   _GJetsZPtWeight = _gjets_gr_zpt_ratio->Eval(_llnunu_l1_pt);
   _GJetsZPtWeightEl = _gjets_gr_zpt_ratio_el->Eval(_llnunu_l1_pt);
@@ -3475,6 +3397,37 @@ void doGJetsSkim()
   // gjet rho weight
   _GJetsRhoWeight = _gjet_h_rho_weight->GetBinContent(_gjet_h_rho_weight->FindBin(_llnunu_l1_pt, _rho));
 
+
+}
+
+
+void doBoostJetSelection(){
+
+    //std::cout<<"_genZ_pt "<<_genZ_pt[0]<<std::endl;
+    //std::cout<<"boostJetAK8Puppi_pt "<<_boostJetAK8Puppi_pt[0]<<std::endl;
+
+    _boostJetAK8_pt = _boostJetAK8Puppi_pt[0];
+    _boostJetAK8_eta = _boostJetAK8Puppi_eta[0];
+    _boostJetAK8_phi = _boostJetAK8Puppi_phi[0];
+    _boostJetAK8_mass = _boostJetAK8Puppi_mass[0];
+
+    _boostJetAK8_tau21 = _boostJetAK8Puppi_tau2[0]/_boostJetAK8Puppi_tau1[0];
+    _boostJetAK8_softDropMass = _boostJetAK8Puppi_softDrop_massCorr[0]*_boostJetAK8Puppi_softDrop_massBare[0];
+    _boostJetAK8_btagBOOSTED = _boostJetAK8Puppi_btagBOOSTED[0];
+
+
+    TLorentzVector Vhad;
+    Vhad.SetPtEtaPhiM(_boostJetAK8_pt,_boostJetAK8_eta,_boostJetAK8_phi,_boostJetAK8_mass);
+    TLorentzVector Vlep;    
+    Vlep.SetPtEtaPhiM(_llnunu_l1_pt,_llnunu_l1_eta,_llnunu_l1_phi,_llnunu_l1_mass);
+
+    TLorentzVector Vis = Vhad+Vlep;
+
+    Float_t et1 = TMath::Sqrt(Vis.M()*Vis.M() + Vis.Pt()*Vis.Pt());
+    Float_t et2 = TMath::Sqrt(Vis.M()*Vis.M() + _llnunu_l2_pt*_llnunu_l2_pt);
+    _mTfull = TMath::Sqrt(2.0*Vis.M()*Vis.M()+2.0*(et1*et2
+                 -Vis.Pt()*cos(Vis.Phi())*_llnunu_l2_pt*cos(_llnunu_l2_phi)
+                 -Vis.Pt()*sin(Vis.Phi())*_llnunu_l2_pt*sin(_llnunu_l2_phi)));
 
 }
 
