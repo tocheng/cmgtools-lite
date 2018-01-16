@@ -96,6 +96,7 @@ coreSequence = [
     eventFlagsAna,
     triggerFlagsAna,
 ]
+
 multtrg.photonjet=True
 multtrg.HLTlist=[
     "HLT_Photon22_R9Id90_HE10_IsoM_v",
@@ -126,29 +127,18 @@ vvTreeProducer.globalVariables.append(NTupleVariable("PreScale90",  lambda ev: g
 vvTreeProducer.globalVariables.append(NTupleVariable("PreScale120",  lambda ev: getattr(ev,"HLT_Photon120_R9Id90_HE10_IsoM_vPS"), int, help="Photon HLT prescale"))
 vvTreeProducer.globalVariables.append(NTupleVariable("PreScale165",  lambda ev: getattr(ev,"HLT_Photon165_R9Id90_HE10_IsoM_vPS"), int, help="Photon HLT prescale"))
 
-#sequence = cfg.Sequence(coreSequence)
-#sequence = cfg.Sequence(coreSequence+[vvSkimmer,vvTreeProducer])
 sequence = cfg.Sequence(coreSequence+[vvSkimmer,multtrg,vvTreeProducer])
-#sequence = cfg.Sequence(coreSequence+[vvSkimmer,fullTreeProducer])
  
 
 #-------- HOW TO RUN
 test = 1
 if test==1:
     # test a single component, using a single thread.
-#    selectedComponents = SinglePhoton_03Feb2017
-    selectedComponents = [SinglePhoton_Run2016B_03Feb2017_ver2,]
-#    selectedComponents = [SinglePhoton_Run2016C_03Feb2017,]
-#    selectedComponents = [SinglePhoton_Run2016D_03Feb2017,]
-#    selectedComponents = [SinglePhoton_Run2016E_03Feb2017,]
-#    selectedComponents = [SinglePhoton_Run2016F_03Feb2017,]
-#    selectedComponents = [SinglePhoton_Run2016G_03Feb2017,]
+    selectedComponents = SinglePhoton_03Feb2017
 #    selectedComponents = [SinglePhoton_Run2016H_03Feb2017_ver2,SinglePhoton_Run2016H_03Feb2017_ver3]
     for c in selectedComponents:
-        c.files = c.files[10:20]
-        #c.splitFactor = (len(c.files)/10 if len(c.files)>10 else 1)
-        c.splitFactor = len(c.files)
-        c.splitFactor = 1
+        #c.files = c.files[10:20]
+        c.splitFactor = (len(c.files)/2+1 if ((len(c.files) % 2)>0) else len(c.files)/2)
         #c.triggers=triggers_1mu_noniso
         #c.triggers=triggers_1e_noniso
 
@@ -165,7 +155,7 @@ output_service = cfg.Service(
 outputService.append(output_service)
 
 from PhysicsTools.Heppy.utils.cmsswPreprocessor import CmsswPreprocessor
-preprocessor = CmsswPreprocessor("pogRecipes.py")
+preprocessor = CmsswPreprocessor("pogRecipesData.py")
 
 from PhysicsTools.HeppyCore.framework.eventsfwlite import Events
 event_class = Events
@@ -178,7 +168,7 @@ config = cfg.Config( components = selectedComponents,
 # and the following runs the process directly if running as with python filename.py  
 if __name__ == '__main__':
     from PhysicsTools.HeppyCore.framework.looper import Looper
-    looper = Looper( 'Loop', config, nPrint = 5,nEvents=300)
+    looper = Looper( 'Loop', config, nPrint = 1, nEvents=-1)
     looper.loop()
     looper.write()
 

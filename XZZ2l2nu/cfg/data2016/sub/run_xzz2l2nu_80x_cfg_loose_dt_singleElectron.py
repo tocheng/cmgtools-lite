@@ -47,55 +47,35 @@ multiStateAna.selectPairLLNuNu = (lambda x: x.leg1.mass()>50.0 and x.leg1.mass()
 coreSequence = [
     skimAnalyzer,
     genAna,
+    genAnaGeneric,
     jsonAna,
     triggerAna,
     pileUpAna,
     vertexAna,
     lepAna,
     jetAna,
+    jetAnaAK8PFPuppi,
+    boostObjAnaAK8Puppi,
     metAna,
-#    photonAna,
     leptonicVAna,
     multiStateAna,
     eventFlagsAna,
     triggerFlagsAna,
 ]
     
-#sequence = cfg.Sequence(coreSequence)
 sequence = cfg.Sequence(coreSequence+[vvSkimmer,multtrg,vvTreeProducer])
-#sequence = cfg.Sequence(coreSequence+[vvSkimmer,fullTreeProducer])
  
 
 #-------- HOW TO RUN
 test = 1
 if test==1:
     # test a single component, using a single thread.
-#    selectedComponents = [SingleMuon_Run2016C_03Feb2017]
-#    selectedComponents = SingleElectron_03Feb2017
-#    selectedComponents = SingleMuon_03Feb2017
-#    selectedComponents = [SingleElectron_Run2016B_03Feb2017_ver2,]
-#    selectedComponents = [SingleElectron_Run2016C_03Feb2017,]
-#    selectedComponents = [SingleElectron_Run2016D_03Feb2017,]
-    selectedComponents = [SingleElectron_Run2016E_03Feb2017,]
-#    selectedComponents = [SingleElectron_Run2016F_03Feb2017,]
-#    selectedComponents = [SingleElectron_Run2016G_03Feb2017,]
-#    selectedComponents = [SingleElectron_Run2016H_03Feb2017_ver2, SingleElectron_Run2016H_03Feb2017_ver3,]
-#    selectedComponents = [SingleMuon_Run2016B_03Feb2017_ver2,]
-#    selectedComponents = [SingleMuon_Run2016C_03Feb2017,]
-#    selectedComponents = [SingleMuon_Run2016D_03Feb2017,]
-#    selectedComponents = [SingleMuon_Run2016E_03Feb2017,]
-#    selectedComponents = [SingleMuon_Run2016F_03Feb2017,]
-#    selectedComponents = [SingleMuon_Run2016G_03Feb2017,]
-#    selectedComponents = [SingleMuon_Run2016H_03Feb2017_ver2,SingleMuon_Run2016H_03Feb2017_ver3,]
-
+    selectedComponents = SingleElectron_03Feb2017
     for c in selectedComponents:
-        c.files = c.files[:2]
-        #c.splitFactor = (len(c.files)/10 if len(c.files)>10 else 1)
-        c.splitFactor = (len(c.files))
-        c.splitFactor = 1
+        #c.files = c.files[:1]
+        c.splitFactor = (len(c.files)/5+1 if ((len(c.files) % 5)>0) else len(c.files)/5)
         #c.triggers=triggers_1mu_noniso
         #c.triggers=triggers_1e_noniso
-
 
 ## output histogram
 outputService=[]
@@ -110,7 +90,7 @@ output_service = cfg.Service(
 outputService.append(output_service)
 
 from PhysicsTools.Heppy.utils.cmsswPreprocessor import CmsswPreprocessor
-preprocessor = CmsswPreprocessor("pogRecipes.py")
+preprocessor = CmsswPreprocessor("pogRecipesData.py")
 
 from PhysicsTools.HeppyCore.framework.eventsfwlite import Events
 event_class = Events
@@ -121,13 +101,12 @@ config = cfg.Config( components = selectedComponents,
                      events_class = event_class)
 
 # and the following runs the process directly if running as with python filename.py  
+'''
 if __name__ == '__main__':
     from PhysicsTools.HeppyCore.framework.looper import Looper
-    looper = Looper( 'Loop', config, nPrint = 5,nEvents=300)
+    looper = Looper( 'Loop', config, nPrint = 0,nEvents=300)
     looper.loop()
     looper.write()
-
-
-
+'''
 
 

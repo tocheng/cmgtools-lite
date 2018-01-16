@@ -41,7 +41,7 @@ from CMGTools.XZZ2l2nu.analyzers.treeXZZ_cff import *
 leptonicVAna.selectMuMuPair = (lambda x: ((x.leg1.pt()>20 or x.leg2.pt()>20)))
 leptonicVAna.selectElElPair =(lambda x: x.leg1.pt()>20.0 or x.leg2.pt()>20.0 )
 leptonicVAna.selectVBoson = (lambda x: x.mass()>50.0 and x.mass()<180.0)
-multiStateAna.selectPairLLNuNu = (lambda x: x.leg1.mass()>50.0 and x.leg1.mass()<180.0)
+multiStateAna.selectPairLLNuNu = (lambda x: x.leg1.mass()>50.0 and x.leg1.mass()<180.0 and x.leg1.pt()>100)
 
 #-------- SEQUENCE
 coreSequence = [
@@ -73,11 +73,7 @@ if test==1:
     #selectedComponents = dataSamples
     #selectedComponents = mcSamples
     #selectedComponents = [BulkGravToZZToZlepZinv_narrow_1600] 
-    selectedComponents = [DYJetsToLL_Pt_100To250,
-                          DYJetsToLL_Pt_250To400,
-                          DYJetsToLL_Pt_400To650,
-                          DYJetsToLL_Pt_650ToInf,
-                          ZZTo2L2Q,
+    selectedComponents = [ZZTo2L2Q,
                           WZTo2L2Q]
 
     for c in selectedComponents:

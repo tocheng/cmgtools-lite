@@ -12,14 +12,22 @@ from PhysicsTools.HeppyCore.framework.heppy_loop import getHeppyOption
 from CMGTools.XZZ2l2nu.analyzers.coreXZZ_cff import *
 
 #-------- SAMPLES AND TRIGGERS -----------
-from CMGTools.XZZ2l2nu.samples.loadSamples76x import *
+from CMGTools.XZZ2l2nu.samples.loadSamples80xSummer16 import *
 selectedComponents = mcSamples+dataSamples
 
 triggerFlagsAna.triggerBits ={
     "ISOMU":triggers_1mu_iso,
     "MU":triggers_1mu_noniso,
+    "MUv2":triggers_1mu_noniso_v2,
+    "MU50":triggers_1mu_noniso_M50,
+    "TkMU50":triggers_1mu_noniso_tkM50,
     "ISOELE":triggers_1e,
     "ELE":triggers_1e_noniso,
+    "ELEv2":triggers_1e_noniso_v2,
+    "ELE115":triggers_1e_noniso_E115,
+    "MUMU": triggers_mumu,
+    "MUMUNOISO":triggers_mumu_noniso,
+    "ELEL": triggers_ee,
     "HT800":triggers_HT800,
     "HT900":triggers_HT900,
     "JJ":triggers_dijet_fat,
@@ -30,23 +38,24 @@ triggerFlagsAna.triggerBits ={
 #-------- Analyzer
 from CMGTools.XZZ2l2nu.analyzers.treeXZZ_cff import *
 
-leptonicVAna.selectMuMuPair = (lambda x: ((x.leg1.pt()>35 or x.leg2.pt()>35)))
-leptonicVAna.selectElElPair =(lambda x: x.leg1.pt()>50.0 or x.leg2.pt()>50.0 )
+leptonicVAna.selectMuMuPair = (lambda x: ((x.leg1.pt()>20 or x.leg2.pt()>20)))
+leptonicVAna.selectElElPair =(lambda x: x.leg1.pt()>20.0 or x.leg2.pt()>20.0 )
 leptonicVAna.selectVBoson = (lambda x: x.mass()>50.0 and x.mass()<180.0)
-multiStateAna.selectPairLLNuNu = (lambda x: x.leg1.mass()>50.0 and x.leg1.mass()<180.0)
+multiStateAna.selectPairLLNuNu = (lambda x: x.leg1.mass()>50.0 and x.leg1.mass()<180.0 and x.leg1.pt()>100)
 
 #-------- SEQUENCE
-#sequence = cfg.Sequence(coreSequence+[vvSkimmer,vvTreeProducer])
-
 coreSequence = [
     skimAnalyzer,
     genAna,
+    genAnaGeneric,
     jsonAna,
     triggerAna,
     pileUpAna,
     vertexAna,
     lepAna,
     jetAna,
+    jetAnaAK8PFPuppi,
+    boostObjAnaAK8Puppi,
     metAna,
     leptonicVAna,
     multiStateAna,
@@ -54,28 +63,33 @@ coreSequence = [
     triggerFlagsAna,
 ]
     
-#sequence = cfg.Sequence(coreSequence)
-sequence = cfg.Sequence(coreSequence+[vvSkimmer,vvTreeProducer])
-#sequence = cfg.Sequence(coreSequence+[vvSkimmer,fullTreeProducer])
+sequence = cfg.Sequence(coreSequence+[vvSkimmer,multtrg,vvTreeProducer])
  
 
 #-------- HOW TO RUN
 test = 1
 if test==1:
     # test a single component, using a single thread.
-    #selectedComponents = dataSamples
     #selectedComponents = mcSamples
-    #selectedComponents = [SingleMuon_Run2015D_Promptv4,SingleElectron_Run2015D_Promptv4]
-    #selectedComponents = [SingleMuon_Run2015C_25ns_16Dec]
-    selectedComponents = [MuonEG_Run2015D_16Dec] #MuEG
-    #selectedComponents = [RSGravToZZToZZinv_narrow_800]
-    #selectedComponents = [DYJetsToLL_M50]
-    #selectedComponents = [BulkGravToZZ_narrow_800]
-    #selectedComponents = [BulkGravToZZToZlepZhad_narrow_800]
+    #selectedComponents = [BulkGravToZZToZlepZinv_narrow_1600] 
+    inputSample = cfg.MCComponent(
+      'test_component',
+      files = ['/afs/cern.ch/user/t/tocheng/public/ZprimeCascadeDecay/MINIAOD_first10.root'],  # returns a list of file for this release
+    # a list of local or xrootd files can be specified by hand.
+    )
+    inputSample.isMC = True
+    inputSample.isData = False
+    inputSample.puFileMC=dataDir+"/pileup_MC_80x_271036-276811_68075.root"
+    inputSample.puFileData=dataDir+"/pileup_DATA_80x_271036-276811_68075.root"
+    inputSample.eSFinput=dataDir+"/CutBasedID_LooseWP_76X_18Feb.txt_SF2D.root"
+
+    selectedComponents = [inputSample]#BulkGravToZZToZlepZinv_narrow_800]
+
     for c in selectedComponents:
-        c.files = c.files[0:9]
+        #c.files = c.files[:1]
         #c.splitFactor = (len(c.files)/10 if len(c.files)>10 else 1)
-        c.splitFactor = 10
+        c.splitFactor = len(c.files)
+        print c,' ',len(c.files)
         #c.triggers=triggers_1mu_noniso
         #c.triggers=triggers_1e_noniso
 
@@ -91,17 +105,24 @@ output_service = cfg.Service(
     )
 outputService.append(output_service)
 
+from PhysicsTools.Heppy.utils.cmsswPreprocessor import CmsswPreprocessor
+preprocessor = CmsswPreprocessor("pogRecipesMC.py")
+
 from PhysicsTools.HeppyCore.framework.eventsfwlite import Events
-from CMGTools.TTHAnalysis.tools.EOSEventsWithDownload import EOSEventsWithDownload
-event_class = EOSEventsWithDownload
 event_class = Events
-if getHeppyOption("nofetch"):
-    event_class = Events
 config = cfg.Config( components = selectedComponents,
                      sequence = sequence,
                      services = [],
+                     preprocessor=preprocessor, #this would run cmsRun before running Heppy
                      events_class = event_class)
 
-
+# and the following runs the process directly if running as with python filename.py  
+'''
+if __name__ == '__main__':
+    from PhysicsTools.HeppyCore.framework.looper import Looper
+    looper = Looper( 'Loop', config, nPrint = 0,nEvents=300)
+    looper.loop()
+    looper.write()
+'''
 
 

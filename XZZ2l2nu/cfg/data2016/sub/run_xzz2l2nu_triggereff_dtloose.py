@@ -10,63 +10,75 @@ from PhysicsTools.HeppyCore.framework.heppy_loop import getHeppyOption
 
 #Load all common analyzers
 from CMGTools.XZZ2l2nu.analyzers.coreXZZ_cff import *
-from CMGTools.XZZ2l2nu.analyzers.XZZMuonEffTree import *
+from CMGTools.XZZ2l2nu.analyzers.XZZTrgEff import *
 
 #-------- SAMPLES AND TRIGGERS -----------
-from CMGTools.XZZ2l2nu.samples.loadSamples80x import *
+from CMGTools.XZZ2l2nu.samples.loadSamples92x import *
+selectedComponents = dataSamples
+
+triggerFlagsAna.triggerBits ={
+    "ISOMU":triggers_1mu_iso,
+    "MU":triggers_1mu_noniso,
+    "ISOELE":triggers_1e,
+    "ELE":triggers_1e_noniso,
+}
 
 #-------- Analyzer
 from CMGTools.XZZ2l2nu.analyzers.treeXZZ_cff import *
+leptonicVAna.selectMuMuPair = (lambda x: ((x.leg1.pt()>40 or x.leg2.pt()>40)))
+leptonicVAna.selectElElPair =(lambda x: x.leg1.pt()>50.0 or x.leg2.pt()>50.0 )
+leptonicVAna.selectVBoson = (lambda x: x.mass()>70.0 and x.mass()<110.0)
+multiStateAna.selectPairLLNuNu = (lambda x: x.leg1.mass()>70.0 and x.leg1.mass()<110.0)
+
+jetAna.smearJets=True
 
 #-------- SEQUENCE
 #sequence = cfg.Sequence(coreSequence+[vvSkimmer,vvTreeProducer])
-meffAna = cfg.Analyzer(
-    XZZMuonEffTree,
-    name='mEffTree',
-    genfilter=False,
-    pfbkg=False,
-    eithercharge=False,
-    checktag=True,
-    muHLT="HLT_IsoMu20_v"
+trgEffAna = cfg.Analyzer(
+    XZZTrgEff, name="TriggerEfficiencyAnalyzer",
+    eleHLT='HLT_Ele105_CaloIdVT_GsfTrkIdT',
+    muHLT='HLT_Mu50'
     )
 
-lepAna.applyIso=False
-lepAna.applyID=False
-vertexAna.keepFailingEvents=True
-leptonType.variables.extend([
-    # Extra muon ID working points
-    NTupleVariable("softMuonId", lambda x : x.muonID("POG_ID_Soft") if abs(x.pdgId())==13 else -100, int, help="Muon POG Soft id"),
-    NTupleVariable("pfMuonId",   lambda x : x.muonID("POG_ID_Loose") if abs(x.pdgId())==13 else -100, int, help="Muon POG Loose id"),
-    NTupleVariable("MediumMuonId",   lambda x : x.muonID("POG_ID_Medium") if abs(x.pdgId())==13 else -100, int, help="Muon POG Medium id"),
-    NTupleVariable("tightMuonId",   lambda x : x.muonID("POG_ID_Tight") if abs(x.pdgId())==13 else -100, int, help="Muon POG Tight id"),
-    NTupleVariable("isTag",   lambda x : x.istag if abs(x.pdgId())==13 else -100, int, help="Muon POG Tight id"),
-]) 
-sequence = [
+coreSequence = [
+    skimAnalyzer,
+    genAna,
     jsonAna,
+    triggerAna,
+    pileUpAna,
     vertexAna,
     lepAna,
-    meffAna,
-    lepeffTreeProducer
+    jetAna,
+    metAna,
+    leptonicVAna,
+    multiStateAna,
+    eventFlagsAna,
+    triggerFlagsAna,
 ]
-    
+
+#sequence = cfg.Sequence(coreSequence)
+sequence = cfg.Sequence(coreSequence+[vvSkimmer,trgEffAna,vvTreeProducer])
+
+
+ 
 
 #-------- HOW TO RUN
 test = 1
 if test==1:
     # test a single component, using a single thread.
-    selectedComponents = SingleMuon
-    #selectedComponents = mcSamples
+    #selectedComponents = [JetHT_Run2015C_25ns_16Dec,JetHT_Run2015D_16Dec]
+    selectedComponents = SingleMuon+SingleElectron
     #selectedComponents = [SingleMuon_Run2015D_Promptv4,SingleElectron_Run2015D_Promptv4]
     #[SingleElectron_Run2015D_Promptv4,SingleElectron_Run2015D_05Oct]
     #selectedComponents = [RSGravToZZToZZinv_narrow_800]
-    #selectedComponents = [DYJetsToLL_M50]
     #selectedComponents = [BulkGravToZZ_narrow_800]
     #selectedComponents = [BulkGravToZZToZlepZhad_narrow_800]
     for c in selectedComponents:
-        #c.files = c.files[:10]
-        c.splitFactor = (len(c.files)/5 if len(c.files)>=5 else len(c.files))
+        #c.files = c.files[0]
+        c.splitFactor =  (len(c.files)/5 if len(c.files)>5 else 1)
         #c.splitFactor = 1
-        #c.triggers=triggers_1mu_noniso
+        c.triggers=[]
+        c.vetoTriggers = []
         #c.triggers=triggers_1e_noniso
 
 ## output histogram

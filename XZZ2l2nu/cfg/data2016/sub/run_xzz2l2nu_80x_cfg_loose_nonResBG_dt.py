@@ -7,20 +7,25 @@ from CMGTools.XZZ2l2nu.fwlite.Config import printComps
 from CMGTools.XZZ2l2nu.RootTools import *
 from PhysicsTools.HeppyCore.framework.heppy_loop import getHeppyOption
 
-
 #Load all common analyzers
 from CMGTools.XZZ2l2nu.analyzers.coreXZZ_cff import *
-from CMGTools.XZZ2l2nu.analyzers.XZZTrgEff import *
 
 #-------- SAMPLES AND TRIGGERS -----------
-from CMGTools.XZZ2l2nu.samples.loadSamples76x import *
+from CMGTools.XZZ2l2nu.samples.loadSamples80x import *
 selectedComponents = mcSamples+dataSamples
 
 triggerFlagsAna.triggerBits ={
     "ISOMU":triggers_1mu_iso,
     "MU":triggers_1mu_noniso,
+    "MUv2":triggers_1mu_noniso_v2,
+    "MU50":triggers_1mu_noniso_M50,
     "ISOELE":triggers_1e,
     "ELE":triggers_1e_noniso,
+    "ELEv2":triggers_1e_noniso_v2,
+    "ELE115":triggers_1e_noniso_E115,
+    "MUMU": triggers_mumu,
+    "MUMUNOISO":triggers_mumu_noniso,
+    "ELEL": triggers_ee,
     "HT800":triggers_HT800,
     "HT900":triggers_HT900,
     "JJ":triggers_dijet_fat,
@@ -30,21 +35,13 @@ triggerFlagsAna.triggerBits ={
 
 #-------- Analyzer
 from CMGTools.XZZ2l2nu.analyzers.treeXZZ_cff import *
-leptonicVAna.selectMuMuPair = (lambda x: ((x.leg1.pt()>35 or x.leg2.pt()>35)))
-leptonicVAna.selectElElPair =(lambda x: x.leg1.pt()>50.0 or x.leg2.pt()>50.0 )
-leptonicVAna.selectVBoson = (lambda x: x.mass()>50.0 and x.mass()<180.0)
-multiStateAna.selectPairLLNuNu = (lambda x: x.leg1.mass()>50.0 and x.leg1.mass()<180.0)
 
-jetAna.smearJets=True
+leptonicVAna.doElMu = True
+leptonicVAna.selectElMuPair =(lambda x: x.leg1.pt()>20.0 or x.leg2.pt()>20.0 )
+leptonicVAna.selectVBoson = (lambda x: x.mass()>30.0 and x.mass()<200.0)
+multiStateAna.selectPairLLNuNu = (lambda x: x.leg1.mass()>30.0 and x.leg1.mass()<200.0)
 
 #-------- SEQUENCE
-#sequence = cfg.Sequence(coreSequence+[vvSkimmer,vvTreeProducer])
-trgEffAna = cfg.Analyzer(
-    XZZTrgEff, name="TriggerEfficiencyAnalyzer",
-    eleHLT='HLT_Ele105_CaloIdVT_GsfTrkIdT',
-    muHLT='HLT_Mu45_eta2p1'
-    )
-
 coreSequence = [
     skimAnalyzer,
     genAna,
@@ -55,35 +52,33 @@ coreSequence = [
     lepAna,
     jetAna,
     metAna,
+    #photonAna,
     leptonicVAna,
     multiStateAna,
     eventFlagsAna,
     triggerFlagsAna,
 ]
-
+    
 #sequence = cfg.Sequence(coreSequence)
-sequence = cfg.Sequence(coreSequence+[vvSkimmer,trgEffAna,vvTreeProducer])
-
-
+sequence = cfg.Sequence(coreSequence+[vvSkimmer,vvTreeProducer])
+#sequence = cfg.Sequence(coreSequence+[vvSkimmer,fullTreeProducer])
  
 
 #-------- HOW TO RUN
 test = 1
 if test==1:
     # test a single component, using a single thread.
-    #selectedComponents = [JetHT_Run2015C_25ns_16Dec,JetHT_Run2015D_16Dec]
-    selectedComponents = SingleMuon+SingleElectron
-    #selectedComponents = [SingleMuon_Run2015D_Promptv4,SingleElectron_Run2015D_Promptv4]
-    #[SingleElectron_Run2015D_Promptv4,SingleElectron_Run2015D_05Oct]
-    #selectedComponents = [RSGravToZZToZZinv_narrow_800]
-    #selectedComponents = [BulkGravToZZ_narrow_800]
-    #selectedComponents = [BulkGravToZZToZlepZhad_narrow_800]
+    #selectedComponents = dataSamples
+    #selectedComponents = [SingleMuon_Run2016D_PromptReco_v2] 
+    #selectedComponents = [SingleMuon_Run2016G_PromptReco_v1] 
+    #selectedComponents = SingleMuon+SingleElectron
+    selectedComponents = MuonEG23Sep2016+[MuonEG_Run2016H_PromptReco_v1,MuonEG_Run2016H_PromptReco_v2,MuonEG_Run2016H_PromptReco_v3]
     for c in selectedComponents:
-        #c.files = c.files[0]
-        c.splitFactor =  (len(c.files)/5 if len(c.files)>5 else 1)
+        #c.files = c.files[3:6]
+        #c.splitFactor = (len(c.files)/5 if len(c.files)>5 else 1)
+        c.splitFactor = len(c.files)
         #c.splitFactor = 1
-        c.triggers=[]
-        c.vetoTriggers = []
+        #c.triggers=triggers_1mu_noniso
         #c.triggers=triggers_1e_noniso
 
 ## output histogram
@@ -108,7 +103,5 @@ config = cfg.Config( components = selectedComponents,
                      sequence = sequence,
                      services = [],
                      events_class = event_class)
-
-
 
 

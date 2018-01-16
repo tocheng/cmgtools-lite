@@ -7,7 +7,6 @@ from CMGTools.XZZ2l2nu.fwlite.Config import printComps
 from CMGTools.XZZ2l2nu.RootTools import *
 from PhysicsTools.HeppyCore.framework.heppy_loop import getHeppyOption
 
-
 #Load all common analyzers
 from CMGTools.XZZ2l2nu.analyzers.coreXZZ_cff import *
 
@@ -41,64 +40,43 @@ from CMGTools.XZZ2l2nu.analyzers.treeXZZ_cff import *
 leptonicVAna.selectMuMuPair = (lambda x: ((x.leg1.pt()>20 or x.leg2.pt()>20)))
 leptonicVAna.selectElElPair =(lambda x: x.leg1.pt()>20.0 or x.leg2.pt()>20.0 )
 leptonicVAna.selectVBoson = (lambda x: x.mass()>50.0 and x.mass()<180.0)
-multiStateAna.selectPairLLNuNu = (lambda x: x.leg1.mass()>50.0 and x.leg1.mass()<180.0)
+multiStateAna.selectPairLLNuNu = (lambda x: x.leg1.mass()>50.0 and x.leg1.mass()<180.0 and x.leg1.pt()>100)
 
 #-------- SEQUENCE
 coreSequence = [
     skimAnalyzer,
     genAna,
+    genAnaGeneric,
     jsonAna,
     triggerAna,
     pileUpAna,
     vertexAna,
     lepAna,
     jetAna,
+    jetAnaAK8PFPuppi,
+    boostObjAnaAK8Puppi,
     metAna,
-#    photonAna,
     leptonicVAna,
     multiStateAna,
     eventFlagsAna,
     triggerFlagsAna,
 ]
     
-#sequence = cfg.Sequence(coreSequence)
 sequence = cfg.Sequence(coreSequence+[vvSkimmer,multtrg,vvTreeProducer])
-#sequence = cfg.Sequence(coreSequence+[vvSkimmer,fullTreeProducer])
  
 
 #-------- HOW TO RUN
 test = 1
 if test==1:
     # test a single component, using a single thread.
-    #selectedComponents = dataSamples
     #selectedComponents = mcSamples
-    #selectedComponents = [SingleMuon_Run2015D_Promptv4,SingleElectron_Run2015D_Promptv4]
-    #selectedComponents = [SingleMuon_Run2015C_25ns_16Dec]
-    #selectedComponents = [SingleMuon_Run2016B_PromptReco_v2] 
-    #selectedComponents = [SingleMuon_Run2016D_PromptReco_v2] 
-    #selectedComponents = [SingleElectron_Run2016D_PromptReco_v2] 
-    #selectedComponents = [SingleMuon_Run2016B_PromptReco_v2,SingleElectron_Run2016B_PromptReco_v2] 
-    #selectedComponents = [MuonEG_Run2015D_16Dec] #MuEG
-    #selectedComponents = [RSGravToZZToZZinv_narrow_800]
-    #selectedComponents = [WJetsToLNu]
-    #selectedComponents = [ZZTo2L2Nu]
-    #selectedComponents = [DYJetsToLL_M50_reHLT]
-    #selectedComponents = [DYJetsToLL_M50]
-    #selectedComponents = [DYJetsToLL_M50_MGMLM_Ext1]
-    #selectedComponents = [DY1JetsToLL_M50_MGMLM]
-    #selectedComponents = [DY1JetsToLL_M50_MGMLM, DY2JetsToLL_M50_MGMLM, DY3JetsToLL_M50_MGMLM, DY4JetsToLL_M50_MGMLM, DYBJetsToLL_M50_MGMLM]
     #selectedComponents = [BulkGravToZZToZlepZinv_narrow_1600] 
-    #selectedComponents = signalSamples
-    #selectedComponents = signalSamples+backgroundSamples[4:]
-    #selectedComponents = backgroundSamples[1:4]
-    #selectedComponents = [TTTo2L2Nu]
-    #selectedComponents = [ZZTo2L2Nu]
-    #selectedComponents = [BulkGravToZZ_narrow_800]
-    selectedComponents = [BulkGravToZZToZlepZinv_narrow_800]
+    selectedComponents = DySamplesExt2
+
     for c in selectedComponents:
-        c.files = c.files[:1]
+        #c.files = c.files[:1]
         #c.splitFactor = (len(c.files)/10 if len(c.files)>10 else 1)
-        c.splitFactor = 1
+        c.splitFactor = (len(c.files)/2+1 if ((len(c.files) % 2)>0) else len(c.files)/2)
         #c.triggers=triggers_1mu_noniso
         #c.triggers=triggers_1e_noniso
 
@@ -115,7 +93,7 @@ output_service = cfg.Service(
 outputService.append(output_service)
 
 from PhysicsTools.Heppy.utils.cmsswPreprocessor import CmsswPreprocessor
-preprocessor = CmsswPreprocessor("pogRecipes.py")
+preprocessor = CmsswPreprocessor("pogRecipesMC.py")
 
 from PhysicsTools.HeppyCore.framework.eventsfwlite import Events
 event_class = Events
@@ -126,11 +104,12 @@ config = cfg.Config( components = selectedComponents,
                      events_class = event_class)
 
 # and the following runs the process directly if running as with python filename.py  
+'''
 if __name__ == '__main__':
     from PhysicsTools.HeppyCore.framework.looper import Looper
-    looper = Looper( 'Loop', config, nPrint = 5,nEvents=300)
+    looper = Looper( 'Loop', config, nPrint = 0,nEvents=300)
     looper.loop()
     looper.write()
-
+'''
 
 
