@@ -7,12 +7,11 @@ from CMGTools.XZZ2l2nu.fwlite.Config import printComps
 from CMGTools.XZZ2l2nu.RootTools import *
 from PhysicsTools.HeppyCore.framework.heppy_loop import getHeppyOption
 
-
 #Load all common analyzers
 from CMGTools.XZZ2l2nu.analyzers.coreXZZ_cff import *
 
 #-------- SAMPLES AND TRIGGERS -----------
-from CMGTools.XZZ2l2nu.samples.loadSamples80xSummer16 import *
+from CMGTools.XZZ2l2nu.samples.loadSamples80x import *
 selectedComponents = mcSamples+dataSamples
 
 triggerFlagsAna.triggerBits ={
@@ -20,7 +19,6 @@ triggerFlagsAna.triggerBits ={
     "MU":triggers_1mu_noniso,
     "MUv2":triggers_1mu_noniso_v2,
     "MU50":triggers_1mu_noniso_M50,
-    "TkMU50":triggers_1mu_noniso_tkM50,
     "ISOELE":triggers_1e,
     "ELE":triggers_1e_noniso,
     "ELEv2":triggers_1e_noniso_v2,
@@ -40,8 +38,8 @@ from CMGTools.XZZ2l2nu.analyzers.treeXZZ_cff import *
 
 leptonicVAna.doElMu = True
 leptonicVAna.selectElMuPair =(lambda x: x.leg1.pt()>20.0 or x.leg2.pt()>20.0 )
-leptonicVAna.selectVBoson = (lambda x: x.mass()>50.0 and x.mass()<180.0)
-multiStateAna.selectPairLLNuNu = (lambda x: x.leg1.mass()>50.0 and x.leg1.mass()<180.0)
+leptonicVAna.selectVBoson = (lambda x: x.mass()>30.0 and x.mass()<200.0)
+multiStateAna.selectPairLLNuNu = (lambda x: x.leg1.mass()>30.0 and x.leg1.mass()<200.0)
 
 #-------- SEQUENCE
 coreSequence = [
@@ -62,19 +60,19 @@ coreSequence = [
 ]
     
 #sequence = cfg.Sequence(coreSequence)
-sequence = cfg.Sequence(coreSequence+[vvSkimmer,multtrg,vvTreeProducer])
+sequence = cfg.Sequence(coreSequence+[vvSkimmer,vvTreeProducer])
 #sequence = cfg.Sequence(coreSequence+[vvSkimmer,fullTreeProducer])
  
 
 #-------- HOW TO RUN
 test = 1
 if test==1:
-    selectedComponents = MuonEG_03Feb2017
+    # test a single component, using a single thread.
+    selectedComponents = MuonEG23Sep2016+[MuonEG_Run2016H_PromptReco_v1,MuonEG_Run2016H_PromptReco_v2,MuonEG_Run2016H_PromptReco_v3]
     for c in selectedComponents:
-        #c.files = c.files[5:6]
+        #c.files = c.files[3:6]
         #c.splitFactor = (len(c.files)/5 if len(c.files)>5 else 1)
-        c.splitFactor = len(c.files)/2
-        #c.splitFactor = 1
+        c.splitFactor = len(c.files)
         #c.triggers=triggers_1mu_noniso
         #c.triggers=triggers_1e_noniso
 
@@ -90,15 +88,15 @@ output_service = cfg.Service(
     )
 outputService.append(output_service)
 
-from PhysicsTools.Heppy.utils.cmsswPreprocessor import CmsswPreprocessor
-preprocessor = CmsswPreprocessor("pogRecipes.py")
-
 from PhysicsTools.HeppyCore.framework.eventsfwlite import Events
+from CMGTools.TTHAnalysis.tools.EOSEventsWithDownload import EOSEventsWithDownload
+event_class = EOSEventsWithDownload
 event_class = Events
+if getHeppyOption("nofetch"):
+    event_class = Events
 config = cfg.Config( components = selectedComponents,
                      sequence = sequence,
                      services = [],
-                     preprocessor=preprocessor, #this would run cmsRun before running Heppy
                      events_class = event_class)
 
 
