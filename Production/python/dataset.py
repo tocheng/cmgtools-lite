@@ -5,6 +5,7 @@ import pprint
 import re
 import pickle
 import sys
+import json
 
 from CMGTools.Production.castorBaseDir import castorBaseDir
 import CMGTools.Production.eostools as castortools
@@ -17,17 +18,13 @@ class IntegrityCheckError(Exception):
         return repr(self.value)
 
 def _dasPopen(dbs, verbose=True):
-    #if 'LSB_JOBID' in os.environ:
-    #    raise RuntimeError, "Trying to do a DAS query while in a LXBatch job (env variable LSB_JOBID defined)\nquery was: %s" % dbs
-    # Above two lines commented out by Hengne. 
-    # As far as X509_USER_PROXY env is setup in the job, and pointing to proxy accessible by the job, 
-    # nothing prevent us to use it. 
-
+    if 'LSB_JOBID' in os.environ:
+        raise RuntimeError, "Trying to do a DAS query while in a LXBatch job (env variable LSB_JOBID defined)\nquery was: %s" % dbs
     #--- this below fails also locally, so it's off for the moment; to be improved ---
     #if 'GLOBUS_GRAM_JOB_CONTACT':
     #    raise RuntimeError, "Trying to do a DAS query while in a Grid job (env variable GLOBUS_GRAM_JOB_CONTACT defined)\nquery was: %s" % dbs
-    if 'X509_USER_PROXY' in os.environ:
-        dbs += " --key {0} --cert {0}".format(os.environ['X509_USER_PROXY'])
+    if dbs.startswith("dasgoclient") and ('X509_USER_PROXY' in os.environ):
+         dbs += " --key {0} --cert {0}".format(os.environ['X509_USER_PROXY'])
     if verbose: print 'dbs\t: %s' % dbs
     return os.popen(dbs)
 
@@ -141,8 +138,9 @@ class BaseDataset( object ):
 
 class CMSDataset( BaseDataset ):
 
-    def __init__(self, name, run_range = None, json = None):
-        super(CMSDataset, self).__init__( name, 'CMS', run_range=run_range, json=json)
+    def __init__(self, name, run_range = None, json = None, unsafe=False, user='CMS', dbsInstance=None):
+        self.unsafe = unsafe
+        super(CMSDataset, self).__init__( name, user, run_range=run_range, json=json, dbsInstance=dbsInstance)
 
     def buildListOfFilesDBS(self, pattern, begin=-1, end=-1, run_range="self"):
         #print 'buildListOfFilesDBS',begin,end
@@ -156,7 +154,11 @@ class CMSDataset( BaseDataset ):
             else:
                 print "WARNING: queries with run ranges are slow in DAS"
                 query += "   run between [%s,%s]" % ( run_range[0],run_range[1] )
-        dbs='das_client --query="file %s=%s"'%(qwhat,query)
+        else:
+            query += "  status=VALID" # status doesn't interact well with run range
+        if self.dbsInstance != None:
+            query += "  instance=prod/%s" % self.dbsInstance
+        dbs='dasgoclient --query="file %s=%s"'%(qwhat,query) # files must be valid
         if begin >= 0:
             dbs += ' --index %d' % begin
         if end >= 0:
@@ -196,7 +198,7 @@ class CMSDataset( BaseDataset ):
                                                   i*limit,
                                                   ((i+1)*limit)-1)
                 self.files.extend(DBSFiles)
-            if len(self.files) < num_files:
+            if len(self.files) != num_files:
                 raise RuntimeError, "ERROR: mismatching number of files between dataset summary (%d) and dataset query for files(%d)\n" % (num_files, len(self.files))
             return
 
@@ -229,11 +231,11 @@ class CMSDataset( BaseDataset ):
             return
 
         self.files = self.buildListOfFilesDBS(pattern)
-        if len(self.files) < num_files:
+        if len(self.files) != num_files and not self.unsafe:
             raise RuntimeError, "ERROR: mismatching number of files between dataset summary (%d) and dataset query for files(%d)\n" % (num_files, len(self.files))
             
     @staticmethod
-    def findPrimaryDatasetSummaries(dataset, runmin, runmax):
+    def findPrimaryDatasetSummaries(dataset, runmin, runmax, dbsInstance=None):
 
         query, qwhat = dataset, "dataset"
         if "#" in dataset: qwhat = "block"
@@ -243,20 +245,18 @@ class CMSDataset( BaseDataset ):
             else:
                 print "WARNING: queries with run ranges are slow in DAS"
                 query = "%s run between [%d, %d]" % (query,runmin if runmin > 0 else 1, runmax if runmax > 0 else 999999)
-        dbs='das_client --query="summary %s=%s"'%(qwhat,query)
-        dbsOut = _dasPopen(dbs).readlines()
-
+        if dbsInstance != None:
+            query += "  instance=prod/%s" % dbsInstance
+        dbs='dasgoclient --query="summary %s=%s" --format=json'%(qwhat,query)
+        jdata = json.load(_dasPopen(dbs))['data']
         events = []
         files = []
         lumis = []
-        for line in dbsOut:
-            line = line.replace('\n','')
-            if "nevents" in line:
-                events.append(int(line.split(":")[1]))
-            if "nfiles" in line:
-                files.append(int(line.split(":")[1]))
-            if "nlumis" in line:
-                lumis.append(int(line.split(":")[1]))
+        for line in jdata:
+            data = line['summary'][0]
+            events.append(int(data["nevents"]))
+            files.append(int(data["nfiles"]))
+            lumis.append(int(data["nlumis"]))
         if not events: events = [-1]
         if not files:  files  = [-1]
         if not lumis:  lumis  = [-1]
@@ -264,12 +264,12 @@ class CMSDataset( BaseDataset ):
 
 
     @staticmethod
-    def findPrimaryDatasetEntries(dataset, runmin, runmax):
-        return self.findPrimaryDatasetSummaries(dataset, runmin, runmax)['events']
+    def findPrimaryDatasetEntries(dataset, runmin, runmax, dbsInstance=None):
+        return self.findPrimaryDatasetSummaries(dataset, runmin, runmax, dbsInstance=dbsInstance)['events']
 
     @staticmethod
-    def findPrimaryDatasetNumFiles(dataset, runmin, runmax):
-        return self.findPrimaryDatasetSummaries(dataset, runmin, runmax)['files']
+    def findPrimaryDatasetNumFiles(dataset, runmin, runmax, dbsInstance=None):
+        return self.findPrimaryDatasetSummaries(dataset, runmin, runmax, dbsInstance=dbsInstance)['files']
 
     def getPrimaryDatasetEntries(self):
         runmin = -1
@@ -278,7 +278,7 @@ class CMSDataset( BaseDataset ):
             runmin = self.run_range[0]
             runmax = self.run_range[1]
         if not hasattr(self,'summaries'):
-            self.summaries = self.findPrimaryDatasetSummaries(self.name, runmin, runmax)
+            self.summaries = self.findPrimaryDatasetSummaries(self.name, runmin, runmax, dbsInstance = self.dbsInstance)
         return self.summaries['events']
 
 class LocalDataset( BaseDataset ):
@@ -401,7 +401,7 @@ class PrivateDataset ( BaseDataset ):
     def buildListOfFilesDBS(self, name, dbsInstance):
         entries = self.findPrimaryDatasetNumFiles(name, dbsInstance, -1, -1)
         files = []
-        dbs = 'das_client --query="file dataset=%s instance=prod/%s" --limit=%s' % (name, dbsInstance, entries)
+        dbs = 'das_client.py --query="file dataset=%s instance=prod/%s" --limit=%s' % (name, dbsInstance, entries)
         dbsOut = _dasPopen(dbs)
         for line in dbsOut:
             if line.find('/store')==-1:
@@ -427,9 +427,8 @@ class PrivateDataset ( BaseDataset ):
             else:
                 print "WARNING: queries with run ranges are slow in DAS"
                 query = "%s run between [%d, %d]" % (query,runmin if runmin > 0 else 1, runmax if runmax > 0 else 999999)
-        dbs='das_client --query="summary %s=%s instance=prod/%s"'%(qwhat, query, dbsInstance)
+        dbs='das_client.py --query="summary %s=%s instance=prod/%s"'%(qwhat, query, dbsInstance)
         dbsOut = _dasPopen(dbs).readlines()
-
         entries = []
         for line in dbsOut:
             line = line.replace('\n','')
@@ -451,7 +450,7 @@ class PrivateDataset ( BaseDataset ):
             else:
                 print "WARNING: queries with run ranges are slow in DAS"
                 query = "%s run between [%d, %d]" % (query,runmin if runmin > 0 else 1, runmax if runmax > 0 else 999999)
-        dbs='das_client --query="summary %s=%s instance=prod/%s"'%(qwhat, query, dbsInstance)
+        dbs='das_client.py --query="summary %s=%s instance=prod/%s"'%(qwhat, query, dbsInstance)
         dbsOut = _dasPopen(dbs).readlines()
         
         entries = []
@@ -486,7 +485,7 @@ def writeDatasetToCache( cachename, dataset ):
     pickle.dump(dataset, pckfile)
 
 def createDataset( user, dataset, pattern, readcache=False, 
-                   basedir = None, run_range = None, json = None):
+                   basedir = None, run_range = None, json = None, unsafe = False, dbsInstance = None):
     if user == 'CMS' and pattern != ".*root":
         raise RuntimeError, "For 'CMS' datasets, the pattern must be '.*root', while you configured '%s' for %s, %s" % (pattern, dataset.name, dataset)
 
@@ -509,7 +508,7 @@ def createDataset( user, dataset, pattern, readcache=False,
     if not readcache:
         #print "CreateDataset called: '%s', '%s', '%s', run_range %r" % (user, dataset, pattern, run_range) 
         if user == 'CMS':
-            data = CMSDataset( dataset, run_range = run_range, json = json)
+            data = CMSDataset( dataset, run_range = run_range, json = json, unsafe = unsafe, dbsInstance = dbsInstance)
             info = False
         elif user == 'LOCAL':
             data = LocalDataset( dataset, basedir, pattern)
