@@ -40,7 +40,7 @@ from CMGTools.XZZ2l2nu.analyzers.treeXZZ_cff import *
 
 leptonicVAna.doElMu = True
 leptonicVAna.selectElMuPair =(lambda x: x.leg1.pt()>20.0 or x.leg2.pt()>20.0 )
-leptonicVAna.selectVBoson = (lambda x: x.mass()>50.0 and x.mass()<180.0)
+leptonicVAna.selectVBoson = (lambda x: x.mass()>30.0 and x.mass()<200.0)
 multiStateAna.selectPairLLNuNu = (lambda x: x.leg1.mass()>50.0 and x.leg1.mass()<180.0)
 
 #-------- SEQUENCE
@@ -54,14 +54,12 @@ coreSequence = [
     lepAna,
     jetAna,
     metAna,
-    #photonAna,
     leptonicVAna,
     multiStateAna,
     eventFlagsAna,
     triggerFlagsAna,
 ]
     
-#sequence = cfg.Sequence(coreSequence)
 sequence = cfg.Sequence(coreSequence+[vvSkimmer,multtrg,vvTreeProducer])
 #sequence = cfg.Sequence(coreSequence+[vvSkimmer,fullTreeProducer])
  
@@ -74,7 +72,6 @@ if test==1:
         #c.files = c.files[5:6]
         #c.splitFactor = (len(c.files)/5 if len(c.files)>5 else 1)
         c.splitFactor = len(c.files)/2
-        #c.splitFactor = 1
         #c.triggers=triggers_1mu_noniso
         #c.triggers=triggers_1e_noniso
 
