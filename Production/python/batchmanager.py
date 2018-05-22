@@ -89,7 +89,7 @@ class BatchManager:
                         castortools.rm( self.remoteOutputDir_ )
                     castortools.createEOSDir( self.remoteOutputDir_ )
                 else:
-                    # directory exists.
+                    print 'directory exists ', self.remoteOutputDir_
                     if self.options_.negate is False and self.options_.force is False:
                         #COLIN need to reimplement protectedRemove in eostools
                         raise ValueError(  ' '.join(['directory ', self.remoteOutputDir_, ' already exists.']))
