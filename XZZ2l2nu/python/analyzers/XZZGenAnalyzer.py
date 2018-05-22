@@ -88,7 +88,6 @@ class XZZGenAnalyzer( Analyzer ):
 
 
 
-
         event.genMuons = [ p for p in pruned if abs(p.pdgId())==13 and  p.status()==1 and p.isPromptFinalState() and p.fromHardProcessFinalState() ]
         event.genElectrons = [ p for p in pruned if abs(p.pdgId())==11 and  p.status()==1 and p.isPromptFinalState() and p.fromHardProcessFinalState() ]
         #event.genTaus = [ p for p in pruned if abs(p.pdgId())==15 and p.status()==2  and p.isPromptDecayed() ]
@@ -97,7 +96,6 @@ class XZZGenAnalyzer( Analyzer ):
         event.genMuonsFsr = [ p for p in pruned if abs(p.pdgId())==13 and  p.status()==1 and p.isPromptFinalState() and not p.fromHardProcessFinalState() ]
         event.genElectronsFsr = [ p for p in pruned if abs(p.pdgId())==11 and  p.status()==1 and p.isPromptFinalState() and not p.fromHardProcessFinalState() ]
         event.genTausFsr = [ p for p in pruned if abs(p.pdgId())==15 and p.status()==2  and p.isPromptDecayed() and not p.fromHardProcessDecayed() ]
-
    
 
         event.genLeptons = event.genMuons + event.genElectrons + event.genTaus
@@ -123,9 +121,6 @@ class XZZGenAnalyzer( Analyzer ):
         if len(event.genNeutrinos)==2:
             Z = event.genNeutrinos[0].p4()+event.genNeutrinos[1].p4()
             event.genZBosons.append(Z)
-                    
-            
-            
 
         if len(event.genZBosons)>=2 and len(event.genLeptons)>=2 and len(event.genNeutrinos)>=2:
             event.genIsXZZ2l2nu = True

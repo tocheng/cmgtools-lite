@@ -7,6 +7,11 @@ from array import array
 class XZZMultiFinalState( XZZEventInterpretationBase ):
     def __init__(self, cfg_ana, cfg_comp, looperName):
         super(XZZMultiFinalState,self).__init__(cfg_ana, cfg_comp, looperName)
+        self.doFilterOnJets=False
+        if hasattr(self.cfg_ana,"doFilterOnJets") and self.cfg_ana.doFilterOnJets:
+            self.doFilterOnJets=True
+
+
 #        if "LLNuNu" in self.processTypes:
 #            self.eeff=ROOT.TF1('trigeff', '50*[0]*(1+TMath::Erf((x-[1])/(sqrt(2)*[2])))*(1. + TMath::Erf((x-[3])/(sqrt(2)*[4])))')
 #            self.ep1=array('d',[4.88895e-01,1.20166e+02,1.17300e+01,1.52207e+02,3.01742e+01])
@@ -49,12 +54,17 @@ class XZZMultiFinalState( XZZEventInterpretationBase ):
         super(XZZMultiFinalState,self).process(event)
         self.counters.counter('events').inc('all events')
 
+        IsOneJet=True
+        if hasattr(event,'boostObjsAK8Puppi') :
+           if len(event.boostObjsAK8Puppi)<=0 and self.doFilterOnJets :
+              IsOneJet=False
+
         LLNuNu=[]
         ElMuNuNu=[]
         PhotonJets=[]
 
         # do LL+MET combination
-        if ("LLNuNu" in self.processTypes) and hasattr(event, "LL") and len(event.LL)>0:
+        if ("LLNuNu" in self.processTypes) and hasattr(event, "LL") and len(event.LL) :
             # Take the Z->ll nearest to the Z mass and the highest pt jets
             bestZ = min(event.LL,key = lambda x: abs(x.M()-91.1876))
             VV=Pair(bestZ,event.met)
@@ -67,7 +77,7 @@ class XZZMultiFinalState( XZZEventInterpretationBase ):
 #                    event.trgsfLo = self.gettrigersfLower(bestZ.pt(),bestZ.leg1.pdgId())
 
 
-        if ("LLNuNu" in self.processTypes) and len(LLNuNu)>0: 
+        if ("LLNuNu" in self.processTypes) and len(LLNuNu)>0 and IsOneJet: 
             self.counters.counter('events').inc('pass llNuNu events')
             setattr(event,'LLNuNu'+self.cfg_ana.suffix,LLNuNu)
 
@@ -83,13 +93,13 @@ class XZZMultiFinalState( XZZEventInterpretationBase ):
                 #     event.trgsf = self.gettrigersf(bestPair.pt(),bestPair.leg1.pdgId())
                 #     event.trgsfUp = self.gettrigersfUpper(bestPair.pt(),bestPair.leg1.pdgId())
                 #     event.trgsfLo = self.gettrigersfLower(bestPair.pt(),bestPair.leg1.pdgId())
-        if ("ElMuNuNu" in self.processTypes) and len(ElMuNuNu)>0 :
+        if ("ElMuNuNu" in self.processTypes) and len(ElMuNuNu)>0 and IsOneJet:
             self.counters.counter('events').inc('pass elmuNuNu events')
             setattr(event,'ElMuNuNu'+self.cfg_ana.suffix,ElMuNuNu)
 
         #
         # do Photon+jets combination
-        if ("PhotonJets" in self.processTypes) and hasattr(event, 'selectedPhotons') and len(event.selectedPhotons)>0 :
+        if ("PhotonJets" in self.processTypes) and hasattr(event, 'selectedPhotons') and len(event.selectedPhotons)>0 and IsOneJet:
             for g in event.selectedPhotons: 
                 gjet = Pair(g,event.met)
                 if self.selectPhotonJets(gjet):
@@ -99,8 +109,3 @@ class XZZMultiFinalState( XZZEventInterpretationBase ):
             self.counters.counter('events').inc('pass PhotonJets events')
             setattr(event,'PhotonJets'+self.cfg_ana.suffix,PhotonJets)
             
-        
-
-
-
-

@@ -19,9 +19,7 @@ from PhysicsTools.HeppyCore.utils.deltar import deltaR, deltaPhi, bestMatch, mat
 
 import PhysicsTools.HeppyCore.framework.config as cfg
 
-
 class XZZPhotonAnalyzer( Analyzer ):
-
     
     def __init__(self, cfg_ana, cfg_comp, looperName ):
         super(XZZPhotonAnalyzer,self).__init__(cfg_ana,cfg_comp,looperName)
@@ -124,9 +122,12 @@ class XZZPhotonAnalyzer( Analyzer ):
 
             keepThisPhoton = True
 
-            # swiss cross
-            gamma.SwissCross = 1.0 - (gamma.eTop()+gamma.eBottom()+gamma.eLeft()+gamma.eRight())/gamma.eMax()
-     
+            # swiss cross sometimes gamma.eMax() == 0 ?!!
+            if(gamma.eMax()>0) :
+              gamma.SwissCross = 1.0 - (gamma.eTop()+gamma.eBottom()+gamma.eLeft()+gamma.eRight())/gamma.eMax()
+            else :
+              gamma.SwissCross = -1.0     
+
             # time
             gamma.seedId = gamma.seed().seed()
             gamma.seedhit = ROOT.EcalRecHit()

@@ -16,9 +16,13 @@ from CMGTools.XZZ2l2nu.analyzers.XZZTriggerBitFilter import *
 from CMGTools.XZZ2l2nu.analyzers.XZZVertexAnalyzer import *
 from CMGTools.XZZ2l2nu.analyzers.XZZMETAnalyzer import *
 from CMGTools.XZZ2l2nu.analyzers.XZZDumpEvtList import *
-from CMGTools.XZZ2l2nu.analyzers.XZZJetAnalyzer import *
+
+from PhysicsTools.Heppy.analyzers.objects.JetAnalyzer import *
+#from CMGTools.XZZ2l2nu.analyzers.XZZJetAnalyzer import *
+
 from CMGTools.XZZ2l2nu.analyzers.XZZLHEWeightAnalyzer import *
 from CMGTools.XZZ2l2nu.analyzers.XZZPhotonAnalyzer import *
+from CMGTools.XZZ2l2nu.analyzers.XZZBoostJetAnalyzer import *
 
 ###########################
 # define analyzers
@@ -53,6 +57,24 @@ genAna = cfg.Analyzer(
     # Print out debug information
     verbose = False,
     filter = "None",
+    )
+
+# Gen Info Analyzer (generic, but should be revised)
+genAnaGeneric = cfg.Analyzer(
+    GeneratorAnalyzer, name="GeneratorAnalyzerGeneric",
+    # BSM particles that can appear with status <= 2 and should be kept
+    stableBSMParticleIds = [ 1000022 ],
+    # Particles of which we want to save the pre-FSR momentum (a la status 3).
+    # Note that for quarks and gluons the post-FSR doesn't make sense,
+    # so those should always be in the list
+    savePreFSRParticleIds = [ 1,2,3,4,5, 11,12,13,14,15,16, 21 ],
+    # Make also the list of all genParticles, for other analyzers to handle
+    makeAllGenParticles = True,
+    # Make also the splitted lists
+    makeSplittedGenLists = True,
+    allGenTaus = False,
+    # Print out debug information
+    verbose = False,
     )
 
 ## LHEWeightsAnalyzer
@@ -133,7 +155,7 @@ photonAna = cfg.Analyzer(
     ebhits=("reducedEgamma","reducedEBRecHits"),
     eehits=("reducedEgamma","reducedEERecHits"),
     eshits=("reducedEgamma","reducedESRecHits"),
-    ptMin = 15,
+    ptMin = 50,
     etaMax = 2.5,
 #    doPhotonScaleCorrections= False,
     doPhotonScaleCorrections= {
@@ -154,34 +176,70 @@ photonAna = cfg.Analyzer(
 
 ## Jets Analyzer (generic)
 jetAna = cfg.Analyzer(
-    XZZJetAnalyzer, name='jetAnalyzer',
-    debug=False,
-    jetCol = 'slimmedJets',
+    JetAnalyzer, name='jetAnalyzer',
+    jetCol = 'slimmedJetsPuppi',
     copyJetsByValue = True,      #Whether or not to copy the input jets or to work with references (should be 'True' if JetAnalyzer is run more than once)
     genJetCol = 'slimmedGenJets',
-    rho = ('fixedGridRhoFastjetAll','',''), # it was ('fixedGridRhoFastjetAll','','') 
-    jetPt = 0., # default used to be 25.
-    jetEta = 6.0,  #4.7,
+    rho = ('fixedGridRhoFastjetAll','',''),
+    jetPt = 25.,
+    jetEta = 4.7,
     jetEtaCentral = 2.4,
+    cleanJetsFromLeptons = True,
     jetLepDR = 0.4,
-    jetLepArbitration = (lambda jet,lepton : lepton), # you can decide which to keep in case of overlaps; e.g. if the jet is b-tagged you might want to keep the jet
-    cleanSelectedLeptons = True, #Whether to clean 'selectedLeptons' after disambiguation. Treat with care (= 'False') if running Jetanalyzer more than once
+    cleanSelectedLeptons = False, #Whether to clean 'selectedLeptons' after disambiguation. Treat with care (= 'False') if running Jetanalyzer more than once
     minLepPt = 10,
     relaxJetId = False,
     doPuId = False, # Not commissioned in 7.0.X
-    recalibrateJets = False, #'MC', # True, False, 'MC', 'Data'
-    applyL2L3Residual = False, # Switch to 'Data' when they will become available for Data
-    recalibrationType = "AK4PFchs",
-    mcGT     = "Spring16_25nsV6_MC", # txt file pattern used in 74X: 'Summer15_25nsV6_MC'
-    dataGT   = "Spring16_25nsV6_DATA", #Summer15_25nsV6_DATA
-    mcGT_jer    = "Spring16_25nsV6_MC", 
-    dataGT_jer  = "Spring16_25nsV6_DATA", 
-    jecPath = "${CMSSW_BASE}/src/CMGTools/XZZ2l2nu/data/jec2016/", #${CMSSW_BASE}/src/CMGTools/RootTools/data/jec/
-    jerPath = "${CMSSW_BASE}/src/CMGTools/XZZ2l2nu/data/jer2016/", #${CMSSW_BASE}/src/CMGTools/RootTools/data/jec/
+    recalibrateJets = True, #'MC', # True, False, 'MC', 'Data'
+    applyL2L3Residual = 'Data', # Switch to 'Data' when they will become available for Data
+    recalibrationType = "AK4PFPuppi",
+    mcGT     = "Summer16_23Sep2016V3_MC",
+    dataGT   = [(1,"Summer16_23Sep2016BCDV3_DATA"),(276831,"Summer16_23Sep2016EFV3_DATA"),(278802,"Summer16_23Sep2016GV3_DATA"),(280919,"Summer16_23Sep2016HV3_DATA")],
+    jecPath = "${CMSSW_BASE}/src/CMGTools/XZZ2l2nu/data/jec2016",
     shiftJEC = 0, # set to +1 or -1 to apply +/-1 sigma shift to the nominal jet energies
-    addJECShifts = False, # if true, add  "corr", "corrJECUp", and "corrJECDown" for each jet (requires uncertainties to be available!)
+    addJECShifts = True, # if true, add  "corr", "corrJECUp", and "corrJECDown" for each jet (requires uncertainties to be available!)
     smearJets = False,
-    shiftJER = 0, # set to +1 or -1 to get +/-1 sigma shifts  
+    shiftJER = 0, # set to +1 or -1 to get +/-1 sigma shifts
+    alwaysCleanPhotons = False,
+    cleanGenJetsFromPhoton = False,
+    cleanJetsFromFirstPhoton = False,
+    cleanJetsFromTaus = False,
+    cleanJetsFromIsoTracks = False,
+    doQG = False,
+    do_mc_match = True,
+    collectionPostFix = "",
+    calculateSeparateCorrections = True, # should be True if recalibrateJets is True, otherwise L1s will be inconsistent
+    calculateType1METCorrection  = False,
+    type1METParams = { 'jetPtThreshold':15., 'skipEMfractionThreshold':0.9, 'skipMuons':True },
+    storeLowPtJets = False,
+    )
+
+jetAnaAK8PFPuppi = cfg.Analyzer(
+    JetAnalyzer, name='jetAnalyzerAK8Puppi',
+    jetCol = 'packedPatJetsAK8PFPuppiSoftDrop',#'selectedPatJetsAK8PFPuppi',
+    copyJetsByValue = True,      #Whether or not to copy the input jets or to work with references (should be 'True' if JetAnalyzer is run more than once)
+    genJetCol = 'slimmedGenJetsAK8',
+    rho = ('fixedGridRhoFastjetAll','',''),
+    jetPt = 150.,
+    jetEta = 2.4,
+    jetEtaCentral = 2.4,
+    cleanJetsFromLeptons = False,
+    jetLepDR = 0.4,
+    cleanSelectedLeptons = False, #Whether to clean 'selectedLeptons' after disambiguation. Treat with care (= 'False') if running Jetanalyzer more than once
+    minLepPt = 10,
+    relaxJetId = False,
+    doPuId = False, # Not commissioned in 7.0.X
+    recalibrateJets = True, #'MC', # True, False, 'MC', 'Data'
+    applyL2L3Residual = 'Data', # Switch to 'Data' when they will become available for Data
+    recalibrationType = "AK8PFPuppi",
+    mcGT     = "Summer16_23Sep2016V3_MC",
+    dataGT   = [(1,"Summer16_23Sep2016BCDV3_DATA"),(276831,"Summer16_23Sep2016EFV3_DATA"),(278802,"Summer16_23Sep2016GV3_DATA"),(280919,"Summer16_23Sep2016HV3_DATA")],
+    jecPath = "${CMSSW_BASE}/src/CMGTools/XZZ2l2nu/data/jec2016",
+    jerPath = "${CMSSW_BASE}/src/CMGTools/XZZ2l2nu/data/jer2016",
+    shiftJEC = 0, # set to +1 or -1 to apply +/-1 sigma shift to the nominal jet energies
+    addJECShifts = True, # if true, add  "corr", "corrJECUp", and "corrJECDown" for each jet (requires uncertainties to be available!)
+    smearJets = False,
+    shiftJER = 0, # set to +1 or -1 to get +/-1 sigma shifts
     alwaysCleanPhotons = False,
     cleanGenJetsFromPhoton = False,
     cleanJetsFromFirstPhoton = False,
@@ -189,11 +247,23 @@ jetAna = cfg.Analyzer(
     cleanJetsFromIsoTracks = False,
     doQG = False,
     do_mc_match = False,
-    collectionPostFix = "",
-    calculateSeparateCorrections = False, # should be True if recalibrateJets is True, otherwise L1s will be inconsistent
+    collectionPostFix = "AK8Puppi",
+    calculateSeparateCorrections = True, # should be True if recalibrateJets is True, otherwise L1s will be inconsistent
     calculateType1METCorrection  = False,
-    type1METParams = { 'jetPtThreshold':15., 'skipEMfractionThreshold':0.9, 'skipMuons':True }, # numbers for AK4CHS jets
+    type1METParams = { 'jetPtThreshold':15., 'skipEMfractionThreshold':0.9, 'skipMuons':False },
+    storeLowPtJets = False,
     )
+
+boostObjAnaAK8Puppi = cfg.Analyzer(
+    XZZBoostJetAnalyzer,name='boostObjAnaAK8Puppi',
+    suffix = 'AK8Puppi',
+    doPUPPI=True,
+    bDiscriminator = "pfCombinedInclusiveSecondaryVertexV2BJetTags",
+    boostedBdiscriminator = "pfBoostedDoubleSecondaryVertexAK8BJetTags",
+    btagCSVFile = "${CMSSW_BASE}/src/CMGTools/XZZ2l2nu/data/btag.csv",
+    puppiJecCorrFile = "${CMSSW_BASE}/src/CMGTools/XZZ2l2nu/data/puppiCorr.root"
+
+)
 
 metAna = cfg.Analyzer(
     XZZMETAnalyzer, name="metAnalyzer",
@@ -220,11 +290,11 @@ metAna = cfg.Analyzer(
 leptonicVAna = cfg.Analyzer(
     XZZLeptonicVMaker,
     name='leptonicVMaker',
-    selectMuMuPair = (lambda x: (x.leg1.highPtID or x.leg2.highPtID) and ((x.leg1.pt()>50.0 and abs(x.leg1.eta())<2.1) or (x.leg2.pt()>50.0 and abs(x.leg2.eta())<2.1))),
+    selectMuMuPair = (lambda x: (x.leg1.highPtID or x.leg2.highPtID) and (x.leg1.pt()>50.0 or x.leg2.pt()>50.0)),
     selectElElPair = (lambda x: x.leg1.pt()>115.0 or x.leg2.pt()>115.0 ),
     selectVBoson = (lambda x: x.pt()>100.0 and x.mass()>60.0 and x.mass()<120.0),
     doElMu = False, # it would save events with ElMu final states + LL final stats
-    selectElMuPair = (lambda x: (x.leg1.pt()>115.0) or (x.leg2.highPtID and x.leg2.pt()>50.0 and abs(x.leg2.eta())<2.1)), # be sure to have leg1=e, leg2=mu
+    selectElMuPair = (lambda x: (x.leg1.pt()>115.0) or (x.leg2.highPtID and x.leg2.pt()>50.0)), # be sure to have leg1=e, leg2=mu
     )
 
 packedAna = cfg.Analyzer(
@@ -292,12 +362,15 @@ dumpEvents = cfg.Analyzer(
 coreSequence = [
     skimAnalyzer,
     genAna,
+    genAnaGeneric,
     jsonAna,
     triggerAna,
     pileUpAna,
     vertexAna,
     lepAna,
     jetAna,
+    jetAnaAK8PFPuppi,
+    boostObjAnaAK8Puppi,
     metAna,
     photonAna,
     leptonicVAna,

@@ -101,9 +101,9 @@ class XZZLeptonAnalyzer( Analyzer ):
             self.IsolationComputer = heppy.IsolationComputer(0.4)
         else:
             self.IsolationComputer = heppy.IsolationComputer()
-        if self.cfg_comp.isMC:
-            self.esfinput=ROOT.TFile(self.cfg_comp.eSFinput)
-            self.esfh2=self.esfinput.Get("EGamma_SF2D")
+        #if self.cfg_comp.isMC:
+            #self.esfinput=ROOT.TFile(self.cfg_comp.eSFinput)
+            #self.esfh2=self.esfinput.Get("EGamma_SF2D")
 
     def beginLoop(self, setup):
         super(XZZLeptonAnalyzer,self).beginLoop(setup)
@@ -432,7 +432,7 @@ class XZZLeptonAnalyzer( Analyzer ):
 
         if len(event.selectedMuons)>=2:
             self.counters.counter('events').inc('pass 2mu events')
-            if (event.selectedMuons[0].pt()>50.0 and abs(event.selectedMuons[0].eta())<2.1 and
+            if (event.selectedMuons[0].pt()>50.0 and abs(event.selectedMuons[0].eta())<2.4 and
                 event.selectedMuons[1].pt()>20.0 and abs(event.selectedMuons[1].eta())<2.4):
                 self.counters.counter('events').inc('pass 2mu kin+id+iso+acc events')
         if len(event.selectedElectrons)>=2 :

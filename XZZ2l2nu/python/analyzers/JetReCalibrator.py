@@ -136,9 +136,9 @@ class JetReCalibrator:
         raw = jet.rawFactor()
         corr = self.getCorrection(jet,rho,delta)
         if addCorr: 
-            jet.corr = corr
-            for sepcorr in self.separateJetCorrectors.keys():
-                setattr(jet,"CorrFactor_"+sepcorr,self.getCorrection(jet,rho,delta=0,corrector=self.separateJetCorrectors[sepcorr]))
+           jet.corr = corr
+           for sepcorr in self.separateJetCorrectors.keys():
+               setattr(jet,"CorrFactor_"+sepcorr,self.getCorrection(jet,rho,delta=0,corrector=self.separateJetCorrectors[sepcorr]))
         if addShifts:
             for cdelta,shift in [(1.0, "JECUp"), (-1.0, "JECDown")]:
                 cshift = self.getCorrection(jet,rho,delta+cdelta)

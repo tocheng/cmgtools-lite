@@ -83,13 +83,18 @@ JetType = NTupleObjectType("xzzJetType", baseObjectTypes=[jetType], variables = 
     NTupleVariable("id",    lambda x : x.jetID("POG_PFID") , int, mcOnly=False,help="POG Loose jet ID"),
     NTupleVariable("area",   lambda x : x.jetArea(), help="Catchment area of jet"),
     NTupleVariable("rawFactor",   lambda x : x.rawFactor(), float, help="pt/rawfactor will give you the raw pt"),
-    #NTupleVariable("corr_jer",  lambda x : getattr(x, 'corrJER', -99), float, mcOnly=True, help="JER corr factor"),
+    NTupleVariable("corr_JECUp",  lambda x : getattr(x, 'corrJECUp', -99), float,  help=""),
+    NTupleVariable("corr_JECDown",  lambda x : getattr(x, 'corrJECDown', -99), float,help=""),
+    NTupleVariable("corr",  lambda x : getattr(x, 'corr', -99), float, help=""),
+    NTupleVariable("corr_JERUp",  lambda x : getattr(x, 'corrJERUp', -99), float, mcOnly=True, help=""),
+    NTupleVariable("corr_JERDown", lambda x : getattr(x, 'corrJERDown', -99), float, mcOnly=True, help=""),
+    NTupleVariable("corr_JER", lambda x : getattr(x, 'corrJER', -99), float, mcOnly=True, help=""),
     NTupleVariable("btagCSV",   lambda x : x.btag('pfCombinedInclusiveSecondaryVertexV2BJetTags'), help="CSV-IVF v2 discriminator"),
-    NTupleVariable("btagCMVA",  lambda x : x.btag('pfCombinedMVABJetTags'), help="CMVA discriminator"),
-    NTupleVariable("mcPt",   lambda x : x.matchedGenJet.pt() if getattr(x,"matchedGenJet",None) else 0., mcOnly=True, help="p_{T} of associated gen jet"),
-    NTupleVariable("mcEta",   lambda x : x.matchedGenJet.eta() if getattr(x,"matchedGenJet",None) else 0., mcOnly=True, help="eta of associated gen jet"),
-    NTupleVariable("mcPhi",   lambda x : x.matchedGenJet.phi() if getattr(x,"matchedGenJet",None) else 0., mcOnly=True, help="phi of associated gen jet"),
-    NTupleVariable("mcMass",   lambda x : x.matchedGenJet.mass() if getattr(x,"matchedGenJet",None) else 0., mcOnly=True, help="mass of associated gen jet"),
+    #NTupleVariable("btagCMVA",  lambda x : x.btag('pfCombinedMVABJetTags'), help="CMVA discriminator"),
+    NTupleVariable("mcPt",   lambda x : x.mcJet.pt() if getattr(x,"mcJet",None) else 0., mcOnly=True, help="p_{T} of associated gen jet"),
+    NTupleVariable("mcEta",   lambda x : x.mcJet.eta() if getattr(x,"mcJet",None) else 0., mcOnly=True, help="eta of associated gen jet"),
+    NTupleVariable("mcPhi",   lambda x : x.mcJet.phi() if getattr(x,"mcJet",None) else 0., mcOnly=True, help="phi of associated gen jet"),
+    NTupleVariable("mcMass",   lambda x : x.mcJet.mass() if getattr(x,"mcJet",None) else 0., mcOnly=True, help="mass of associated gen jet"),
     NTupleVariable("mcFlavour", lambda x : x.partonFlavour(), int,     mcOnly=True, help="parton flavour (physics definition, i.e. including b's from shower)"),
     #NTupleVariable("btag",   lambda x : x.bTag(), float),
     #NTupleVariable("nConstituents",   lambda x : len(x.constituents), int),
@@ -103,6 +108,38 @@ JetType = NTupleObjectType("xzzJetType", baseObjectTypes=[jetType], variables = 
     NTupleVariable("chargedHadronMultiplicity",   lambda x : x.chargedHadronMultiplicity(), float, help="for Jet ID"),
     NTupleVariable("chargedMultiplicity",   lambda x : x.chargedMultiplicity(), float, help="for Jet ID"),
     NTupleVariable("neutralMultiplicity",   lambda x : x.neutralMultiplicity(), float, help="for Jet ID"),
+])
+
+FatJetType = NTupleObjectType("FatJetType", baseObjectTypes=[JetType], variables = [
+
+    NTupleVariable("softDrop_massCorr",  lambda x : x.substructure.softDropJetMassCor,float),
+    NTupleVariable("softDrop_massBare",  lambda x : x.substructure.softDropJetMassBare,float),
+    NTupleVariable("prunedDrop_massCorr",  lambda x : x.substructure.prunedJetMassCor,float),
+    NTupleVariable("prunedDrop_massBare",  lambda x : x.substructure.prunedJetMassBare,float),
+
+    NTupleVariable("tau1",   lambda x : x.substructure.ntau[0], float),
+    NTupleVariable("tau2",   lambda x : x.substructure.ntau[1], float),
+    NTupleVariable("tau3",   lambda x : x.substructure.ntau[2], float),
+    NTupleVariable("tau4",   lambda x : x.substructure.ntau[3], float),
+    NTupleVariable("tau21_DDT",   lambda x : x.substructure.tau21_DDT, float),
+    NTupleVariable("s1BTag",   lambda x : x.subJetTags[0], float),
+    NTupleVariable("s2BTag",   lambda x : x.subJetTags[1], float),
+    # BTV-15-002: AK8 jets (w/ JEC applied, jetID applied, |eta| < 2.4, efficiency are computed by using pT > 300 GeV and pruned m_jet > 50 GeV)
+    NTupleVariable("btagBOOSTED",   lambda x : x.btag("pfBoostedDoubleSecondaryVertexAK8BJetTags"), float),
+    #NTupleVariable("btagBOOSTED_recalc", lambda x : x.Hbbtag if hasattr(x,'Hbbtag') else -1.0, float),
+    #NTupleVariable("s1CTagL",   lambda x : x.subJetCTagL[0], float),
+    #NTupleVariable("s2CTagL",   lambda x : x.subJetCTagL[1], float),
+    #NTupleVariable("s1CTagB",   lambda x : x.subJetCTagB[0], float),
+    #NTupleVariable("s2CTagB",   lambda x : x.subJetCTagB[1], float),
+    NTupleVariable("s1_partonFlavour",   lambda x : x.subJet_partonFlavour[0], int,"",-99,True),
+    NTupleVariable("s1_hadronFlavour",   lambda x : x.subJet_hadronFlavour[0], int,"",-99,True),
+    NTupleVariable("s2_partonFlavour",   lambda x : x.subJet_partonFlavour[1], int,"",-99,True),
+    NTupleVariable("s2_hadronFlavour",   lambda x : x.subJet_hadronFlavour[1], int,"",-99,True),
+    ######GEN SUBSTRUCTURE INFO
+    #NTupleVariable("gen_tau1",   lambda x : x.substructureGEN.ntau[0] if hasattr(x,'substructureGEN') else -99, float,"",-99,True),
+    #NTupleVariable("gen_tau2",   lambda x : x.substructureGEN.ntau[1] if hasattr(x,'substructureGEN') else -99, float,"",-99,True),
+    #NTupleVariable("gen_tau3",   lambda x : x.substructureGEN.ntau[2] if hasattr(x,'substructureGEN') else -99, float,"",-99,True),
+    #NTupleVariable("gen_tau4",   lambda x : x.substructureGEN.ntau[3] if hasattr(x,'substructureGEN') else -99, float,"",-99,True),
 ])
 
 JetTypeExtra = NTupleObjectType("xzzJetTypeExtra", baseObjectTypes=[JetType], variables = [
