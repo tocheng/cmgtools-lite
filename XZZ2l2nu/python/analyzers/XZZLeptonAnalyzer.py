@@ -84,6 +84,11 @@ class XZZLeptonAnalyzer( Analyzer ):
         self.handles['eehits'] = AutoHandle( ("reducedEgamma","reducedEERecHits"),'edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> >')
         self.handles['eshits'] = AutoHandle( ("reducedEgamma","reducedESRecHits"),'edm::SortedCollection<EcalRecHit,edm::StrictWeakOrdering<EcalRecHit> >')
 
+        # for electron mva
+        self.handles['rho'] = AutoHandle('fixedGridRhoFastjetAll', 'double')
+        self.handles['conversions'] = AutoHandle(("reducedEgamma:reducedConversions"),'reco::ConversionCollection')
+        self.handles['beamspot'] = AutoHandle('offlineBeamSpot', 'reco::BeamSpot')
+
         # decide to filter events not passing lepton requirements
         self.do_filter = getattr(self.cfg_ana, 'do_filter', True)
 
@@ -317,6 +322,10 @@ class XZZLeptonAnalyzer( Analyzer ):
             ele.rho = float(self.handles['rhoElePfIso'].product()[0])
             ele.rhoHLT = float(self.handles['rhoEleHLT'].product()[0])
             ele.relIsoea03=ele.absIsoWithFSR(0.3)/ele.pt()
+            # variable for electron mva ID
+            ele.conversions = self.handles['conversions'].product()
+            ele.beamspot = self.handles['beamspot'].product()[0]
+
             if abs(ele.physObj.superCluster().eta())<1.479:
                 #ele.looseiso=True if ele.relIsoea03<0.0893 else False
                 ele.looseiso=True if ele.relIsoea03<0.0994 else False
@@ -358,23 +367,28 @@ class XZZLeptonAnalyzer( Analyzer ):
 
         # define electron ID
         for ele in allelectrons:
-            ele.loose_nonISO = ele.physObj.electronID("cutBasedElectronID_Fall17_94X_V2_loose")
+            ele.loose_nonISO = ele.id_passes("cutBasedElectronID-Fall17-94X-V2","loose")
+            #ele.looseiso = ele.electronID("cutBasedElectronID_Fall17_94X_V2_loose")
             #same as ele.physObj.electronID("cutBasedElectronID_Fall17_94X_V2_loose")
             #but will print error message if the ID is not available
-            ele.looseiso = ele.electronID("cutBasedElectronID_Fall17_94X_V2_loose")
+            ele.looseiso = ele.id_passes("cutBasedElectronID-Fall17-94X-V2","loose")
             print 'ele cut based Id ',ele.loose_nonISO,' ',ele.looseiso
-            ele.cutBasedId_loose = ele.electronID("cutBasedElectronID_Fall17_94X_V2_loose")
+            ele.cutBasedId_loose = ele.id_passes("cutBasedElectronID-Fall17-94X-V2","loose")
 
             # mva Id
             ele.mva_Iso = -999
             ele.mva_nonIso = -999
             if ele.physObj.hasUserFloat("ElectronMVAEstimatorRun2Fall17IsoV2Values") :
                ele.mva_Iso = ele.physObj.userFloat("ElectronMVAEstimatorRun2Fall17IsoV2Values")
+               ele.mvaId_wpHZZ = ele.electronID("mvaEleID-Fall17-iso-V2-wpHZZ")
             if ele.physObj.hasUserFloat("ElectronMVAEstimatorRun2Fall17NoIsoV2Values") :
                ele.mva_nonIso = ele.physObj.userFloat("ElectronMVAEstimatorRun2Fall17NoIsoV2Values")
-            print 'ele mva iso ',ele.mva_Iso,', noniso ',ele.mva_nonIso
-            ele.mvaId_wpHZZ = ele.electronID("mvaEleID-Fall17-iso-V2-wpHZZ")
 
+            ele.mva_Iso = ele.mva_score("mvaEleID-Fall17-iso-V2",norm=True)
+            ele.mva_nonIso = ele.mva_score("mvaEleID-Fall17-noIso-V2",norm=True)
+            ele.mvaId_wpHZZ = ele.id_passes("mvaEleID-Fall17-iso-V2","wpHZZ")
+
+            print 'ele mva iso ',ele.mva_Iso,', noniso ',ele.mva_nonIso
             ele.hltSafeId = ele.electronID("POG_Cuts_ID_SPRING16_25ns_v1_HLT")
 
         return allelectrons 
