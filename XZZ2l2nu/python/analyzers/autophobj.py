@@ -243,6 +243,7 @@ genJetType = NTupleObjectType("genJetType",  baseObjectTypes = [ fourVectorType 
     NTupleVariable("nGenConstituents", lambda x : x.numberOfDaughters(), int, mcOnly=True, help="xxx"),
 
 ])
+
 jetTypeExtra = NTupleObjectType("jetExtra",  baseObjectTypes = [ jetType ], variables = [
     NTupleVariable("area",   lambda x : x.jetArea(), help="Catchment area of jet"),
     # QG variables:

@@ -1,4 +1,5 @@
-from CMGTools.XZZ2l2nu.analyzers.AutoFillTreeProducer  import * 
+#from CMGTools.XZZ2l2nu.analyzers.AutoFillTreeProducer  import * 
+from CMGTools.XZZ2l2nu.analyzers.autophobj  import *
 import math
 
 
@@ -15,7 +16,6 @@ LLType = NTupleObjectType("LLType", baseObjectTypes=[fourVectorType], variables 
     #NTupleVariable("TuneP_deltaPhi",   lambda x : x.TuneP_deltaPhi(), float),       
     #NTupleVariable("TuneP_deltaR",   lambda x : x.TuneP_deltaR(), float),       
 ])
-
 
 
 VVType = NTupleObjectType("VVType", baseObjectTypes=[], variables = [
@@ -47,6 +47,7 @@ LLNuNuType = NTupleObjectType("LLNuNuType", baseObjectTypes=[VVType], variables 
     #NTupleVariable("metOvSqSET",   lambda x : (x['pair'].leg2.pt())/math.sqrt(x['pair'].leg2.sumEt()), float), 
 ])
 
+
 PhotonJetType = NTupleObjectType("PhotonJetType", baseObjectTypes=[], variables = [
     NTupleVariable("deltaPhi",   lambda x : x['pair'].deltaPhi(), float),
     NTupleVariable("mt",   lambda x : x['pair'].mt(), float),
@@ -67,17 +68,20 @@ llpairType = NTupleObjectType("llpairType", baseObjectTypes=[], variables = [
     NTupleSubObject("l2",  lambda x : x.leg2,leptonType),
 ])
 
+
 metCompType = NTupleObjectType("metCompType", baseObjectTypes=[], variables = [
     NTupleVariable("Px",  lambda x : x[0]),
     NTupleVariable("Py",  lambda x : x[1]),
     NTupleVariable("Et",  lambda x : x[2]),
 ])
 
+
 jet4metType = NTupleObjectType("jet4metType", baseObjectTypes=[], variables = [
     NTupleSubObject("rawP4forT1",  lambda x : x["rawP4forT1"], metCompType),
     NTupleSubObject("type1METCorr",  lambda x : x["type1METCorr"], metCompType),
     NTupleSubObject("corrP4forT1",  lambda x : x["corrP4forT1"], metCompType),
 ])
+
 
 JetType = NTupleObjectType("xzzJetType", baseObjectTypes=[jetType], variables = [
     NTupleVariable("id",    lambda x : x.jetID("POG_PFID") , int, mcOnly=False,help="POG Loose jet ID"),
@@ -90,7 +94,6 @@ JetType = NTupleObjectType("xzzJetType", baseObjectTypes=[jetType], variables = 
     NTupleVariable("corr_JERDown", lambda x : getattr(x, 'corrJERDown', -99), float, mcOnly=True, help=""),
     NTupleVariable("corr_JER", lambda x : getattr(x, 'corrJER', -99), float, mcOnly=True, help=""),
     NTupleVariable("btagCSV",   lambda x : x.btag('pfCombinedInclusiveSecondaryVertexV2BJetTags'), help="CSV-IVF v2 discriminator"),
-    #NTupleVariable("btagCMVA",  lambda x : x.btag('pfCombinedMVABJetTags'), help="CMVA discriminator"),
     NTupleVariable("mcPt",   lambda x : x.mcJet.pt() if getattr(x,"mcJet",None) else 0., mcOnly=True, help="p_{T} of associated gen jet"),
     NTupleVariable("mcEta",   lambda x : x.mcJet.eta() if getattr(x,"mcJet",None) else 0., mcOnly=True, help="eta of associated gen jet"),
     NTupleVariable("mcPhi",   lambda x : x.mcJet.phi() if getattr(x,"mcJet",None) else 0., mcOnly=True, help="phi of associated gen jet"),
