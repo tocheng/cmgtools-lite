@@ -253,8 +253,8 @@ boostObjAnaAK8PFpuppi = cfg.Analyzer(
 
 metAna = cfg.Analyzer(
     XZZMETAnalyzer, name="metAnalyzer",
-    metCollection     = "slimmedMETs",
-    noPUMetCollection = "slimmedMETs",
+    metCollection     = "slimmedMETsModifiedMET",
+    noPUMetCollection = "slimmedMETsModifiedMET",
     copyMETsByValue = False,
     doTkMet = False,
     doMetNoPU = False,
